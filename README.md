@@ -1,0 +1,2 @@
+openCONFIGURATOR library
+======
