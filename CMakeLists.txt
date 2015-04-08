@@ -129,14 +129,14 @@ ADD_SUBDIRECTORY(library)
 # Add a target to generate .NET wrapper
 ###############################################################################
 IF(OPEN_CONFIGURATOR_CORE_NET_WRAPPER)
-#	ADD_SUBDIRECTORY(wrapper/csharp)
+	ADD_SUBDIRECTORY(wrapper/csharp)
 ENDIF()
 
 ###############################################################################
 # Add a target to generate Java wrapper
 ###############################################################################
 IF(OPEN_CONFIGURATOR_CORE_JAVA_WRAPPER)
-#	ADD_SUBDIRECTORY(wrapper/java)
+	ADD_SUBDIRECTORY(wrapper/java)
 ENDIF()
 
 ###############################################################################
