@@ -30,27 +30,39 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #pragma once
-#include <cppUnit/TestCase.h>
-#include <cppUnit/extensions/HelperMacros.h>
+#include <cppunit/TestCase.h>
+#include <cppunit/extensions/HelperMacros.h>
 
 using namespace std;
 
-class TestTemplate :
-	public CppUnit::TestFixture
+namespace IndustrialNetwork
 {
+	namespace POWERLINK
+	{
+		namespace Core
+		{
+			namespace Test
+			{
+				class TestTemplate :
+					public CppUnit::TestFixture
+				{
 
-		CPPUNIT_TEST_SUITE(TestTemplate);
-		//add test methods here
-		//CPPUNIT_TEST(executeTest);
-		// ... name each method that should be executed
-		CPPUNIT_TEST_SUITE_END();
+						CPPUNIT_TEST_SUITE(TestTemplate);
+						//add test methods here
+						//CPPUNIT_TEST(executeTest);
+						// ... name each method that should be executed
+						CPPUNIT_TEST_SUITE_END();
 
-	public:
-		TestTemplate(void);
-		~TestTemplate(void);
-		void setUp();
-		void tearDown();
+					public:
+						TestTemplate(void);
+						~TestTemplate(void);
+						void setUp();
+						void tearDown();
 
-		//add test methods here
-		void executeTest();
-};
+						//add test methods here
+						void executeTest();
+				};
+			}
+		}
+	}
+}

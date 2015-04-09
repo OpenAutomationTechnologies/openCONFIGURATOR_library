@@ -1,6 +1,6 @@
 /************************************************************************
-\file StationTypeTest.cpp
-\brief Implementation of the Class StationTypeTest
+\file ArrayDataTypeTest.cpp
+\brief Implementation of the Class ArrayDataTypeTest
 \author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 \date 04-Feb-2015 09:38:12
 ************************************************************************/
@@ -29,37 +29,30 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
-#include "PlkOperationModeTest.h"
+#include "ArrayDataTypeTest.h"
 
 using namespace IndustrialNetwork::POWERLINK::Core::Test;
 
-CPPUNIT_TEST_SUITE_REGISTRATION(PlkOperationModeTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(ArrayDataTypeTest);
 
-PlkOperationModeTest::PlkOperationModeTest(void)
-{}
-
-PlkOperationModeTest::~PlkOperationModeTest(void)
-{}
-
-void PlkOperationModeTest::setUp()
-{}
-
-void PlkOperationModeTest::tearDown()
-{}
-
-
-void PlkOperationModeTest::testNormalStationType(void)
+ArrayDataTypeTest::ArrayDataTypeTest(void)
 {
-	CPPUNIT_ASSERT_EQUAL(static_cast<int>(IndustrialNetwork::POWERLINK::Core::Node::PlkOperationMode::NORMAL), 0);
 }
 
-void PlkOperationModeTest::testMultiplexedStationType(void)
+ArrayDataTypeTest::~ArrayDataTypeTest(void)
 {
-	CPPUNIT_ASSERT_EQUAL(static_cast<int>(IndustrialNetwork::POWERLINK::Core::Node::PlkOperationMode::MULTIPLEXED), 1);
 }
 
-void PlkOperationModeTest::testChainedStationType(void)
+void ArrayDataTypeTest::setUp() {}
+
+void ArrayDataTypeTest::tearDown() {}
+
+void ArrayDataTypeTest::testLowerLimit(void)
 {
-	CPPUNIT_ASSERT_EQUAL(static_cast<int>(IndustrialNetwork::POWERLINK::Core::Node::PlkOperationMode::CHAINED), 2);
+
 }
 
+void ArrayDataTypeTest::testUpperLimit(void)
+{
+
+}

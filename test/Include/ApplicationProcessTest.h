@@ -30,29 +30,41 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #pragma once
-#include <cppUnit/TestCase.h>
-#include <cppUnit/extensions/HelperMacros.h>
+#include <cppunit/TestCase.h>
+#include <cppunit/extensions/HelperMacros.h>
 #include "ApplicationProcess.h"
 
 using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 
-class ApplicationProcessTest :
-	public CppUnit::TestFixture
+namespace IndustrialNetwork
 {
+	namespace POWERLINK
+	{
+		namespace Core
+		{
+			namespace Test
+			{
+				class ApplicationProcessTest :
+					public CppUnit::TestFixture
+				{
 
-		CPPUNIT_TEST_SUITE(ApplicationProcessTest);
-		CPPUNIT_TEST(testParameterVectorSize);
-		CPPUNIT_TEST_SUITE_END();
+						CPPUNIT_TEST_SUITE(ApplicationProcessTest);
+						CPPUNIT_TEST(testParameterVectorSize);
+						CPPUNIT_TEST_SUITE_END();
 
-	private:
-		ApplicationProcess objectToTest;
+					private:
+						ApplicationProcess objectToTest;
 
-	public:
-		ApplicationProcessTest(void);
-		~ApplicationProcessTest(void);
-		void setUp();
-		void tearDown();
+					public:
+						ApplicationProcessTest(void);
+						~ApplicationProcessTest(void);
+						void setUp();
+						void tearDown();
 
-		void testParameterVectorSize();
-};
+						void testParameterVectorSize();
+				};
+			}
+		}
+	}
+}

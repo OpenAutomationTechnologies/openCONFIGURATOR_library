@@ -1,6 +1,6 @@
 /************************************************************************
 \file ApplicationProcessTest.cpp
-\brief Implementation of the ApplicationProcessTest class
+\brief Implementation of the class ApplicationProcessTest
 \author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 \date 04-Feb-2015 09:38:12
 ************************************************************************/
@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "ApplicationProcessTest.h"
 
+using namespace IndustrialNetwork::POWERLINK::Core::Test;
 
 CPPUNIT_TEST_SUITE_REGISTRATION(ApplicationProcessTest);
 

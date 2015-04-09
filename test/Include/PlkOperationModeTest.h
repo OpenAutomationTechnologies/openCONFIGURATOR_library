@@ -37,23 +37,35 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
 
-class PlkOperationModeTest :
-	public CppUnit::TestFixture
+namespace IndustrialNetwork
 {
+	namespace POWERLINK
+	{
+		namespace Core
+		{
+			namespace Test
+			{
+				class PlkOperationModeTest :
+					public CppUnit::TestFixture
+				{
 
-		CPPUNIT_TEST_SUITE(PlkOperationModeTest);
-		CPPUNIT_TEST(testNormalStationType);
-		CPPUNIT_TEST(testChainedStationType);
-		CPPUNIT_TEST(testMultiplexedStationType);
-		CPPUNIT_TEST_SUITE_END();
+						CPPUNIT_TEST_SUITE(PlkOperationModeTest);
+						CPPUNIT_TEST(testNormalStationType);
+						CPPUNIT_TEST(testChainedStationType);
+						CPPUNIT_TEST(testMultiplexedStationType);
+						CPPUNIT_TEST_SUITE_END();
 
-	public:
-		PlkOperationModeTest(void);
-		~PlkOperationModeTest(void);
-		void setUp();
-		void tearDown();
+					public:
+						PlkOperationModeTest(void);
+						~PlkOperationModeTest(void);
+						void setUp();
+						void tearDown();
 
-		void testNormalStationType();
-		void testChainedStationType();
-		void testMultiplexedStationType();
-};
+						void testNormalStationType();
+						void testChainedStationType();
+						void testMultiplexedStationType();
+				};
+			}
+		}
+	}
+}

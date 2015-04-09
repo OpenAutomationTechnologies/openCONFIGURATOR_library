@@ -1,6 +1,6 @@
 /************************************************************************
-\file StationTypeTest.cpp
-\brief Implementation of the Class StationTypeTest
+\file ControlledNodeTest.cpp
+\brief Implementation of the Class ControlledNodeTest
 \author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 \date 04-Feb-2015 09:38:12
 ************************************************************************/
@@ -29,37 +29,26 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
-#include "PlkOperationModeTest.h"
+#include "ControlledNodeTest.h"
 
 using namespace IndustrialNetwork::POWERLINK::Core::Test;
 
-CPPUNIT_TEST_SUITE_REGISTRATION(PlkOperationModeTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(ControlledNodeTest);
 
-PlkOperationModeTest::PlkOperationModeTest(void)
-{}
-
-PlkOperationModeTest::~PlkOperationModeTest(void)
-{}
-
-void PlkOperationModeTest::setUp()
-{}
-
-void PlkOperationModeTest::tearDown()
-{}
-
-
-void PlkOperationModeTest::testNormalStationType(void)
+ControlledNodeTest::ControlledNodeTest(void)
 {
-	CPPUNIT_ASSERT_EQUAL(static_cast<int>(IndustrialNetwork::POWERLINK::Core::Node::PlkOperationMode::NORMAL), 0);
 }
 
-void PlkOperationModeTest::testMultiplexedStationType(void)
+ControlledNodeTest::~ControlledNodeTest(void)
 {
-	CPPUNIT_ASSERT_EQUAL(static_cast<int>(IndustrialNetwork::POWERLINK::Core::Node::PlkOperationMode::MULTIPLEXED), 1);
 }
 
-void PlkOperationModeTest::testChainedStationType(void)
-{
-	CPPUNIT_ASSERT_EQUAL(static_cast<int>(IndustrialNetwork::POWERLINK::Core::Node::PlkOperationMode::CHAINED), 2);
-}
+void ControlledNodeTest::setUp() {}
 
+void ControlledNodeTest::tearDown() {}
+
+void ControlledNodeTest::executeTest(void)
+{
+	int x = 5;
+	CPPUNIT_ASSERT(x == 5);
+}

@@ -1,6 +1,6 @@
 /************************************************************************
-\file StationTypeTest.cpp
-\brief Implementation of the Class StationTypeTest
+\file ArrayDataTypeTest.h
+\brief ArrayDataTypeTest class
 \author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 \date 04-Feb-2015 09:38:12
 ************************************************************************/
@@ -29,37 +29,45 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
-#include "PlkOperationModeTest.h"
+#pragma once
+#include <cppunit/TestCase.h>
+#include <cppunit/extensions/HelperMacros.h>
+#include "ArrayDataType.h"
 
-using namespace IndustrialNetwork::POWERLINK::Core::Test;
+using namespace std;
+using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 
-CPPUNIT_TEST_SUITE_REGISTRATION(PlkOperationModeTest);
-
-PlkOperationModeTest::PlkOperationModeTest(void)
-{}
-
-PlkOperationModeTest::~PlkOperationModeTest(void)
-{}
-
-void PlkOperationModeTest::setUp()
-{}
-
-void PlkOperationModeTest::tearDown()
-{}
-
-
-void PlkOperationModeTest::testNormalStationType(void)
+namespace IndustrialNetwork
 {
-	CPPUNIT_ASSERT_EQUAL(static_cast<int>(IndustrialNetwork::POWERLINK::Core::Node::PlkOperationMode::NORMAL), 0);
-}
+	namespace POWERLINK
+	{
+		namespace Core
+		{
+			namespace Test
+			{
+				class ArrayDataTypeTest :
+					public CppUnit::TestFixture
+				{
 
-void PlkOperationModeTest::testMultiplexedStationType(void)
-{
-	CPPUNIT_ASSERT_EQUAL(static_cast<int>(IndustrialNetwork::POWERLINK::Core::Node::PlkOperationMode::MULTIPLEXED), 1);
-}
+						CPPUNIT_TEST_SUITE(ArrayDataTypeTest);
+						CPPUNIT_TEST(testLowerLimit);
+						CPPUNIT_TEST(testUpperLimit);
+						CPPUNIT_TEST_SUITE_END();
 
-void PlkOperationModeTest::testChainedStationType(void)
-{
-	CPPUNIT_ASSERT_EQUAL(static_cast<int>(IndustrialNetwork::POWERLINK::Core::Node::PlkOperationMode::CHAINED), 2);
-}
+					private:
+						ArrayDataType objectToTest;
 
+					public:
+						ArrayDataTypeTest(void);
+						~ArrayDataTypeTest(void);
+						void setUp();
+						void tearDown();
+
+						//add test methods here
+						void testLowerLimit(void);
+						void testUpperLimit(void);
+				};
+			}
+		}
+	}
+}

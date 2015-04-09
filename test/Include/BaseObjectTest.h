@@ -1,6 +1,6 @@
 /************************************************************************
-\file StationTypeTest.cpp
-\brief Implementation of the Class StationTypeTest
+\file BaseObjectTest.h
+\brief BaseObjectTest class
 \author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 \date 04-Feb-2015 09:38:12
 ************************************************************************/
@@ -29,37 +29,39 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
-#include "PlkOperationModeTest.h"
+#pragma once
+#include <cppunit/TestCase.h>
+#include <cppunit/extensions/HelperMacros.h>
+#include "BaseObject.h"
 
-using namespace IndustrialNetwork::POWERLINK::Core::Test;
+using namespace std;
 
-CPPUNIT_TEST_SUITE_REGISTRATION(PlkOperationModeTest);
-
-PlkOperationModeTest::PlkOperationModeTest(void)
-{}
-
-PlkOperationModeTest::~PlkOperationModeTest(void)
-{}
-
-void PlkOperationModeTest::setUp()
-{}
-
-void PlkOperationModeTest::tearDown()
-{}
-
-
-void PlkOperationModeTest::testNormalStationType(void)
+namespace IndustrialNetwork
 {
-	CPPUNIT_ASSERT_EQUAL(static_cast<int>(IndustrialNetwork::POWERLINK::Core::Node::PlkOperationMode::NORMAL), 0);
-}
-
-void PlkOperationModeTest::testMultiplexedStationType(void)
+	namespace POWERLINK
+	{
+		namespace Core
+		{
+			namespace Test
+			{
+class BaseObjectTest :
+	public CppUnit::TestFixture
 {
-	CPPUNIT_ASSERT_EQUAL(static_cast<int>(IndustrialNetwork::POWERLINK::Core::Node::PlkOperationMode::MULTIPLEXED), 1);
-}
 
-void PlkOperationModeTest::testChainedStationType(void)
-{
-	CPPUNIT_ASSERT_EQUAL(static_cast<int>(IndustrialNetwork::POWERLINK::Core::Node::PlkOperationMode::CHAINED), 2);
-}
+		CPPUNIT_TEST_SUITE(BaseObjectTest);
+		CPPUNIT_TEST(executeTest);
+		CPPUNIT_TEST_SUITE_END();
 
+	public:
+		BaseObjectTest(void);
+		~BaseObjectTest(void);
+		void setUp();
+		void tearDown();
+
+		//add test methods here
+		void executeTest();
+				};
+			}
+		}
+	}
+}

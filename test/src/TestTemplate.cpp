@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "TestTemplate.h"
 
+using namespace IndustrialNetwork::POWERLINK::Core::Test;
 
 CPPUNIT_TEST_SUITE_REGISTRATION(TestTemplate);
 

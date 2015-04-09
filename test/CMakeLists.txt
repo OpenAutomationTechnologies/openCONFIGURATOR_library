@@ -70,9 +70,6 @@ ADD_DEFINITIONS(/DBOOST_ALL_DYN_LINK)
 ###############################################################################
 FILE ( GLOB_RECURSE LIB_TEST_SOURCES "${PROJECT_SOURCE_DIR}/src/*.cpp" )
 FILE ( GLOB_RECURSE LIB_TEST_HEADERS "${PROJECT_SOURCE_DIR}/Include/*.h" )
-FILE ( GLOB_RECURSE LIB_CORE_SOURCES "${CMAKE_SOURCE_DIR}/library/src/*.cpp")
-
-SOURCE_GROUP (openconfigurator_core_src FILES ${LIB_CORE_SOURCES})
 
 ###############################################################################
 # Set library include directories
@@ -96,21 +93,27 @@ LINK_DIRECTORIES(
 ###############################################################################
 # Create openCONFIGURATOR core test executable
 ###############################################################################
-ADD_EXECUTABLE(openconfigurator_core_test ${LIB_TEST_HEADERS} ${LIB_TEST_SOURCES} ${LIB_CORE_SOURCES})
+ADD_EXECUTABLE(openconfigurator_core_test ${LIB_TEST_HEADERS} ${LIB_TEST_SOURCES})
 
 ###############################################################################
 # Link openCONFIGURATOR core test executable to libraries
 ###############################################################################
-TARGET_LINK_LIBRARIES(openconfigurator_core_test debug ${CPPUNIT_DEBUG_LIBRARY})
-TARGET_LINK_LIBRARIES(openconfigurator_core_test optimized ${CPPUNIT_LIBRARY})
+TARGET_LINK_LIBRARIES(openconfigurator_core_test debug ${CPPUNIT_DEBUG_LIBRARY} openconfigurator_core_lib)
+TARGET_LINK_LIBRARIES(openconfigurator_core_test optimized ${CPPUNIT_LIBRARY} openconfigurator_core_lib)
 
 ###############################################################################
 # Copy unit test dependency and execute the tests
 ###############################################################################
 ADD_CUSTOM_COMMAND(TARGET openconfigurator_core_test POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${PROJECT_BINARY_DIR}/../library/$<CONFIGURATION>/"
+        "${PROJECT_BINARY_DIR}/$<CONFIGURATION>")
+
+ADD_CUSTOM_COMMAND(TARGET openconfigurator_core_test POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${Boost_LIBRARY_DIRS}"
         "${PROJECT_BINARY_DIR}/$<CONFIGURATION>")
+
 
 ADD_CUSTOM_COMMAND(TARGET openconfigurator_core_test POST_BUILD
                    COMMAND "$(TargetDir)$(TargetFileName)" > test_output.txt

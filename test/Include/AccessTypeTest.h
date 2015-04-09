@@ -30,38 +30,50 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #pragma once
-#include <cppUnit/TestCase.h>
-#include <cppUnit/extensions/HelperMacros.h>
+#include <cppunit/TestCase.h>
+#include <cppunit/extensions/HelperMacros.h>
 #include "AccessType.h"
 
 using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 
-class AccessTypeTest :
-	public CppUnit::TestFixture
+namespace IndustrialNetwork
 {
+	namespace POWERLINK
+	{
+		namespace Core
+		{
+			namespace Test
+			{
+				class AccessTypeTest :
+					public CppUnit::TestFixture
+				{
 
-		CPPUNIT_TEST_SUITE(AccessTypeTest);
-		CPPUNIT_TEST(testInvalidAccessType);
-		CPPUNIT_TEST(testRWAccessType);
-		CPPUNIT_TEST(testWOAccessType);
-		CPPUNIT_TEST(testROAccessType);
-		CPPUNIT_TEST(testConstAccessType);
-		CPPUNIT_TEST(testRWSAccessType);
-		CPPUNIT_TEST(testWOSAccessType);
-		CPPUNIT_TEST_SUITE_END();
+						CPPUNIT_TEST_SUITE(AccessTypeTest);
+						CPPUNIT_TEST(testInvalidAccessType);
+						CPPUNIT_TEST(testRWAccessType);
+						CPPUNIT_TEST(testWOAccessType);
+						CPPUNIT_TEST(testROAccessType);
+						CPPUNIT_TEST(testConstAccessType);
+						CPPUNIT_TEST(testRWSAccessType);
+						CPPUNIT_TEST(testWOSAccessType);
+						CPPUNIT_TEST_SUITE_END();
 
-	public:
-		AccessTypeTest(void);
-		~AccessTypeTest(void);
-		void setUp();
-		void tearDown();
+					public:
+						AccessTypeTest(void);
+						~AccessTypeTest(void);
+						void setUp();
+						void tearDown();
 
-		void testInvalidAccessType();
-		void testRWAccessType();
-		void testWOAccessType();
-		void testROAccessType();
-		void testConstAccessType();
-		void testRWSAccessType();
-		void testWOSAccessType();
-};
+						void testInvalidAccessType();
+						void testRWAccessType();
+						void testWOAccessType();
+						void testROAccessType();
+						void testConstAccessType();
+						void testRWSAccessType();
+						void testWOSAccessType();
+				};
+			}
+		}
+	}
+}
