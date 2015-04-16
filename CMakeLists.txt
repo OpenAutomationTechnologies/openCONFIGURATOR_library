@@ -101,6 +101,10 @@ ENDIF()
 OPTION (OPEN_CONFIGURATOR_CORE_NET_WRAPPER "Build openCONFIGURATOR core C# wrapper library." OFF)
 OPTION (OPEN_CONFIGURATOR_CORE_JAVA_WRAPPER "Build openCONFIGURATOR core Java wrapper library." OFF)
 OPTION (OPEN_CONFIGURATOR_CORE_UNIT_TESTS "Build openCONFIGURATOR core unit tests." OFF)
+IF(MSVC)
+CMAKE_DEPENDENT_OPTION(OPEN_CONFIGURATOR_CORE_NET_APP "Build openCONFIGURATOR C# demo executable." OFF
+			"OPEN_CONFIGURATOR_CORE_NET_WRAPPER" ON)
+ENDIF()
 OPTION (OPEN_CONFIGURATOR_CORE_DOCUMENTATION "Build openCONFIGURATOR core source code documentation." OFF)
 
 ###############################################################################
@@ -145,4 +149,16 @@ ENDIF()
 IF(OPEN_CONFIGURATOR_CORE_UNIT_TESTS)
 	ADD_SUBDIRECTORY(test)
 ENDIF()
+
+IF(WIN32)
+	IF(MSVC)
+		IF(OPEN_CONFIGURATOR_CORE_NET_WRAPPER AND OPEN_CONFIGURATOR_CORE_NET_APP)
+			CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/demo/csharp/openconfigurator_core_net_app.csproj ${CMAKE_SOURCE_DIR}/demo/csharp/openconfigurator_core_net_app_cmake.csproj)
+			INCLUDE_EXTERNAL_MSPROJECT(openconfigurator_core_net_demo ${CMAKE_SOURCE_DIR}/demo/csharp/openconfigurator_core_net_app_cmake.csproj
+				TYPE 84C4FA53-4EC7-493F-BC56-B4D51E7504D0
+				PLATFORM "Any CPU"
+				openconfigurator_core_wrapper_net)
+		ENDIF()
+	ENDIF(MSVC)
+ENDIF(WIN32)
 
