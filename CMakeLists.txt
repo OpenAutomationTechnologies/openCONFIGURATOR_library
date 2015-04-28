@@ -88,7 +88,7 @@ ENDIF(MSVC)
 SET(Boost_DEBUG TRUE)
 SET(Boost_USE_STATIC_RUNTIME OFF)
 SET(Boost_ADDITIONAL_VERSIONS "1.54.0" "1.55.0")
-FIND_PACKAGE(Boost COMPONENTS log date_time filesystem system thread REQUIRED)
+FIND_PACKAGE(Boost COMPONENTS log log_setup chrono date_time filesystem system thread REQUIRED)
 # Necessary for Auto-Linking under VS, ignored under Unix
 ADD_DEFINITIONS(/DBOOST_ALL_DYN_LINK)
 IF(NOT Boost_FOUND)

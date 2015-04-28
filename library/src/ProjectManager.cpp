@@ -30,11 +30,13 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "ProjectManager.h"
+#include "LoggingConfiguration.h"
 
 using IndustrialNetwork::POWERLINK::Core::Configuration::ProjectManager;
 using namespace IndustrialNetwork::POWERLINK::Core::Configuration;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::NetworkHandling;
+using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 
 
 ProjectManager::ProjectManager() :
@@ -116,3 +118,9 @@ const std::vector<std::string> ProjectManager::GetSupportedSettingIds()
 	return vect;
 }
 
+
+IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProjectManager::InitLoggingConfiguration(const std::string configFile)
+{
+	LoggingConfiguration::initConfiguration(configFile);
+	return Result();
+}

@@ -43,6 +43,7 @@ namespace openconfigurator_core_net_app
         static void Main(string[] args)
         {
             var man = ProjectManager.GetInstance();
+            man.InitLoggingConfiguration("boost_log_settings.ini");
             var net = new Network("test");
             Console.WriteLine(net.GetNetworkId());
 

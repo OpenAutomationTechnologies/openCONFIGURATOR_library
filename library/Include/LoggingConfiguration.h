@@ -32,8 +32,28 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined LOGGING_CONFIGURATION_H
 #define LOGGING_CONFIGURATION_H
 
-#include "Exports.h"
+#include <string>
+#include <fstream>
 
+#ifdef _MSC_VER
+#pragma warning(push, 0) // Store current warning state and set global warning level 0
+#endif
+
+#include <boost/bind.hpp>
+#include <boost/log/core.hpp>
+#include <boost/log/trivial.hpp>
+#include <boost/log/attributes/named_scope.hpp>
+#include <boost/log/utility/setup/from_stream.hpp>
+#include <boost/log/utility/setup/common_attributes.hpp>
+#include <boost/log/utility/setup/formatter_parser.hpp>
+#include <boost/log/utility/setup/filter_parser.hpp>
+#include <boost/log/sources/global_logger_storage.hpp>
+
+#ifdef _MSC_VER
+#pragma warning(pop) // Restore previous warning state
+#pragma warning (disable:4503 4714) // Boost-Headers themselves disable this warning, reinstate
+
+#endif
 namespace IndustrialNetwork
 {
 	namespace POWERLINK
@@ -43,23 +63,49 @@ namespace IndustrialNetwork
 			namespace CoreConfiguration
 			{
 				/**
-				\brief
-				\author rueckerc
+				\brief Handles the boost log configuration.
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
+				\date 30-Apr-2015 12:00:00
 				*/
-				class DLLEXPORT LoggingConfiguration
+				class LoggingConfiguration
 				{
-
 					public:
-						LoggingConfiguration();
-						virtual ~LoggingConfiguration();
-
+						/**
+						\brief Initialises the boost logger with the configuration file.
+						\param[in] configFile path
+						*/
+						static void initConfiguration(const std::string& configurationFile);
 				};
 
-			}
+				BOOST_LOG_INLINE_GLOBAL_LOGGER_DEFAULT(sev_logger, boost::log::sources::severity_logger_mt<boost::log::trivial::severity_level>)
 
+				#define LOG_TRACE() \
+				BOOST_LOG_FUNCTION(); \
+				BOOST_LOG_SEV(sev_logger::get(), boost::log::trivial::trace)
+
+				#define LOG_DEBUG() \
+				BOOST_LOG_FUNCTION(); \
+				BOOST_LOG_SEV(sev_logger::get(), boost::log::trivial::debug)
+
+				#define LOG_INFO() \
+				BOOST_LOG_FUNCTION(); \
+				BOOST_LOG_SEV(sev_logger::get(), boost::log::trivial::info)
+
+				#define LOG_WARN() \
+				BOOST_LOG_FUNCTION(); \
+				BOOST_LOG_SEV(sev_logger::get(), boost::log::trivial::warning)
+
+				#define LOG_ERROR() \
+				BOOST_LOG_FUNCTION(); \
+				BOOST_LOG_SEV(sev_logger::get(), boost::log::trivial::error)
+
+				#define LOG_FATAL() \
+				BOOST_LOG_FUNCTION(); \
+				BOOST_LOG_SEV(sev_logger::get(), boost::log::trivial::fatal)
 		}
 
 	}
 
+}
 }
 #endif

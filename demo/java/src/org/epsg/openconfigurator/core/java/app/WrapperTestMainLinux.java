@@ -30,6 +30,9 @@ public class WrapperTestMainLinux {
 	public static void main(String[] args) {
 		// Retrieve main managing class of the library
 		ProjectManager man = ProjectManager.GetInstance();
+		
+		// Init logger class with configuration file path
+		man.InitLoggingConfiguration("boost_log_settings.ini");
 
 		// Create an initial network
 		Network net = new Network("TestNetwork");

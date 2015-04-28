@@ -56,7 +56,6 @@
     <Compile Include="BaseNode.cs" />
     <Compile Include="BaseObject.cs" />
     <Compile Include="ErrorCode.cs" />
-    <Compile Include="LoggingConfiguration.cs" />
     <Compile Include="Network.cs" />
     <Compile Include="ObjectType.cs" />
     <Compile Include="ProjectManager.cs" />

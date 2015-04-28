@@ -107,6 +107,12 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildConfiguration(const std::string networkId, std::ostream& configuration);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildProcessImage(const std::string networkId, std::ostream& configuration);
 
+						/**
+						\brief Define the logging configuration for the boost log library.
+						\param[in] configFile path
+						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
+						*/
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result InitLoggingConfiguration(const std::string configFile);
 					private:
 						ProjectManager(ProjectManager const&);
 						void operator=(ProjectManager const&);

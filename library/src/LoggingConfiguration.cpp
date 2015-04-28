@@ -30,18 +30,99 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "LoggingConfiguration.h"
+#include "Constants.h"
 
 using IndustrialNetwork::POWERLINK::Core::CoreConfiguration::LoggingConfiguration;
+namespace logging = boost::log;
 
+/************************************************************************
+\brief	Custom formatter for the boost.log "Scope" attribute.
 
-LoggingConfiguration::LoggingConfiguration()
+		Implementation of a custom formatter to output file- and line number
+		information for boost.log's "Scope" attribute.
+\author pufferd, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
+************************************************************************/
+struct scope_list_formatter
 {
+		typedef void result_type;
+		typedef logging::attributes::named_scope::value_type scope_stack;
 
-}
+		explicit scope_list_formatter(const logging::attribute_name& name) : name(name)
+		{
+		}
 
+		void operator()(const logging::record_view& rec, logging::formatting_ostream& strm) const
+		{
+			// We need to acquire the attribute value from the log record
+			logging::visit<scope_stack>(
+			    name,
+			    rec.attribute_values(),
+			    boost::bind(&scope_list_formatter::format, _1, boost::ref(strm))
+			);
+		}
 
+	private:
+		logging::attribute_name name;
 
-LoggingConfiguration::~LoggingConfiguration()
+		// This is where our custom formatting takes place
+		static void format(const scope_stack& scopes, logging::formatting_ostream& strm)
+		{
+			if (scopes.empty())
+			{
+				strm << "(scope empty)";
+			}
+			else
+			{
+				logging::attributes::named_scope_list::const_reference scope_list = scopes.back();
+				std::string file(scope_list.file_name.str());
+				size_t pos = file.find_last_of(kPathSeparator);
+
+				strm << file.substr(pos + 1)
+				     << ":"
+				     << scopes.back().line
+				     << " ("
+				     << scopes.back().scope_name
+				     << ")";
+			}
+		}
+};
+
+/************************************************************************
+\brief	A custom Scope formatter factory.
+
+		Custom formatter factory for a Scope attribute, using the custom
+		formatter scope_list_formatter.
+\author pufferd, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
+************************************************************************/
+class scope_formatter_factory : public logging::formatter_factory<char>
 {
+	public:
+		/*
+		 * This function creates a formatter for the Scopes attribute.
+		 * It effectively associates the attribute with the scope_list_formatter class
+		 */
+		formatter_type create_formatter(
+		    const logging::attribute_name& attr_name, const args_map&)
+		{
+			return formatter_type(scope_list_formatter(attr_name));
+		}
+};
 
+void LoggingConfiguration::initConfiguration(const std::string& configurationFile)
+{
+	logging::register_simple_formatter_factory< logging::trivial::severity_level, char >("Severity");
+	logging::register_simple_filter_factory< logging::trivial::severity_level, char >("Severity");
+
+	logging::register_simple_formatter_factory< unsigned int, char >("Line");
+	logging::register_simple_filter_factory< unsigned int, char >("Line");
+
+	logging::register_formatter_factory("Scope", boost::make_shared<scope_formatter_factory>());
+
+	std::ifstream file(configurationFile);
+	logging::init_from_stream(file);
+
+	logging::core::get()->add_global_attribute("Scope", logging::attributes::named_scope());
+	logging::add_common_attributes();
+
+	sev_logger::get();
 }
