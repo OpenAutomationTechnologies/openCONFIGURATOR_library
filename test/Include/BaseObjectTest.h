@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "BaseObject.h"
 
 using namespace std;
+using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 
 namespace IndustrialNetwork
 {
@@ -44,22 +45,57 @@ namespace IndustrialNetwork
 		{
 			namespace Test
 			{
-class BaseObjectTest :
-	public CppUnit::TestFixture
-{
+				class BaseObjectTest :
+					public CppUnit::TestFixture
+				{
 
-		CPPUNIT_TEST_SUITE(BaseObjectTest);
-		CPPUNIT_TEST(executeTest);
-		CPPUNIT_TEST_SUITE_END();
+						CPPUNIT_TEST_SUITE(BaseObjectTest);
+						CPPUNIT_TEST(testEqualOperator);
+						CPPUNIT_TEST(testGetDefaultValue);
+						CPPUNIT_TEST(testSetDefaultValue);
+						CPPUNIT_TEST(testForcedToCDC);
+						CPPUNIT_TEST(testSetForceToCDC);
+						CPPUNIT_TEST(testGetHighLimit);
+						CPPUNIT_TEST(testSetHighLimit);
+						CPPUNIT_TEST(testGetUniqueIdRef);
+						CPPUNIT_TEST(testSetUniqueIdRef);
+						CPPUNIT_TEST(testGetAccessType);
+						CPPUNIT_TEST(testSetAccessType);
+						CPPUNIT_TEST(testGetObjectType);
+						CPPUNIT_TEST(testSetObjectType);
+						CPPUNIT_TEST(testGetPDOMapping);
+						CPPUNIT_TEST(testSetPDOMapping);
+						CPPUNIT_TEST(testGetDataType);
+						CPPUNIT_TEST(testSetDataType);
+						CPPUNIT_TEST_SUITE_END();
 
-	public:
-		BaseObjectTest(void);
-		~BaseObjectTest(void);
-		void setUp();
-		void tearDown();
+					private:
+						BaseObject objectToTest;
 
-		//add test methods here
-		void executeTest();
+					public:
+						BaseObjectTest(void);
+						~BaseObjectTest(void);
+						void setUp();
+						void tearDown();
+
+						void testEqualOperator();
+						void testGetDefaultValue();
+						void testSetDefaultValue();
+						void testForcedToCDC();
+						void testSetForceToCDC();
+						void testGetHighLimit();
+						void testSetHighLimit();
+						void testGetUniqueIdRef();
+						void testSetUniqueIdRef();
+						void testGetAccessType();
+						void testSetAccessType();
+						void testGetObjectType();
+						void testSetObjectType();
+						void testGetPDOMapping();
+						void testSetPDOMapping();
+						void testGetDataType();
+						void testSetDataType();
+
 				};
 			}
 		}

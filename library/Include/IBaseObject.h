@@ -47,6 +47,14 @@ namespace IndustrialNetwork
 		{
 
 			public:
+				IBaseObject() :
+					objectIdentifier(),
+					objectActualValue(),
+					objectDefaultValue(),
+					objectDataType(),
+					objectName("")
+
+				{}
 				IBaseObject(T id, V actualValue, V defaultValue, D dataType, std::string name = "") :
 					objectIdentifier(id),
 					objectActualValue(actualValue),
@@ -81,7 +89,7 @@ namespace IndustrialNetwork
 					return objectIdentifier;
 				}
 
-				void SetObjectIdentifier(T& id)
+				void SetObjectIdentifier(const T id)
 				{
 
 					objectIdentifier = id;
@@ -104,7 +112,7 @@ namespace IndustrialNetwork
 
 					return objectActualValue;
 				}
-				void SetObjectActualValue(V& actualVal)
+				void SetObjectActualValue(const V& actualVal)
 				{
 
 					objectActualValue = actualVal;
@@ -116,7 +124,7 @@ namespace IndustrialNetwork
 					return objectDefaultValue;
 				}
 
-				void SetObjectDefaultValue(V& defaultVal)
+				void SetObjectDefaultValue(const V& defaultVal)
 				{
 
 					objectDefaultValue = defaultVal;
@@ -128,7 +136,7 @@ namespace IndustrialNetwork
 					return objectDataType;
 				}
 
-				void SetObjectDataType(D& dataType)
+				void SetObjectDataType(const D& dataType)
 				{
 
 					this->objectDataType = dataType;

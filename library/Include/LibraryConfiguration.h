@@ -34,7 +34,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <boost/filesystem.hpp>
 #include "LoggingConfiguration.h"
-#include <Result.h>
+#include "Result.h"
+#include "Exports.h"
 
 namespace IndustrialNetwork
 {
@@ -45,11 +46,10 @@ namespace IndustrialNetwork
 			namespace CoreConfiguration
 			{
 				/**
-				\class LibraryConfiguration
 				\brief
 				\author rueckerc
 				*/
-				class LibraryConfiguration
+				class DLLEXPORT LibraryConfiguration
 				{
 
 					public:

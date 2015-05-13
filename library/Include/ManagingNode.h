@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define MANAGING_NODE_H
 
 #include "BaseNode.h"
+#include "Exports.h"
 
 namespace IndustrialNetwork
 {
@@ -46,11 +47,11 @@ namespace IndustrialNetwork
 				\brief
 				\author rueckerc
 				*/
-				class ManagingNode : public IndustrialNetwork::POWERLINK::Core::Node::BaseNode
+				class DLLEXPORT ManagingNode : public IndustrialNetwork::POWERLINK::Core::Node::BaseNode
 				{
 
 					public:
-						ManagingNode();
+						ManagingNode(const std::string nodeName = "");
 						virtual ~ManagingNode();
 
 						bool AddNodeAssignement(NodeAssignment);

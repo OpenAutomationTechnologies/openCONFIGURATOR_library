@@ -34,9 +34,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 
-
-
-
 Network::Network() :
 	networkId(),
 	cycleTime(),
@@ -51,4 +48,26 @@ Network::Network() :
 Network::~Network()
 {
 
+}
+
+Result Network::AddNode(const IndustrialNetwork::POWERLINK::Core::Node::BaseNode& node)
+{
+	return Result();
+}
+Result Network::GetNode(const uint8_t nodeID, IndustrialNetwork::POWERLINK::Core::Node::BaseNode& node)
+{
+	return Result();
+}
+Result Network::RemoveNode(const uint8_t nodeID)
+{
+	return Result();
+}
+Result Network::ReplaceNode(const uint8_t nodeID, const IndustrialNetwork::POWERLINK::Core::Node::BaseNode& node)
+{
+	return Result();
+}
+
+std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>> Network::GetNodes(const IndustrialNetwork::POWERLINK::Core::Node::NodeType& type)
+{
+	return std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>();
 }

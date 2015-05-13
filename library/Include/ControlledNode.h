@@ -40,6 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Direction.h"
 #include "Module.h"
 #include "Range.h"
+#include "Exports.h"
 
 namespace IndustrialNetwork
 {
@@ -53,11 +54,12 @@ namespace IndustrialNetwork
 				\brief
 				\author rueckerc
 				*/
-				class ControlledNode : public IndustrialNetwork::POWERLINK::Core::Node::BaseNode
+				class DLLEXPORT ControlledNode : public IndustrialNetwork::POWERLINK::Core::Node::BaseNode
 				{
 
 					public:
 						ControlledNode();
+						ControlledNode(std::uint8_t nodeID, const std::string nodeName = "");
 						virtual ~ControlledNode();
 
 						bool AddNodeAssignement(NodeAssignment);
@@ -65,7 +67,7 @@ namespace IndustrialNetwork
 						std::uint32_t GetNodeAssignmentValue();
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapToFrame(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject& index, uint32_t position, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetAllMappableObjects(std::vector<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject&>& objects, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetAllMappableObjects(std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject>>& objects, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapAllRxObjects();
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapAllTxObjects();
 

@@ -35,20 +35,93 @@ using namespace IndustrialNetwork::POWERLINK::Core::Test;
 
 CPPUNIT_TEST_SUITE_REGISTRATION(BaseObjectTest);
 
-BaseObjectTest::BaseObjectTest(void)
-{
-}
+BaseObjectTest::BaseObjectTest(void) :
+	objectToTest(1000, PlkDataType::BOOLEAN)
+{}
 
 BaseObjectTest::~BaseObjectTest(void)
-{
-}
+{}
 
 void BaseObjectTest::setUp() {}
 
 void BaseObjectTest::tearDown() {}
 
-void BaseObjectTest::executeTest(void)
+void BaseObjectTest::testEqualOperator(void)
 {
-	int x = 5;
-	CPPUNIT_ASSERT(x == 5);
+	BaseObject equalTest(1000, PlkDataType::BOOLEAN);
+	BaseObject newEqualTestObject(1000, PlkDataType::BOOLEAN);
+	CPPUNIT_ASSERT_EQUAL(true, (newEqualTestObject == equalTest));
+}
+void BaseObjectTest::testGetDefaultValue()
+{
+	uint32_t value = 10000;
+	objectToTest.SetObjectDefaultValue(value);
+	CPPUNIT_ASSERT_EQUAL(objectToTest.GetObjectDefaultValue(), (unsigned int) 10000);
+}
+void BaseObjectTest::testSetDefaultValue()
+{
+	uint32_t value = 100;
+	objectToTest.SetObjectDefaultValue(value);
+	CPPUNIT_ASSERT_EQUAL(objectToTest.GetObjectDefaultValue(), (unsigned int) 100);
+}
+void BaseObjectTest::testForcedToCDC()
+{
+	objectToTest.SetForceToCDC(true);
+	CPPUNIT_ASSERT_EQUAL(objectToTest.GetForceToCDC(), true);
+
+}
+void BaseObjectTest::testSetForceToCDC()
+{
+	objectToTest.SetForceToCDC(false);
+	CPPUNIT_ASSERT_EQUAL(objectToTest.GetForceToCDC(), false);
+}
+void BaseObjectTest::testGetHighLimit()
+{
+	objectToTest.SetHighLimit(1000);
+	CPPUNIT_ASSERT_EQUAL(objectToTest.GetHighLimit().get(), (unsigned int) 1000);
+
+}
+void BaseObjectTest::testSetHighLimit()
+{
+
+}
+void BaseObjectTest::testGetUniqueIdRef()
+{
+
+}
+void BaseObjectTest::testSetUniqueIdRef()
+{
+
+}
+void BaseObjectTest::testGetAccessType()
+{
+
+}
+void BaseObjectTest::testSetAccessType()
+{
+
+}
+void BaseObjectTest::testGetObjectType()
+{
+
+}
+void BaseObjectTest::testSetObjectType()
+{
+
+}
+void BaseObjectTest::testGetPDOMapping()
+{
+
+}
+void BaseObjectTest::testSetPDOMapping()
+{
+
+}
+void BaseObjectTest::testGetDataType()
+{
+
+}
+void BaseObjectTest::testSetDataType()
+{
+
 }

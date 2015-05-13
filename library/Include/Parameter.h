@@ -61,9 +61,9 @@ namespace IndustrialNetwork
 						ComplexDataType complexDataType;
 						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType;
 						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess parameterAccess;
-						uint32_t defaultValue;
-						uint32_t minValue;
-						uint32_t maxValue;
+						std::uint32_t defaultValue;
+						std::uint32_t minValue;
+						std::uint32_t maxValue;
 
 				};
 

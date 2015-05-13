@@ -58,8 +58,8 @@ namespace IndustrialNetwork
 						virtual ~ArrayDataType();
 
 					private:
-						uint32_t lowerLimit;
-						uint32_t upperLimit;
+						std::uint32_t lowerLimit;
+						std::uint32_t upperLimit;
 						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType;
 
 				};

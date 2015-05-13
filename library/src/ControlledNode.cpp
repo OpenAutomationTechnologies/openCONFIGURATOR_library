@@ -32,18 +32,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ControlledNode.h"
 
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
+using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 
-ControlledNode::ControlledNode() :
+ControlledNode::ControlledNode() : BaseNode(),
 	operationMode(PlkOperationMode::NORMAL)
-{
+{}
 
-}
-
+ControlledNode::ControlledNode(uint8_t nodeID, const std::string nodeName) : BaseNode(nodeID, nodeName),
+	operationMode(PlkOperationMode::NORMAL)
+{}
 
 ControlledNode::~ControlledNode()
-{
-
-}
+{}
 
 bool ControlledNode::AddNodeAssignement(NodeAssignment assign)
 {
@@ -58,4 +58,23 @@ bool ControlledNode::RemoveNodeAssignment(NodeAssignment assign)
 std::uint32_t ControlledNode::GetNodeAssignmentValue()
 {
 	return 0;
+}
+
+Result ControlledNode::MapToFrame(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject& index, uint32_t position, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir)
+{
+	return Result();
+}
+
+Result ControlledNode::GetAllMappableObjects(std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject>>& objects, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir)
+{
+	return Result();
+}
+
+Result ControlledNode::MapAllRxObjects()
+{
+	return Result();
+}
+Result ControlledNode::MapAllTxObjects()
+{
+	return Result();
 }

@@ -49,7 +49,7 @@ namespace IndustrialNetwork
 				\brief
 				\author rueckerc
 				*/
-				class ProjectManager
+				class DLLEXPORT ProjectManager
 				{
 
 					public:

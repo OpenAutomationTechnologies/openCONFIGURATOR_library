@@ -33,10 +33,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
 
-ManagingNode::ManagingNode() : BaseNode()
-{
-	SetNodeIdentifier(240);
-}
+ManagingNode::ManagingNode(const std::string nodeName) : BaseNode(240, nodeName)
+{}
 
 ManagingNode::~ManagingNode()
 {}

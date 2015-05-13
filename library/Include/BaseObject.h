@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstdint>
 #include <boost/optional.hpp>
 #include <vector>
+#include "Exports.h"
 #include "IBaseObject.h"
 #include "ObjectType.h"
 #include "PDOMapping.h"
@@ -53,10 +54,11 @@ namespace IndustrialNetwork
 				\brief
 				\author rueckerc
 				*/
-				class BaseObject : public IndustrialNetwork::Fieldbus::IBaseObject<std::uint32_t, std::uint32_t, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType>
+				class DLLEXPORT BaseObject : public IndustrialNetwork::Fieldbus::IBaseObject<std::uint32_t, std::uint32_t, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType>
 				{
 
 					public:
+						BaseObject();
 						BaseObject(std::uint32_t identifier, PlkDataType type);
 						bool operator== (const BaseObject& BaseObject) const;
 						virtual ~BaseObject();

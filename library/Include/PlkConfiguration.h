@@ -36,6 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "IBuildConfiguration.h"
 #include "Result.h"
 #include "ErrorCode.h"
+#include "Exports.h"
 
 namespace IndustrialNetwork
 {
@@ -49,7 +50,7 @@ namespace IndustrialNetwork
 				\brief
 				\author rueckerc
 				*/
-				class PlkConfiguration : public IndustrialNetwork::Fieldbus::IBuildConfiguration
+				class DLLEXPORT PlkConfiguration : public IndustrialNetwork::Fieldbus::IBuildConfiguration
 				{
 
 					public:

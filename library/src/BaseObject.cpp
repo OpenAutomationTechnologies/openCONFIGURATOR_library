@@ -33,6 +33,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 
+BaseObject::BaseObject() : IBaseObject(),
+	forceToCDC(false),
+	highLimit(),
+	lowLimit(),
+	uniqueIdRef(),
+	accessType(),
+	objectType(),
+	pdoMapping()
+{}
+
+
 BaseObject::BaseObject(uint32_t id,  PlkDataType type) : IBaseObject(id, type),
 	forceToCDC(false),
 	highLimit(),
@@ -69,6 +80,16 @@ boost::optional<uint32_t> BaseObject::GetHighLimit() const
 void BaseObject::SetHighLimit(uint32_t highLimit)
 {
 	this->highLimit = highLimit;
+}
+
+boost::optional<uint32_t> BaseObject::GetLowLimit() const
+{
+	return lowLimit;
+}
+
+void BaseObject::SetLowLimit(uint32_t lowLimit)
+{
+	this->lowLimit = lowLimit;
 }
 
 boost::optional<std::string> BaseObject::GetUniqueIdRef() const

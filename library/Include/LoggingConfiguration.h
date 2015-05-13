@@ -32,6 +32,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined LOGGING_CONFIGURATION_H
 #define LOGGING_CONFIGURATION_H
 
+#include "Exports.h"
+
 namespace IndustrialNetwork
 {
 	namespace POWERLINK
@@ -43,9 +45,8 @@ namespace IndustrialNetwork
 				/**
 				\brief
 				\author rueckerc
-				\date 24-Feb-2015 11:03:41
 				*/
-				class LoggingConfiguration
+				class DLLEXPORT LoggingConfiguration
 				{
 
 					public:

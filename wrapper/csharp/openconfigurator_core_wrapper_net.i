@@ -60,14 +60,56 @@
 %include typemaps.i
 %include std_except.i
 %include std_string.i
+%include std_map.i
+%include std_vector.i
 %include "enums.swg"
+%include std_string_ref.i
+%include stdint.i
 
 %include "../Include/ErrorCode.h"
+%include "../Include/AccessType.h"
+%include "../Include/ObjectType.h"
+%include "../Include/PDOMapping.h"
+%include "../Include/PlkDataType.h"
+%include "../Include/IBuildConfigurationSetting.h"
+%include "../Include/NodeAssignment.h"
 %include "../Include/Result.h"
+%include "../Include/PlkConfiguration.h"
+%include "../Include/BaseNode.h"
+%include "../Include/BaseObject.h"
+%include "../Include/Direction.h"
+%include "../Include/NodeType.h"
+%include "../Include/LoggingConfiguration.h"
+%include "../Include/ControlledNode.h"
+%include "../Include/ManagingNode.h"
+%include "../Include/ProjectManager.h"
+%include "../Include/Network.h"
 
 %{
 
 #include "../Include/ErrorCode.h"
+#include "../Include/AccessType.h"
+#include "../Include/ObjectType.h"
+#include "../Include/PDOMapping.h"
+#include "../Include/PlkDataType.h"
+#include "../Include/IBuildConfigurationSetting.h"
+#include "../Include/NodeAssignment.h"
 #include "../Include/Result.h"
+#include "../Include/PlkConfiguration.h"
+#include "../Include/BaseNode.h"
+#include "../Include/BaseObject.h"
+#include "../Include/Direction.h"
+#include "../Include/NodeType.h"
+#include "../Include/LoggingConfiguration.h"
+#include "../Include/ControlledNode.h"
+#include "../Include/ManagingNode.h"
+#include "../Include/ProjectManager.h"
+#include "../Include/Network.h"
 
 %}
+
+namespace std {
+   %template(ObjectCollection) std::vector<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject>;
+}
+
+

@@ -36,6 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstdint>
 #include <memory>
 #include <boost/filesystem.hpp>
+#include "Exports.h"
 #include "ApplicationProcess.h"
 #include "NetworkManagement.h"
 #include "DynamicChannel.h"
@@ -57,12 +58,12 @@ namespace IndustrialNetwork
 				\brief
 				\author rueckerc
 				*/
-				class BaseNode : public IndustrialNetwork::Fieldbus::IFieldbusNode<std::uint8_t, std::uint32_t, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>
+				class DLLEXPORT BaseNode : public IndustrialNetwork::Fieldbus::IFieldbusNode<std::uint8_t, std::uint32_t, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>
 				{
 
 					public:
 						BaseNode();
-						BaseNode(std::uint8_t nodeId, const std::string& nodeName);
+						BaseNode(std::uint8_t nodeId, const std::string& nodeName = "");
 						virtual ~BaseNode();
 
 						const std::string& GetNodeName();
@@ -80,10 +81,10 @@ namespace IndustrialNetwork
 						std::uint8_t nodeIdentifier;
 						std::string nodeName;
 						std::unordered_map<std::uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>> objectDictionary;
-						std::unique_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ApplicationProcess> applicationProcess;
+						std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ApplicationProcess> applicationProcess;
 
 						std::vector<IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment> nodeAssignment;
-						std::unique_ptr<NetworkManagement> networkManagement;
+						std::shared_ptr<NetworkManagement> networkManagement;
 						std::vector<std::shared_ptr<DynamicChannel>> dynamicChannelList;
 						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::TxProcessDataMappingObject>> transmitMapping;
 						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::RxProcessDataMappingObject>> receiveMapping;

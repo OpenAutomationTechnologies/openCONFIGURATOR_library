@@ -1,6 +1,6 @@
 /*################################################################################
 #
-# Project: openCONFIGURATOR core library Java wrapper interface
+# Project: openCONFIGURATOR core library Java string reference typemap
 #
 # (c) Bernecker + Rainer Industrie-Elektronik Ges.m.b.H.
 #     B&R Strasse 1, A-5142 Eggelsberg
@@ -48,73 +48,39 @@
 #          any other provision of this License.
 #
 ################################################################################*/
-%module openconfigurator_core_wrapper_java
 
-#define DLLEXPORT
-#define __attribute__(x)
-#if defined(_WIN32) && defined(_MSC_VER)
-	 #undef DllExport
-	 #define DllExport  __declspec(dllexport)
-#endif
+%typemap(jni) std::string *INOUT, std::string &INOUT %{jobjectArray%}
+%typemap(jtype) std::string *INOUT, std::string &INOUT "java.lang.String[]"
+%typemap(jstype) std::string *INOUT, std::string &INOUT "java.lang.String[]"
+%typemap(javain) std::string *INOUT, std::string &INOUT "$javainput"
 
-%include typemaps.i
-%include std_map.i
-%include std_except.i
-%include std_string.i
-%include std_vector.i
-%include <std_shared_ptr.i>
-%include "enums.swg"
-%include windows.i
-%include std_string_ref.i
-%include stdint.i
+%typemap(in) std::string *INOUT (std::string strTemp ), std::string &INOUT (std::string strTemp ) {
+  if (!$input) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "array null");
+    return $null;
+  }
+  if (JCALL1(GetArrayLength, jenv, $input) == 0) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaIndexOutOfBoundsException, "Array must contain at least 1 element");
+    return $null;
+  }
 
-%apply std::string &INOUT { std::string & configuration };
-%apply std::string &INOUT { std::string & networkUuid };
+  jobject oInput = JCALL2(GetObjectArrayElement, jenv, $input, 0);
+  if ( NULL != oInput ) {
+    jstring sInput = static_cast<jstring>( oInput );
 
-%include "../Include/ErrorCode.h"
-%include "../Include/AccessType.h"
-%include "../Include/ObjectType.h"
-%include "../Include/PDOMapping.h"
-%include "../Include/PlkDataType.h"
-%include "../Include/IBuildConfigurationSetting.h"
-%include "../Include/NodeAssignment.h"
-%include "../Include/Result.h"
-%include "../Include/PlkConfiguration.h"
-%include "../Include/BaseNode.h"
-%include "../Include/BaseObject.h"
-%include "../Include/Direction.h"
-%include "../Include/NodeType.h"
-%include "../Include/LoggingConfiguration.h"
-%include "../Include/ControlledNode.h"
-%include "../Include/ManagingNode.h"
-%include "../Include/ProjectManager.h"
-%include "../Include/Network.h"
+    const char * $1_pstr = (const char *)jenv->GetStringUTFChars(sInput, 0);
+    if (!$1_pstr) return $null;
+    strTemp.assign( $1_pstr );
+    jenv->ReleaseStringUTFChars( sInput, $1_pstr);
+  }
 
-%{
-
-#include "../Include/ErrorCode.h"
-#include "../Include/AccessType.h"
-#include "../Include/ObjectType.h"
-#include "../Include/PDOMapping.h"
-#include "../Include/PlkDataType.h"
-#include "../Include/IBuildConfigurationSetting.h"
-#include "../Include/NodeAssignment.h"
-#include "../Include/Result.h"
-#include "../Include/PlkConfiguration.h"
-#include "../Include/BaseNode.h"
-#include "../Include/BaseObject.h"
-#include "../Include/Direction.h"
-#include "../Include/NodeType.h"
-#include "../Include/LoggingConfiguration.h"
-#include "../Include/ControlledNode.h"
-#include "../Include/ManagingNode.h"
-#include "../Include/ProjectManager.h"
-#include "../Include/Network.h"
-
-
-%}
-
-namespace std {
-   %template(ObjectCollection) std::vector<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject>;
+  $1 = &strTemp;
 }
 
+%typemap(freearg) std::string *INOUT, std::string &INOUT ""
+
+%typemap(argout) std::string *INOUT, std::string &INOUT
+{
+  jstring jStrTemp = jenv->NewStringUTF( strTemp$argnum.c_str() );
+  JCALL3(SetObjectArrayElement, jenv, $input, 0, jStrTemp );
+}

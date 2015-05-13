@@ -57,9 +57,9 @@ namespace IndustrialNetwork
 					private:
 						std::string supportedModuleType;
 						std::vector<std::shared_ptr<Module>> moduleCollection;
-						uint32_t baseIndex;
-						uint32_t maxIndex;
-						uint32_t maxSubIndex;
+						std::uint32_t baseIndex;
+						std::uint32_t maxIndex;
+						std::uint32_t maxSubIndex;
 						SortMode sortMode;
 						SortNumber sortNumber;
 

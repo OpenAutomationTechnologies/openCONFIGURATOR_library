@@ -54,7 +54,7 @@ namespace IndustrialNetwork
 						virtual ~VarDeclaration();
 
 					private:
-						uint32_t size;
+						std::uint32_t size;
 						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType;
 
 				};

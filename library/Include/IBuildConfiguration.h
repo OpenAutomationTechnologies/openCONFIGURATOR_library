@@ -33,7 +33,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define IBUILD_CONFIGURATION_H
 
 #include <vector>
+#include <memory>
 #include "IBuildConfigurationSetting.h"
+#include "Exports.h"
 
 namespace IndustrialNetwork
 {
@@ -43,19 +45,19 @@ namespace IndustrialNetwork
 		\brief
 		\author rueckerc
 		*/
-		class IBuildConfiguration
+		class DLLEXPORT IBuildConfiguration
 		{
 
 			public:
 				IBuildConfiguration() :
-					buildConfigurationSettings(std::vector<IBuildConfigurationSetting>())
+					buildConfigurationSettings(std::vector<std::shared_ptr<IBuildConfigurationSetting>>())
 				{}
 
 				virtual ~IBuildConfiguration()
 				{}
 
 			private:
-				std::vector<IBuildConfigurationSetting> buildConfigurationSettings;
+				std::vector<std::shared_ptr<IBuildConfigurationSetting>> buildConfigurationSettings;
 
 		};
 

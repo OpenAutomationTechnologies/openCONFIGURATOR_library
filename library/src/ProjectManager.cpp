@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ProjectManager.h"
 
 using IndustrialNetwork::POWERLINK::Core::Configuration::ProjectManager;
+using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 
 
 ProjectManager::ProjectManager() :
@@ -46,14 +47,29 @@ ProjectManager::~ProjectManager()
 }
 
 
-
-
-
-/**
-\return ProjectManager
-*/
 ProjectManager& ProjectManager::GetInstance()
 {
 	static ProjectManager instance;
 	return instance;
+}
+
+IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProjectManager::AddNetwork(IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network& net, std::string& networkUuid)
+{
+	return Result();
+}
+IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProjectManager::GetNetwork(const std::string networkUuid, IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network& net)
+{
+	return Result();
+}
+IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProjectManager::RemoveNetwork(std::string networkUuid)
+{
+	return Result();
+}
+IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProjectManager::BuildConfiguration(const std::string networkUuid, IndustrialNetwork::POWERLINK::Core::ConfigurationHandling::PlkConfiguration buildConfig, std::ostream& configuration)
+{
+	return Result();
+}
+IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProjectManager::BuildProcessImage(const std::string networkUuid, IndustrialNetwork::POWERLINK::Core::ConfigurationHandling::PlkConfiguration buildConfig, std::ostream& configuration)
+{
+	return Result();
 }
