@@ -41,6 +41,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Exports.h"
 #include "ControlledNode.h"
 #include "ManagingNode.h"
+#include "PlkConfiguration.h"
+#include "BuildConfigurationId.h"
+#include "BuildConfigurationSetting.h"
 
 namespace IndustrialNetwork
 {
@@ -80,14 +83,89 @@ namespace IndustrialNetwork
 						void SetMultiplexedCycleLength(const std::uint32_t multiCycleLength);
 						void SetPrescaler(const std::uint32_t prescaler);
 
+						/**
+						\brief Enables/Disables a configuration setting handled by the class.
+						\param[in] configID string identifier.
+						\param[in] name of the setting.
+						\retval true The setting was enabled/disabled.
+						\retval false The setting does not exist in the configuration.
+						*/
+						bool SetConfigurationSettingEnabled(const std::string  configID, const std::string  settingID, bool enabled);
+
+						/**
+						\brief Adds a configuration setting to the handler class.
+						\param[in] configID string identifier.
+						\param[in] setting BuildConfigurationSetting to be added.
+						\retval true The setting was added to the handler.
+						\retval false The setting already exist in the configuration.
+						*/
+						bool AddConfigurationSetting(const std::string configID, IndustrialNetwork::POWERLINK::Core::Configuration::BuildConfigurationSetting setting);
+
+						/**
+						\brief Remove a configuration setting handled by the class.
+						\param[in] configID string identifier.
+						\param[in] id BuildConfigurationSettingId of the setting.
+						\retval true The setting was removed from the handler.
+						\retval false The setting does not exist in the configuration.
+						*/
+						bool RemoveConfigurationSetting(const std::string configID, const std::string name);
+
+						/**
+						\brief Add a configuration to the handler.
+						\param[in] configID string identifier. Must be unique.
+						\retval true The configuration has been created.
+						\retval false The configuration already exists.
+						*/
+						bool AddConfiguration(const std::string configID);
+
+						/**
+						\brief Remove a configuration from the handler.
+						\param[in] configID string identifier.
+						\retval true The configuration has been deleted.
+						\retval false The configuration does not exist.
+						*/
+						bool RemoveConfiguration(const std::string configID);
+
+						/**
+						\brief Alter a configuration name.
+						\param[in] oldConfigID configuration identifier.
+						\param[in] newConfigId new name.
+						\retval true The configuration has been altered.
+						\retval false The configuration does not exist.
+						*/
+						bool ReplaceConfigurationName(const std::string oldConfigId, const std::string newConfigId);
+
+						/**
+						\brief Get the settings from a configuration.
+						\param[in] configID string identifier.
+						\param[in] std::vector<BuildConfigurationSetting>& to return the collection.
+						\retval true The configuration exists and the returned reference is valid.
+						\retval false The configuration does not exist.
+						*/
+						bool GetConfigurationSettings(const std::string configID, std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::BuildConfigurationSetting>&);
+
+						/**
+						\brief Get the active configuration.
+						\retval std::string active configuration.
+						*/
+						const std::string& GetActiveConfiguration();
+
+						/**
+						\brief Set the active configuration.
+						\retval true The active configuration is set.
+						\retval false The active configuration is not set.
+						*/
+						bool SetActiveConfiguration(const std::string configID);
+
 					private:
 						std::string networkId;
 						std::uint32_t cycleTime;
 						std::uint32_t asyncMTU;
 						std::uint32_t multiplexedCycleLength;
 						std::uint32_t prescaler;
-						IndustrialNetwork::POWERLINK::Core::ConfigurationHandling::PlkConfiguration configuration;
 						std::unordered_map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>> nodeCollection;
+						std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::PlkConfiguration> buildConfigurations;
+						std::string activeConfiguration;
 				};
 
 			}

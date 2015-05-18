@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace IndustrialNetwork::POWERLINK::Core::NetworkHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
+using namespace IndustrialNetwork::POWERLINK::Core::Configuration;
 
 Network::Network() :
 	networkId(""),
@@ -41,8 +42,9 @@ Network::Network() :
 	asyncMTU(0),
 	multiplexedCycleLength(0),
 	prescaler(0),
-	configuration(),
-	nodeCollection()
+	nodeCollection(),
+	buildConfigurations(),
+	activeConfiguration()
 {}
 
 Network::Network(const std::string id) :
@@ -51,8 +53,9 @@ Network::Network(const std::string id) :
 	asyncMTU(0),
 	multiplexedCycleLength(0),
 	prescaler(0),
-	configuration(),
-	nodeCollection()
+	nodeCollection(),
+	buildConfigurations(),
+	activeConfiguration()
 {}
 
 Network::~Network()
@@ -112,6 +115,7 @@ Result Network::RemoveNode(const uint8_t nodeID)
 	this->nodeCollection.erase(it);
 	return Result();
 }
+
 Result Network::ReplaceNode(const uint8_t nodeID, const IndustrialNetwork::POWERLINK::Core::Node::BaseNode& node)
 {
 	return Result();
@@ -167,3 +171,143 @@ void Network::SetPrescaler(const uint32_t prescaler)
 	this->prescaler = prescaler;
 }
 
+bool Network::SetConfigurationSettingEnabled(const std::string configName, const std::string settingName, bool enabled)
+{
+	for (auto config : this->buildConfigurations)
+	{
+		if (config.GetConfigurationName() == configName)
+		{
+			for (auto setting : config.GetBuildConfigurationSettings())
+			{
+				if (setting.GetName() == settingName)
+				{
+					setting.SetEnabled(enabled);
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+
+
+bool Network::AddConfigurationSetting(const std::string configID, BuildConfigurationSetting newSetting)
+{
+	for (auto& config : this->buildConfigurations)
+	{
+		if (config.GetConfigurationName() == configID)
+		{
+			for (auto& setting : config.GetBuildConfigurationSettings())
+			{
+				if (setting.GetName() == newSetting.GetName() && setting.GetValue() == newSetting.GetValue())
+				{
+					return false;
+				}
+			}
+			config.AddBuildConfigurationSetting(newSetting);
+			return true;
+		}
+	}
+	return false;
+}
+
+bool Network::RemoveConfigurationSetting(std::string configID, const std::string name)
+{
+	for (auto& config : this->buildConfigurations)
+	{
+		if (config.GetConfigurationName() == configID)
+		{
+			std::vector<BuildConfigurationSetting>::iterator it;
+			for (it = config.GetBuildConfigurationSettings().begin() ; it != config.GetBuildConfigurationSettings().end(); ++it)
+			{
+				if (it->GetName() == name)
+					break;
+			}
+			if (it == config.GetBuildConfigurationSettings().end())
+				return false;
+
+			config.GetBuildConfigurationSettings().erase(it);
+			return true;
+		}
+	}
+	return false;
+}
+
+bool Network::AddConfiguration(std::string configID)
+{
+	for (auto& config : this->buildConfigurations)
+	{
+		if (config.GetConfigurationName() == configID)
+		{
+			return false;
+		}
+	}
+	this->buildConfigurations.push_back(PlkConfiguration(configID));
+
+	if (this->buildConfigurations.size() == 1)
+		this->activeConfiguration = configID;
+
+	return true;
+}
+
+bool Network::RemoveConfiguration(std::string configID)
+{
+	if (this->activeConfiguration == configID)
+		return false;
+
+	std::vector<PlkConfiguration>::iterator it;
+	for (it = this->buildConfigurations.begin() ; it != this->buildConfigurations.end(); ++it)
+	{
+		if (it->GetConfigurationName() == configID)
+			break;
+	}
+	if (it == this->buildConfigurations.end())
+		return false;
+
+	this->buildConfigurations.erase(it);
+	return true;
+}
+
+bool Network::ReplaceConfigurationName(const std::string oldConfigID, const std::string newConfigID)
+{
+	for (auto& config : this->buildConfigurations)
+	{
+		if (config.GetConfigurationName() == oldConfigID)
+		{
+			config.SetConfigurationName(newConfigID);
+			return true;
+		}
+	}
+	return false;
+}
+
+bool Network::GetConfigurationSettings(std::string configID, std::vector<BuildConfigurationSetting>& returnRef)
+{
+	for (auto& config : this->buildConfigurations)
+	{
+		if (config.GetConfigurationName() == configID)
+		{
+			returnRef = config.GetBuildConfigurationSettings();
+			return true;
+		}
+	}
+	return false;
+}
+
+const std::string& Network::GetActiveConfiguration()
+{
+	return this->activeConfiguration;
+}
+
+bool Network::SetActiveConfiguration(const std::string configID)
+{
+	for (auto& config : this->buildConfigurations)
+	{
+		if (config.GetConfigurationName() == configID)
+		{
+			this->activeConfiguration = configID;
+			return true;
+		}
+	}
+	return false;
+}

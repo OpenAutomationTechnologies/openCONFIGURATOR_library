@@ -98,8 +98,14 @@ namespace IndustrialNetwork
 						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ClearNetworkList();
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildConfiguration(const std::string networkId, IndustrialNetwork::POWERLINK::Core::ConfigurationHandling::PlkConfiguration buildConfig, std::ostream& configuration);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildProcessImage(const std::string networkId, IndustrialNetwork::POWERLINK::Core::ConfigurationHandling::PlkConfiguration buildConfig, std::ostream& configuration);
+						/**
+						\brief Get all available auto generation setting ids.
+						\return vector containing the ids.
+						*/
+						const std::vector<std::string> GetSupportedSettingIds();
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildConfiguration(const std::string networkId, std::ostream& configuration);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildProcessImage(const std::string networkId, std::ostream& configuration);
 
 					private:
 						ProjectManager(ProjectManager const&);

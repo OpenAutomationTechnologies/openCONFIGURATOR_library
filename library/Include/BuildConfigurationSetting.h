@@ -1,12 +1,12 @@
 /************************************************************************
-\file PlkConfiguration.cpp
-\brief Implementation of the Class PlkConfiguration
+\file PLKBuildConfigurationSetting.h
+\brief Implementation of the Class PLKBuildConfigurationSetting
 \author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
-\date 01-May-2015 12:00:00
+\date 28-Apr-2015 14:40:00
 ************************************************************************/
 
 /*------------------------------------------------------------------------------
-Copyright (c) 2015, Bernecker+Rainer Industrie-Elektronik Ges.m.b.H. (B&R)
+Copyright (c) 2014, Bernecker+Rainer Industrie-Elektronik Ges.m.b.H. (B&R)
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -29,34 +29,55 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
-#include "PlkConfiguration.h"
+#if !defined PLK_BUILD_CONFIGURATION_SETTING_H
+#define PLK_BUILD_CONFIGURATION_SETTING_H
 
-using namespace IndustrialNetwork::POWERLINK::Core::Configuration;
-using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
-using namespace std;
+#include <vector>
+#include "IResult.h"
+#include "IBuildConfigurationSetting.h"
+#include "BuildConfigurationId.h"
+#include "Result.h"
+#include "ErrorCode.h"
+#include "Exports.h"
 
-PlkConfiguration::PlkConfiguration(std::string name) : 
-	IBuildConfiguration<BuildConfigurationSetting>(),
-	configurationName(name)
-{}
-
-
-PlkConfiguration::~PlkConfiguration()
-{}
-
-Result PlkConfiguration::GenerateConfiguration()
+namespace IndustrialNetwork
 {
-	return Result();
+	namespace POWERLINK
+	{
+		namespace Core
+		{
+			namespace Configuration
+			{
+				/**
+				\brief Represents one build configuration setting in the POWERLINK network.
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
+				\date 28-Apr-2015 14:40:00
+				*/
+				class DLLEXPORT BuildConfigurationSetting : public IndustrialNetwork::Fieldbus::IBuildConfigurationSetting
+				{
+					public:
+						/**
+						/brief Default Constructor
+						*/
+						BuildConfigurationSetting();
+
+						/**
+						\brief Constructor for the BuildConfigurationHandler class.
+						\param[in] id BuildConfigurationSettingId for the setting.
+						\param[in] value string of the setting. Default value is empty.
+						*/
+						BuildConfigurationSetting(std::string name, std::string value = "");
+
+						/**
+						\brief Destructor for the BuildConfigurationHandler class.
+						*/
+						~BuildConfigurationSetting(void);
+
+					private:
+						void InitConfigurationSetting(std::string id);
+				};
+			}
+		}
+	}
 }
-
-const std::string PlkConfiguration::GetConfigurationName()
-{
-	return this->configurationName;
-}
-
-void PlkConfiguration::SetConfigurationName(const std::string configName)
-{
-	this->configurationName = configName;
-}
-
-
+#endif

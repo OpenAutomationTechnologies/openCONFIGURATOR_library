@@ -66,6 +66,8 @@
 %include std_string_ref.i
 %include stdint.i
 
+%include "../Include/IBuildConfigurationSetting.h"
+%include "../Include/BuildConfigurationSetting.h"
 %include "../Include/ErrorCode.h"
 %include "../Include/AccessType.h"
 %include "../Include/ObjectType.h"
@@ -84,9 +86,12 @@
 %include "../Include/ManagingNode.h"
 %include "../Include/ProjectManager.h"
 %include "../Include/Network.h"
+%include "../Include/PlkConfiguration.h"
 
 %{
 
+#include "../Include/IBuildConfigurationSetting.h"
+#include "../Include/BuildConfigurationSetting.h"
 #include "../Include/ErrorCode.h"
 #include "../Include/AccessType.h"
 #include "../Include/ObjectType.h"
@@ -105,12 +110,15 @@
 #include "../Include/ManagingNode.h"
 #include "../Include/ProjectManager.h"
 #include "../Include/Network.h"
+#include "../Include/PlkConfiguration.h"
 
 %}
 
 namespace std {
    %template(ObjectCollection) std::vector<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject>;
    %template(NetworkCollection) std::map<std::string, IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network>;
+   %template(StringCollection) std::vector<std::string>;
+   %template(SettingsCollection) std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::BuildConfigurationSetting>;
 }
 
 

@@ -45,19 +45,29 @@ namespace IndustrialNetwork
 		\brief
 		\author rueckerc
 		*/
+		template<typename T>
 		class DLLEXPORT IBuildConfiguration
 		{
 
 			public:
 				IBuildConfiguration() :
-					buildConfigurationSettings(std::vector<std::shared_ptr<IBuildConfigurationSetting>>())
+					buildConfigurationSettings(std::vector<T>())
 				{}
 
 				virtual ~IBuildConfiguration()
 				{}
 
+				std::vector<T>& GetBuildConfigurationSettings()
+				{
+					return this->buildConfigurationSettings;
+				}
+
+				void AddBuildConfigurationSetting(T& setting)
+				{
+					this->buildConfigurationSettings.push_back(setting);
+				}
 			private:
-				std::vector<std::shared_ptr<IBuildConfigurationSetting>> buildConfigurationSettings;
+				std::vector<T> buildConfigurationSettings;
 
 		};
 

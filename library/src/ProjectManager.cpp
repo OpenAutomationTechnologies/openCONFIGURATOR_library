@@ -88,12 +88,12 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProjectManager::Remove
 	}
 	return Result();
 }
-IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProjectManager::BuildConfiguration(const std::string networkId, IndustrialNetwork::POWERLINK::Core::ConfigurationHandling::PlkConfiguration buildConfig, std::ostream& configuration)
+IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProjectManager::BuildConfiguration(const std::string networkId,std::ostream& configuration)
 {
 	return Result();
 }
 
-IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProjectManager::BuildProcessImage(const std::string networkId, IndustrialNetwork::POWERLINK::Core::ConfigurationHandling::PlkConfiguration buildConfig, std::ostream& configuration)
+IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProjectManager::BuildProcessImage(const std::string networkId, std::ostream& configuration)
 {
 	return Result();
 }
@@ -109,3 +109,10 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProjectManager::ClearN
 	this->networkList.clear();
 	return Result();
 }
+
+const std::vector<std::string> ProjectManager::GetSupportedSettingIds()
+{
+	std::vector<std::string> vect(std::begin(BuildConfigurationIdName), std::end(BuildConfigurationIdName)) ;
+	return vect;
+}
+

@@ -37,6 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Result.h"
 #include "ErrorCode.h"
 #include "Exports.h"
+#include "BuildConfigurationSetting.h"
 
 namespace IndustrialNetwork
 {
@@ -44,23 +45,23 @@ namespace IndustrialNetwork
 	{
 		namespace Core
 		{
-			namespace ConfigurationHandling
+			namespace Configuration
 			{
 				/**
 				\brief
 				\author rueckerc
 				*/
-				class DLLEXPORT PlkConfiguration : public IndustrialNetwork::Fieldbus::IBuildConfiguration
+				class DLLEXPORT PlkConfiguration : public IndustrialNetwork::Fieldbus::IBuildConfiguration<IndustrialNetwork::POWERLINK::Core::Configuration::BuildConfigurationSetting>
 				{
 
 					public:
+						PlkConfiguration(std::string name);
+						~PlkConfiguration();
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GenerateConfiguration();
-						bool EnableConfigurationSetting(const std::string& name);
-						bool DisableConfigurationSetting(const std::string& name);
-						bool AddConfigurationSetting(IndustrialNetwork::Fieldbus::IBuildConfigurationSetting& setting);
-
+						const std::string GetConfigurationName();
+						void SetConfigurationName(const std::string);
 					private:
-
+						std::string configurationName;
 				};
 
 			}

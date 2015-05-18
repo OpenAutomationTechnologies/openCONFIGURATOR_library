@@ -1,12 +1,12 @@
 /************************************************************************
-\file PlkConfiguration.cpp
-\brief Implementation of the Class PlkConfiguration
+\file PLKBuildConfigurationSetting.cpp
+\brief Implementation of the Class PLKBuildConfigurationSetting
 \author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
-\date 01-May-2015 12:00:00
+\date 27-Apr-2015 09:38:09
 ************************************************************************/
 
 /*------------------------------------------------------------------------------
-Copyright (c) 2015, Bernecker+Rainer Industrie-Elektronik Ges.m.b.H. (B&R)
+Copyright (c) 2014, Bernecker+Rainer Industrie-Elektronik Ges.m.b.H. (B&R)
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -29,34 +29,38 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
-#include "PlkConfiguration.h"
+#include "BuildConfigurationSetting.h"
 
 using namespace IndustrialNetwork::POWERLINK::Core::Configuration;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
-using namespace std;
 
-PlkConfiguration::PlkConfiguration(std::string name) : 
-	IBuildConfiguration<BuildConfigurationSetting>(),
-	configurationName(name)
+BuildConfigurationSetting::BuildConfigurationSetting()
+	:  IndustrialNetwork::Fieldbus::IBuildConfigurationSetting()
 {}
 
+BuildConfigurationSetting::BuildConfigurationSetting(std::string id, std::string value)
+	:  IndustrialNetwork::Fieldbus::IBuildConfigurationSetting(id, value)
+{
+	InitConfigurationSetting(id);
+}
 
-PlkConfiguration::~PlkConfiguration()
+BuildConfigurationSetting::~BuildConfigurationSetting(void)
 {}
 
-Result PlkConfiguration::GenerateConfiguration()
+void BuildConfigurationSetting::InitConfigurationSetting(std::string id)
 {
-	return Result();
+	std::string infoMessage;
+	if (id == "GENERATE_MN_MAPPING_FOR_NODES")
+	{
+		this->SetInfo(BuildConfigurationIdDescription[BuildConfigurationId::GENERATE_MN_MAPPING_FOR_NODES]);
+	}
+	else if (id == "GENERATE_MN_NODE_ASSIGNMENT_FOR_NODES")
+	{
+		this->SetInfo(BuildConfigurationIdDescription[BuildConfigurationId::GENERATE_MN_NODE_ASSIGNMENT_FOR_NODES]);
+	}
+	else if (id == "GENERATE_MN_PRES_TIMEOUT_FOR_NODES")
+	{
+		this->SetInfo(BuildConfigurationIdDescription[BuildConfigurationId::GENERATE_MN_MAPPING_FOR_NODES]);
+	}
 }
-
-const std::string PlkConfiguration::GetConfigurationName()
-{
-	return this->configurationName;
-}
-
-void PlkConfiguration::SetConfigurationName(const std::string configName)
-{
-	this->configurationName = configName;
-}
-
 

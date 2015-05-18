@@ -48,6 +48,9 @@ namespace openconfigurator_core_net_app
 
             net.SetCycleTime(10000);
 
+            var mn = new ManagingNode("MasterOfDisaster");
+            net.AddNode(mn);
+
             var nodeT = new ControlledNode(10, "Testnode");
             net.AddNode(nodeT);
 
@@ -58,6 +61,41 @@ namespace openconfigurator_core_net_app
             man.AddNetwork("test", net);
             var net2 = new Network();
             var res = man.GetNetwork(net.GetNetworkId(), net2);
+
+            var mnMapping = new BuildConfigurationSetting("GENERATE_MN_MAPPING_FOR_ALL_NODES");
+            var presTimeOut = new BuildConfigurationSetting("GENERATE_MN_PRES_TIMEOUT_FOR_NODE", "1");
+
+            mnMapping.SetEnabled(true);
+            presTimeOut.SetEnabled(true);
+
+            Console.WriteLine(presTimeOut.GetInfo());
+            StringCollection sett = man.GetSupportedSettingIds();
+            foreach (var xx in sett)
+            {
+                Console.WriteLine(xx);
+            }
+
+            Console.WriteLine(net2.AddConfiguration("all"));
+            Console.WriteLine(net2.GetActiveConfiguration());
+            Console.WriteLine(net2.AddConfiguration("custom"));
+            Console.WriteLine(net2.AddConfigurationSetting("all", mnMapping));
+            Console.WriteLine(net2.AddConfigurationSetting("custom", presTimeOut));
+            SettingsCollection coll = new SettingsCollection();
+
+            Console.WriteLine(net2.GetActiveConfiguration());
+            net2.GetConfigurationSettings("all", coll);
+            Console.WriteLine(coll.Count);
+            Console.WriteLine(net2.SetConfigurationSettingEnabled("all", "GENERATE_MN_MAPPING_FOR_ALL_NODES", false));
+            Console.WriteLine(net2.SetConfigurationSettingEnabled("custom", "GENERATE_MN_PRES_TIMEOUT_FOR_NODE", false));
+            Console.WriteLine(net2.RemoveConfigurationSetting("all", "GENERATE_MN_MAPPING_FOR_ALL_NODES"));
+            Console.WriteLine(net2.SetActiveConfiguration("custom"));
+            Console.WriteLine(net2.GetActiveConfiguration());
+
+            SettingsCollection coll1 = new SettingsCollection();
+
+            net2.GetConfigurationSettings("all", coll1);
+            Console.WriteLine(coll1.Count);
+            Console.WriteLine(net2.RemoveConfiguration("TestConfig"));
 
             Console.WriteLine(res.IsSuccessful());
             Console.WriteLine(net2.GetNetworkId());

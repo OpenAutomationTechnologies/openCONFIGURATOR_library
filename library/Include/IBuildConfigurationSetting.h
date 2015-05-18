@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define IBUILD_CONFIGURATION_SETTING_H
 
 #include <string>
+#include "Exports.h"
 
 namespace IndustrialNetwork
 {
@@ -42,12 +43,23 @@ namespace IndustrialNetwork
 		\brief
 		\author rueckerc
 		*/
-		class IBuildConfigurationSetting
+		class DLLEXPORT IBuildConfigurationSetting
 		{
 
 			public:
-				bool GetEnabled()
+				IBuildConfigurationSetting(std::string name="", std::string value="", std::string info="") :
+					enabled(true),
+					settingName(name),
+					settingValue(value),
+					settingInfo(info)
+				{}
+
+				virtual ~IBuildConfigurationSetting()
+				{}
+
+				bool IsEnabled()
 				{
+
 					return enabled;
 				}
 
@@ -57,22 +69,42 @@ namespace IndustrialNetwork
 					enabled = enable;
 				}
 
-				const std::string GetSettingInfo()
+				const std::string& GetInfo()
 				{
 					return this->settingInfo;
 				}
 
-				void SetSettingInfo(const std::string& settingInfo)
+				void SetInfo(const std::string& settingInfo)
 				{
 					this->settingInfo = settingInfo;
 				}
 
-				virtual void GenerateConfigurationPart() = 0;
+				const std::string& GetName()
+				{
+					return this->settingName;
+				}
+
+				void SetName(const std::string& settingName)
+				{
+					this->settingName = settingName;
+				}
+
+				const std::string& GetValue()
+				{
+					return this->settingValue;
+				}
+
+				void SetValue(const std::string& settingValue)
+				{
+					this->settingValue = settingValue;
+				}
+
 
 			private:
 				bool enabled;
+				std::string settingName;
+				std::string settingValue;
 				std::string settingInfo;
-
 		};
 
 	}

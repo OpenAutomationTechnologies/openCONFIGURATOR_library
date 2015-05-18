@@ -32,6 +32,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined IRESULT_H
 #define IRESULT_H
 
+#include <string>
+
 namespace IndustrialNetwork
 {
 	namespace Fieldbus

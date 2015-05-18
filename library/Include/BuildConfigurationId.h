@@ -1,8 +1,8 @@
 /************************************************************************
-\file PlkConfiguration.cpp
-\brief Implementation of the Class PlkConfiguration
+\file BuildConfigurationSettingId.h
+\brief Enum BuildConfigurationSettingId
 \author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
-\date 01-May-2015 12:00:00
+\date 27-Apr-2015 12:00:00
 ************************************************************************/
 
 /*------------------------------------------------------------------------------
@@ -29,34 +29,47 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
-#include "PlkConfiguration.h"
+#if !defined BUILD_CONFIGURATION_SETTING_ID_H
+#define BUILD_CONFIGURATION_SETTING_ID_H
 
-using namespace IndustrialNetwork::POWERLINK::Core::Configuration;
-using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
-using namespace std;
+#include <cstdint>
 
-PlkConfiguration::PlkConfiguration(std::string name) : 
-	IBuildConfiguration<BuildConfigurationSetting>(),
-	configurationName(name)
-{}
-
-
-PlkConfiguration::~PlkConfiguration()
-{}
-
-Result PlkConfiguration::GenerateConfiguration()
+namespace IndustrialNetwork
 {
-	return Result();
+	namespace POWERLINK
+	{
+		namespace Core
+		{
+			namespace Configuration
+			{
+				/**
+				\brief Represents the supported build configuration settings.
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
+				\date 27-Apr-2015 12:00:00
+				*/
+				enum BuildConfigurationId
+				{
+					GENERATE_MN_MAPPING_FOR_NODES, ///< Generate the MN mapping for nodes in the POWERLINK network.
+					GENERATE_MN_NODE_ASSIGNMENT_FOR_NODES, ///< Generate the MN node assignment for all nodes in the POWERLINK network.
+					GENERATE_MN_PRES_TIMEOUT_FOR_NODES, ///< Generate the MN PRes timeouts for all nodes in the POWERLINK network.
+				};
+
+				static const std::string BuildConfigurationIdName[] =
+				{
+					"GENERATE_MN_MAPPING_FOR_NODES", ///< Generate the MN mapping for nodes in the POWERLINK network.
+					"GENERATE_MN_NODE_ASSIGNMENT_FOR_NODES", ///< Generate the MN node assignment for nodes in the POWERLINK network.
+					"GENERATE_MN_PRES_TIMEOUT_FOR_NODES", ///< Generate the MN PRes timeouts for nodes in the POWERLINK network.
+				};
+
+				static const std::string BuildConfigurationIdDescription[] =
+				{
+					"Generate the MN mapping for nodes in the POWERLINK network.",
+					"Generate the MN node assignment for nodes in the POWERLINK network.",
+					"Generate the MN PRes timeouts for nodes in the POWERLINK network.",
+				};
+			}
+		}
+	}
 }
 
-const std::string PlkConfiguration::GetConfigurationName()
-{
-	return this->configurationName;
-}
-
-void PlkConfiguration::SetConfigurationName(const std::string configName)
-{
-	this->configurationName = configName;
-}
-
-
+#endif
