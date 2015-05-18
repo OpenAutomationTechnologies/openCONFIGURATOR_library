@@ -31,8 +31,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "Network.h"
 
-using IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network;
+using namespace IndustrialNetwork::POWERLINK::Core::NetworkHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
+using namespace IndustrialNetwork::POWERLINK::Core::Node;
 
 Network::Network() :
 	networkId(""),
@@ -57,16 +58,58 @@ Network::Network(const std::string id) :
 Network::~Network()
 {}
 
-Result Network::AddNode(const IndustrialNetwork::POWERLINK::Core::Node::BaseNode& node)
+IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result Network::AddNode(IndustrialNetwork::POWERLINK::Core::Node::ControlledNode& node)
 {
+	for (auto var : this->nodeCollection)
+	{
+		if (var.first == node.GetNodeIdentifier())
+		{
+			return Result(ErrorCode::NODE_EXISTS);
+		}
+	}
+	std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode> ptr = std::make_shared<ControlledNode>(node);
+	this->nodeCollection.insert(std::pair<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>(node.GetNodeIdentifier(), ptr));
 	return Result();
 }
+
+IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result Network::AddNode(IndustrialNetwork::POWERLINK::Core::Node::ManagingNode& node)
+{
+	for (auto var : this->nodeCollection)
+	{
+		if (var.first == node.GetNodeIdentifier())
+		{
+			return Result(ErrorCode::NODE_EXISTS);
+		}
+	}
+	std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode> ptr = std::make_shared<ManagingNode>(node);
+	this->nodeCollection.insert(std::pair<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>(node.GetNodeIdentifier(), ptr));
+	return Result();
+}
+
 Result Network::GetNode(const uint8_t nodeID, IndustrialNetwork::POWERLINK::Core::Node::BaseNode& node)
 {
-	return Result();
+	for (auto var : this->nodeCollection)
+	{
+		if (var.first == nodeID)
+		{
+			node = *var.second.get();
+			return Result();
+		}
+	}
+	return Result(ErrorCode::NODE_DOES_NOT_EXIST);
 }
 Result Network::RemoveNode(const uint8_t nodeID)
 {
+	std::unordered_map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>::iterator it;
+	for (it = this->nodeCollection.begin() ; it != this->nodeCollection.end(); ++it)
+	{
+		if (it->first == nodeID)
+			break;
+	}
+	if (it == this->nodeCollection.end())
+		return Result(ErrorCode::NODE_DOES_NOT_EXIST);
+
+	this->nodeCollection.erase(it);
 	return Result();
 }
 Result Network::ReplaceNode(const uint8_t nodeID, const IndustrialNetwork::POWERLINK::Core::Node::BaseNode& node)
@@ -84,22 +127,22 @@ const std::string Network::GetNetworkId()
 	return this->networkId;
 }
 
-const uint32_t Network::GetCycleTime()
+uint32_t Network::GetCycleTime()
 {
 	return this->cycleTime;
 }
 
-const uint32_t Network::GetAsyncMTU()
+uint32_t Network::GetAsyncMTU()
 {
 	return this->asyncMTU;
 }
 
-const uint32_t Network::GetMultiplexedCycleLength()
+uint32_t Network::GetMultiplexedCycleLength()
 {
 	return this->multiplexedCycleLength;
 }
 
-const uint32_t Network::GetPrescaler()
+uint32_t Network::GetPrescaler()
 {
 	return this->prescaler;
 }

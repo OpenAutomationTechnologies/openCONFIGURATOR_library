@@ -39,6 +39,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "NodeType.h"
 #include "PlkConfiguration.h"
 #include "Exports.h"
+#include "ControlledNode.h"
+#include "ManagingNode.h"
 
 namespace IndustrialNetwork
 {
@@ -59,7 +61,8 @@ namespace IndustrialNetwork
 						Network();
 						Network(const std::string id);
 						virtual ~Network();
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNode(const IndustrialNetwork::POWERLINK::Core::Node::BaseNode& node);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNode(IndustrialNetwork::POWERLINK::Core::Node::ControlledNode& node);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNode(IndustrialNetwork::POWERLINK::Core::Node::ManagingNode& node);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetNode(const std::uint8_t nodeID, IndustrialNetwork::POWERLINK::Core::Node::BaseNode& node);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveNode(const std::uint8_t nodeID);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ReplaceNode(const std::uint8_t nodeID, const IndustrialNetwork::POWERLINK::Core::Node::BaseNode& node);
@@ -67,10 +70,10 @@ namespace IndustrialNetwork
 						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>> GetNodes(const IndustrialNetwork::POWERLINK::Core::Node::NodeType& type);
 
 						const std::string GetNetworkId();
-						const std::uint32_t GetCycleTime();
-						const std::uint32_t GetAsyncMTU();
-						const std::uint32_t GetMultiplexedCycleLength();
-						const std::uint32_t GetPrescaler();
+						std::uint32_t GetCycleTime();
+						std::uint32_t GetAsyncMTU();
+						std::uint32_t GetMultiplexedCycleLength();
+						std::uint32_t GetPrescaler();
 
 						void SetCycleTime(const std::uint32_t cycleTime);
 						void SetAsyncMTU(const std::uint32_t asyncMTU);
@@ -84,7 +87,7 @@ namespace IndustrialNetwork
 						std::uint32_t multiplexedCycleLength;
 						std::uint32_t prescaler;
 						IndustrialNetwork::POWERLINK::Core::ConfigurationHandling::PlkConfiguration configuration;
-						std::unordered_map<std::uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>> nodeCollection;
+						std::unordered_map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>> nodeCollection;
 				};
 
 			}
