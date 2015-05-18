@@ -35,20 +35,27 @@ using IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 
 Network::Network() :
-	networkId(),
-	cycleTime(),
-	asyncMTU(),
-	multiplexedCycleLength(),
-	prescaler(),
+	networkId(""),
+	cycleTime(0),
+	asyncMTU(0),
+	multiplexedCycleLength(0),
+	prescaler(0),
 	configuration(),
 	nodeCollection()
 {}
 
+Network::Network(const std::string id) :
+	networkId(id),
+	cycleTime(0),
+	asyncMTU(0),
+	multiplexedCycleLength(0),
+	prescaler(0),
+	configuration(),
+	nodeCollection()
+{}
 
 Network::~Network()
-{
-
-}
+{}
 
 Result Network::AddNode(const IndustrialNetwork::POWERLINK::Core::Node::BaseNode& node)
 {
@@ -71,3 +78,49 @@ std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>
 {
 	return std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>();
 }
+
+const std::string Network::GetNetworkId()
+{
+	return this->networkId;
+}
+
+const uint32_t Network::GetCycleTime()
+{
+	return this->cycleTime;
+}
+
+const uint32_t Network::GetAsyncMTU()
+{
+	return this->asyncMTU;
+}
+
+const uint32_t Network::GetMultiplexedCycleLength()
+{
+	return this->multiplexedCycleLength;
+}
+
+const uint32_t Network::GetPrescaler()
+{
+	return this->prescaler;
+}
+
+void Network::SetCycleTime(const uint32_t cycleTime)
+{
+	this->cycleTime = cycleTime;
+}
+
+void Network::SetAsyncMTU(const uint32_t asyncMTU)
+{
+	this->asyncMTU = asyncMTU;
+}
+
+void Network::SetMultiplexedCycleLength(const uint32_t multiCycleLength)
+{
+	this->multiplexedCycleLength = multiCycleLength;
+}
+
+void Network::SetPrescaler(const uint32_t prescaler)
+{
+	this->prescaler = prescaler;
+}
+

@@ -56,20 +56,58 @@ namespace IndustrialNetwork
 						virtual ~ProjectManager();
 
 						/**
-						\return ProjectManager
+						\brief Retrieve the singleton instance of the class.
+						\return ProjectManager instance
 						*/
 						static ProjectManager& GetInstance();
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNetwork(IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network& net, std::string& networkUuid);
+						/**
+						\brief Add a network configuration to the core library.
+						\param[in] Network reference to be added.
+						\param[in] NEtwork ID reference to be added.
+						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
+						*/
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNetwork(const std::string& networkId, IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network& net);
+
+						/**
+						\brief Retrieve a network configuration from the library.
+						\param[out] NetworkManagement reference to be retrieved.
+						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
+						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetNetwork(const std::string networkUuid, IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network& net);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveNetwork(std::string networkUuid);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildConfiguration(const std::string networkUuid, IndustrialNetwork::POWERLINK::Core::ConfigurationHandling::PlkConfiguration buildConfig, std::ostream& configuration);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildProcessImage(const std::string networkUuid, IndustrialNetwork::POWERLINK::Core::ConfigurationHandling::PlkConfiguration buildConfig, std::ostream& configuration);
+
+						/**
+						\brief Removes a network configuration from the list.
+						\param[in] networkUuid to identify the configuration.
+						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
+						*/
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveNetwork(const std::string networkId);
+
+						/**
+						\brief Retrieve a copied list of all managed network configuration.
+						\param[out] networkList& to the network list.
+						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
+						*/
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetNetworks(std::map<std::string, IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network>& networkList);
+
+						
+						/**
+						\brief Clears the network list of the library.
+						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
+						*/
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ClearNetworkList();
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildConfiguration(const std::string networkId, IndustrialNetwork::POWERLINK::Core::ConfigurationHandling::PlkConfiguration buildConfig, std::ostream& configuration);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildProcessImage(const std::string networkId, IndustrialNetwork::POWERLINK::Core::ConfigurationHandling::PlkConfiguration buildConfig, std::ostream& configuration);
 
 					private:
 						ProjectManager(ProjectManager const&);
 						void operator=(ProjectManager const&);
 						ProjectManager();
+						/**
+						List of managed networks.
+						*/
 						std::map<std::string, IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network> networkList;
 
 				};

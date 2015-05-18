@@ -32,7 +32,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ProjectManager.h"
 
 using IndustrialNetwork::POWERLINK::Core::Configuration::ProjectManager;
+using namespace IndustrialNetwork::POWERLINK::Core::Configuration;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
+using namespace IndustrialNetwork::POWERLINK::Core::NetworkHandling;
 
 
 ProjectManager::ProjectManager() :
@@ -53,23 +55,57 @@ ProjectManager& ProjectManager::GetInstance()
 	return instance;
 }
 
-IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProjectManager::AddNetwork(IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network& net, std::string& networkUuid)
+IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProjectManager::AddNetwork(const std::string& networkId, IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network& net)
+{
+	this->networkList.insert(std::pair<std::string, Network>(networkId, net));
+	return Result();
+}
+IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProjectManager::GetNetwork(const std::string networkID, IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network& net)
+{
+	std::map<std::string, Network>::const_iterator got = this->networkList.find(networkID);
+	if (got == this->networkList.end())
+	{
+		return Result(ErrorCode::UNHANDLED_EXCEPTION);
+	}
+	else
+	{
+		net = this->networkList.find(networkID)->second;
+		return Result();
+	}
+	return Result();
+}
+IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProjectManager::RemoveNetwork(const std::string networkId)
+{
+	std::map<std::string, Network>::const_iterator got = this->networkList.find(networkId);
+	if (got == this->networkList.end())
+	{
+		return Result(ErrorCode::UNHANDLED_EXCEPTION);
+	}
+	else
+	{
+		this->networkList.erase(networkId);
+		return Result();
+	}
+	return Result();
+}
+IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProjectManager::BuildConfiguration(const std::string networkId, IndustrialNetwork::POWERLINK::Core::ConfigurationHandling::PlkConfiguration buildConfig, std::ostream& configuration)
 {
 	return Result();
 }
-IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProjectManager::GetNetwork(const std::string networkUuid, IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network& net)
+
+IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProjectManager::BuildProcessImage(const std::string networkId, IndustrialNetwork::POWERLINK::Core::ConfigurationHandling::PlkConfiguration buildConfig, std::ostream& configuration)
 {
 	return Result();
 }
-IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProjectManager::RemoveNetwork(std::string networkUuid)
+
+IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProjectManager::GetNetworks(std::map<std::string, Network>& networkList)
 {
+	networkList = this->networkList;
 	return Result();
 }
-IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProjectManager::BuildConfiguration(const std::string networkUuid, IndustrialNetwork::POWERLINK::Core::ConfigurationHandling::PlkConfiguration buildConfig, std::ostream& configuration)
+
+IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProjectManager::ClearNetworkList()
 {
-	return Result();
-}
-IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProjectManager::BuildProcessImage(const std::string networkUuid, IndustrialNetwork::POWERLINK::Core::ConfigurationHandling::PlkConfiguration buildConfig, std::ostream& configuration)
-{
+	this->networkList.clear();
 	return Result();
 }

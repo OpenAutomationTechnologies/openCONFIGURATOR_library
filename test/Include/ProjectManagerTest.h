@@ -44,22 +44,30 @@ namespace IndustrialNetwork
 		{
 			namespace Test
 			{
-class ProjectManagerTest :
-	public CppUnit::TestFixture
-{
+				class ProjectManagerTest :
+					public CppUnit::TestFixture
+				{
 
-		CPPUNIT_TEST_SUITE(ProjectManagerTest);
-		CPPUNIT_TEST(executeTest);
-		CPPUNIT_TEST_SUITE_END();
+						CPPUNIT_TEST_SUITE(ProjectManagerTest);
+						CPPUNIT_TEST(testAddNetwork);
+						CPPUNIT_TEST(testGetNetwork);
+						CPPUNIT_TEST(testRemoveNetwork);
+						CPPUNIT_TEST(testGetNetworks);
+						CPPUNIT_TEST_SUITE_END();
 
-	public:
-		ProjectManagerTest(void);
-		~ProjectManagerTest(void);
-		void setUp();
-		void tearDown();
+					private:
+						std::string test_uuid;
+						std::string test_uuid2;
+					public:
+						ProjectManagerTest(void);
+						~ProjectManagerTest(void);
+						void setUp();
+						void tearDown();
 
-		//add test methods here
-		void executeTest();
+						void testAddNetwork();
+						void testGetNetwork();
+						void testRemoveNetwork();
+						void testGetNetworks();
 				};
 			}
 		}

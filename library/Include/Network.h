@@ -57,6 +57,7 @@ namespace IndustrialNetwork
 
 					public:
 						Network();
+						Network(const std::string id);
 						virtual ~Network();
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNode(const IndustrialNetwork::POWERLINK::Core::Node::BaseNode& node);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetNode(const std::uint8_t nodeID, IndustrialNetwork::POWERLINK::Core::Node::BaseNode& node);
@@ -64,6 +65,17 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ReplaceNode(const std::uint8_t nodeID, const IndustrialNetwork::POWERLINK::Core::Node::BaseNode& node);
 
 						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>> GetNodes(const IndustrialNetwork::POWERLINK::Core::Node::NodeType& type);
+
+						const std::string GetNetworkId();
+						const std::uint32_t GetCycleTime();
+						const std::uint32_t GetAsyncMTU();
+						const std::uint32_t GetMultiplexedCycleLength();
+						const std::uint32_t GetPrescaler();
+
+						void SetCycleTime(const std::uint32_t cycleTime);
+						void SetAsyncMTU(const std::uint32_t asyncMTU);
+						void SetMultiplexedCycleLength(const std::uint32_t multiCycleLength);
+						void SetPrescaler(const std::uint32_t prescaler);
 
 					private:
 						std::string networkId;

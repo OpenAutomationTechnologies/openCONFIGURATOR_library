@@ -29,26 +29,73 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
+#include <iostream>
 #include "ProjectManagerTest.h"
 
 using namespace IndustrialNetwork::POWERLINK::Core::Test;
+using namespace IndustrialNetwork::POWERLINK::Core::NetworkHandling;
+using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
+using namespace IndustrialNetwork::POWERLINK::Core::Configuration;
 
 CPPUNIT_TEST_SUITE_REGISTRATION(ProjectManagerTest);
 
 ProjectManagerTest::ProjectManagerTest(void)
-{
-}
+{}
 
 ProjectManagerTest::~ProjectManagerTest(void)
+{}
+
+void ProjectManagerTest::setUp()
 {
+	Network networkTestConfig1("test");
+	this->test_uuid = networkTestConfig1.GetNetworkId();
+	Network networkTestConfig2("test1");
+	this->test_uuid2 = networkTestConfig2.GetNetworkId();
+
+	Result res =ProjectManager::GetInstance().AddNetwork(networkTestConfig1.GetNetworkId(), networkTestConfig1);
+	CPPUNIT_ASSERT_EQUAL(true, res.IsSuccessful());
+	res = ProjectManager::GetInstance().AddNetwork(networkTestConfig2.GetNetworkId(), networkTestConfig2);
+	CPPUNIT_ASSERT_EQUAL(true, res.IsSuccessful());
 }
 
-void ProjectManagerTest::setUp() {}
-
-void ProjectManagerTest::tearDown() {}
-
-void ProjectManagerTest::executeTest(void)
+void ProjectManagerTest::tearDown()
 {
-	int x = 5;
-	CPPUNIT_ASSERT(x == 5);
+	Result res = ProjectManager::GetInstance().ClearNetworkList();
+	CPPUNIT_ASSERT_EQUAL(true, res.IsSuccessful());
+}
+
+void ProjectManagerTest::testAddNetwork()
+{
+	std::map<std::string, Network> networkList;
+	Result res = ProjectManager::GetInstance().GetNetworks(networkList);
+	CPPUNIT_ASSERT_EQUAL(true, res.IsSuccessful());
+	CPPUNIT_ASSERT_EQUAL(networkList.size(), (unsigned int) 2);
+}
+
+void ProjectManagerTest::testGetNetwork(void)
+{
+	Network networkConf;
+	Result res = ProjectManager::GetInstance().GetNetwork(test_uuid, networkConf);
+	CPPUNIT_ASSERT_EQUAL(true, res.IsSuccessful());
+	CPPUNIT_ASSERT_EQUAL(test_uuid, networkConf.GetNetworkId());
+}
+
+void ProjectManagerTest::testRemoveNetwork()
+{
+	Network networkConf;
+	Result res = ProjectManager::GetInstance().RemoveNetwork(test_uuid2);
+	CPPUNIT_ASSERT_EQUAL(true, res.IsSuccessful());
+
+	std::map<std::string, Network> networkList;
+	res = ProjectManager::GetInstance().GetNetworks(networkList);
+	CPPUNIT_ASSERT_EQUAL(true, res.IsSuccessful());
+	CPPUNIT_ASSERT_EQUAL(networkList.size(), (unsigned int) 1);
+}
+
+void ProjectManagerTest::testGetNetworks(void)
+{
+	std::map<std::string, Network> networkList;
+	Result res = ProjectManager::GetInstance().GetNetworks(networkList);
+	CPPUNIT_ASSERT_EQUAL(true, res.IsSuccessful());
+	CPPUNIT_ASSERT_EQUAL(networkList.size(), (unsigned int) 2);
 }
