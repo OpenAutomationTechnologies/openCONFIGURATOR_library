@@ -45,6 +45,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "TxProcessDataMappingObject.h"
 #include "RxProcessDataMappingObject.h"
 #include "NodeAssignment.h"
+#include "Result.h"
 
 namespace IndustrialNetwork
 {
@@ -62,7 +63,6 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						BaseNode();
 						BaseNode(std::uint8_t nodeId, const std::string& nodeName = "");
 						virtual ~BaseNode();
 
@@ -72,6 +72,11 @@ namespace IndustrialNetwork
 						void SetNodeIdentifier(std::uint8_t nodeId);
 						const std::unordered_map<std::uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>>& GetObjectDictionary();
 						void SetObjectDictionary(const std::unordered_map<uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>>& od);
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNodeObject(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object& objRef);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ForceNodeObject(std::uint32_t nodeId, std::string actualValue = "");
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetNodeObjectActualValue(std::uint32_t nodeId, std::string actualValue);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetNodeObject(std::uint32_t nodeId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object& objRef);
 
 						virtual bool AddNodeAssignement(NodeAssignment) = 0;
 						virtual bool RemoveNodeAssignment(NodeAssignment) = 0;

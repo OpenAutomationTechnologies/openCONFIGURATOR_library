@@ -47,6 +47,7 @@
     <Compile Include="IBuildConfigurationSetting.cs" />
     <Compile Include="ManagingNode.cs" />
     <Compile Include="NodeAssignment.cs" />
+    <Compile Include="NodeIdCollection.cs" />
     <Compile Include="NodeType.cs" />
     <Compile Include="PlkConfiguration.cs" />
     <Compile Include="Program.cs" />
@@ -62,6 +63,8 @@
     <Compile Include="openconfigurator_core_wrapper_net.cs" />
     <Compile Include="PlkDataType.cs" />
     <Compile Include="Result.cs" />
+	<Compile Include="Object.cs" />
+	<Compile Include="SubObject.cs" />
     <Compile Include="ObjectCollection.cs" />
     <Compile Include="NetworkCollection.cs" />
     <Compile Include="SettingsCollection.cs" />

@@ -82,10 +82,16 @@
 %include "../Include/NodeAssignment.h"
 %include "../Include/Result.h"
 %include "../Include/PlkConfiguration.h"
+%nodefaultctor BaseNode;
 %include "../Include/BaseNode.h"
 %include "../Include/BaseObject.h"
+%nodefaultctor Object;
+%include "../Include/Object.h"
+%nodefaultctor SubObject;
+%include "../Include/SubObject.h"
 %include "../Include/Direction.h"
 %include "../Include/NodeType.h"
+%nodefaultctor ControlledNode;
 %include "../Include/ControlledNode.h"
 %include "../Include/ManagingNode.h"
 %include "../Include/ProjectManager.h"
@@ -107,6 +113,8 @@
 #include "../Include/PlkConfiguration.h"
 #include "../Include/BaseNode.h"
 #include "../Include/BaseObject.h"
+#include "../Include/Object.h"
+#include "../Include/SubObject.h"
 #include "../Include/Direction.h"
 #include "../Include/NodeType.h"
 #include "../Include/ControlledNode.h"
@@ -122,5 +130,6 @@ namespace std {
    %template(NetworkCollection) std::map<std::string, IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network>;
    %template(StringCollection) std::vector<std::string>;
    %template(SettingsCollection) std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::BuildConfigurationSetting>;
+   %template(NodeIdCollection) std::vector<std::uint8_t>;
 }
 

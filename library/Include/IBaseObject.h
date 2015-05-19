@@ -55,9 +55,9 @@ namespace IndustrialNetwork
 					objectName("")
 
 				{}
-				IBaseObject(T id, V actualValue, V defaultValue, D dataType, std::string name = "") :
+				IBaseObject(T id, V defaultValue, D dataType, std::string name = "") :
 					objectIdentifier(id),
-					objectActualValue(actualValue),
+					objectActualValue(),
 					objectDefaultValue(defaultValue),
 					objectDataType(dataType),
 					objectName(name)
@@ -71,12 +71,12 @@ namespace IndustrialNetwork
 					objectName("")
 				{}
 
-				IBaseObject(T id, D dataType) :
+				IBaseObject(T id, D dataType, std::string name = "") :
 					objectIdentifier(id),
 					objectActualValue(),
 					objectDefaultValue(),
 					objectDataType(dataType),
-					objectName("")
+					objectName(name)
 				{}
 
 

@@ -46,11 +46,11 @@ public class WrapperTestMainLinux {
 		// Add network to the managing class
 		man.AddNetwork(net.GetNetworkId(), net);
 
-		// Get a node object from the library
-		ControlledNode node = new ControlledNode();
-		Result res = net.GetNode((short) 1, node);
-		System.out.println(res.IsSuccessful());
-		System.out.println(node.GetNodeName());
+				// Get a node object from the library
+				ControlledNode node = new ControlledNode((short)0);
+				Result res = net.GetNode((short) 1, node);
+				System.out.println(res.IsSuccessful());
+				System.out.println(node.GetNodeName());
 
 		// Get a network from the library
 		Network net2 = new Network();

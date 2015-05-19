@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using IndustrialNetwork::POWERLINK::Core::Node::BaseNode;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
+using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 
 BaseNode::BaseNode(uint8_t nodeId, const std::string& nodeName) :
 	nodeIdentifier(nodeId),
@@ -46,19 +47,31 @@ BaseNode::BaseNode(uint8_t nodeId, const std::string& nodeName) :
 	receiveMapping(std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::RxProcessDataMappingObject>>())
 {}
 
+IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BaseNode::AddNodeObject(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object& objRef)
+{
+	std::shared_ptr<Object> ptr = std::make_shared<Object>(objRef);
+	this->objectDictionary.insert(std::pair<std::uint32_t, std::shared_ptr<Object>>(objRef.GetObjectIdentifier(), ptr));
+	return Result();
+}
 
-BaseNode::BaseNode() :
-	nodeIdentifier(0),
-	nodeName(""),
-	objectDictionary(std::unordered_map<std::uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>>()),
-	applicationProcess(new ApplicationProcess()),
-	nodeAssignment(std::vector<IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment>()),
-	networkManagement(new NetworkManagement()),
-	dynamicChannelList(std::vector<std::shared_ptr<DynamicChannel>>()),
-	transmitMapping(std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::TxProcessDataMappingObject>>()),
-	receiveMapping(std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::RxProcessDataMappingObject>>())
-{}
+IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BaseNode::ForceNodeObject(std::uint32_t nodeId, std::string actualValue)
+{
+	this->objectDictionary.find(nodeId)->second.get()->SetForceToCDC(true);
+	if(actualValue != "")
+		this->objectDictionary.find(nodeId)->second.get()->SetObjectActualValue(actualValue);
 
+	return Result();
+}
+IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BaseNode::SetNodeObjectActualValue(std::uint32_t nodeId, std::string actualValue)
+{
+	this->objectDictionary.find(nodeId)->second.get()->SetObjectActualValue(actualValue);
+	return Result();
+}
+IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BaseNode::GetNodeObject(std::uint32_t nodeId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object& objRef)
+{
+	objRef = *this->objectDictionary.find(nodeId)->second.get();
+	return Result();
+}
 
 BaseNode::~BaseNode()
 {

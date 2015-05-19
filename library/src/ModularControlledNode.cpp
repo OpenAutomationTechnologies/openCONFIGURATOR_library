@@ -38,7 +38,7 @@ using namespace IndustrialNetwork::POWERLINK::Core::ModularNode;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace std;
 
-ModularControlledNode::ModularControlledNode() : ControlledNode(),
+ModularControlledNode::ModularControlledNode(std::uint8_t nodeID, const std::string nodeName) : ControlledNode(nodeID, nodeName),
 	maxChildren(),
 	unusedSlots(false),
 	multipleChildren(false),

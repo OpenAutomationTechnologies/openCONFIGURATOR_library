@@ -48,9 +48,20 @@ namespace openconfigurator_core_net_app
             Console.WriteLine(net.GetNetworkId());
 
             net.SetCycleTime(10000);
+            net.SetAsyncMTU(100);
+            net.SetMultiplexedCycleLength(10);
+            net.SetPrescaler(10);
+
+            NodeIdCollection ids = new NodeIdCollection();
+            net.GetAvailableNodeIds(ids);
+            Console.WriteLine(ids.Count);
 
             var mn = new ManagingNode("MasterOfDisaster");
             net.AddNode(mn);
+
+            var mnNew = new ManagingNode();
+            net.GetManagingNode(mnNew);
+            Console.WriteLine(mnNew.GetNodeName());
 
             var nodeT = new ControlledNode(10, "Testnode");
             net.AddNode(nodeT);
@@ -58,6 +69,20 @@ namespace openconfigurator_core_net_app
             var node = new ControlledNode(1);
             var res1 = net.GetNode(10, node);
             Console.WriteLine(res1.IsSuccessful());
+
+            net.ReplaceNode(10, new ControlledNode(100, "replacedNode"));
+            var res2 = net.GetNode(100, node);
+            Console.WriteLine(res2.IsSuccessful());
+
+            var res3 = net.GetNode(100, node);
+            Console.WriteLine(node.GetNodeName());
+
+            net.GetAvailableNodeIds(ids);
+            Console.WriteLine(ids.Count);
+            foreach (var setting in ids)
+            {
+                Console.WriteLine(setting);
+            }
 
             man.AddNetwork("test", net);
             var net2 = new Network();

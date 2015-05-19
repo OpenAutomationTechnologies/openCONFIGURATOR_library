@@ -52,7 +52,7 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						ModularControlledNode();
+						ModularControlledNode(std::uint8_t nodeID, const std::string nodeName);
 						virtual ~ModularControlledNode();
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddModule(const IndustrialNetwork::POWERLINK::Core::ModularNode::Module& module);

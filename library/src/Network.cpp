@@ -36,26 +36,27 @@ using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
 using namespace IndustrialNetwork::POWERLINK::Core::Configuration;
 
+
 Network::Network() :
 	networkId(""),
 	cycleTime(0),
-	asyncMTU(0),
-	multiplexedCycleLength(0),
-	prescaler(0),
-	nodeCollection(),
-	buildConfigurations(),
-	activeConfiguration()
+	asyncMTU(300), //DS 301 V1.2.1
+	multiplexedCycleLength(0), //DS 301 V1.2.1
+	prescaler(2), //DS 301 V1.2.1
+	nodeCollection(std::unordered_map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>()),
+	buildConfigurations(std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::PlkConfiguration>()),
+	activeConfiguration("")
 {}
 
-Network::Network(const std::string id) :
-	networkId(id),
+Network::Network(const std::string networkId) :
+	networkId(networkId),
 	cycleTime(0),
-	asyncMTU(0),
-	multiplexedCycleLength(0),
-	prescaler(0),
-	nodeCollection(),
-	buildConfigurations(),
-	activeConfiguration()
+	asyncMTU(300), //DS 301 V1.2.1
+	multiplexedCycleLength(0), //DS 301 V1.2.1
+	prescaler(2), //DS 301 V1.2.1
+	nodeCollection(std::unordered_map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>()),
+	buildConfigurations(std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::PlkConfiguration>()),
+	activeConfiguration("")
 {}
 
 Network::~Network()
@@ -101,6 +102,20 @@ Result Network::GetNode(const uint8_t nodeID, IndustrialNetwork::POWERLINK::Core
 	}
 	return Result(ErrorCode::NODE_DOES_NOT_EXIST);
 }
+
+Result Network::GetManagingNode(IndustrialNetwork::POWERLINK::Core::Node::BaseNode& node)
+{
+	for (auto var : this->nodeCollection)
+	{
+		if (var.first == 240)
+		{
+			node = *var.second.get();
+			return Result();
+		}
+	}
+	return Result(ErrorCode::NODE_DOES_NOT_EXIST);
+}
+
 Result Network::RemoveNode(const uint8_t nodeID)
 {
 	std::unordered_map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>::iterator it;
@@ -116,14 +131,41 @@ Result Network::RemoveNode(const uint8_t nodeID)
 	return Result();
 }
 
-Result Network::ReplaceNode(const uint8_t nodeID, const IndustrialNetwork::POWERLINK::Core::Node::BaseNode& node)
+Result Network::ReplaceNode(const uint8_t nodeID, IndustrialNetwork::POWERLINK::Core::Node::BaseNode& node)
 {
+	Result res = RemoveNode(nodeID);
+	if (!res.IsSuccessful())
+		return res;
+
+	if (typeid(node) == typeid(ControlledNode))
+	{
+		ControlledNode& ref = dynamic_cast<ControlledNode&>(node);
+		return AddNode(ref);
+	}
+	else if (typeid(node) == typeid(ManagingNode))
+	{
+		ManagingNode& ref = dynamic_cast<ManagingNode&>(node);
+		return AddNode(ref);
+	}
 	return Result();
 }
 
-std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>> Network::GetNodes(const IndustrialNetwork::POWERLINK::Core::Node::NodeType& type)
+Result Network::GetNodes(std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection)
 {
-	return std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>();
+	for (auto var : this->nodeCollection)
+	{
+		nodeCollection.push_back(var.second);
+	}
+	return Result();
+}
+
+IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result Network::GetAvailableNodeIds(std::vector<std::uint8_t>& nodeIdCollection)
+{
+	for (auto var : this->nodeCollection)
+	{
+		nodeIdCollection.push_back(var.first);
+	}
+	return Result();
 }
 
 const std::string Network::GetNetworkId()

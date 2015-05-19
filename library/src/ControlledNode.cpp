@@ -34,10 +34,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 
-ControlledNode::ControlledNode() : BaseNode(),
-	operationMode(PlkOperationMode::NORMAL)
-{}
-
 ControlledNode::ControlledNode(uint8_t nodeID, const std::string nodeName) : BaseNode(nodeID, nodeName),
 	operationMode(PlkOperationMode::NORMAL)
 {}

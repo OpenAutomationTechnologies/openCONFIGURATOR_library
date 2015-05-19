@@ -44,7 +44,7 @@ public class WrapperTestMainMSVC {
 		man.AddNetwork(net.GetNetworkId(), net);
 
 		// Get a node object from the library
-		ControlledNode node = new ControlledNode();
+		ControlledNode node = new ControlledNode((short)0);
 		Result res = net.GetNode((short) 1, node);
 		System.out.println(res.IsSuccessful());
 		System.out.println(node.GetNodeName());

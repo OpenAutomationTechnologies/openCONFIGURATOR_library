@@ -43,7 +43,6 @@ BaseObject::BaseObject() : IBaseObject(),
 	pdoMapping()
 {}
 
-
 BaseObject::BaseObject(uint32_t id,  PlkDataType type) : IBaseObject(id, type),
 	forceToCDC(false),
 	highLimit(),
@@ -52,6 +51,27 @@ BaseObject::BaseObject(uint32_t id,  PlkDataType type) : IBaseObject(id, type),
 	accessType(),
 	objectType(),
 	pdoMapping()
+{}
+
+
+BaseObject::BaseObject(uint32_t id, std::string defaultValue, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, std::string name) : IBaseObject(id, defaultValue, type, name),
+	forceToCDC(false),
+	highLimit(),
+	lowLimit(),
+	uniqueIdRef(),
+	accessType(accessType),
+	objectType(objectType),
+	pdoMapping(pdoMapping)
+{}
+
+BaseObject::BaseObject(std::uint32_t id, std::string defaultValue, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, std::uint32_t highlimit, std::uint32_t lowLimit, std::string uniqueIdRef, std::string name) : IBaseObject(id, defaultValue, type, name),
+	forceToCDC(false),
+	highLimit(highlimit),
+	lowLimit(lowLimit),
+	uniqueIdRef(uniqueIdRef),
+	accessType(accessType),
+	objectType(objectType),
+	pdoMapping(pdoMapping)
 {}
 
 BaseObject::~BaseObject()

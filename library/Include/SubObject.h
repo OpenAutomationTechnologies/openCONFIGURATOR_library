@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SUBOBJECT_H
 
 #include "BaseObject.h"
+#include "Exports.h"
 
 namespace IndustrialNetwork
 {
@@ -46,7 +47,7 @@ namespace IndustrialNetwork
 				\brief
 				\author rueckerc
 				*/
-				class SubObject : public IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject
+				class DLLEXPORT SubObject : public IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject
 				{
 
 					public:

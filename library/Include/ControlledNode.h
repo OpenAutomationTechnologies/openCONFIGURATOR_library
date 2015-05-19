@@ -58,7 +58,6 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						ControlledNode();
 						ControlledNode(std::uint8_t nodeID, const std::string nodeName = "");
 						virtual ~ControlledNode();
 

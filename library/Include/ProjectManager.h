@@ -64,7 +64,7 @@ namespace IndustrialNetwork
 						/**
 						\brief Add a network configuration to the core library.
 						\param[in] Network reference to be added.
-						\param[in] NEtwork ID reference to be added.
+						\param[in] Network ID reference to be added.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
 
@@ -79,7 +79,7 @@ namespace IndustrialNetwork
 
 						/**
 						\brief Removes a network configuration from the list.
-						\param[in] networkUuid to identify the configuration.
+						\param[in] networkId to identify the configuration.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveNetwork(const std::string networkId);
