@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined MODULAR_CONTROLLED_NODE_H
 #define MODULAR_CONTROLLED_NODE_H
 
+#include <iostream>
 #include "Result.h"
 #include "ControlledNode.h"
 #include "Module.h"

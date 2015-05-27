@@ -31,9 +31,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "ManagingNode.h"
 
+using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
 
-ManagingNode::ManagingNode(const std::string nodeName) : BaseNode(240, nodeName)
+ManagingNode::ManagingNode(const string nodeName) : BaseNode(240, nodeName)
 {}
 
 ManagingNode::~ManagingNode()
@@ -49,7 +50,7 @@ bool ManagingNode::RemoveNodeAssignment(NodeAssignment assign)
 	return true;
 }
 
-std::uint32_t ManagingNode::GetNodeAssignmentValue()
+uint32_t ManagingNode::GetNodeAssignmentValue()
 {
 	return 0;
 }

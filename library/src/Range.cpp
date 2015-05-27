@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "Range.h"
 
-using IndustrialNetwork::POWERLINK::Core::ModularNode::Range;
+using namespace IndustrialNetwork::POWERLINK::Core::ModularNode;
 
 Range::Range() :
 	supportedModuleType(),

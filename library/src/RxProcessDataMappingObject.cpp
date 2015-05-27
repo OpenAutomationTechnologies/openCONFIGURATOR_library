@@ -31,17 +31,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "RxProcessDataMappingObject.h"
 
-using IndustrialNetwork::POWERLINK::Core::ObjectDictionary::RxProcessDataMappingObject;
+using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 
 
 RxProcessDataMappingObject::RxProcessDataMappingObject()
-{
-
-}
-
+{}
 
 
 RxProcessDataMappingObject::~RxProcessDataMappingObject()
-{
-
-}
+{}

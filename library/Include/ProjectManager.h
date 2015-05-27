@@ -34,8 +34,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <map>
 #include <memory>
+
 #include "Network.h"
 #include "PlkConfiguration.h"
+#include "LoggingConfiguration.h"
 
 namespace IndustrialNetwork
 {
@@ -46,8 +48,8 @@ namespace IndustrialNetwork
 			namespace Configuration
 			{
 				/**
-				\brief
-				\author rueckerc
+				\brief Handles different projects in the core library.
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
 				class DLLEXPORT ProjectManager
 				{
@@ -91,7 +93,6 @@ namespace IndustrialNetwork
 						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetNetworks(std::map<std::string, IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network>& networkList);
 
-						
 						/**
 						\brief Clears the network list of the library.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
@@ -104,7 +105,14 @@ namespace IndustrialNetwork
 						*/
 						const std::vector<std::string> GetSupportedSettingIds();
 
+						/**
+						* \brief TO BE DONE
+						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildConfiguration(const std::string networkId, std::ostream& configuration);
+
+						/**
+						* \brief TO BE DONE
+						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildProcessImage(const std::string networkId, std::ostream& configuration);
 
 						/**
@@ -113,10 +121,13 @@ namespace IndustrialNetwork
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result InitLoggingConfiguration(const std::string configFile);
+
 					private:
+						//singleton
+						ProjectManager();
 						ProjectManager(ProjectManager const&);
 						void operator=(ProjectManager const&);
-						ProjectManager();
+
 						/**
 						List of managed networks.
 						*/

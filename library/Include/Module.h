@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined MODULE_H
 #define MODULE_H
 
+#include <iostream>
 #include "BaseNode.h"
 #include "BaseObject.h"
 #include "SortEnums.h"
@@ -60,9 +61,7 @@ namespace IndustrialNetwork
 
 						/**
 						\param baseIndex
-
 						\param sortMode
-
 						\param sortNumber
 						\return boolean
 						*/

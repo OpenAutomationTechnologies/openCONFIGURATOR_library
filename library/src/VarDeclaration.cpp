@@ -31,20 +31,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "VarDeclaration.h"
 
-using IndustrialNetwork::POWERLINK::Core::ObjectDictionary::VarDeclaration;
-
-
+using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 
 
 VarDeclaration::VarDeclaration() :
 	size(),
 	dataType()
-{
-
-}
+{}
 
 
 VarDeclaration::~VarDeclaration()
-{
-
-}
+{}

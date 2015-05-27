@@ -31,43 +31,46 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "BaseNode.h"
 
-using IndustrialNetwork::POWERLINK::Core::Node::BaseNode;
+using namespace std;
+using namespace IndustrialNetwork::POWERLINK::Core::Node;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 
-BaseNode::BaseNode(uint8_t nodeId, const std::string& nodeName) :
-	nodeIdentifier(nodeId),
-	nodeName(nodeName),
-	objectDictionary(std::unordered_map<std::uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>>()),
+BaseNode::BaseNode(uint8_t nodeId, const string& name) :
+	nodeId(nodeId),
+	name(name),
+	objectDictionary(unordered_map<uint32_t, shared_ptr<Object>>()),
 	applicationProcess(new ApplicationProcess()),
-	nodeAssignment(std::vector<IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment>()),
+	nodeAssignment(vector<NodeAssignment>()),
 	networkManagement(new NetworkManagement()),
-	dynamicChannelList(std::vector<std::shared_ptr<DynamicChannel>>()),
-	transmitMapping(std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::TxProcessDataMappingObject>>()),
-	receiveMapping(std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::RxProcessDataMappingObject>>())
+	dynamicChannelList(vector<shared_ptr<DynamicChannel>>()),
+	transmitMapping(vector<shared_ptr<TxProcessDataMappingObject>>()),
+	receiveMapping(vector<shared_ptr<RxProcessDataMappingObject>>())
 {}
 
-IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BaseNode::AddNodeObject(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object& objRef)
+Result BaseNode::AddObject(Object& objRef)
 {
-	std::shared_ptr<Object> ptr = std::make_shared<Object>(objRef);
-	this->objectDictionary.insert(std::pair<std::uint32_t, std::shared_ptr<Object>>(objRef.GetObjectIdentifier(), ptr));
+	shared_ptr<Object> ptr = make_shared<Object>(objRef);
+	this->objectDictionary.insert(pair<uint32_t, shared_ptr<Object>>(objRef.GetId(), ptr));
 	return Result();
 }
 
-IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BaseNode::ForceNodeObject(std::uint32_t nodeId, std::string actualValue)
+Result BaseNode::ForceObject(uint32_t nodeId, string actualValue)
 {
 	this->objectDictionary.find(nodeId)->second.get()->SetForceToCDC(true);
 	if(actualValue != "")
-		this->objectDictionary.find(nodeId)->second.get()->SetObjectActualValue(actualValue);
+		this->objectDictionary.find(nodeId)->second.get()->SetActualValue(actualValue);
 
 	return Result();
 }
-IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BaseNode::SetNodeObjectActualValue(std::uint32_t nodeId, std::string actualValue)
+
+Result BaseNode::SetObjectActualValue(uint32_t nodeId, string actualValue)
 {
-	this->objectDictionary.find(nodeId)->second.get()->SetObjectActualValue(actualValue);
+	this->objectDictionary.find(nodeId)->second.get()->SetActualValue(actualValue);
 	return Result();
 }
-IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BaseNode::GetNodeObject(std::uint32_t nodeId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object& objRef)
+
+Result BaseNode::GetObject(uint32_t nodeId, Object& objRef)
 {
 	objRef = *this->objectDictionary.find(nodeId)->second.get();
 	return Result();
@@ -79,32 +82,32 @@ BaseNode::~BaseNode()
 	receiveMapping.clear();
 }
 
-const std::string& BaseNode::GetNodeName()
+const string& BaseNode::GetName()
 {
-	return nodeName;
+	return this->name;
 }
 
-void BaseNode::SetNodeName(const std::string& nodeName)
+void BaseNode::SetName(const string& name)
 {
-	this->nodeName = nodeName;
+	this->name = name;
 }
 
 uint8_t BaseNode::GetNodeIdentifier()
 {
-	return nodeIdentifier;
+	return this->nodeId;
 }
 
 void BaseNode::SetNodeIdentifier(uint8_t nodeId)
 {
-	nodeIdentifier = nodeId;
+	this->nodeId = nodeId;
 }
 
-const std::unordered_map<uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>>& BaseNode::GetObjectDictionary()
+const unordered_map<uint32_t, shared_ptr<Object>>& BaseNode::GetObjectDictionary()
 {
 	return objectDictionary;
 }
 
-void BaseNode::SetObjectDictionary(const std::unordered_map<uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>>& od)
+void BaseNode::SetObjectDictionary(const unordered_map<uint32_t, shared_ptr<Object>>& od)
 {
 	objectDictionary = od;
 }

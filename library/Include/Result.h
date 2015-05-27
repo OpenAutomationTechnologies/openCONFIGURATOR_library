@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include "IResult.h"
 #include "ErrorCode.h"
-#include "Exports.h"
+#include "Constants.h"
 
 namespace IndustrialNetwork
 {

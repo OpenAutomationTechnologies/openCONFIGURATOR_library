@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "BaseObject.h"
 
+using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 
 BaseObject::BaseObject() : IBaseObject(),
@@ -54,7 +55,7 @@ BaseObject::BaseObject(uint32_t id,  PlkDataType type) : IBaseObject(id, type),
 {}
 
 
-BaseObject::BaseObject(uint32_t id, std::string defaultValue, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, std::string name) : IBaseObject(id, defaultValue, type, name),
+BaseObject::BaseObject(uint32_t id, string defaultValue, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, string name) : IBaseObject(id, defaultValue, type, name),
 	forceToCDC(false),
 	highLimit(),
 	lowLimit(),
@@ -64,7 +65,7 @@ BaseObject::BaseObject(uint32_t id, std::string defaultValue, PlkDataType type, 
 	pdoMapping(pdoMapping)
 {}
 
-BaseObject::BaseObject(std::uint32_t id, std::string defaultValue, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, std::uint32_t highlimit, std::uint32_t lowLimit, std::string uniqueIdRef, std::string name) : IBaseObject(id, defaultValue, type, name),
+BaseObject::BaseObject(uint32_t id, string defaultValue, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, uint32_t highlimit, uint32_t lowLimit, string uniqueIdRef, string name) : IBaseObject(id, defaultValue, type, name),
 	forceToCDC(false),
 	highLimit(highlimit),
 	lowLimit(lowLimit),
@@ -79,7 +80,7 @@ BaseObject::~BaseObject()
 
 bool BaseObject::operator== (const BaseObject& baseObject) const
 {
-	return (baseObject.GetObjectIdentifier() == this->GetObjectIdentifier());
+	return (baseObject.GetId() == this->GetId());
 }
 
 bool BaseObject::GetForceToCDC() const
@@ -112,42 +113,42 @@ void BaseObject::SetLowLimit(uint32_t lowLimit)
 	this->lowLimit = lowLimit;
 }
 
-boost::optional<std::string> BaseObject::GetUniqueIdRef() const
+boost::optional<string> BaseObject::GetUniqueIdRef() const
 {
 	return uniqueIdRef;
 }
 
-void BaseObject::SetUniqueIdRef(boost::optional<std::string>& uniqueIdRef)
+void BaseObject::SetUniqueIdRef(boost::optional<string>& uniqueIdRef)
 {
 	this->uniqueIdRef = uniqueIdRef;
 }
 
-IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType BaseObject::GetAccessType() const
+AccessType BaseObject::GetAccessType() const
 {
 	return accessType;
 }
 
-void BaseObject::SetAccessType(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType accessType)
+void BaseObject::SetAccessType(AccessType accessType)
 {
 	this->accessType = accessType;
 }
 
-IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ObjectType BaseObject::GetObjectType() const
+ObjectType BaseObject::GetObjectType() const
 {
 	return objectType;
 }
 
-void BaseObject::SetObjectType(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ObjectType objectType)
+void BaseObject::SetObjectType(ObjectType objectType)
 {
 	this->objectType = objectType;
 }
 
-IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping BaseObject::GetPDOMapping() const
+PDOMapping BaseObject::GetPDOMapping() const
 {
 	return pdoMapping;
 }
 
-void BaseObject::SetPDOMapping(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping pdoMapping)
+void BaseObject::SetPDOMapping(PDOMapping pdoMapping)
 {
 	this->pdoMapping = pdoMapping;
 }

@@ -31,16 +31,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "CnFeature.h"
 
+using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
 
 CnFeature::CnFeature(CNFeatureEnum type) : PlkFeature<CNFeatureEnum>(type)
 {}
 
-
 CnFeature::~CnFeature()
 {}
 
-const std::string CnFeature::GetName()
+const string CnFeature::GetName()
 {
 	return PlkFeatureStrings[this->GetType()];
 }

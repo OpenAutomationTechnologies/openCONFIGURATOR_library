@@ -34,15 +34,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 
 Result::Result(ErrorCode errorCode, std::string errorMessage = "") :
-	IResult<IndustrialNetwork::POWERLINK::Core::ErrorHandling::ErrorCode>(errorCode, errorMessage)
+	IResult<ErrorCode>(errorCode, errorMessage)
 {}
 
 Result::Result(ErrorCode errorCode) :
-	IResult<IndustrialNetwork::POWERLINK::Core::ErrorHandling::ErrorCode>(errorCode)
+	IResult<ErrorCode>(errorCode)
 {}
 
 Result::Result() :
-	IResult<IndustrialNetwork::POWERLINK::Core::ErrorHandling::ErrorCode>(ErrorCode::SUCCESS)
+	IResult<ErrorCode>(ErrorCode::SUCCESS)
 {}
 
 Result::~Result()

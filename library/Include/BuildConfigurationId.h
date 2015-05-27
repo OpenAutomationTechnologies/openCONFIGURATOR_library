@@ -45,7 +45,6 @@ namespace IndustrialNetwork
 				/**
 				\brief Represents the supported build configuration settings.
 				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
-				\date 27-Apr-2015 12:00:00
 				*/
 				enum BuildConfigurationId
 				{

@@ -31,17 +31,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "ApplicationProcess.h"
 
+using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 
 ApplicationProcess::ApplicationProcess() :
-	parameterList(std::vector<Parameter>())
+	parameterList(vector<shared_ptr<Parameter>>())
 {}
-
 
 ApplicationProcess::~ApplicationProcess()
 {}
 
-const std::vector<Parameter>& ApplicationProcess::GetParameterList()
+const vector<shared_ptr<Parameter>>& ApplicationProcess::GetParameterList()
 {
 	return parameterList;
 }

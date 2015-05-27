@@ -31,21 +31,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "CProcessImageGenerator.h"
 
-using IndustrialNetwork::POWERLINK::Core::NetworkHandling::CProcessImageGenerator;
-
+using namespace IndustrialNetwork::POWERLINK::Core::NetworkHandling;
 
 CProcessImageGenerator::CProcessImageGenerator() :
 	processImageStream()
-{
-
-}
-
+{}
 
 
 CProcessImageGenerator::~CProcessImageGenerator()
-{
-
-}
+{}
 
 std::stringstream& CProcessImageGenerator::Generate()
 {

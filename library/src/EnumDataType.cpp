@@ -31,17 +31,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "EnumDataType.h"
 
-using IndustrialNetwork::POWERLINK::Core::ObjectDictionary::EnumDataType;
-
+using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 
 EnumDataType::EnumDataType()
-{
-
-}
-
-
+{}
 
 EnumDataType::~EnumDataType()
-{
-
-}
+{}

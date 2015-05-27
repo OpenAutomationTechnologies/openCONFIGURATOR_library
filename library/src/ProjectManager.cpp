@@ -30,26 +30,19 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "ProjectManager.h"
-#include "LoggingConfiguration.h"
 
-using IndustrialNetwork::POWERLINK::Core::Configuration::ProjectManager;
+using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::Configuration;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::NetworkHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 
-
 ProjectManager::ProjectManager() :
-	networkList(std::map<std::string, IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network>())
+	networkList(map<string, Network>())
 {}
 
-
-
 ProjectManager::~ProjectManager()
-{
-
-}
-
+{}
 
 ProjectManager& ProjectManager::GetInstance()
 {
@@ -57,14 +50,15 @@ ProjectManager& ProjectManager::GetInstance()
 	return instance;
 }
 
-IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProjectManager::AddNetwork(const std::string& networkId, IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network& net)
+Result ProjectManager::AddNetwork(const string& networkId, Network& net)
 {
-	this->networkList.insert(std::pair<std::string, Network>(networkId, net));
+	this->networkList.insert(pair<string, Network>(networkId, net));
 	return Result();
 }
-IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProjectManager::GetNetwork(const std::string networkID, IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network& net)
+
+Result ProjectManager::GetNetwork(const string networkID, Network& net)
 {
-	std::map<std::string, Network>::const_iterator got = this->networkList.find(networkID);
+	map<string, Network>::const_iterator got = this->networkList.find(networkID);
 	if (got == this->networkList.end())
 	{
 		return Result(ErrorCode::UNHANDLED_EXCEPTION);
@@ -76,9 +70,10 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProjectManager::GetNet
 	}
 	return Result();
 }
-IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProjectManager::RemoveNetwork(const std::string networkId)
+
+Result ProjectManager::RemoveNetwork(const string networkId)
 {
-	std::map<std::string, Network>::const_iterator got = this->networkList.find(networkId);
+	map<string, Network>::const_iterator got = this->networkList.find(networkId);
 	if (got == this->networkList.end())
 	{
 		return Result(ErrorCode::UNHANDLED_EXCEPTION);
@@ -90,36 +85,38 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProjectManager::Remove
 	}
 	return Result();
 }
-IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProjectManager::BuildConfiguration(const std::string networkId,std::ostream& configuration)
+
+Result ProjectManager::BuildConfiguration(const string networkId, ostream& configuration)
 {
-	return Result();
+	//NOT YET IMPLEMENTED
+	return Result(ErrorCode::UNHANDLED_EXCEPTION);
 }
 
-IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProjectManager::BuildProcessImage(const std::string networkId, std::ostream& configuration)
+Result ProjectManager::BuildProcessImage(const string networkId, ostream& configuration)
 {
-	return Result();
+	//NOT YET IMPLEMENTED
+	return Result(ErrorCode::UNHANDLED_EXCEPTION);
 }
 
-IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProjectManager::GetNetworks(std::map<std::string, Network>& networkList)
+Result ProjectManager::GetNetworks(map<string, Network>& networkList)
 {
 	networkList = this->networkList;
 	return Result();
 }
 
-IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProjectManager::ClearNetworkList()
+Result ProjectManager::ClearNetworkList()
 {
 	this->networkList.clear();
 	return Result();
 }
 
-const std::vector<std::string> ProjectManager::GetSupportedSettingIds()
+const vector<string> ProjectManager::GetSupportedSettingIds()
 {
-	std::vector<std::string> vect(std::begin(BuildConfigurationIdName), std::end(BuildConfigurationIdName)) ;
+	vector<string> vect(begin(BuildConfigurationIdName), end(BuildConfigurationIdName)) ;
 	return vect;
 }
 
-
-IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProjectManager::InitLoggingConfiguration(const std::string configFile)
+Result ProjectManager::InitLoggingConfiguration(const string configFile)
 {
 	LoggingConfiguration::initConfiguration(configFile);
 	return Result();

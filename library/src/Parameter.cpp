@@ -31,10 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "Parameter.h"
 
-using IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Parameter;
-
-
-
+using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 
 Parameter::Parameter():
 	uniqueID(),
@@ -45,12 +42,8 @@ Parameter::Parameter():
 	defaultValue(),
 	minValue(),
 	maxValue()
-{
-
-}
+{}
 
 
 Parameter::~Parameter()
-{
-
-}
+{}

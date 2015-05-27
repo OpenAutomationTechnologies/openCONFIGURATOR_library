@@ -30,9 +30,10 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "LoggingConfiguration.h"
-#include "Constants.h"
 
-using IndustrialNetwork::POWERLINK::Core::CoreConfiguration::LoggingConfiguration;
+using namespace std;
+using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
+
 namespace logging = boost::log;
 
 /************************************************************************
@@ -74,7 +75,7 @@ struct scope_list_formatter
 			else
 			{
 				logging::attributes::named_scope_list::const_reference scope_list = scopes.back();
-				std::string file(scope_list.file_name.str());
+				string file(scope_list.file_name.str());
 				size_t pos = file.find_last_of(kPathSeparator);
 
 				strm << file.substr(pos + 1)
@@ -108,7 +109,7 @@ class scope_formatter_factory : public logging::formatter_factory<char>
 		}
 };
 
-void LoggingConfiguration::initConfiguration(const std::string& configurationFile)
+void LoggingConfiguration::initConfiguration(const string& configurationFile)
 {
 	logging::register_simple_formatter_factory< logging::trivial::severity_level, char >("Severity");
 	logging::register_simple_filter_factory< logging::trivial::severity_level, char >("Severity");
@@ -118,7 +119,7 @@ void LoggingConfiguration::initConfiguration(const std::string& configurationFil
 
 	logging::register_formatter_factory("Scope", boost::make_shared<scope_formatter_factory>());
 
-	std::ifstream file(configurationFile);
+	ifstream file(configurationFile);
 	logging::init_from_stream(file);
 
 	logging::core::get()->add_global_attribute("Scope", logging::attributes::named_scope());

@@ -31,11 +31,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "PlkConfiguration.h"
 
+using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::Configuration;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
-using namespace std;
 
-PlkConfiguration::PlkConfiguration(std::string name) : 
+PlkConfiguration::PlkConfiguration(string name) : 
 	IBuildConfiguration<BuildConfigurationSetting>(),
 	configurationName(name)
 {}
@@ -49,12 +49,12 @@ Result PlkConfiguration::GenerateConfiguration()
 	return Result();
 }
 
-const std::string PlkConfiguration::GetConfigurationName()
+const string PlkConfiguration::GetConfigurationName()
 {
 	return this->configurationName;
 }
 
-void PlkConfiguration::SetConfigurationName(const std::string configName)
+void PlkConfiguration::SetConfigurationName(const string configName)
 {
 	this->configurationName = configName;
 }

@@ -35,16 +35,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <memory>
 #include "IBuildConfigurationSetting.h"
-#include "Exports.h"
+#include "Constants.h"
 
 namespace IndustrialNetwork
 {
 	namespace Fieldbus
 	{
 		/**
-		\brief
-		\author rueckerc
+		\brief Represents the template class for the Fieldbus build configuration
+		\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 		*/
+		//T datatype for build configuration settings
 		template<typename T>
 		class DLLEXPORT IBuildConfiguration
 		{

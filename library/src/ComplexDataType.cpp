@@ -31,21 +31,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "ComplexDataType.h"
 
-using IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ComplexDataType;
-
-
-
+using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 
 ComplexDataType::ComplexDataType() :
 	name(),
 	uniqueID(),
 	size()
-{
-
-}
+{}
 
 
 ComplexDataType::~ComplexDataType()
-{
-
-}
+{}

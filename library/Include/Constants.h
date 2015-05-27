@@ -30,6 +30,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef CONSTANTS_H_
 #define CONSTANTS_H_
 
+#define DLLEXPORT
+
+#if defined(_WIN32) && defined(_MSC_VER)
+#undef DLLEXPORT
+#define DLLEXPORT __declspec(dllexport)
+#endif
+
 const char kPathSeparator =
 #ifdef _WIN32
     '\\';

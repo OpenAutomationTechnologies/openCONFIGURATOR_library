@@ -61,7 +61,7 @@ namespace openconfigurator_core_net_app
 
             var mnNew = new ManagingNode();
             net.GetManagingNode(mnNew);
-            Console.WriteLine(mnNew.GetNodeName());
+            Console.WriteLine(mnNew.GetName());
 
             var nodeT = new ControlledNode(10, "Testnode");
             net.AddNode(nodeT);
@@ -75,7 +75,7 @@ namespace openconfigurator_core_net_app
             Console.WriteLine(res2.IsSuccessful());
 
             var res3 = net.GetNode(100, node);
-            Console.WriteLine(node.GetNodeName());
+            Console.WriteLine(node.GetName());
 
             net.GetAvailableNodeIds(ids);
             Console.WriteLine(ids.Count);
@@ -94,7 +94,7 @@ namespace openconfigurator_core_net_app
             mnMapping.SetEnabled(true);
             presTimeOut.SetEnabled(true);
 
-            Console.WriteLine(presTimeOut.GetInfo());
+            Console.WriteLine(presTimeOut.GetDescription());
             StringCollection sett = man.GetSupportedSettingIds();
             foreach (var xx in sett)
             {

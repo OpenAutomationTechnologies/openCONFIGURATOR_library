@@ -36,7 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "IBuildConfiguration.h"
 #include "Result.h"
 #include "ErrorCode.h"
-#include "Exports.h"
+#include "Constants.h"
 #include "BuildConfigurationSetting.h"
 
 namespace IndustrialNetwork

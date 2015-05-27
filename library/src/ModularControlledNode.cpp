@@ -29,34 +29,31 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
-#include <iostream>
 #include "ModularControlledNode.h"
-#include "Result.h"
 
+using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
 using namespace IndustrialNetwork::POWERLINK::Core::ModularNode;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
-using namespace std;
 
-ModularControlledNode::ModularControlledNode(std::uint8_t nodeID, const std::string nodeName) : ControlledNode(nodeID, nodeName),
+
+ModularControlledNode::ModularControlledNode(uint8_t nodeID, const string nodeName) : ControlledNode(nodeID, nodeName),
 	maxChildren(),
 	unusedSlots(false),
 	multipleChildren(false),
-	rangeList(std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ModularNode::Range>>()),
-	moduleCollection(std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ModularNode::Module>>())
+	rangeList(vector<shared_ptr<IndustrialNetwork::POWERLINK::Core::ModularNode::Range>>()),
+	moduleCollection(vector<shared_ptr<IndustrialNetwork::POWERLINK::Core::ModularNode::Module>>())
 {}
 
 ModularControlledNode::~ModularControlledNode()
-{
-
-}
+{}
 
 IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddModule(const IndustrialNetwork::POWERLINK::Core::ModularNode::Module& module)
 {
 	return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result();
 }
 
-IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ChangeModuleOrder(const IndustrialNetwork::POWERLINK::Core::ModularNode::Module& module, std::uint32_t newPos, bool reorderModules)
+IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ChangeModuleOrder(const IndustrialNetwork::POWERLINK::Core::ModularNode::Module& module, uint32_t newPos, bool reorderModules)
 {
 	return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result();
 }
@@ -71,7 +68,7 @@ bool ModularControlledNode::RecalculateModularNodeOd()
 	return false;
 }
 
-std::uint32_t ModularControlledNode::GetModuleCount()
+uint32_t ModularControlledNode::GetModuleCount()
 {
 	return 0;
 }

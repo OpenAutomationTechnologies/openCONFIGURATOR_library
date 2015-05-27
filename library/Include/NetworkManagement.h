@@ -32,8 +32,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined NETWORK_MANAGEMENT_H
 #define NETWORK_MANAGEMENT_H
 
-#include "boost/variant.hpp"
 #include <vector>
+#include <iostream>
+#include "boost/variant.hpp"
 #include "PlkFeature.h"
 #include "GeneralFeature.h"
 #include "CnFeature.h"

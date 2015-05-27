@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SUBOBJECT_H
 
 #include "BaseObject.h"
-#include "Exports.h"
+#include "Constants.h"
 
 namespace IndustrialNetwork
 {
@@ -44,8 +44,8 @@ namespace IndustrialNetwork
 			namespace ObjectDictionary
 			{
 				/**
-				\brief
-				\author rueckerc
+				\brief Represents the sub object in the POWERLINK node object dictionary.
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
 				class DLLEXPORT SubObject : public IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject
 				{

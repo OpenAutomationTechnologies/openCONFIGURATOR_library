@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define APPLICATION_PROCESS_H
 
 #include <vector>
+#include <memory>
 #include "Parameter.h"
 
 namespace IndustrialNetwork
@@ -53,10 +54,10 @@ namespace IndustrialNetwork
 					public:
 						ApplicationProcess();
 						virtual ~ApplicationProcess();
-						const std::vector<Parameter>& GetParameterList();
+						const std::vector<std::shared_ptr<Parameter>>& GetParameterList();
 
 					private:
-						std::vector<Parameter> parameterList;
+						std::vector<std::shared_ptr<Parameter>> parameterList;
 
 				};
 

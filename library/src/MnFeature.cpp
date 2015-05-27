@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "MnFeature.h"
 
+using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
 
 MnFeature::MnFeature(MNFeatureEnum type) : PlkFeature<MNFeatureEnum>(type)
@@ -40,7 +41,7 @@ MnFeature::MnFeature(MNFeatureEnum type) : PlkFeature<MNFeatureEnum>(type)
 MnFeature::~MnFeature()
 {}
 
-const std::string MnFeature::GetName()
+const string MnFeature::GetName()
 {
 	return PlkFeatureStrings[this->GetType()];
 }

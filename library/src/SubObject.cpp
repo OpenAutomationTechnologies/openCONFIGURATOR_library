@@ -31,12 +31,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "SubObject.h"
 
+using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 
 template<PlkDataType TYPE>
-SubObject::SubObject(std::uint32_t id) : BaseObject(id, TYPE)
+SubObject::SubObject(uint32_t id) : BaseObject(id, TYPE)
 {}
-
 
 SubObject::~SubObject()
 {}

@@ -33,25 +33,25 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define IBUILD_CONFIGURATION_SETTING_H
 
 #include <string>
-#include "Exports.h"
+#include "Constants.h"
 
 namespace IndustrialNetwork
 {
 	namespace Fieldbus
 	{
 		/**
-		\brief
-		\author rueckerc
+		\brief Represents the base class for a Fieldbus build configuration setting.
+		\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 		*/
 		class DLLEXPORT IBuildConfigurationSetting
 		{
 
 			public:
-				IBuildConfigurationSetting(std::string name="", std::string value="", std::string info="") :
+				IBuildConfigurationSetting(std::string name="", std::string value="", std::string description="") :
 					enabled(true),
-					settingName(name),
-					settingValue(value),
-					settingInfo(info)
+					name(name),
+					value(value),
+					description(description)
 				{}
 
 				virtual ~IBuildConfigurationSetting()
@@ -59,52 +59,50 @@ namespace IndustrialNetwork
 
 				bool IsEnabled()
 				{
-
-					return enabled;
+					return this->enabled;
 				}
 
 				void SetEnabled(bool enable)
 				{
-
-					enabled = enable;
+					this->enabled = enable;
 				}
 
-				const std::string& GetInfo()
+				const std::string& GetDescription()
 				{
-					return this->settingInfo;
+					return this->description;
 				}
 
-				void SetInfo(const std::string& settingInfo)
+				void SetDescription(const std::string& description)
 				{
-					this->settingInfo = settingInfo;
+					this->description = description;
 				}
 
 				const std::string& GetName()
 				{
-					return this->settingName;
+					return this->name;
 				}
 
-				void SetName(const std::string& settingName)
+				void SetName(const std::string& name)
 				{
-					this->settingName = settingName;
+					this->name = name;
 				}
 
 				const std::string& GetValue()
 				{
-					return this->settingValue;
+					return this->value;
 				}
 
-				void SetValue(const std::string& settingValue)
+				void SetValue(const std::string& value)
 				{
-					this->settingValue = settingValue;
+					this->value = value;
 				}
 
 
 			private:
 				bool enabled;
-				std::string settingName;
-				std::string settingValue;
-				std::string settingInfo;
+				std::string name;
+				std::string value;
+				std::string description;
 		};
 
 	}

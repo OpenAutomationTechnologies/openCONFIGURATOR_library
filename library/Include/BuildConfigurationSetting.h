@@ -38,7 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "BuildConfigurationId.h"
 #include "Result.h"
 #include "ErrorCode.h"
-#include "Exports.h"
+#include "Constants.h"
 
 namespace IndustrialNetwork
 {
@@ -51,15 +51,12 @@ namespace IndustrialNetwork
 				/**
 				\brief Represents one build configuration setting in the POWERLINK network.
 				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
-				\date 28-Apr-2015 14:40:00
 				*/
 				class DLLEXPORT BuildConfigurationSetting : public IndustrialNetwork::Fieldbus::IBuildConfigurationSetting
 				{
 					public:
-						/**
-						/brief Default Constructor
-						*/
 						BuildConfigurationSetting();
+						~BuildConfigurationSetting();
 
 						/**
 						\brief Constructor for the BuildConfigurationHandler class.
@@ -67,11 +64,6 @@ namespace IndustrialNetwork
 						\param[in] value string of the setting. Default value is empty.
 						*/
 						BuildConfigurationSetting(std::string name, std::string value = "");
-
-						/**
-						\brief Destructor for the BuildConfigurationHandler class.
-						*/
-						~BuildConfigurationSetting(void);
 
 					private:
 						void InitConfigurationSetting(std::string id);

@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <string>
 #include <fstream>
+#include "Constants.h"
 
 #ifdef _MSC_VER
 #pragma warning(push, 0) // Store current warning state and set global warning level 0
@@ -65,7 +66,6 @@ namespace IndustrialNetwork
 				/**
 				\brief Handles the boost log configuration.
 				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
-				\date 30-Apr-2015 12:00:00
 				*/
 				class LoggingConfiguration
 				{
@@ -102,10 +102,10 @@ namespace IndustrialNetwork
 				#define LOG_FATAL() \
 				BOOST_LOG_FUNCTION(); \
 				BOOST_LOG_SEV(sev_logger::get(), boost::log::trivial::fatal)
+			}
+
 		}
 
 	}
-
-}
 }
 #endif

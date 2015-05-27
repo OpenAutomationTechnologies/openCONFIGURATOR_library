@@ -39,115 +39,113 @@ namespace IndustrialNetwork
 	namespace Fieldbus
 	{
 		/**
-		\brief
-		\author rueckerc
+		\brief Represents the template class for the Fieldbus objects.
+		\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 		*/
+		// T datatype for the object id
+		// V datatype for the actual/default value
+		// D datatype for the object datatype
 		template<typename T, typename V, typename D>
 		class IBaseObject
 		{
 
 			public:
 				IBaseObject() :
-					objectIdentifier(),
-					objectActualValue(),
-					objectDefaultValue(),
-					objectDataType(),
-					objectName("")
+					id(),
+					actualValue(),
+					defaultValue(),
+					dataType(),
+					name("")
 
 				{}
+
 				IBaseObject(T id, V defaultValue, D dataType, std::string name = "") :
-					objectIdentifier(id),
-					objectActualValue(),
-					objectDefaultValue(defaultValue),
-					objectDataType(dataType),
-					objectName(name)
+					id(id),
+					actualValue(),
+					defaultValue(defaultValue),
+					dataType(dataType),
+					name(name)
 				{}
 
 				IBaseObject(T id) :
-					objectIdentifier(id),
-					objectActualValue(),
-					objectDefaultValue(),
-					objectDataType(),
-					objectName("")
+					id(id),
+					actualValue(),
+					defaultValue(),
+					dataType(),
+					name("")
 				{}
 
 				IBaseObject(T id, D dataType, std::string name = "") :
-					objectIdentifier(id),
-					objectActualValue(),
-					objectDefaultValue(),
-					objectDataType(dataType),
-					objectName(name)
+					id(id),
+					actualValue(),
+					defaultValue(),
+					dataType(dataType),
+					name(name)
 				{}
 
 
 				virtual ~IBaseObject()
 				{}
 
-				const T GetObjectIdentifier() const
+				const T GetId() const
 				{
-
-					return objectIdentifier;
+					return this->id;
 				}
 
-				void SetObjectIdentifier(const T id)
+				void SetId(const T id)
 				{
 
-					objectIdentifier = id;
+					this->id = id;
 				}
 
-				const std::string& GetObjectName() const
+				const std::string& GetName() const
 				{
 
-					return objectName;
+					return this->name;
 				}
 
-				void SetObjectName(std::string& name)
+				void SetName(std::string& name)
 				{
-
-					objectName = name;
+					this->name = name;
 				}
 
-				const V GetObjectActualValue() const
+				const V GetActualValue() const
 				{
-
-					return objectActualValue;
-				}
-				void SetObjectActualValue(const V& actualVal)
-				{
-
-					objectActualValue = actualVal;
+					return this->actualValue;
 				}
 
-				const V GetObjectDefaultValue() const
+				void SetActualValue(const V& actualValue)
 				{
-
-					return objectDefaultValue;
+					this->actualValue = actualValue;
 				}
 
-				void SetObjectDefaultValue(const V& defaultVal)
+				const V GetDefaultValue() const
 				{
-
-					objectDefaultValue = defaultVal;
+					return this->defaultValue;
 				}
 
-				const D GetObjectDataType() const
+				void SetDefaultValue(const V& defaultValue)
 				{
-
-					return objectDataType;
+					this->defaultValue = defaultValue;
 				}
 
-				void SetObjectDataType(const D& dataType)
+				const D GetDataType() const
+				{
+					return this->dataType;
+				}
+
+				void SetDataType(const D& dataType)
 				{
 
-					this->objectDataType = dataType;
+					this->dataType = dataType;
 				}
 
 			private:
-				T objectIdentifier;
-				V objectActualValue;
-				V objectDefaultValue;
-				D objectDataType;
-				std::string objectName;
+				T id;
+				V actualValue;
+				V defaultValue;
+				D dataType;
+				std::string name;
 
 
 		};

@@ -36,7 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstdint>
 #include <memory>
 #include <boost/filesystem.hpp>
-#include "Exports.h"
+#include "Constants.h"
 #include "ApplicationProcess.h"
 #include "NetworkManagement.h"
 #include "DynamicChannel.h"
@@ -56,8 +56,8 @@ namespace IndustrialNetwork
 			namespace Node
 			{
 				/**
-				\brief
-				\author rueckerc
+				\brief Represents the common basis for all POWERLINK node.
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
 				class DLLEXPORT BaseNode : public IndustrialNetwork::Fieldbus::IFieldbusNode<std::uint8_t, std::uint32_t, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>
 				{
@@ -66,25 +66,25 @@ namespace IndustrialNetwork
 						BaseNode(std::uint8_t nodeId, const std::string& nodeName = "");
 						virtual ~BaseNode();
 
-						const std::string& GetNodeName();
-						void SetNodeName(const std::string& nodeName);
+						const std::string& GetName();
+						void SetName(const std::string& name);
 						std::uint8_t GetNodeIdentifier();
 						void SetNodeIdentifier(std::uint8_t nodeId);
 						const std::unordered_map<std::uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>>& GetObjectDictionary();
 						void SetObjectDictionary(const std::unordered_map<uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>>& od);
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNodeObject(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object& objRef);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ForceNodeObject(std::uint32_t nodeId, std::string actualValue = "");
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetNodeObjectActualValue(std::uint32_t nodeId, std::string actualValue);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetNodeObject(std::uint32_t nodeId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object& objRef);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddObject(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object& objRef);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ForceObject(std::uint32_t nodeId, std::string actualValue = "");
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetObjectActualValue(std::uint32_t nodeId, std::string actualValue);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetObject(std::uint32_t nodeId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object& objRef);
 
 						virtual bool AddNodeAssignement(NodeAssignment) = 0;
 						virtual bool RemoveNodeAssignment(NodeAssignment) = 0;
 						virtual std::uint32_t GetNodeAssignmentValue() = 0;
 
 					private:
-						std::uint8_t nodeIdentifier;
-						std::string nodeName;
+						std::uint8_t nodeId;
+						std::string name;
 						std::unordered_map<std::uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>> objectDictionary;
 						std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ApplicationProcess> applicationProcess;
 

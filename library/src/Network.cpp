@@ -31,11 +31,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "Network.h"
 
+using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::NetworkHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
 using namespace IndustrialNetwork::POWERLINK::Core::Configuration;
-
 
 Network::Network() :
 	networkId(""),
@@ -43,26 +43,26 @@ Network::Network() :
 	asyncMTU(300), //DS 301 V1.2.1
 	multiplexedCycleLength(0), //DS 301 V1.2.1
 	prescaler(2), //DS 301 V1.2.1
-	nodeCollection(std::unordered_map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>()),
-	buildConfigurations(std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::PlkConfiguration>()),
+	nodeCollection(unordered_map<uint8_t, shared_ptr<BaseNode>>()),
+	buildConfigurations(vector<PlkConfiguration>()),
 	activeConfiguration("")
 {}
 
-Network::Network(const std::string networkId) :
+Network::Network(const string networkId) :
 	networkId(networkId),
 	cycleTime(0),
 	asyncMTU(300), //DS 301 V1.2.1
 	multiplexedCycleLength(0), //DS 301 V1.2.1
 	prescaler(2), //DS 301 V1.2.1
-	nodeCollection(std::unordered_map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>()),
-	buildConfigurations(std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::PlkConfiguration>()),
+	nodeCollection(unordered_map<uint8_t, shared_ptr<BaseNode>>()),
+	buildConfigurations(vector<PlkConfiguration>()),
 	activeConfiguration("")
 {}
 
 Network::~Network()
 {}
 
-IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result Network::AddNode(IndustrialNetwork::POWERLINK::Core::Node::ControlledNode& node)
+Result Network::AddNode(ControlledNode& node)
 {
 	for (auto var : this->nodeCollection)
 	{
@@ -71,12 +71,12 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result Network::AddNode(Indus
 			return Result(ErrorCode::NODE_EXISTS);
 		}
 	}
-	std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode> ptr = std::make_shared<ControlledNode>(node);
-	this->nodeCollection.insert(std::pair<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>(node.GetNodeIdentifier(), ptr));
+	shared_ptr<BaseNode> ptr = make_shared<ControlledNode>(node);
+	this->nodeCollection.insert(pair<uint8_t, shared_ptr<BaseNode>>(node.GetNodeIdentifier(), ptr));
 	return Result();
 }
 
-IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result Network::AddNode(IndustrialNetwork::POWERLINK::Core::Node::ManagingNode& node)
+Result Network::AddNode(ManagingNode& node)
 {
 	for (auto var : this->nodeCollection)
 	{
@@ -85,12 +85,12 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result Network::AddNode(Indus
 			return Result(ErrorCode::NODE_EXISTS);
 		}
 	}
-	std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode> ptr = std::make_shared<ManagingNode>(node);
-	this->nodeCollection.insert(std::pair<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>(node.GetNodeIdentifier(), ptr));
+	shared_ptr<BaseNode> ptr = make_shared<ManagingNode>(node);
+	this->nodeCollection.insert(pair<uint8_t, shared_ptr<BaseNode>>(node.GetNodeIdentifier(), ptr));
 	return Result();
 }
 
-Result Network::GetNode(const uint8_t nodeID, IndustrialNetwork::POWERLINK::Core::Node::BaseNode& node)
+Result Network::GetNode(const uint8_t nodeID, BaseNode& node)
 {
 	for (auto var : this->nodeCollection)
 	{
@@ -103,7 +103,7 @@ Result Network::GetNode(const uint8_t nodeID, IndustrialNetwork::POWERLINK::Core
 	return Result(ErrorCode::NODE_DOES_NOT_EXIST);
 }
 
-Result Network::GetManagingNode(IndustrialNetwork::POWERLINK::Core::Node::BaseNode& node)
+Result Network::GetManagingNode(BaseNode& node)
 {
 	for (auto var : this->nodeCollection)
 	{
@@ -118,7 +118,7 @@ Result Network::GetManagingNode(IndustrialNetwork::POWERLINK::Core::Node::BaseNo
 
 Result Network::RemoveNode(const uint8_t nodeID)
 {
-	std::unordered_map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>::iterator it;
+	unordered_map<uint8_t, shared_ptr<BaseNode>>::iterator it;
 	for (it = this->nodeCollection.begin() ; it != this->nodeCollection.end(); ++it)
 	{
 		if (it->first == nodeID)
@@ -131,7 +131,7 @@ Result Network::RemoveNode(const uint8_t nodeID)
 	return Result();
 }
 
-Result Network::ReplaceNode(const uint8_t nodeID, IndustrialNetwork::POWERLINK::Core::Node::BaseNode& node)
+Result Network::ReplaceNode(const uint8_t nodeID, BaseNode& node)
 {
 	Result res = RemoveNode(nodeID);
 	if (!res.IsSuccessful())
@@ -150,7 +150,7 @@ Result Network::ReplaceNode(const uint8_t nodeID, IndustrialNetwork::POWERLINK::
 	return Result();
 }
 
-Result Network::GetNodes(std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection)
+Result Network::GetNodes(vector<shared_ptr<BaseNode>>& nodeCollection)
 {
 	for (auto var : this->nodeCollection)
 	{
@@ -159,7 +159,7 @@ Result Network::GetNodes(std::vector<std::shared_ptr<IndustrialNetwork::POWERLIN
 	return Result();
 }
 
-IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result Network::GetAvailableNodeIds(std::vector<std::uint8_t>& nodeIdCollection)
+Result Network::GetAvailableNodeIds(vector<uint8_t>& nodeIdCollection)
 {
 	for (auto var : this->nodeCollection)
 	{
@@ -168,7 +168,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result Network::GetAvailableN
 	return Result();
 }
 
-const std::string Network::GetNetworkId()
+const string Network::GetNetworkId()
 {
 	return this->networkId;
 }
@@ -213,7 +213,7 @@ void Network::SetPrescaler(const uint32_t prescaler)
 	this->prescaler = prescaler;
 }
 
-bool Network::SetConfigurationSettingEnabled(const std::string configName, const std::string settingName, bool enabled)
+bool Network::SetConfigurationSettingEnabled(const string configName, const string settingName, bool enabled)
 {
 	for (auto config : this->buildConfigurations)
 	{
@@ -233,7 +233,7 @@ bool Network::SetConfigurationSettingEnabled(const std::string configName, const
 }
 
 
-bool Network::AddConfigurationSetting(const std::string configID, BuildConfigurationSetting newSetting)
+bool Network::AddConfigurationSetting(const string configID, BuildConfigurationSetting newSetting)
 {
 	for (auto& config : this->buildConfigurations)
 	{
@@ -253,13 +253,13 @@ bool Network::AddConfigurationSetting(const std::string configID, BuildConfigura
 	return false;
 }
 
-bool Network::RemoveConfigurationSetting(std::string configID, const std::string name)
+bool Network::RemoveConfigurationSetting(string configID, const string name)
 {
 	for (auto& config : this->buildConfigurations)
 	{
 		if (config.GetConfigurationName() == configID)
 		{
-			std::vector<BuildConfigurationSetting>::iterator it;
+			vector<BuildConfigurationSetting>::iterator it;
 			for (it = config.GetBuildConfigurationSettings().begin() ; it != config.GetBuildConfigurationSettings().end(); ++it)
 			{
 				if (it->GetName() == name)
@@ -275,7 +275,7 @@ bool Network::RemoveConfigurationSetting(std::string configID, const std::string
 	return false;
 }
 
-bool Network::AddConfiguration(std::string configID)
+bool Network::AddConfiguration(string configID)
 {
 	for (auto& config : this->buildConfigurations)
 	{
@@ -292,12 +292,12 @@ bool Network::AddConfiguration(std::string configID)
 	return true;
 }
 
-bool Network::RemoveConfiguration(std::string configID)
+bool Network::RemoveConfiguration(string configID)
 {
 	if (this->activeConfiguration == configID)
 		return false;
 
-	std::vector<PlkConfiguration>::iterator it;
+	vector<PlkConfiguration>::iterator it;
 	for (it = this->buildConfigurations.begin() ; it != this->buildConfigurations.end(); ++it)
 	{
 		if (it->GetConfigurationName() == configID)
@@ -310,7 +310,7 @@ bool Network::RemoveConfiguration(std::string configID)
 	return true;
 }
 
-bool Network::ReplaceConfigurationName(const std::string oldConfigID, const std::string newConfigID)
+bool Network::ReplaceConfigurationName(const string oldConfigID, const string newConfigID)
 {
 	for (auto& config : this->buildConfigurations)
 	{
@@ -323,7 +323,7 @@ bool Network::ReplaceConfigurationName(const std::string oldConfigID, const std:
 	return false;
 }
 
-bool Network::GetConfigurationSettings(std::string configID, std::vector<BuildConfigurationSetting>& returnRef)
+bool Network::GetConfigurationSettings(string configID, vector<BuildConfigurationSetting>& returnRef)
 {
 	for (auto& config : this->buildConfigurations)
 	{
@@ -336,12 +336,12 @@ bool Network::GetConfigurationSettings(std::string configID, std::vector<BuildCo
 	return false;
 }
 
-const std::string& Network::GetActiveConfiguration()
+const string& Network::GetActiveConfiguration()
 {
 	return this->activeConfiguration;
 }
 
-bool Network::SetActiveConfiguration(const std::string configID)
+bool Network::SetActiveConfiguration(const string configID)
 {
 	for (auto& config : this->buildConfigurations)
 	{

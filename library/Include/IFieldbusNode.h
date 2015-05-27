@@ -40,8 +40,8 @@ namespace IndustrialNetwork
 	namespace Fieldbus
 	{
 		/**
-		\brief
-		\author rueckerc
+		\brief Represents the template class for a node in the Fieldbus.
+		\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 		*/
 		template<typename T, typename K, typename V>
 		class IFieldbusNode
@@ -49,37 +49,17 @@ namespace IndustrialNetwork
 
 			public:
 				virtual ~IFieldbusNode(){};
-				/**
-				\return std::string&
-				*/
-				virtual const std::string& GetNodeName() = 0;
 
-				/**
-				\param newVal
-				\return void
-				*/
-				virtual void SetNodeName(const std::string& nodeName) = 0;
+				virtual const std::string& GetName() = 0;
 
-				/**
-				\return T
-				*/
+				virtual void SetName(const std::string& name) = 0;
+
 				virtual T GetNodeIdentifier() = 0;
 
-				/**
-				\param newVal
-				\return void
-				*/
-				virtual void SetNodeIdentifier(T nodeId) = 0;
+				virtual void SetNodeIdentifier(T id) = 0;
 
-				/**
-				\return std::unordered_map<K, V>&
-				*/
 				virtual const std::unordered_map<K, std::shared_ptr<V>>& GetObjectDictionary() = 0;
 
-				/**
-				\param newVal
-				\return void
-				*/
 				virtual void SetObjectDictionary(const std::unordered_map<K, std::shared_ptr<V>>& od) = 0;
 
 		};

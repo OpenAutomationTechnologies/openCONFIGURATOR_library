@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define MANAGING_NODE_H
 
 #include "BaseNode.h"
-#include "Exports.h"
+#include "Constants.h"
 
 namespace IndustrialNetwork
 {
@@ -44,8 +44,8 @@ namespace IndustrialNetwork
 			namespace Node
 			{
 				/**
-				\brief
-				\author rueckerc
+				\brief Represents the Managing Nodes in the POWERLINK network.
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
 				class DLLEXPORT ManagingNode : public IndustrialNetwork::POWERLINK::Core::Node::BaseNode
 				{

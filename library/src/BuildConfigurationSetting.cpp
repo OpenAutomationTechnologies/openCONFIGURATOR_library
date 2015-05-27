@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "BuildConfigurationSetting.h"
 
+using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::Configuration;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 
@@ -38,7 +39,7 @@ BuildConfigurationSetting::BuildConfigurationSetting()
 	:  IndustrialNetwork::Fieldbus::IBuildConfigurationSetting()
 {}
 
-BuildConfigurationSetting::BuildConfigurationSetting(std::string id, std::string value)
+BuildConfigurationSetting::BuildConfigurationSetting(string id, string value)
 	:  IndustrialNetwork::Fieldbus::IBuildConfigurationSetting(id, value)
 {
 	InitConfigurationSetting(id);
@@ -47,20 +48,19 @@ BuildConfigurationSetting::BuildConfigurationSetting(std::string id, std::string
 BuildConfigurationSetting::~BuildConfigurationSetting(void)
 {}
 
-void BuildConfigurationSetting::InitConfigurationSetting(std::string id)
+void BuildConfigurationSetting::InitConfigurationSetting(string id)
 {
-	std::string infoMessage;
 	if (id == "GENERATE_MN_MAPPING_FOR_NODES")
 	{
-		this->SetInfo(BuildConfigurationIdDescription[BuildConfigurationId::GENERATE_MN_MAPPING_FOR_NODES]);
+		this->SetDescription(BuildConfigurationIdDescription[BuildConfigurationId::GENERATE_MN_MAPPING_FOR_NODES]);
 	}
 	else if (id == "GENERATE_MN_NODE_ASSIGNMENT_FOR_NODES")
 	{
-		this->SetInfo(BuildConfigurationIdDescription[BuildConfigurationId::GENERATE_MN_NODE_ASSIGNMENT_FOR_NODES]);
+		this->SetDescription(BuildConfigurationIdDescription[BuildConfigurationId::GENERATE_MN_NODE_ASSIGNMENT_FOR_NODES]);
 	}
 	else if (id == "GENERATE_MN_PRES_TIMEOUT_FOR_NODES")
 	{
-		this->SetInfo(BuildConfigurationIdDescription[BuildConfigurationId::GENERATE_MN_MAPPING_FOR_NODES]);
+		this->SetDescription(BuildConfigurationIdDescription[BuildConfigurationId::GENERATE_MN_MAPPING_FOR_NODES]);
 	}
 }
 

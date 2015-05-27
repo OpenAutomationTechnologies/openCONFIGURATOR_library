@@ -35,15 +35,9 @@ using IndustrialNetwork::POWERLINK::Core::NetworkHandling::ProcessImageGenerator
 
 
 ProcessImageGenerator::ProcessImageGenerator()
-{
-
-}
+{}
 
 
 
 ProcessImageGenerator::~ProcessImageGenerator()
-{
-
-}
-
-
+{}

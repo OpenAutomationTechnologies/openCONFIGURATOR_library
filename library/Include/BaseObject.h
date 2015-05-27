@@ -33,9 +33,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define BASE_INDEX_H
 
 #include <cstdint>
-#include <boost/optional.hpp>
 #include <vector>
-#include "Exports.h"
+#include <boost/optional.hpp>
+#include "Constants.h"
 #include "IBaseObject.h"
 #include "ObjectType.h"
 #include "PDOMapping.h"
@@ -51,8 +51,8 @@ namespace IndustrialNetwork
 			namespace ObjectDictionary
 			{
 				/**
-				\brief
-				\author rueckerc
+				\brief Represents the common basis for all POWERLINK objects.
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
 				class DLLEXPORT BaseObject : public IndustrialNetwork::Fieldbus::IBaseObject<std::uint32_t, std::string, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType>
 				{

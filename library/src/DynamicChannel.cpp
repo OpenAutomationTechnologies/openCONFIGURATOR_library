@@ -31,10 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "DynamicChannel.h"
 
-using IndustrialNetwork::POWERLINK::Core::Node::DynamicChannel;
-
-
-
+using namespace IndustrialNetwork::POWERLINK::Core::Node;
 
 DynamicChannel::DynamicChannel() :
 	addressOffset(),
@@ -48,6 +45,4 @@ DynamicChannel::DynamicChannel() :
 
 
 DynamicChannel::~DynamicChannel()
-{
-
-}
+{}

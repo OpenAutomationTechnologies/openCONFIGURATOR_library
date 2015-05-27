@@ -31,20 +31,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "ArrayDataType.h"
 
-using IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ArrayDataType;
+using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 
 
-ArrayDataType::ArrayDataType() : IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ComplexDataType(),
+ArrayDataType::ArrayDataType() : ComplexDataType(),
 	lowerLimit(0),
 	upperLimit(0),
 	dataType()
-{
-
-}
-
-
+{}
 
 ArrayDataType::~ArrayDataType()
-{
-
-}
+{}

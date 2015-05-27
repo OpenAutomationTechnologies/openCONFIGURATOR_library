@@ -31,17 +31,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "TxProcessDataMappingObject.h"
 
-using IndustrialNetwork::POWERLINK::Core::ObjectDictionary::TxProcessDataMappingObject;
-
+using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 
 TxProcessDataMappingObject::TxProcessDataMappingObject()
-{
-
-}
-
-
+{}
 
 TxProcessDataMappingObject::~TxProcessDataMappingObject()
-{
-
-}
+{}

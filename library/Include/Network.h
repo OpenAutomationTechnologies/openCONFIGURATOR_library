@@ -38,7 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Module.h"
 #include "NodeType.h"
 #include "PlkConfiguration.h"
-#include "Exports.h"
+#include "Constants.h"
 #include "ControlledNode.h"
 #include "ManagingNode.h"
 #include "PlkConfiguration.h"
@@ -54,8 +54,8 @@ namespace IndustrialNetwork
 			namespace NetworkHandling
 			{
 				/**
-				\brief
-				\author rueckerc
+				\brief Handles one POWERLINK network instance in the library.
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
 				class DLLEXPORT Network
 				{
@@ -122,17 +122,6 @@ namespace IndustrialNetwork
 						/return Result
 						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetAvailableNodeIds(std::vector<std::uint8_t>& nodeIdCollection);
-
-						const std::string GetNetworkId();
-						std::uint32_t GetCycleTime();
-						std::uint32_t GetAsyncMTU();
-						std::uint32_t GetMultiplexedCycleLength();
-						std::uint32_t GetPrescaler();
-
-						void SetCycleTime(const std::uint32_t cycleTime);
-						void SetAsyncMTU(const std::uint32_t asyncMTU);
-						void SetMultiplexedCycleLength(const std::uint32_t multiCycleLength);
-						void SetPrescaler(const std::uint32_t prescaler);
 
 						/**
 						\brief Enables/Disables a configuration setting handled by the class.
@@ -207,6 +196,20 @@ namespace IndustrialNetwork
 						\retval false The active configuration is not set.
 						*/
 						bool SetActiveConfiguration(const std::string configID);
+
+						/**
+						* Getter & Setter
+						*/
+						const std::string GetNetworkId();
+						std::uint32_t GetCycleTime();
+						std::uint32_t GetAsyncMTU();
+						std::uint32_t GetMultiplexedCycleLength();
+						std::uint32_t GetPrescaler();
+
+						void SetCycleTime(const std::uint32_t cycleTime);
+						void SetAsyncMTU(const std::uint32_t asyncMTU);
+						void SetMultiplexedCycleLength(const std::uint32_t multiCycleLength);
+						void SetPrescaler(const std::uint32_t prescaler);
 
 					private:
 						std::string networkId;

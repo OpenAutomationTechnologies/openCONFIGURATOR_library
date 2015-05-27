@@ -31,40 +31,35 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "LibraryConfiguration.h"
 
-using IndustrialNetwork::POWERLINK::Core::CoreConfiguration::LibraryConfiguration;
+using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
+using namespace boost::filesystem;
 
 /**
 \brief \return std::string
-
 \return boost::filesystem::path&
 */
-const boost::filesystem::path& LibraryConfiguration::GetLibraryPath()
+const path& LibraryConfiguration::GetLibraryPath()
 {
-
 	return this->libResourcePath;
 }
 
 
 /**
 \brief \return std::string
-
 \return boost::filesystem::path&
 */
-const boost::filesystem::path& LibraryConfiguration::GetResourcePath()
+const path& LibraryConfiguration::GetResourcePath()
 {
-
 	return this->libResourcePath;
 }
 
 
 /**
 \brief \return boost::filesystem::path&
-
 \return boost::filesystem::path&
 */
-const boost::filesystem::path& LibraryConfiguration::GetXDDSchemaPath()
+const path& LibraryConfiguration::GetXDDSchemaPath()
 {
-
 	return this->XDDSchemaPath;
 }
 
@@ -74,6 +69,5 @@ const boost::filesystem::path& LibraryConfiguration::GetXDDSchemaPath()
 */
 const boost::filesystem::path& LibraryConfiguration::GetProjectFileSchemaFilePath()
 {
-
 	return this->ProjectFileSchemaPath;
 }

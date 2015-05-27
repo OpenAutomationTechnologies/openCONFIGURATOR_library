@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define ERROR_CODE_H
 
 #include <cstdint>
-#include "Exports.h"
+#include "Constants.h"
 
 namespace IndustrialNetwork
 {

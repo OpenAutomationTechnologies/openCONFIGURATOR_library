@@ -36,11 +36,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "PlkOperationMode.h"
 #include "Result.h"
 #include "BaseObject.h"
-#include "Exports.h"
+#include "Constants.h"
 #include "Direction.h"
 #include "Module.h"
 #include "Range.h"
-#include "Exports.h"
+#include "Constants.h"
 
 namespace IndustrialNetwork
 {
@@ -51,8 +51,8 @@ namespace IndustrialNetwork
 			namespace Node
 			{
 				/**
-				\brief
-				\author rueckerc
+				\brief Representes the Controlled Node in the POWERLINK network.
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
 				class DLLEXPORT ControlledNode : public IndustrialNetwork::POWERLINK::Core::Node::BaseNode
 				{

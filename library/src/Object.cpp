@@ -31,14 +31,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "Object.h"
 
+using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 
 template<PlkDataType TYPE>
-Object::Object(std::uint32_t id) : BaseObject(id, TYPE),
+Object::Object(uint32_t id) : BaseObject(id, TYPE),
 	subIndexCollection()
 {}
 
 Object::~Object()
-{
-
-}
+{}

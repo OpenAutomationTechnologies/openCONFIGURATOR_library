@@ -31,18 +31,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "StructDataType.h"
 
-using IndustrialNetwork::POWERLINK::Core::ObjectDictionary::StructDataType;
+using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 
-
-StructDataType::StructDataType() : IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ComplexDataType(),
+StructDataType::StructDataType() : ComplexDataType(),
 	varDeclarationList()
-{
-
-}
-
+{}
 
 
 StructDataType::~StructDataType()
-{
-
-}
+{}

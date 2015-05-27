@@ -29,22 +29,18 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
-#include <iostream>
 #include "NetworkManagement.h"
 
-using namespace IndustrialNetwork::POWERLINK::Core::Node;
 using namespace std;
-
+using namespace IndustrialNetwork::POWERLINK::Core::Node;
 
 NetworkManagement::NetworkManagement() :
 	featureList()
 {}
 
-
 NetworkManagement::~NetworkManagement()
-{
+{}
 
-}
 template<class T>
 bool NetworkManagement::AddFeature(const T& featureName)
 {
