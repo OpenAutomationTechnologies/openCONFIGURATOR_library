@@ -55,6 +55,7 @@ namespace IndustrialNetwork
 				{
 
 					public:
+						PlkConfiguration();
 						PlkConfiguration(std::string name);
 						~PlkConfiguration();
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GenerateConfiguration();

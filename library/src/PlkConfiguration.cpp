@@ -35,7 +35,13 @@ using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::Configuration;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 
-PlkConfiguration::PlkConfiguration(string name) : 
+
+PlkConfiguration::PlkConfiguration() : 
+	IBuildConfiguration<BuildConfigurationSetting>(),
+	configurationName("")
+{}
+
+PlkConfiguration::PlkConfiguration(std::string name) : 
 	IBuildConfiguration<BuildConfigurationSetting>(),
 	configurationName(name)
 {}

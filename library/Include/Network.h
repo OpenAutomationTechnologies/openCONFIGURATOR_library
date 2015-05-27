@@ -127,36 +127,32 @@ namespace IndustrialNetwork
 						\brief Enables/Disables a configuration setting handled by the class.
 						\param[in] configID string identifier.
 						\param[in] name of the setting.
-						\retval true The setting was enabled/disabled.
-						\retval false The setting does not exist in the configuration.
+						/return Result
 						*/
-						bool SetConfigurationSettingEnabled(const std::string  configID, const std::string  settingID, bool enabled);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetConfigurationSettingEnabled(const std::string  configID, const std::string  settingID, bool enabled);
 
 						/**
 						\brief Adds a configuration setting to the handler class.
 						\param[in] configID string identifier.
 						\param[in] setting BuildConfigurationSetting to be added.
-						\retval true The setting was added to the handler.
-						\retval false The setting already exist in the configuration.
+						/return Result
 						*/
-						bool AddConfigurationSetting(const std::string configID, IndustrialNetwork::POWERLINK::Core::Configuration::BuildConfigurationSetting setting);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddConfigurationSetting(const std::string configID, IndustrialNetwork::POWERLINK::Core::Configuration::BuildConfigurationSetting setting);
 
 						/**
 						\brief Remove a configuration setting handled by the class.
 						\param[in] configID string identifier.
 						\param[in] id BuildConfigurationSettingId of the setting.
-						\retval true The setting was removed from the handler.
-						\retval false The setting does not exist in the configuration.
+						/return Result
 						*/
-						bool RemoveConfigurationSetting(const std::string configID, const std::string name);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveConfigurationSetting(const std::string configID, const std::string name);
 
 						/**
 						\brief Add a configuration to the handler.
 						\param[in] configID string identifier. Must be unique.
-						\retval true The configuration has been created.
-						\retval false The configuration already exists.
+						/return Result
 						*/
-						bool AddConfiguration(const std::string configID);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddConfiguration(const std::string configID);
 
 						/**
 						\brief Remove a configuration from the handler.
@@ -164,16 +160,15 @@ namespace IndustrialNetwork
 						\retval true The configuration has been deleted.
 						\retval false The configuration does not exist.
 						*/
-						bool RemoveConfiguration(const std::string configID);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveConfiguration(const std::string configID);
 
 						/**
 						\brief Alter a configuration name.
 						\param[in] oldConfigID configuration identifier.
 						\param[in] newConfigId new name.
-						\retval true The configuration has been altered.
-						\retval false The configuration does not exist.
+						/return Result
 						*/
-						bool ReplaceConfigurationName(const std::string oldConfigId, const std::string newConfigId);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ReplaceConfigurationName(const std::string oldConfigId, const std::string newConfigId);
 
 						/**
 						\brief Get the settings from a configuration.
@@ -182,7 +177,7 @@ namespace IndustrialNetwork
 						\retval true The configuration exists and the returned reference is valid.
 						\retval false The configuration does not exist.
 						*/
-						bool GetConfigurationSettings(const std::string configID, std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::BuildConfigurationSetting>&);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetConfigurationSettings(const std::string configID, std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::BuildConfigurationSetting>&);
 
 						/**
 						\brief Get the active configuration.
@@ -196,6 +191,13 @@ namespace IndustrialNetwork
 						\retval false The active configuration is not set.
 						*/
 						bool SetActiveConfiguration(const std::string configID);
+
+						/**
+						\brief Retrieve all existing build configurations from the network.
+						\param[in] Configuration vector reference
+						/return Result
+						*/
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetBuildConfigurations(std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::PlkConfiguration>& bcfgs);
 
 						/**
 						* Getter & Setter

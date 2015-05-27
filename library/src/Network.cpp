@@ -213,7 +213,7 @@ void Network::SetPrescaler(const uint32_t prescaler)
 	this->prescaler = prescaler;
 }
 
-bool Network::SetConfigurationSettingEnabled(const string configName, const string settingName, bool enabled)
+Result Network::SetConfigurationSettingEnabled(const string configName, const string settingName, bool enabled)
 {
 	for (auto config : this->buildConfigurations)
 	{
@@ -224,16 +224,16 @@ bool Network::SetConfigurationSettingEnabled(const string configName, const stri
 				if (setting.GetName() == settingName)
 				{
 					setting.SetEnabled(enabled);
-					return true;
+					return Result();
 				}
 			}
 		}
 	}
-	return false;
+	return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST);
 }
 
 
-bool Network::AddConfigurationSetting(const string configID, BuildConfigurationSetting newSetting)
+Result Network::AddConfigurationSetting(const string configID, BuildConfigurationSetting newSetting)
 {
 	for (auto& config : this->buildConfigurations)
 	{
@@ -243,17 +243,17 @@ bool Network::AddConfigurationSetting(const string configID, BuildConfigurationS
 			{
 				if (setting.GetName() == newSetting.GetName() && setting.GetValue() == newSetting.GetValue())
 				{
-					return false;
+					return Result(ErrorCode::BUILD_SETTING_EXISTS);
 				}
 			}
 			config.AddBuildConfigurationSetting(newSetting);
-			return true;
+			return Result();
 		}
 	}
-	return false;
+	return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST);
 }
 
-bool Network::RemoveConfigurationSetting(string configID, const string name)
+Result Network::RemoveConfigurationSetting(string configID, const string name)
 {
 	for (auto& config : this->buildConfigurations)
 	{
@@ -266,22 +266,22 @@ bool Network::RemoveConfigurationSetting(string configID, const string name)
 					break;
 			}
 			if (it == config.GetBuildConfigurationSettings().end())
-				return false;
+				return Result(ErrorCode::BUILD_SETTING_DOES_NOT_EXIST);
 
 			config.GetBuildConfigurationSettings().erase(it);
-			return true;
+			return Result();
 		}
 	}
-	return false;
+	return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST);
 }
 
-bool Network::AddConfiguration(string configID)
+Result Network::AddConfiguration(string configID)
 {
 	for (auto& config : this->buildConfigurations)
 	{
 		if (config.GetConfigurationName() == configID)
 		{
-			return false;
+			return Result(ErrorCode::BUILD_CONFIGURATION_EXISTS);
 		}
 	}
 	this->buildConfigurations.push_back(PlkConfiguration(configID));
@@ -289,13 +289,13 @@ bool Network::AddConfiguration(string configID)
 	if (this->buildConfigurations.size() == 1)
 		this->activeConfiguration = configID;
 
-	return true;
+	return Result();
 }
 
-bool Network::RemoveConfiguration(string configID)
+Result Network::RemoveConfiguration(string configID)
 {
 	if (this->activeConfiguration == configID)
-		return false;
+		return Result(ErrorCode::BUILD_CONFIGURATION_IS_ACTIVE);
 
 	vector<PlkConfiguration>::iterator it;
 	for (it = this->buildConfigurations.begin() ; it != this->buildConfigurations.end(); ++it)
@@ -304,36 +304,42 @@ bool Network::RemoveConfiguration(string configID)
 			break;
 	}
 	if (it == this->buildConfigurations.end())
-		return false;
+		return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST);
 
 	this->buildConfigurations.erase(it);
-	return true;
+	return Result();
 }
 
-bool Network::ReplaceConfigurationName(const string oldConfigID, const string newConfigID)
+Result Network::ReplaceConfigurationName(const string oldConfigID, const string newConfigID)
 {
 	for (auto& config : this->buildConfigurations)
 	{
 		if (config.GetConfigurationName() == oldConfigID)
 		{
 			config.SetConfigurationName(newConfigID);
-			return true;
+			return Result();
 		}
 	}
-	return false;
+	return Result(ErrorCode::BUILD_SETTING_DOES_NOT_EXIST);
 }
 
-bool Network::GetConfigurationSettings(string configID, vector<BuildConfigurationSetting>& returnRef)
+Result Network::GetConfigurationSettings(string configID, vector<BuildConfigurationSetting>& returnRef)
 {
 	for (auto& config : this->buildConfigurations)
 	{
 		if (config.GetConfigurationName() == configID)
 		{
 			returnRef = config.GetBuildConfigurationSettings();
-			return true;
+			return Result();
 		}
 	}
-	return false;
+	return Result(ErrorCode::BUILD_SETTING_DOES_NOT_EXIST);
+}
+
+Result Network::GetBuildConfigurations(std::vector<PlkConfiguration>& bcfgs)
+{
+	bcfgs = this->buildConfigurations;
+	return Result();
 }
 
 const string& Network::GetActiveConfiguration()

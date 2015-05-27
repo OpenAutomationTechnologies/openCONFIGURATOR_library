@@ -116,9 +116,11 @@ namespace IndustrialNetwork
 					VIEW_SETTING_EXISTS, // < A view setting exists in the project configuration.
 					VIEW_SETTING_DOES_NOT_EXIST, // < A view setting does not exist in the project configuration.
 					VIEW_SETTINGS_DOES_NOT_EXIST, // < A view settings group does not exist in the project configuration.
-					AUTO_GEN_SETTING_EXISTS, // < An auto generation setting already exists in the project configuration.
-					AUTO_GEN_SETTING_DOES_NOT_EXIST, // < An auto generation setting does not exist in the project configuration.
-					AUTO_GEN_SETTINGS_DOES_NOT_EXIST // < An auto generation settings group does not exist in the project configuration.
+					BUILD_SETTING_EXISTS, // < An auto generation setting already exists in the project configuration.
+					BUILD_SETTING_DOES_NOT_EXIST, // < An auto generation setting does not exist in the project configuration.
+					BUILD_CONFIGURATION_EXISTS, // < An auto generation settings group does already exist in the project configuration.
+					BUILD_CONFIGURATION_DOES_NOT_EXIST, // < An auto generation settings group does not exist in the project configuration.
+					BUILD_CONFIGURATION_IS_ACTIVE // < The build configuration group is set active in the project configuration.
 				};
 
 			}

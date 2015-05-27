@@ -96,6 +96,7 @@
 %include "../Include/ManagingNode.h"
 %include "../Include/ProjectManager.h"
 %include "../Include/Network.h"
+%nodefaultctor PlkConfiguration;
 %include "../Include/PlkConfiguration.h"
 
 %{
@@ -127,9 +128,10 @@
 
 namespace std {
    %template(ObjectCollection) std::vector<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject>;
-   %template(NetworkCollection) std::map<std::string, IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network>;
+   %template(NetworkCollection) std::map<std::string, IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network*>;
    %template(StringCollection) std::vector<std::string>;
    %template(SettingsCollection) std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::BuildConfigurationSetting>;
    %template(NodeIdCollection) std::vector<std::uint8_t>;
+   %template(ConfigurationCollection) std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::PlkConfiguration>;
 }
 

@@ -76,6 +76,7 @@
 %include "../Include/IBuildConfigurationSetting.h"
 %include "../Include/NodeAssignment.h"
 %include "../Include/Result.h"
+%nodefaultctor PlkConfiguration;
 %include "../Include/PlkConfiguration.h"
 %nodefaultctor BaseNode;
 %include "../Include/BaseNode.h"
@@ -123,10 +124,10 @@
 namespace std {
    %template(NodeIdCollection) std::vector<unsigned char>;
    %template(ObjectCollection) std::vector<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject>;
-   %template(NetworkCollection) std::map<std::string, IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network>;
+   %template(NetworkCollection) std::map<std::string, IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network*>;
    %template(StringCollection) std::vector<std::string>;
    %template(SettingsCollection) std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::BuildConfigurationSetting>;
-
+   %template(ConfigurationCollection) std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::PlkConfiguration>;
 }
 
 
