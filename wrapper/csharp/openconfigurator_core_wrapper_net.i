@@ -66,68 +66,47 @@
 %include std_string_ref.i
 %include stdint.i
 
-%include "../Include/IBuildConfigurationSetting.h"
-%include "../Include/BuildConfigurationSetting.h"
-%include "../Include/ErrorCode.h"
-%include "../Include/AccessType.h"
-%include "../Include/ObjectType.h"
-%include "../Include/PDOMapping.h"
-%include "../Include/PlkDataType.h"
-%include "../Include/IBuildConfigurationSetting.h"
-%include "../Include/NodeAssignment.h"
-%include "../Include/Result.h"
-%nodefaultctor PlkConfiguration;
-%include "../Include/PlkConfiguration.h"
-%nodefaultctor BaseNode;
-%include "../Include/BaseNode.h"
-%include "../Include/BaseObject.h"
-%nodefaultctor Object;
-%include "../Include/Object.h"
-%nodefaultctor SubObject;
-%include "../Include/SubObject.h"
-%include "../Include/Direction.h"
-%include "../Include/NodeType.h"
-%nodefaultctor ControlledNode;
-%include "../Include/ControlledNode.h"
-%include "../Include/ManagingNode.h"
-%include "../Include/ProjectManager.h"
-%include "../Include/Network.h"
-%include "../Include/PlkConfiguration.h"
-
 %{
 
-#include "../Include/IBuildConfigurationSetting.h"
-#include "../Include/BuildConfigurationSetting.h"
-#include "../Include/ErrorCode.h"
-#include "../Include/AccessType.h"
-#include "../Include/ObjectType.h"
-#include "../Include/PDOMapping.h"
-#include "../Include/PlkDataType.h"
-#include "../Include/IBuildConfigurationSetting.h"
-#include "../Include/NodeAssignment.h"
-#include "../Include/Result.h"
-#include "../Include/PlkConfiguration.h"
-#include "../Include/BaseNode.h"
-#include "../Include/BaseObject.h"
-#include "../Include/Object.h"
-#include "../Include/SubObject.h"
-#include "../Include/Direction.h"
-#include "../Include/NodeType.h"
-#include "../Include/ControlledNode.h"
-#include "../Include/ManagingNode.h"
-#include "../Include/ProjectManager.h"
-#include "../Include/Network.h"
-#include "../Include/PlkConfiguration.h"
+#include "ErrorCode.h"
+#include "AccessType.h"
+#include "ObjectType.h"
+#include "PDOMapping.h"
+#include "PlkDataType.h"
+#include "NodeAssignment.h"
+#include "Result.h"
+#include "Direction.h"
+#include "PlkConfiguration.h"
+#include "NodeType.h"
+#include "OpenConfiguratorCore.h"
 
 %}
 
+%include "ErrorCode.h"
+%include "AccessType.h"
+%include "ObjectType.h"
+%include "PDOMapping.h"
+%include "PlkDataType.h"
+%include "NodeAssignment.h"
+%include "Result.h"
+%include "Network.h"
+%include "Direction.h"
+%include "NodeType.h"
+%include "PlkConfiguration.h"
+%include "BuildConfigurationSetting.h"
+%include "BaseNode.h"
+%include "BaseObject.h"
+%include "ControlledNode.h"
+%include "ManagingNode.h"
+%include "BaseObject.h"
+%include "OpenConfiguratorCore.h"
+
+
 namespace std {
-   %template(NodeIdCollection) std::vector<unsigned char>;
-   %template(ObjectCollection) std::vector<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject>;
-   %template(NetworkCollection) std::map<std::string, IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network*>;
    %template(StringCollection) std::vector<std::string>;
-   %template(SettingsCollection) std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::BuildConfigurationSetting>;
    %template(ConfigurationCollection) std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::PlkConfiguration>;
+   %template(SettingsCollection) std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::BuildConfigurationSetting>;
+   %template(NodeIdCollection) std::vector<unsigned char>;
 }
 
 

@@ -52,23 +52,23 @@ namespace IndustrialNetwork
 
 			public:
 				IBuildConfiguration() :
-					buildConfigurationSettings(std::vector<T>())
+					buildConfigurationSettings(std::vector<std::shared_ptr<T>>())
 				{}
 
 				virtual ~IBuildConfiguration()
 				{}
 
-				std::vector<T>& GetBuildConfigurationSettings()
+				std::vector<std::shared_ptr<T>>& GetBuildConfigurationSettings()
 				{
 					return this->buildConfigurationSettings;
 				}
 
-				void AddBuildConfigurationSetting(T& setting)
+				void AddBuildConfigurationSetting(std::shared_ptr<T>& setting)
 				{
 					this->buildConfigurationSettings.push_back(setting);
 				}
 			private:
-				std::vector<T> buildConfigurationSettings;
+				std::vector<std::shared_ptr<T>> buildConfigurationSettings;
 
 		};
 

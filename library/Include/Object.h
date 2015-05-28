@@ -51,7 +51,7 @@ namespace IndustrialNetwork
 				\brief Represents an Object in the nodes object dictionary.
 				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
-				class DLLEXPORT Object : public IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject
+				class Object : public IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject
 				{
 
 					public:

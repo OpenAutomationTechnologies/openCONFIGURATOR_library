@@ -70,14 +70,14 @@ namespace IndustrialNetwork
 						/param[in] controlled node reference.
 						/return Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNode(IndustrialNetwork::POWERLINK::Core::Node::ControlledNode& node);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNode(std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::ControlledNode>& node);
 
 						/**
 						/brief Adds a managing node to the network.
 						/param[in] managing node reference.
 						/return Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNode(IndustrialNetwork::POWERLINK::Core::Node::ManagingNode& node);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNode(std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::ManagingNode>& node);
 
 						/**
 						/brief Removes a node to the network.
@@ -87,27 +87,19 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveNode(const std::uint8_t nodeID);
 
 						/**
-						/brief Replace an existing node in the network.
-						/param[in] node id of node to be replaced.
-						/param[in] node reference.
-						/return Result
-						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ReplaceNode(const std::uint8_t nodeID, IndustrialNetwork::POWERLINK::Core::Node::BaseNode& node);
-
-						/**
 						/brief Retrieve an existing node in the network.
 						/param[in] node id of node to be retrieved.
 						/param[in] node reference.
 						/return Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetNode(const std::uint8_t nodeID, IndustrialNetwork::POWERLINK::Core::Node::BaseNode& node);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetControlledNode(const std::uint8_t nodeID, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::ControlledNode>& node);
 
 						/**
 						/brief Retrieve the current managing node from the network.
 						/param[in] node reference.
 						/return Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetManagingNode(IndustrialNetwork::POWERLINK::Core::Node::BaseNode& node);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetManagingNode(std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::ManagingNode>& node);
 
 						/**
 						/brief Retrieve all the nodes in the network.
@@ -137,7 +129,7 @@ namespace IndustrialNetwork
 						\param[in] setting BuildConfigurationSetting to be added.
 						/return Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddConfigurationSetting(const std::string configID, IndustrialNetwork::POWERLINK::Core::Configuration::BuildConfigurationSetting setting);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddConfigurationSetting(const std::string configID, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Configuration::BuildConfigurationSetting> setting);
 
 						/**
 						\brief Remove a configuration setting handled by the class.
@@ -177,7 +169,7 @@ namespace IndustrialNetwork
 						\retval true The configuration exists and the returned reference is valid.
 						\retval false The configuration does not exist.
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetConfigurationSettings(const std::string configID, std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::BuildConfigurationSetting>&);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetConfigurationSettings(const std::string configID, std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Configuration::BuildConfigurationSetting>>&);
 
 						/**
 						\brief Get the active configuration.
@@ -197,7 +189,7 @@ namespace IndustrialNetwork
 						\param[in] Configuration vector reference
 						/return Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetBuildConfigurations(std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::PlkConfiguration>& bcfgs);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetBuildConfigurations(std::vector<shared_ptr<IndustrialNetwork::POWERLINK::Core::Configuration::PlkConfiguration>>& bcfgs);
 
 						/**
 						* Getter & Setter
@@ -220,7 +212,7 @@ namespace IndustrialNetwork
 						std::uint32_t multiplexedCycleLength;
 						std::uint32_t prescaler;
 						std::unordered_map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>> nodeCollection;
-						std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::PlkConfiguration> buildConfigurations;
+						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Configuration::PlkConfiguration>> buildConfigurations;
 						std::string activeConfiguration;
 				};
 

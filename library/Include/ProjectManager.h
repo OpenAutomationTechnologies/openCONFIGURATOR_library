@@ -51,7 +51,7 @@ namespace IndustrialNetwork
 				\brief Handles different projects in the core library.
 				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
-				class DLLEXPORT ProjectManager
+				class ProjectManager
 				{
 
 					public:
@@ -121,6 +121,12 @@ namespace IndustrialNetwork
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result InitLoggingConfiguration(const std::string configFile);
+
+						/**
+						\brief Returns a vector including all the existing network ids.
+						\return Vector with the network ids. Vector is empty if no network exists.
+						*/
+						std::vector<std::string> GetNetworkIds();
 
 					private:
 						//singleton

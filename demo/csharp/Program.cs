@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -42,90 +43,26 @@ namespace openconfigurator_core_net_app
     {
         static void Main(string[] args)
         {
-            var man = ProjectManager.GetInstance();
-            man.InitLoggingConfiguration("boost_log_settings.ini");
-            var net = new Network("test");
-            Console.WriteLine(net.GetNetworkId());
-
-            net.SetCycleTime(10000);
-            net.SetAsyncMTU(100);
-            net.SetMultiplexedCycleLength(10);
-            net.SetPrescaler(10);
-
-            NodeIdCollection ids = new NodeIdCollection();
-            net.GetAvailableNodeIds(ids);
-            Console.WriteLine(ids.Count);
-
-            var mn = new ManagingNode("MasterOfDisaster");
-            net.AddNode(mn);
-
-            var mnNew = new ManagingNode();
-            net.GetManagingNode(mnNew);
-            Console.WriteLine(mnNew.GetName());
-
-            var nodeT = new ControlledNode(10, "Testnode");
-            net.AddNode(nodeT);
-
-            var node = new ControlledNode(1);
-            var res1 = net.GetNode(10, node);
-            Console.WriteLine(res1.IsSuccessful());
-
-            net.ReplaceNode(10, new ControlledNode(100, "replacedNode"));
-            var res2 = net.GetNode(100, node);
-            Console.WriteLine(res2.IsSuccessful());
-
-            var res3 = net.GetNode(100, node);
-            Console.WriteLine(node.GetName());
-
-            net.GetAvailableNodeIds(ids);
-            Console.WriteLine(ids.Count);
-            foreach (var setting in ids)
-            {
-                Console.WriteLine(setting);
-            }
-
-            man.AddNetwork("test", net);
-            var net2 = new Network();
-            var res = man.GetNetwork(net.GetNetworkId(), net2);
-
-            var mnMapping = new BuildConfigurationSetting("GENERATE_MN_MAPPING_FOR_ALL_NODES");
-            var presTimeOut = new BuildConfigurationSetting("GENERATE_MN_PRES_TIMEOUT_FOR_NODE", "1");
-
-            mnMapping.SetEnabled(true);
-            presTimeOut.SetEnabled(true);
-
-            Console.WriteLine(presTimeOut.GetDescription());
-            StringCollection sett = man.GetSupportedSettingIds();
-            foreach (var xx in sett)
-            {
-                Console.WriteLine(xx);
-            }
-
-            Console.WriteLine(net2.AddConfiguration("all"));
-            Console.WriteLine(net2.GetActiveConfiguration());
-            Console.WriteLine(net2.AddConfiguration("custom"));
-            Console.WriteLine(net2.AddConfigurationSetting("all", mnMapping));
-            Console.WriteLine(net2.AddConfigurationSetting("custom", presTimeOut));
-            SettingsCollection coll = new SettingsCollection();
-
-            Console.WriteLine(net2.GetActiveConfiguration());
-            net2.GetConfigurationSettings("all", coll);
-            Console.WriteLine(coll.Count);
-            Console.WriteLine(net2.SetConfigurationSettingEnabled("all", "GENERATE_MN_MAPPING_FOR_ALL_NODES", false));
-            Console.WriteLine(net2.SetConfigurationSettingEnabled("custom", "GENERATE_MN_PRES_TIMEOUT_FOR_NODE", false));
-            Console.WriteLine(net2.RemoveConfigurationSetting("all", "GENERATE_MN_MAPPING_FOR_ALL_NODES"));
-            Console.WriteLine(net2.SetActiveConfiguration("custom"));
-            Console.WriteLine(net2.GetActiveConfiguration());
-
-            SettingsCollection coll1 = new SettingsCollection();
-
-            net2.GetConfigurationSettings("all", coll1);
-            Console.WriteLine(coll1.Count);
-            Console.WriteLine(net2.RemoveConfiguration("TestConfig"));
-
+            Console.ReadLine();
+            var core = OpenConfiguratorCore.GetInstance();
+            Result res = core.InitLoggingConfiguration("boost_log_settings.ini");
             Console.WriteLine(res.IsSuccessful());
-            Console.WriteLine(net2.GetNetworkId());
-            Console.WriteLine(net2.GetCycleTime());
+            res = core.CreateNetwork("test");
+            Console.WriteLine(res.IsSuccessful());
+            res = core.CreateNode("test", 100, "CN");
+            Console.WriteLine(res.IsSuccessful());
+            res = core.CreateNode("notexisting", 100, "CN");
+            Console.WriteLine(res.IsSuccessful());
+            core.SetCycleTime("test", 20000);
+            Network net = new Network();
+            core.GetNetwork("test", net);
+
+            Console.WriteLine(net.GetCycleTime());
+
+            var coll = new StringCollection();
+            core.GetNetworkIds(coll);
+
+            Console.WriteLine(coll.Count);
 
         }
     }

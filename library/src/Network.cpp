@@ -44,7 +44,7 @@ Network::Network() :
 	multiplexedCycleLength(0), //DS 301 V1.2.1
 	prescaler(2), //DS 301 V1.2.1
 	nodeCollection(unordered_map<uint8_t, shared_ptr<BaseNode>>()),
-	buildConfigurations(vector<PlkConfiguration>()),
+	buildConfigurations(vector<shared_ptr<PlkConfiguration>>()),
 	activeConfiguration("")
 {}
 
@@ -55,61 +55,59 @@ Network::Network(const string networkId) :
 	multiplexedCycleLength(0), //DS 301 V1.2.1
 	prescaler(2), //DS 301 V1.2.1
 	nodeCollection(unordered_map<uint8_t, shared_ptr<BaseNode>>()),
-	buildConfigurations(vector<PlkConfiguration>()),
+	buildConfigurations(vector<shared_ptr<PlkConfiguration>>()),
 	activeConfiguration("")
 {}
 
 Network::~Network()
 {}
 
-Result Network::AddNode(ControlledNode& node)
+Result Network::AddNode(shared_ptr<ControlledNode>& node)
 {
 	for (auto var : this->nodeCollection)
 	{
-		if (var.first == node.GetNodeIdentifier())
+		if (var.first == node.get()->GetNodeIdentifier())
 		{
 			return Result(ErrorCode::NODE_EXISTS);
 		}
 	}
-	shared_ptr<BaseNode> ptr = make_shared<ControlledNode>(node);
-	this->nodeCollection.insert(pair<uint8_t, shared_ptr<BaseNode>>(node.GetNodeIdentifier(), ptr));
+	this->nodeCollection.insert(pair<uint8_t, shared_ptr<BaseNode>>(node.get()->GetNodeIdentifier(), node));
 	return Result();
 }
 
-Result Network::AddNode(ManagingNode& node)
+Result Network::AddNode(shared_ptr<ManagingNode>& node)
 {
 	for (auto var : this->nodeCollection)
 	{
-		if (var.first == node.GetNodeIdentifier())
+		if (var.first == node.get()->GetNodeIdentifier())
 		{
 			return Result(ErrorCode::NODE_EXISTS);
 		}
 	}
-	shared_ptr<BaseNode> ptr = make_shared<ManagingNode>(node);
-	this->nodeCollection.insert(pair<uint8_t, shared_ptr<BaseNode>>(node.GetNodeIdentifier(), ptr));
+	this->nodeCollection.insert(pair<uint8_t, shared_ptr<BaseNode>>(node.get()->GetNodeIdentifier(), node));
 	return Result();
 }
 
-Result Network::GetNode(const uint8_t nodeID, BaseNode& node)
+Result Network::GetControlledNode(const uint8_t nodeID, shared_ptr<ControlledNode>& node)
 {
 	for (auto var : this->nodeCollection)
 	{
 		if (var.first == nodeID)
 		{
-			node = *var.second.get();
+			node = dynamic_pointer_cast<ControlledNode>(var.second);
 			return Result();
 		}
 	}
 	return Result(ErrorCode::NODE_DOES_NOT_EXIST);
 }
 
-Result Network::GetManagingNode(BaseNode& node)
+Result Network::GetManagingNode(shared_ptr<ManagingNode>& node)
 {
 	for (auto var : this->nodeCollection)
 	{
 		if (var.first == 240)
 		{
-			node = *var.second.get();
+			node = dynamic_pointer_cast<ManagingNode>(var.second);
 			return Result();
 		}
 	}
@@ -128,25 +126,6 @@ Result Network::RemoveNode(const uint8_t nodeID)
 		return Result(ErrorCode::NODE_DOES_NOT_EXIST);
 
 	this->nodeCollection.erase(it);
-	return Result();
-}
-
-Result Network::ReplaceNode(const uint8_t nodeID, BaseNode& node)
-{
-	Result res = RemoveNode(nodeID);
-	if (!res.IsSuccessful())
-		return res;
-
-	if (typeid(node) == typeid(ControlledNode))
-	{
-		ControlledNode& ref = dynamic_cast<ControlledNode&>(node);
-		return AddNode(ref);
-	}
-	else if (typeid(node) == typeid(ManagingNode))
-	{
-		ManagingNode& ref = dynamic_cast<ManagingNode&>(node);
-		return AddNode(ref);
-	}
 	return Result();
 }
 
@@ -217,13 +196,13 @@ Result Network::SetConfigurationSettingEnabled(const string configName, const st
 {
 	for (auto config : this->buildConfigurations)
 	{
-		if (config.GetConfigurationName() == configName)
+		if (config.get()->GetConfigurationName() == configName)
 		{
-			for (auto setting : config.GetBuildConfigurationSettings())
+			for (auto setting : config.get()->GetBuildConfigurationSettings())
 			{
-				if (setting.GetName() == settingName)
+				if (setting.get()->GetName() == settingName)
 				{
-					setting.SetEnabled(enabled);
+					setting.get()->SetEnabled(enabled);
 					return Result();
 				}
 			}
@@ -233,20 +212,20 @@ Result Network::SetConfigurationSettingEnabled(const string configName, const st
 }
 
 
-Result Network::AddConfigurationSetting(const string configID, BuildConfigurationSetting newSetting)
+Result Network::AddConfigurationSetting(const string configID, shared_ptr<BuildConfigurationSetting> newSetting)
 {
 	for (auto& config : this->buildConfigurations)
 	{
-		if (config.GetConfigurationName() == configID)
+		if (config.get()->GetConfigurationName() == configID)
 		{
-			for (auto& setting : config.GetBuildConfigurationSettings())
+			for (auto& setting : config.get()->GetBuildConfigurationSettings())
 			{
-				if (setting.GetName() == newSetting.GetName() && setting.GetValue() == newSetting.GetValue())
+				if (setting.get()->GetName() == newSetting.get()->GetName() && setting.get()->GetValue() == newSetting.get()->GetValue())
 				{
 					return Result(ErrorCode::BUILD_SETTING_EXISTS);
 				}
 			}
-			config.AddBuildConfigurationSetting(newSetting);
+			config.get()->AddBuildConfigurationSetting(newSetting);
 			return Result();
 		}
 	}
@@ -257,18 +236,18 @@ Result Network::RemoveConfigurationSetting(string configID, const string name)
 {
 	for (auto& config : this->buildConfigurations)
 	{
-		if (config.GetConfigurationName() == configID)
+		if (config.get()->GetConfigurationName() == configID)
 		{
-			vector<BuildConfigurationSetting>::iterator it;
-			for (it = config.GetBuildConfigurationSettings().begin() ; it != config.GetBuildConfigurationSettings().end(); ++it)
+			vector<shared_ptr<BuildConfigurationSetting>>::iterator it;
+			for (it = config.get()->GetBuildConfigurationSettings().begin() ; it != config.get()->GetBuildConfigurationSettings().end(); ++it)
 			{
-				if (it->GetName() == name)
+				if (it->get()->GetName() == name)
 					break;
 			}
-			if (it == config.GetBuildConfigurationSettings().end())
+			if (it == config.get()->GetBuildConfigurationSettings().end())
 				return Result(ErrorCode::BUILD_SETTING_DOES_NOT_EXIST);
 
-			config.GetBuildConfigurationSettings().erase(it);
+			config.get()->GetBuildConfigurationSettings().erase(it);
 			return Result();
 		}
 	}
@@ -279,12 +258,13 @@ Result Network::AddConfiguration(string configID)
 {
 	for (auto& config : this->buildConfigurations)
 	{
-		if (config.GetConfigurationName() == configID)
+		if (config.get()->GetConfigurationName() == configID)
 		{
 			return Result(ErrorCode::BUILD_CONFIGURATION_EXISTS);
 		}
 	}
-	this->buildConfigurations.push_back(PlkConfiguration(configID));
+	shared_ptr<PlkConfiguration> config = make_shared<PlkConfiguration>(configID);
+	this->buildConfigurations.push_back(config);
 
 	if (this->buildConfigurations.size() == 1)
 		this->activeConfiguration = configID;
@@ -297,10 +277,10 @@ Result Network::RemoveConfiguration(string configID)
 	if (this->activeConfiguration == configID)
 		return Result(ErrorCode::BUILD_CONFIGURATION_IS_ACTIVE);
 
-	vector<PlkConfiguration>::iterator it;
+	vector<shared_ptr<PlkConfiguration>>::iterator it;
 	for (it = this->buildConfigurations.begin() ; it != this->buildConfigurations.end(); ++it)
 	{
-		if (it->GetConfigurationName() == configID)
+		if (it->get()->GetConfigurationName() == configID)
 			break;
 	}
 	if (it == this->buildConfigurations.end())
@@ -314,29 +294,29 @@ Result Network::ReplaceConfigurationName(const string oldConfigID, const string 
 {
 	for (auto& config : this->buildConfigurations)
 	{
-		if (config.GetConfigurationName() == oldConfigID)
+		if (config.get()->GetConfigurationName() == oldConfigID)
 		{
-			config.SetConfigurationName(newConfigID);
+			config.get()->SetConfigurationName(newConfigID);
 			return Result();
 		}
 	}
 	return Result(ErrorCode::BUILD_SETTING_DOES_NOT_EXIST);
 }
 
-Result Network::GetConfigurationSettings(string configID, vector<BuildConfigurationSetting>& returnRef)
+Result Network::GetConfigurationSettings(string configID, vector<shared_ptr<BuildConfigurationSetting>>& returnRef)
 {
 	for (auto& config : this->buildConfigurations)
 	{
-		if (config.GetConfigurationName() == configID)
+		if (config.get()->GetConfigurationName() == configID)
 		{
-			returnRef = config.GetBuildConfigurationSettings();
+			returnRef = config.get()->GetBuildConfigurationSettings();
 			return Result();
 		}
 	}
 	return Result(ErrorCode::BUILD_SETTING_DOES_NOT_EXIST);
 }
 
-Result Network::GetBuildConfigurations(std::vector<PlkConfiguration>& bcfgs)
+Result Network::GetBuildConfigurations(std::vector<shared_ptr<PlkConfiguration>>& bcfgs)
 {
 	bcfgs = this->buildConfigurations;
 	return Result();
@@ -351,7 +331,7 @@ bool Network::SetActiveConfiguration(const string configID)
 {
 	for (auto& config : this->buildConfigurations)
 	{
-		if (config.GetConfigurationName() == configID)
+		if (config.get()->GetConfigurationName() == configID)
 		{
 			this->activeConfiguration = configID;
 			return true;

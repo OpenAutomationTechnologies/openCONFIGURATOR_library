@@ -123,3 +123,14 @@ Result ProjectManager::InitLoggingConfiguration(const string configFile)
 	LoggingConfiguration::initConfiguration(configFile);
 	return Result();
 }
+
+std::vector<std::string> ProjectManager::GetNetworkIds()
+{
+	vector<string> returnVec;
+	unordered_map<string, shared_ptr<Network>>::iterator it;
+	for (it = networkList.begin();  it != networkList.end(); ++it)
+	{
+		returnVec.push_back(it->first);
+	}
+	return returnVec;
+}
