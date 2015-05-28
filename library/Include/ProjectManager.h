@@ -70,14 +70,14 @@ namespace IndustrialNetwork
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNetwork(const std::string& networkId, IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network& net);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNetwork(const std::string& networkId, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network>& network);
 
 						/**
 						\brief Retrieve a network configuration from the library.
 						\param[out] NetworkManagement reference to be retrieved.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetNetwork(const std::string networkUuid, IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network& net);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetNetwork(const std::string networkUuid, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network>& net);
 
 						/**
 						\brief Removes a network configuration from the list.
@@ -91,7 +91,7 @@ namespace IndustrialNetwork
 						\param[out] networkList& to the network list.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetNetworks(std::map<std::string, IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network>& networkList);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetNetworks(std::unordered_map<std::string, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network>>& networkList);
 
 						/**
 						\brief Clears the network list of the library.
@@ -131,7 +131,7 @@ namespace IndustrialNetwork
 						/**
 						List of managed networks.
 						*/
-						std::map<std::string, IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network> networkList;
+						std::unordered_map<std::string, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network>> networkList;
 
 				};
 

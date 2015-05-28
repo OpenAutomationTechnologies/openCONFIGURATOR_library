@@ -47,14 +47,14 @@ ProjectManagerTest::~ProjectManagerTest(void)
 
 void ProjectManagerTest::setUp()
 {
-	Network networkTestConfig1("test");
-	this->test_uuid = networkTestConfig1.GetNetworkId();
-	Network networkTestConfig2("test1");
-	this->test_uuid2 = networkTestConfig2.GetNetworkId();
+	shared_ptr<Network> testNetwork = make_shared<Network>("testNetwork");
+	this->test_uuid = testNetwork.get()->GetNetworkId();
+	shared_ptr<Network> secondTestNework = make_shared<Network>("secondTestNework");
+	this->test_uuid = secondTestNework.get()->GetNetworkId();
 
-	Result res =ProjectManager::GetInstance().AddNetwork(networkTestConfig1.GetNetworkId(), networkTestConfig1);
+	Result res = ProjectManager::GetInstance().AddNetwork(testNetwork.get()->GetNetworkId(), testNetwork);
 	CPPUNIT_ASSERT_EQUAL(true, res.IsSuccessful());
-	res = ProjectManager::GetInstance().AddNetwork(networkTestConfig2.GetNetworkId(), networkTestConfig2);
+	res = ProjectManager::GetInstance().AddNetwork(secondTestNework.get()->GetNetworkId(), secondTestNework);
 	CPPUNIT_ASSERT_EQUAL(true, res.IsSuccessful());
 }
 
@@ -66,7 +66,7 @@ void ProjectManagerTest::tearDown()
 
 void ProjectManagerTest::testAddNetwork()
 {
-	std::map<std::string, Network> networkList;
+	unordered_map<string, shared_ptr<Network>> networkList;
 	Result res = ProjectManager::GetInstance().GetNetworks(networkList);
 	CPPUNIT_ASSERT_EQUAL(true, res.IsSuccessful());
 	CPPUNIT_ASSERT_EQUAL(networkList.size(), (unsigned int) 2);
@@ -74,19 +74,18 @@ void ProjectManagerTest::testAddNetwork()
 
 void ProjectManagerTest::testGetNetwork(void)
 {
-	Network networkConf;
+	shared_ptr<Network> networkConf;
 	Result res = ProjectManager::GetInstance().GetNetwork(test_uuid, networkConf);
 	CPPUNIT_ASSERT_EQUAL(true, res.IsSuccessful());
-	CPPUNIT_ASSERT_EQUAL(test_uuid, networkConf.GetNetworkId());
+	CPPUNIT_ASSERT_EQUAL(test_uuid, networkConf.get()->GetNetworkId());
 }
 
 void ProjectManagerTest::testRemoveNetwork()
 {
-	Network networkConf;
-	Result res = ProjectManager::GetInstance().RemoveNetwork(test_uuid2);
+	Result res = ProjectManager::GetInstance().RemoveNetwork("testNetwork");
 	CPPUNIT_ASSERT_EQUAL(true, res.IsSuccessful());
 
-	std::map<std::string, Network> networkList;
+	unordered_map<string, shared_ptr<Network>> networkList;
 	res = ProjectManager::GetInstance().GetNetworks(networkList);
 	CPPUNIT_ASSERT_EQUAL(true, res.IsSuccessful());
 	CPPUNIT_ASSERT_EQUAL(networkList.size(), (unsigned int) 1);
@@ -94,7 +93,7 @@ void ProjectManagerTest::testRemoveNetwork()
 
 void ProjectManagerTest::testGetNetworks(void)
 {
-	std::map<std::string, Network> networkList;
+	unordered_map<string, shared_ptr<Network>> networkList;
 	Result res = ProjectManager::GetInstance().GetNetworks(networkList);
 	CPPUNIT_ASSERT_EQUAL(true, res.IsSuccessful());
 	CPPUNIT_ASSERT_EQUAL(networkList.size(), (unsigned int) 2);

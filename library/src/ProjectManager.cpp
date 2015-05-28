@@ -38,7 +38,7 @@ using namespace IndustrialNetwork::POWERLINK::Core::NetworkHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 
 ProjectManager::ProjectManager() :
-	networkList(map<string, Network>())
+	networkList(unordered_map<string, shared_ptr<Network>>())
 {}
 
 ProjectManager::~ProjectManager()
@@ -50,22 +50,24 @@ ProjectManager& ProjectManager::GetInstance()
 	return instance;
 }
 
-Result ProjectManager::AddNetwork(const string& networkId, Network& net)
+Result ProjectManager::AddNetwork(const string& networkId, shared_ptr<Network>& network)
 {
-	this->networkList.insert(pair<string, Network>(networkId, net));
+	if (this->networkList.find(networkId) != this->networkList.end())
+		return Result(ErrorCode::NETWORK_EXISTS);
+	this->networkList.insert(make_pair(networkId, network));
 	return Result();
 }
 
-Result ProjectManager::GetNetwork(const string networkID, Network& net)
+Result ProjectManager::GetNetwork(const string networkId, shared_ptr<Network>& net)
 {
-	map<string, Network>::const_iterator got = this->networkList.find(networkID);
+	unordered_map<string, shared_ptr<Network>>::const_iterator got = this->networkList.find(networkId);
 	if (got == this->networkList.end())
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION);
+		return Result(ErrorCode::NETWORK_DOES_NOT_EXIST);
 	}
 	else
 	{
-		net = this->networkList.find(networkID)->second;
+		net = this->networkList.find(networkId)->second;
 		return Result();
 	}
 	return Result();
@@ -73,10 +75,10 @@ Result ProjectManager::GetNetwork(const string networkID, Network& net)
 
 Result ProjectManager::RemoveNetwork(const string networkId)
 {
-	map<string, Network>::const_iterator got = this->networkList.find(networkId);
+	unordered_map<string, shared_ptr<Network>>::const_iterator got = this->networkList.find(networkId);
 	if (got == this->networkList.end())
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION);
+		return Result(ErrorCode::NETWORK_DOES_NOT_EXIST);
 	}
 	else
 	{
@@ -98,7 +100,7 @@ Result ProjectManager::BuildProcessImage(const string networkId, ostream& config
 	return Result(ErrorCode::UNHANDLED_EXCEPTION);
 }
 
-Result ProjectManager::GetNetworks(map<string, Network>& networkList)
+Result ProjectManager::GetNetworks(unordered_map<string, shared_ptr<Network>>& networkList)
 {
 	networkList = this->networkList;
 	return Result();

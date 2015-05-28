@@ -120,7 +120,9 @@ namespace IndustrialNetwork
 					BUILD_SETTING_DOES_NOT_EXIST, // < An auto generation setting does not exist in the project configuration.
 					BUILD_CONFIGURATION_EXISTS, // < An auto generation settings group does already exist in the project configuration.
 					BUILD_CONFIGURATION_DOES_NOT_EXIST, // < An auto generation settings group does not exist in the project configuration.
-					BUILD_CONFIGURATION_IS_ACTIVE // < The build configuration group is set active in the project configuration.
+					BUILD_CONFIGURATION_IS_ACTIVE, // < The build configuration group is set active in the project configuration.
+					NETWORK_EXISTS,
+					NETWORK_DOES_NOT_EXIST
 				};
 
 			}
