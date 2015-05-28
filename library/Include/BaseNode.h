@@ -73,7 +73,8 @@ namespace IndustrialNetwork
 						const std::unordered_map<std::uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>>& GetObjectDictionary();
 						void SetObjectDictionary(const std::unordered_map<uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>>& od);
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddObject(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object& objRef);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddObject(std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>& objRef);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddSubObject(std::uint32_t objectId, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::SubObject>& subObjRef);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ForceObject(std::uint32_t nodeId, std::string actualValue = "");
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetObjectActualValue(std::uint32_t nodeId, std::string actualValue);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetObject(std::uint32_t nodeId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object& objRef);

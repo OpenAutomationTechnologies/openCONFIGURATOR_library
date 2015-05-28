@@ -34,9 +34,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <unordered_map>
 #include <memory>
+#include "Result.h"
 #include "BaseObject.h"
 #include "SubObject.h"
-#include "Constants.h"
+#include "Utilities.h"
 
 namespace IndustrialNetwork
 {
@@ -54,12 +55,20 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						template<PlkDataType T>
-						Object(std::uint32_t id);
+						Object(std::uint32_t id, PlkDataType type);
+						Object(std::uint32_t id, std::string defaultValue, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, std::string name = "");
+						Object(std::uint32_t id, std::string defaultValue, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, std::uint32_t highlimit, std::uint32_t lowLimit, std::string uniqueIdRef = "", std::string name = "");
+
+
 						virtual ~Object();
 
+						template<typename T>
+						T GetTypedActualValue();
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddSubobject(std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::SubObject>& ref);
+
 					private:
-						std::unordered_map<std::uint32_t, SubObject> subIndexCollection;
+						std::unordered_map<std::uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::SubObject>> subIndexCollection;
 
 				};
 

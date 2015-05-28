@@ -32,12 +32,54 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Object.h"
 
 using namespace std;
-using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
+using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
+using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 
-template<PlkDataType TYPE>
-Object::Object(uint32_t id) : BaseObject(id, TYPE),
-	subIndexCollection()
-{}
+namespace IndustrialNetwork
+{
+	namespace POWERLINK
+	{
+		namespace Core
+		{
+			namespace ObjectDictionary
+			{
+				Object::Object(uint32_t id, PlkDataType type) : BaseObject(id, type),
+					subIndexCollection(unordered_map<uint32_t, shared_ptr<SubObject>>())
+				{}
+				Object::Object(std::uint32_t id, std::string defaultValue, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, std::string name) : BaseObject(id, defaultValue, type, accessType, objectType, pdoMapping, name),
+					subIndexCollection(unordered_map<uint32_t, shared_ptr<SubObject>>())
+				{}
+				Object::Object(std::uint32_t id, std::string defaultValue, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, std::uint32_t highlimit, std::uint32_t lowLimit, std::string uniqueIdRef, std::string name): BaseObject(id, defaultValue, type, accessType, objectType, pdoMapping, highlimit, lowLimit, uniqueIdRef, name),
+					subIndexCollection(unordered_map<uint32_t, shared_ptr<SubObject>>())
+				{}
 
-Object::~Object()
-{}
+				Object::~Object()
+				{}
+
+				template<>
+				string Object::GetTypedActualValue<string>()
+				{
+					//return original stored value
+					return this->GetActualValue();
+				}
+
+				template<>
+				uint32_t Object::GetTypedActualValue<unsigned int>()
+				{
+					//Check for correct data type for returning a numeric value
+					return HexToInt<unsigned int>(this->GetActualValue());
+				}
+
+				IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result Object::AddSubobject(shared_ptr<SubObject>& ref)
+				{
+					if (this->subIndexCollection.find(ref.get()->GetId()) == this->subIndexCollection.end())
+						return Result(ErrorCode::SUBOBJECT_EXISTS);
+
+					this->subIndexCollection.insert(pair<uint32_t, shared_ptr<SubObject>>(ref.get()->GetId(), ref));
+
+					return Result();
+				}
+			}
+		}
+	}
+}

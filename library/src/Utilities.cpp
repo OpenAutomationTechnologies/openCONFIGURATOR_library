@@ -1,10 +1,8 @@
 /************************************************************************
-\file ApplicationProcess.h
-\brief Implementation of the Class ApplicationProcess
-\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
-\date 01-May-2015 12:00:00
+\file Utilities.cpp
+\brief	Utility functions used throughout the codebase.
+\author RueckerC, Bernecker + Rainer Industrie Elektronik Ges.m.b.H.
 ************************************************************************/
-
 /*------------------------------------------------------------------------------
 Copyright (c) 2015, Bernecker+Rainer Industrie-Elektronik Ges.m.b.H. (B&R)
 All rights reserved.
@@ -29,12 +27,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
-#if !defined APPLICATION_PROCESS_H
-#define APPLICATION_PROCESS_H
-
-#include <vector>
-#include <memory>
-#include "Parameter.h"
+#include "Utilities.h"
 
 namespace IndustrialNetwork
 {
@@ -42,31 +35,42 @@ namespace IndustrialNetwork
 	{
 		namespace Core
 		{
-			namespace ObjectDictionary
+			namespace Utilities
 			{
-				/**
-				\brief
-				\author rueckerc
-				*/
-				class ApplicationProcess
+
+				template <typename T>
+				string IntToHex(const T number, const unsigned int padLength, const string& prefix, const string& suffix)
 				{
+					ostringstream hexStream;
+					hexStream << setfill('0')
+					          << setw(padLength)
+					          << hex
+					          << uppercase
+					          << number
+					          << suffix;
+					return (prefix + hexStream.str());
+				}
+				template string IntToHex<unsigned short>(const unsigned short number, const unsigned int padLength, const string& prefix, const string& suffix);
+				template string IntToHex<unsigned int>(const unsigned int number, const unsigned int padLength, const string& prefix, const string& suffix);
+				template string IntToHex<unsigned long long>(const unsigned long long number, const unsigned int padLength, const string& prefix, const string& suffix);
 
-					public:
-						ApplicationProcess();
-						virtual ~ApplicationProcess();
-						const std::vector<std::shared_ptr<Parameter>>& GetParameterList();
-
-
-					private:
-						std::vector<std::shared_ptr<Parameter>> parameterList;
-
-				};
-
+				template <typename T>
+				T HexToInt(const string& hexString)
+				{
+					// Strip prefix if necessary
+					string valueStr = (hexString.substr(0, 2) == "0x")
+					                  ? hexString.substr(2)
+					                  : hexString;
+					stringstream stream;
+					T value = 0;
+					stream << hex << valueStr;
+					stream >> value;
+					return value;
+				}
+				template unsigned short HexToInt<unsigned short>(const string& hexString);
+				template unsigned int HexToInt<unsigned int>(const string& hexString);
+				template unsigned long long HexToInt<unsigned long long>(const string& hexString);
 			}
-
 		}
-
 	}
-
 }
-#endif

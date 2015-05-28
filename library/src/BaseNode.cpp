@@ -40,25 +40,35 @@ BaseNode::BaseNode(uint8_t nodeId, const string& name) :
 	nodeId(nodeId),
 	name(name),
 	objectDictionary(unordered_map<uint32_t, shared_ptr<Object>>()),
-	applicationProcess(new ApplicationProcess()),
+	applicationProcess(make_shared<ApplicationProcess>()),
 	nodeAssignment(vector<NodeAssignment>()),
-	networkManagement(new NetworkManagement()),
+	networkManagement(make_shared<NetworkManagement>()),
 	dynamicChannelList(vector<shared_ptr<DynamicChannel>>()),
 	transmitMapping(vector<shared_ptr<TxProcessDataMappingObject>>()),
 	receiveMapping(vector<shared_ptr<RxProcessDataMappingObject>>())
 {}
 
-Result BaseNode::AddObject(Object& objRef)
+Result BaseNode::AddObject(shared_ptr<Object>& objRef)
 {
-	shared_ptr<Object> ptr = make_shared<Object>(objRef);
-	this->objectDictionary.insert(pair<uint32_t, shared_ptr<Object>>(objRef.GetId(), ptr));
+	if (this->objectDictionary.find(objRef.get()->GetId()) != this->objectDictionary.end())
+		return Result(ErrorCode::OBJECT_EXISTS);
+
+	this->objectDictionary.insert(pair<uint32_t, shared_ptr<Object>>(objRef.get()->GetId(), objRef));
 	return Result();
+}
+
+Result BaseNode::AddSubObject(std::uint32_t objectId, shared_ptr<SubObject>& objRef)
+{
+	if (this->objectDictionary.find(objectId) == this->objectDictionary.end())
+		return Result(ErrorCode::OBJECT_DOES_NOT_EXIST);
+
+	return this->objectDictionary.find(objRef.get()->GetId())->second.get()->AddSubobject(objRef);
 }
 
 Result BaseNode::ForceObject(uint32_t nodeId, string actualValue)
 {
 	this->objectDictionary.find(nodeId)->second.get()->SetForceToCDC(true);
-	if(actualValue != "")
+	if (actualValue != "")
 		this->objectDictionary.find(nodeId)->second.get()->SetActualValue(actualValue);
 
 	return Result();

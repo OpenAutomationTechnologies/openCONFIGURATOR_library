@@ -32,11 +32,41 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "SubObject.h"
 
 using namespace std;
-using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
+using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 
-template<PlkDataType TYPE>
-SubObject::SubObject(uint32_t id) : BaseObject(id, TYPE)
-{}
+namespace IndustrialNetwork
+{
+	namespace POWERLINK
+	{
+		namespace Core
+		{
+			namespace ObjectDictionary
+			{
 
-SubObject::~SubObject()
-{}
+				SubObject::SubObject(uint32_t id, PlkDataType type) : BaseObject(id, type)
+				{}
+				SubObject::SubObject(std::uint32_t id, std::string defaultValue, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, std::string name) : BaseObject(id, defaultValue, type, accessType, objectType, pdoMapping, name)
+				{}
+				SubObject::SubObject(std::uint32_t id, std::string defaultValue, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, std::uint32_t highlimit, std::uint32_t lowLimit, std::string uniqueIdRef, std::string name): BaseObject(id, defaultValue, type, accessType, objectType, pdoMapping, highlimit, lowLimit, uniqueIdRef, name)
+				{}
+
+				SubObject::~SubObject()
+				{}
+
+				template<>
+				string SubObject::GetTypedActualValue<string>()
+				{
+					//return original stored value
+					return this->GetActualValue();
+				}
+
+				template<>
+				uint32_t SubObject::GetTypedActualValue<unsigned int>()
+				{
+					//Check for correct data type for returning a numeric value
+					return HexToInt<unsigned int>(this->GetActualValue());
+				}
+			}
+		}
+	}
+}

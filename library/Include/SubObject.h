@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SUBOBJECT_H
 
 #include "BaseObject.h"
-#include "Constants.h"
+#include "Utilities.h"
 
 namespace IndustrialNetwork
 {
@@ -51,9 +51,13 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						template<PlkDataType TYPE>
-						SubObject(std::uint32_t id);
+						SubObject(std::uint32_t id, PlkDataType type);
+						SubObject(std::uint32_t id, std::string defaultValue, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, std::string name = "");
+						SubObject(std::uint32_t id, std::string defaultValue, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, std::uint32_t highlimit, std::uint32_t lowLimit, std::string uniqueIdRef = "", std::string name = "");
 						virtual ~SubObject();
+
+						template<typename T>
+						T GetTypedActualValue();
 
 				};
 

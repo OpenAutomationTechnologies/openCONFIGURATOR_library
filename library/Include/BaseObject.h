@@ -61,7 +61,7 @@ namespace IndustrialNetwork
 						BaseObject();
 						BaseObject(std::uint32_t id, PlkDataType type);
 						BaseObject(std::uint32_t id, std::string defaultValue, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, std::string name = "");
-						BaseObject(std::uint32_t id, std::string defaultValue, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, std::uint32_t highlimit, std::uint32_t lowLimit, std::string uniqueIdRef, std::string name = "");
+						BaseObject(std::uint32_t id, std::string defaultValue, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, std::uint32_t highlimit, std::uint32_t lowLimit, std::string uniqueIdRef = "", std::string name = "");
 
 						bool operator== (const BaseObject& BaseObject) const;
 						virtual ~BaseObject();

@@ -54,8 +54,8 @@ namespace IndustrialNetwork
 					FILE_WRITE_FAILED, // < Cannot write to file.
 					FILE_READ_FAILED, // < Cannot read from file.
 					LEGACY_ERROR, //< Deprecated error occured in operation.
-					SUBINDEX_INVALID, //< Invalid subindex encountered during operation.
-					INDEX_INVALID, //< Invalid index encountered during operation.
+					SUBOBJECT_INVALID, //< Invalid subindex encountered during operation.
+					OBJECT_INVALID, //< Invalid index encountered during operation.
 					NODEID_INVALID, //< Invalid node id encountered during operation.
 					ATTRIBUTEVALUE_INVALID, //< Invalid attribute value encountered during operation.
 					ATTRIBUTEVALUE_NOT_IN_RANGE, //< Attribute value not in valid range.
@@ -64,18 +64,18 @@ namespace IndustrialNetwork
 					NO_CONTROLLED_NODES_CONFIGURED, //< Network does not contain any controlled nodes.
 					NO_MANAGING_NODE_CONFIGURED, //< Network does not contain a managing node.
 					OD_EMPTY, //< Object dictionary is empty.
-					INDEX_CONTAINS_NO_SUBINDICES, //< %Index does not contain subindices.
+					OBJECT_CONTAINS_NO_SUBOBJECTS, //< %Index does not contain subindices.
 					NODE_DOES_NOT_EXIST, //< %Node does not exist in the network.
-					INDEX_DOES_NOT_EXIST, //< %Index does not exist on %Node.
-					SUBINDEX_DOES_NOT_EXIST, //< %SubIndex does not exist in %Index.
+					OBJECT_DOES_NOT_EXIST, //< %Index does not exist on %Node.
+					SUBOBJECT_DOES_NOT_EXIST, //< %SubIndex does not exist in %Index.
 					NODE_EXISTS, //< %Node already exists in the network.
-					INDEX_EXISTS, //< %Index already exists on a %Node.
-					SUBINDEX_EXISTS, //< %SubIndex already exists for an %Index.
+					OBJECT_EXISTS, //< %Index already exists on a %Node.
+					SUBOBJECT_EXISTS, //< %SubIndex already exists for an %Index.
 					EXTERNAL_SYSTEM_CALL_FAILED, //< External system call failed during operation.
 					TPDO_CHANNEL_COUNT_EXCEEDED, //< Max. no. of TPDO-Channels exceeded.
 					NODE_CONFIGURATION_ERROR, //< %Node configuration error occured.
-					MAPPED_INDEX_DOES_NOT_EXIST, // < A mapped %Index does not exist on %Node.
-					MAPPED_SUBINDEX_DOES_NOT_EXIST, //< A mapped %SubIndex does not exist on %Node.
+					MAPPED_OBJECT_DOES_NOT_EXIST, // < A mapped %Index does not exist on %Node.
+					MAPPED_SUBOBJECT_DOES_NOT_EXIST, //< A mapped %SubIndex does not exist on %Node.
 					INSUFFICIENT_MAPPING_OBJECTS, // < Insufficient mapping objects on the %Node.
 					PARAMETER_NOT_FOUND, //< %Parameter not found on a %Node.
 					STRUCT_DATATYPE_NOT_FOUND, // < Struct datatype not found on a %Node.

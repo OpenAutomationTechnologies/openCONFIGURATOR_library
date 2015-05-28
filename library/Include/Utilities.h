@@ -1,10 +1,8 @@
 /************************************************************************
-\file ApplicationProcess.h
-\brief Implementation of the Class ApplicationProcess
-\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
-\date 01-May-2015 12:00:00
+\file Utilities.h
+\brief	Utility functions used throughout the codebase.
+\author RueckerC, Bernecker + Rainer Industrie Elektronik Ges.m.b.H.
 ************************************************************************/
-
 /*------------------------------------------------------------------------------
 Copyright (c) 2015, Bernecker+Rainer Industrie-Elektronik Ges.m.b.H. (B&R)
 All rights reserved.
@@ -29,12 +27,16 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
-#if !defined APPLICATION_PROCESS_H
-#define APPLICATION_PROCESS_H
+#ifndef UTILITIES_H
+#define UTILITIES_H
 
-#include <vector>
-#include <memory>
-#include "Parameter.h"
+#include <iostream>
+#include <sstream>
+#include <algorithm>
+#include <cstdint>
+#include <iomanip>
+
+using namespace std;
 
 namespace IndustrialNetwork
 {
@@ -42,31 +44,35 @@ namespace IndustrialNetwork
 	{
 		namespace Core
 		{
-			namespace ObjectDictionary
+			namespace Utilities
 			{
-				/**
-				\brief
-				\author rueckerc
-				*/
-				class ApplicationProcess
-				{
 
-					public:
-						ApplicationProcess();
-						virtual ~ApplicationProcess();
-						const std::vector<std::shared_ptr<Parameter>>& GetParameterList();
+				/************************************************************************
+				\brief Convert a number to hexadecimal representation.
 
+				\param number    Number to convert to hexadecimal representation.
+				\param padLength Pad the hex representation with leading '0's up to padLength. I.e. Converting 10 to hex with padLength == 4 -> 000A.
+				\param prefix    Prefix to prepend. I.e. "0x", empty string by default.
+				\param suffix    Suffix to append. I.e. "h", empty string by default.
 
-					private:
-						std::vector<std::shared_ptr<Parameter>> parameterList;
+				\return A hexadecimal string representation of number.
+				************************************************************************/
+				template <typename T>
+				string IntToHex(const T number, const unsigned int padLength, const string& prefix = "", const string& suffix = "");
 
-				};
+				/************************************************************************
+				\brief Convert a string in hex-representation to an integral datatype
+
+				\param hexString	String representing an integral number in hexadecimal representation. Prefix "0x" is optional.
+
+				\return The string converted to an integral datatype.
+				************************************************************************/
+				template <typename T>
+				T HexToInt(const string& hexString);
 
 			}
-
 		}
-
 	}
-
 }
+
 #endif
