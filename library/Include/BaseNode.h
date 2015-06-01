@@ -83,6 +83,8 @@ namespace IndustrialNetwork
 						virtual bool RemoveNodeAssignment(NodeAssignment) = 0;
 						virtual std::uint32_t GetNodeAssignmentValue() = 0;
 
+						std::vector<IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment>& GetNodeAssignment();
+
 					private:
 						std::uint8_t nodeId;
 						std::string name;

@@ -45,17 +45,41 @@ ControlledNode::~ControlledNode()
 
 bool ControlledNode::AddNodeAssignement(NodeAssignment assign)
 {
+
+	if (assign == NodeAssignment::NMT_NODEASSIGN_MN_PRES)
+	{
+		return false;
+	}
+	else
+	{
+		auto it = find(this->GetNodeAssignment().begin(), this->GetNodeAssignment().end(), assign);
+		if (it != this->GetNodeAssignment().end())
+			this->GetNodeAssignment().push_back(assign);
+		else
+			return false;
+
+	}
 	return true;
 }
 
 bool ControlledNode::RemoveNodeAssignment(NodeAssignment assign)
 {
+	this->GetNodeAssignment().erase(remove(this->GetNodeAssignment().begin(), this->GetNodeAssignment().end(), assign), this->GetNodeAssignment().end());
 	return true;
 }
 
 uint32_t ControlledNode::GetNodeAssignmentValue()
 {
-	return 0;
+	if (this->GetNodeAssignment().empty())
+		return 0;
+
+	NodeAssignment assign = this->GetNodeAssignment()[0];
+	for (auto var : this->GetNodeAssignment())
+	{
+		assign |=  var;
+	}
+
+	return static_cast<underlying_type<NodeAssignment>::type>(assign);
 }
 
 Result ControlledNode::MapToFrame(BaseObject& index, uint32_t position, Direction dir)

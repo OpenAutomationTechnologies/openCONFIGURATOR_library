@@ -1,6 +1,6 @@
 /************************************************************************
-\file NodeAssignment.h
-\brief Implementation of the Class NodeAssignment
+\file FeatureFlags.h
+\brief Implementation of the Class FeatureFlags
 \author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 \date 01-May-2015 12:00:00
 ************************************************************************/
@@ -29,8 +29,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
-#if !defined NODE_ASSIGNMENT_H
-#define NODE_ASSIGNMENT_H
+#if !defined FEATURE_FLAGS_H
+#define FEATURE_FLAGS_H
 
 #include <cstdint>
 #include <type_traits>
@@ -47,31 +47,39 @@ namespace IndustrialNetwork
 				\brief
 				\author rueckerc
 				*/
-				enum class NodeAssignment : std::uint32_t
+				enum class FeatureFlags : std::uint32_t
 				{
-					NMT_NODEASSIGN_NODE_EXISTS = 0x00000001,
-					NMT_NODEASSIGN_NODE_IS_CN = 0x00000002,
-					NMT_NODEASSIGN_START_CN = 0x00000004,
-					NMT_NODEASSIGN_MANDATORY_CN = 0x00000008,
-					NMT_NODEASSIGN_KEEPALIVE = 0x00000010,
-					NMT_NODEASSIGN_SWVERSIONCHECK = 0x00000020,
-					NMT_NODEASSIGN_SWUPDATE = 0x00000040,
-					NMT_NODEASSIGN_ASYNCONLY_NODE = 0x00000100,
-					NMT_NODEASSIGN_MULTIPLEXED_CN = 0x00000200,
-					NMT_NODEASSIGN_RT1 = 0x00000400,
-					NMT_NODEASSIGN_RT2 = 0x00000800,
-					NMT_NODEASSIGN_MN_PRES = 0x00001000,
-					NMT_NODEASSIGN_PRES_CHAINING = 0x00004000
+					Isochronous = 0x0,
+					SDO_by_UDP_IP = 0x1,
+					SDO_by_ASnd = 0x2,
+					SDO_by_PDO = 0x4,
+					NMT_Info_Services = 0x8,
+					Extended_NMT_State_Commands = 0x10,
+					Dynamic_PDO_Mapping = 0x20,
+					NMT_Services_by_UDP_IP = 0x40,
+					Configuration_Manager = 0x80,
+					Multiplexed_Access = 0x100,
+					Node_ID_setup_by_SW = 0x200,
+					MN_Basic_Ethernet_Mode = 0x400,
+					Routing_Type_1_Support = 0x800,
+					Routing_Type_2_Support = 0x1000,
+					SDO_Read_Write_All_by_Index = 0x2000,
+					SDO_Read_Write_Multiple_Parameter_by_Index = 0x4000,
+					Multiple_ASend_Support = 0x8000,
+					Ring_Redundancy = 0x10000,
+					PResChaining = 0x20000,
+					Multiple_PReq_PRes = 0x40000,
+					Dynamic_Node_Allocation = 0x80000
 				};
 
-				inline NodeAssignment operator | (NodeAssignment lhs, NodeAssignment rhs)
+				inline FeatureFlags operator | (FeatureFlags lhs, FeatureFlags rhs)
 				{
-					return (NodeAssignment)(static_cast<std::underlying_type<NodeAssignment>::type>(lhs) | static_cast<std::underlying_type<NodeAssignment>::type>(rhs));
+					return (FeatureFlags)(static_cast<std::underlying_type<FeatureFlags>::type>(lhs) | static_cast<std::underlying_type<FeatureFlags>::type>(rhs));
 				}
 
-				inline NodeAssignment& operator |= (NodeAssignment& lhs, NodeAssignment rhs)
+				inline FeatureFlags& operator |= (FeatureFlags& lhs, FeatureFlags rhs)
 				{
-					lhs = (NodeAssignment)(static_cast<std::underlying_type<NodeAssignment>::type>(lhs) | static_cast<std::underlying_type<NodeAssignment>::type>(rhs));
+					lhs = (FeatureFlags)(static_cast<std::underlying_type<FeatureFlags>::type>(lhs) | static_cast<std::underlying_type<FeatureFlags>::type>(rhs));
 					return lhs;
 				}
 

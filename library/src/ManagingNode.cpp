@@ -42,15 +42,56 @@ ManagingNode::~ManagingNode()
 
 bool ManagingNode::AddNodeAssignement(NodeAssignment assign)
 {
-	return true;
+	switch (assign)
+	{
+
+		case IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment::NMT_NODEASSIGN_START_CN:
+		case IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment::NMT_NODEASSIGN_MANDATORY_CN:
+		case IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment::NMT_NODEASSIGN_KEEPALIVE:
+		case IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment::NMT_NODEASSIGN_SWVERSIONCHECK:
+		case IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment::NMT_NODEASSIGN_SWUPDATE:
+		case IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment::NMT_NODEASSIGN_MULTIPLEXED_CN:
+			return false;
+		case IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment::NMT_NODEASSIGN_NODE_EXISTS:
+		case IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment::NMT_NODEASSIGN_NODE_IS_CN:
+		case IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment::NMT_NODEASSIGN_ASYNCONLY_NODE:
+		case IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment::NMT_NODEASSIGN_RT1:
+		case IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment::NMT_NODEASSIGN_RT2:
+		case IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment::NMT_NODEASSIGN_MN_PRES:
+			{
+				auto it = find(this->GetNodeAssignment().begin(), this->GetNodeAssignment().end(), assign);
+				if (it != this->GetNodeAssignment().end())
+				{
+					this->GetNodeAssignment().push_back(assign);
+					return true;
+				}
+				else
+					return false;
+
+				break;
+			}
+		default:
+			break;
+	}
+	return false;
 }
 
 bool ManagingNode::RemoveNodeAssignment(NodeAssignment assign)
 {
+	this->GetNodeAssignment().erase(remove(this->GetNodeAssignment().begin(), this->GetNodeAssignment().end(), assign), this->GetNodeAssignment().end());
 	return true;
 }
 
 uint32_t ManagingNode::GetNodeAssignmentValue()
 {
-	return 0;
+	if (this->GetNodeAssignment().empty())
+		return 0;
+
+	NodeAssignment assign = this->GetNodeAssignment()[0];
+	for (auto var : this->GetNodeAssignment())
+	{
+		assign |=  var;
+	}
+
+	return static_cast<underlying_type<NodeAssignment>::type>(assign);
 }

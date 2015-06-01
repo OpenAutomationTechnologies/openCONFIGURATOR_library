@@ -121,3 +121,8 @@ void BaseNode::SetObjectDictionary(const unordered_map<uint32_t, shared_ptr<Obje
 {
 	objectDictionary = od;
 }
+
+std::vector<NodeAssignment>& BaseNode::GetNodeAssignment()
+{
+	return this->nodeAssignment;
+}
