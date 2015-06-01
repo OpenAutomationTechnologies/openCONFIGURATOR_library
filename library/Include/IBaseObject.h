@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define IBASE_OBJECT_H
 
 #include <string>
+#include <boost/any.hpp>
 
 namespace IndustrialNetwork
 {
@@ -43,46 +44,36 @@ namespace IndustrialNetwork
 		\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 		*/
 		// T datatype for the object id
-		// V datatype for the actual/default value
 		// D datatype for the object datatype
-		template<typename T, typename V, typename D>
+		template<typename T, typename D>
 		class IBaseObject
 		{
 
 			public:
 				IBaseObject() :
 					id(),
-					actualValue(),
-					defaultValue(),
+					actualValue(boost::any()),
+					defaultValue(boost::any()),
 					dataType(),
 					name("")
 
 				{}
 
-				IBaseObject(T id, V defaultValue, D dataType, std::string name = "") :
+				IBaseObject(T id, D dataType, std::string name = "") :
 					id(id),
-					actualValue(),
-					defaultValue(defaultValue),
+					actualValue(boost::any()),
+					defaultValue(boost::any()),
 					dataType(dataType),
 					name(name)
 				{}
 
 				IBaseObject(T id) :
 					id(id),
-					actualValue(),
-					defaultValue(),
+					actualValue(boost::any()),
+					defaultValue(boost::any()),
 					dataType(),
 					name("")
 				{}
-
-				IBaseObject(T id, D dataType, std::string name = "") :
-					id(id),
-					actualValue(),
-					defaultValue(),
-					dataType(dataType),
-					name(name)
-				{}
-
 
 				virtual ~IBaseObject()
 				{}
@@ -109,22 +100,22 @@ namespace IndustrialNetwork
 					this->name = name;
 				}
 
-				const V GetActualValue() const
+				const boost::any GetActualValue() const
 				{
 					return this->actualValue;
 				}
 
-				void SetActualValue(const V& actualValue)
+				void SetActualValue(const boost::any& actualValue)
 				{
 					this->actualValue = actualValue;
 				}
 
-				const V GetDefaultValue() const
+				const boost::any GetDefaultValue() const
 				{
 					return this->defaultValue;
 				}
 
-				void SetDefaultValue(const V& defaultValue)
+				void SetDefaultValue(const boost::any& defaultValue)
 				{
 					this->defaultValue = defaultValue;
 				}
@@ -142,8 +133,8 @@ namespace IndustrialNetwork
 
 			private:
 				T id;
-				V actualValue;
-				V defaultValue;
+				boost::any actualValue;
+				boost::any defaultValue;
 				D dataType;
 				std::string name;
 

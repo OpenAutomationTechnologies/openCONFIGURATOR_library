@@ -75,9 +75,15 @@
 #include "PlkDataType.h"
 #include "NodeAssignment.h"
 #include "Result.h"
+#include "Network.h"
 #include "Direction.h"
-#include "PlkConfiguration.h"
 #include "NodeType.h"
+#include "PlkConfiguration.h"
+#include "BuildConfigurationSetting.h"
+#include "BaseNode.h"
+#include "BaseObject.h"
+#include "ControlledNode.h"
+#include "ManagingNode.h"
 #include "OpenConfiguratorCore.h"
 
 %}
@@ -98,15 +104,14 @@
 %include "BaseObject.h"
 %include "ControlledNode.h"
 %include "ManagingNode.h"
-%include "BaseObject.h"
 %include "OpenConfiguratorCore.h"
-
 
 namespace std {
    %template(StringCollection) std::vector<std::string>;
    %template(ConfigurationCollection) std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::PlkConfiguration>;
    %template(SettingsCollection) std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::BuildConfigurationSetting>;
-   %template(NodeIdCollection) std::vector<unsigned char>;
+   %template(NodeIdCollection) std::vector<std::uint8_t>;
 }
+
 
 

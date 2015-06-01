@@ -35,6 +35,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <algorithm>
 #include <cstdint>
 #include <iomanip>
+#include <string>
+#include <cctype>
 
 using namespace std;
 
@@ -69,6 +71,8 @@ namespace IndustrialNetwork
 				************************************************************************/
 				template <typename T>
 				T HexToInt(const string& hexString);
+
+				bool StringToBool(string str);
 
 			}
 		}

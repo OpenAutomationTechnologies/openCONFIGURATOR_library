@@ -79,9 +79,17 @@
 #include "PlkDataType.h"
 #include "NodeAssignment.h"
 #include "Result.h"
+#include "Network.h"
 #include "Direction.h"
-#include "PlkConfiguration.h"
 #include "NodeType.h"
+#include "PlkConfiguration.h"
+#include "BuildConfigurationSetting.h"
+#include "BaseNode.h"
+#include "BaseObject.h"
+#include "Object.h"
+#include "SubObject.h"
+#include "ControlledNode.h"
+#include "ManagingNode.h"
 #include "OpenConfiguratorCore.h"
 
 %}
@@ -100,9 +108,10 @@
 %include "BuildConfigurationSetting.h"
 %include "BaseNode.h"
 %include "BaseObject.h"
+%include "Object.h"
+%include "SubObject.h"
 %include "ControlledNode.h"
 %include "ManagingNode.h"
-%include "BaseObject.h"
 %include "OpenConfiguratorCore.h"
 
 namespace std {

@@ -102,11 +102,6 @@ namespace IndustrialNetwork
 					ACCESS_TYPE_FOR_PARAMETER_INVALID, // < A mapped object's referenced %Parameter has an invalid/incompatible accessType.
 					ACCESS_TYPE_FOR_PDO_INVALID, // < A mapped object has an invalid/incompatible accessType.
 					PDO_OFFSET_INVALID, // < A mapped object has an invalid offset (non-contigous).
-					XML_INVALID, // < Processed XML file not schema-valid.
-					SCHEMA_NOT_FOUND_OR_WELL_FORMED, // < XML schema not found or not well-formed.
-					SCHEMA_INVALID, // < XML schema not valid.
-					SCHEMA_PARSER_CONTEXT_ERROR, // < XML parser context error.
-					SCHEMA_VALIDATION_CONTEXT_ERROR, // < XML schema validation context error.
 					NO_PROJECT_LOADED, // < No project loaded.
 					MAPPING_INVALID, // < An enabled mapping entry is empty.
 					PARAMETER_VALUE_NOT_SET, // < A specific parameter value is not set.
@@ -122,7 +117,8 @@ namespace IndustrialNetwork
 					BUILD_CONFIGURATION_DOES_NOT_EXIST, // < An auto generation settings group does not exist in the project configuration.
 					BUILD_CONFIGURATION_IS_ACTIVE, // < The build configuration group is set active in the project configuration.
 					NETWORK_EXISTS,
-					NETWORK_DOES_NOT_EXIST
+					NETWORK_DOES_NOT_EXIST,
+					DATATYPE_DOES_NOT_MATCH_PLKDATATYPE
 				};
 
 			}

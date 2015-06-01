@@ -106,7 +106,7 @@ namespace IndustrialNetwork
 						/param[in] node vector reference.
 						/return Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetNodes(std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetNodes(std::unordered_map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
 
 						/**
 						/brief Retrieve all exising node ids in the network.

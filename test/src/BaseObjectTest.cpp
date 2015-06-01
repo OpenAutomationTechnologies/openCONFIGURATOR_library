@@ -54,13 +54,11 @@ void BaseObjectTest::testEqualOperator(void)
 }
 void BaseObjectTest::testGetDefaultValue()
 {
-	objectToTest.SetDefaultValue("10000");
-	CPPUNIT_ASSERT_EQUAL(objectToTest.GetDefaultValue(), string("10000"));
+
 }
 void BaseObjectTest::testSetDefaultValue()
 {
-	objectToTest.SetDefaultValue("100");
-	CPPUNIT_ASSERT_EQUAL(objectToTest.GetDefaultValue(), string("100"));
+
 }
 void BaseObjectTest::testForcedToCDC()
 {

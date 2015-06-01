@@ -51,20 +51,14 @@ namespace IndustrialNetwork
 				\brief Represents an Object in the nodes object dictionary.
 				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
-				class Object : public IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject
+				class DLLEXPORT Object : public IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject
 				{
 
 					public:
 						Object(std::uint32_t id, PlkDataType type);
-						Object(std::uint32_t id, std::string defaultValue, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, std::string name = "");
-						Object(std::uint32_t id, std::string defaultValue, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, std::uint32_t highlimit, std::uint32_t lowLimit, std::string uniqueIdRef = "", std::string name = "");
-
+						Object(std::uint32_t id, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, std::string defaultValue = "", std::string actualValue = "", std::uint32_t highlimit = 0, std::uint32_t lowLimit = 0, std::string uniqueIdRef = "", std::string name = "");
 
 						virtual ~Object();
-
-						template<typename T>
-						T GetTypedActualValue();
-
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddSubobject(std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::SubObject>& ref);
 
 					private:

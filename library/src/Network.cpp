@@ -129,12 +129,9 @@ Result Network::RemoveNode(const uint8_t nodeID)
 	return Result();
 }
 
-Result Network::GetNodes(vector<shared_ptr<BaseNode>>& nodeCollection)
+Result Network::GetNodes(unordered_map<uint8_t, shared_ptr<BaseNode>>& nodeCollection)
 {
-	for (auto var : this->nodeCollection)
-	{
-		nodeCollection.push_back(var.second);
-	}
+	nodeCollection = this->nodeCollection;
 	return Result();
 }
 

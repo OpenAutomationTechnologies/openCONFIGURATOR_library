@@ -67,9 +67,25 @@ namespace IndustrialNetwork
 					stream >> value;
 					return value;
 				}
+
+				template unsigned char HexToInt<unsigned char>(const string& hexString);
 				template unsigned short HexToInt<unsigned short>(const string& hexString);
 				template unsigned int HexToInt<unsigned int>(const string& hexString);
 				template unsigned long long HexToInt<unsigned long long>(const string& hexString);
+
+				template signed char HexToInt<signed char>(const string& hexString);
+				template short HexToInt<short>(const string& hexString);
+				template int HexToInt<int>(const string& hexString);
+				template long long HexToInt<long long>(const string& hexString);
+
+				bool StringToBool(string str)
+				{
+					transform(str.begin(), str.end(), str.begin(), ::tolower);
+					istringstream is(str);
+					bool b;
+					is >> boolalpha >> b;
+					return b;
+				}
 			}
 		}
 	}

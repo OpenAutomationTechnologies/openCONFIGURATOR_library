@@ -41,6 +41,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Constants.h"
 #include "ProjectManager.h"
 #include "Network.h"
+#include "PlkDataType.h"
+#include "AccessType.h"
 
 namespace IndustrialNetwork
 {
@@ -86,6 +88,15 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetManagingNode(const std::string networkId, IndustrialNetwork::POWERLINK::Core::Node::ManagingNode& node);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetAvailableNodeIds(const std::string networkId, std::vector<std::uint8_t>& nodeIdCollection);
 
+						//Modular Node API
+						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateModularHeadNode();
+						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateModule();
+
+						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetModularHeadNode();
+						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetModule();
+						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ReorderModules();
+						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DeleteModule();
+
 						//Build Configuration related API
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetConfigurationSettingEnabled(const std::string networkId, const std::string  configID, const std::string  settingID, bool enabled);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateConfigurationSetting(const std::string networkId, const std::string configID, const std::string name, const std::string value);
@@ -97,6 +108,15 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetActiveConfiguration(const std::string networkId, std::string& activeConfiguration);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetActiveConfiguration(const std::string networkId, const std::string configID);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetBuildConfigurations(const std::string networkId, std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::PlkConfiguration>& bcfgs);
+
+						//Object related API
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateObject(const std::string networkId, const std::uint8_t nodeId, std::uint32_t objectId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType type, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType accessType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ObjectType objectType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping pdoMapping, std::string defaultValue = "", std::string actualValue = "", std::uint32_t highlimit = 0, std::uint32_t lowLimit = 0, std::string uniqueIdRef = "", std::string name = "");
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateSubObject(const std::string networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::uint32_t subObjectId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType type, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType accessType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ObjectType objectType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping pdoMapping, std::string defaultValue = "", std::string actualValue = "", std::uint32_t highlimit = 0, std::uint32_t lowLimit = 0, std::string uniqueIdRef = "", std::string name = "");
+
+						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetObject();
+						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetSubObject();
+
+						//Mapping API
 
 					private:
 						//singleton

@@ -34,13 +34,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <cstdint>
 #include <vector>
+#include <string>
 #include <boost/optional.hpp>
+#include <boost/lexical_cast.hpp>
 #include "Constants.h"
 #include "IBaseObject.h"
 #include "ObjectType.h"
 #include "PDOMapping.h"
 #include "AccessType.h"
 #include "PlkDataType.h"
+#include "Utilities.h"
+#include "Result.h"
 
 namespace IndustrialNetwork
 {
@@ -54,14 +58,13 @@ namespace IndustrialNetwork
 				\brief Represents the common basis for all POWERLINK objects.
 				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
-				class DLLEXPORT BaseObject : public IndustrialNetwork::Fieldbus::IBaseObject<std::uint32_t, std::string, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType>
+				class DLLEXPORT BaseObject : public IndustrialNetwork::Fieldbus::IBaseObject<std::uint32_t, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType>
 				{
 
 					public:
 						BaseObject();
 						BaseObject(std::uint32_t id, PlkDataType type);
-						BaseObject(std::uint32_t id, std::string defaultValue, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, std::string name = "");
-						BaseObject(std::uint32_t id, std::string defaultValue, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, std::uint32_t highlimit, std::uint32_t lowLimit, std::string uniqueIdRef = "", std::string name = "");
+						BaseObject(std::uint32_t id, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, std::string defaultValue, std::string actualValue, std::uint32_t highlimit, std::uint32_t lowLimit, std::string uniqueIdRef, std::string name);
 
 						bool operator== (const BaseObject& BaseObject) const;
 						virtual ~BaseObject();
@@ -87,6 +90,14 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping GetPDOMapping() const;
 						void SetPDOMapping(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping pdoMapping);
 
+						template<typename T>
+						T GetTypedActualValue();
+
+						template<typename T>
+						T GetTypedDefaultValue();
+
+
+
 					private:
 
 						bool forceToCDC;
@@ -97,6 +108,7 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ObjectType objectType;
 						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping pdoMapping;
 
+						void SetTypedObjectValues(std::string defaultValue, std::string actualValue);
 				};
 
 			}
