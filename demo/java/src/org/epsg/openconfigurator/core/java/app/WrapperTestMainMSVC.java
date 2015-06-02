@@ -2,9 +2,8 @@ package org.epsg.openconfigurator.core.java.app;
 
 import org.epsg.openconfigurator.lib.wrapper.BuildConfigurationSetting;
 import org.epsg.openconfigurator.lib.wrapper.ControlledNode;
-import org.epsg.openconfigurator.lib.wrapper.ManagingNode;
 import org.epsg.openconfigurator.lib.wrapper.Network;
-import org.epsg.openconfigurator.lib.wrapper.ProjectManager;
+import org.epsg.openconfigurator.lib.wrapper.OpenConfiguratorCore;
 import org.epsg.openconfigurator.lib.wrapper.Result;
 import org.epsg.openconfigurator.lib.wrapper.SettingsCollection;
 import org.epsg.openconfigurator.lib.wrapper.StringCollection;
@@ -26,37 +25,38 @@ public class WrapperTestMainMSVC {
 
 	public static void main(String[] args) {
 		// Retrieve main managing class of the library
-		ProjectManager man = ProjectManager.GetInstance();
+		OpenConfiguratorCore core = OpenConfiguratorCore.GetInstance();
 		
 		// Init logger class with configuration file path
-		man.InitLoggingConfiguration("boost_log_settings.ini");
-
+		core.InitLoggingConfiguration("boost_log_settings.ini");
+		core.CreateNetwork("test");
+		
 		// Create an initial network
-		Network net = new Network("TestNetwork");
-		net.SetCycleTime(10000); // Set Cycle time
+		Network net = new Network();
+		core.CreateNetwork("test");
+		core.SetCycleTime("test", 10000); // Set Cycle time
+		core.GetNetwork("test", net);
 		System.out.println(net.GetNetworkId()); // Print UUID to console
 
 		// Add two nodes to the network
-		net.AddNode(new ManagingNode("MN"));
-		net.AddNode(new ControlledNode((short) 1, "CN"));
-
-		// Add network to the managing class
-		man.AddNetwork(net.GetNetworkId(), net);
+		core.CreateNode("test", (short) 240, "MN");
+		core.CreateNode("test", (short) 1, "CN");
 
 		// Get a node object from the library
 		ControlledNode node = new ControlledNode((short)0);
-		Result res = net.GetNode((short) 1, node);
+		Result res = core.GetControlledNode("test", (short) 1, node);
 		System.out.println(res.IsSuccessful());
-		System.out.println(node.GetNodeName());
+		System.out.println(node.GetName());
 
 		// Get a network from the library
 		Network net2 = new Network();
-		res = man.GetNetwork(net.GetNetworkId(), net2);
+		res = core.GetNetwork("test", net2);
 		System.out.println(res.IsSuccessful()); // should be true
 		System.out.println(net2.GetNetworkId()); // should be the same
 		System.out.println(net2.GetCycleTime()); // should be 10000
 
-		StringCollection support = man.GetSupportedSettingIds();
+		StringCollection support = new StringCollection();
+		res = core.GetSupportedSettingIds(support);
 		for (int i = 0; i < support.size(); i++) {
 			System.out.println(support.get(i));
 
@@ -93,9 +93,9 @@ public class WrapperTestMainMSVC {
 		presTimeOut_all.SetEnabled(true);
 
 		// Print setting info
-		System.out.println(mnMapping_all.GetInfo());
-		System.out.println(nodeAssignment_all.GetInfo());
-		System.out.println(presTimeOut_all.GetInfo());
+		System.out.println(mnMapping_all.GetDescription());
+		System.out.println(nodeAssignment_all.GetDescription());
+		System.out.println(presTimeOut_all.GetDescription());
 
 		// Create settings configuration
 		/*
@@ -105,10 +105,10 @@ public class WrapperTestMainMSVC {
 		 * name="MN_PRES_TIMEOUT_FOR_ALL_NODES" enabled="true"/>
 		 * </AutoGenerationSettings>
 		 */
-		net2.AddConfiguration("all");
-		net2.AddConfigurationSetting("all", mnMapping_all);
-		net2.AddConfigurationSetting("all", nodeAssignment_all);
-		net2.AddConfigurationSetting("all", presTimeOut_1);
+		core.CreateConfiguration("test", "all");
+		core.CreateConfigurationSetting("test", "all", "GENERATE_MN_MAPPING_FOR_NODES", "");
+		core.CreateConfigurationSetting("test", "all", "GENERATE_MN_NODE_ASSIGNMENT_FOR_NODES", "");
+		core.CreateConfigurationSetting("test", "all", "GENERATE_MN_PRES_TIMEOUT_FOR_NODES", "");
 
 		// Create specific settings configuration
 		/*
@@ -118,21 +118,18 @@ public class WrapperTestMainMSVC {
 		 * <Setting name="MN_PRES_TIMEOUT_FOR_NODE" value="1" enabled="true"/>
 		 * </AutoGenerationSettings>
 		 */
-		net2.AddConfiguration("custom");
-		net2.AddConfigurationSetting("custom", mnMapping_1);
-		net2.AddConfigurationSetting("custom", nodeAssignment_1);
-		net2.AddConfigurationSetting("custom", presTimeOut_all);
+		core.CreateConfiguration("test", "custom");
+		core.CreateConfigurationSetting("test", "custom", "GENERATE_MN_MAPPING_FOR_NODES", "1");
+		core.CreateConfigurationSetting("test", "custom", "GENERATE_MN_NODE_ASSIGNMENT_FOR_NODES", "1");
+		core.CreateConfigurationSetting("test", "custom", "GENERATE_MN_PRES_TIMEOUT_FOR_NODES", "1");
 
 		SettingsCollection coll = new SettingsCollection();
-		System.out.println(net2.GetConfigurationSettings("all", coll));
+		System.out.println(core.GetConfigurationSettings("test", "all", coll).GetErrorType());
 		System.out.println(coll.size());
-		System.out.println(net2.SetConfigurationSettingEnabled("all",
-				"GENERATE_MN_MAPPING_FOR_ALL_NODES", false));
+		System.out.println(core.SetConfigurationSettingEnabled("test", "all",
+				"GENERATE_MN_MAPPING_FOR_NODES", false).GetErrorType());
 
-		net2.AddConfiguration("none");
-		net2.AddConfigurationSetting("none", mnMapping_all_disabled);
-		net2.AddConfigurationSetting("none", nodeAssignment_all_disabled);
-		net2.AddConfigurationSetting("none", presTimeOut_all_disabled);
+		core.CreateConfiguration("test", "none");
 	}
 
 }

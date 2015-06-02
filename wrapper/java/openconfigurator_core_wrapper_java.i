@@ -95,19 +95,34 @@
 %}
 
 %include "ErrorCode.h"
+%include "IResult.h"
+%template(intResult) IndustrialNetwork::Fieldbus::IResult<IndustrialNetwork::POWERLINK::Core::ErrorHandling::ErrorCode>;
+%include "Result.h"
+
 %include "AccessType.h"
 %include "ObjectType.h"
 %include "PDOMapping.h"
 %include "PlkDataType.h"
 %include "NodeAssignment.h"
-%include "Result.h"
 %include "Network.h"
 %include "Direction.h"
 %include "NodeType.h"
-%include "PlkConfiguration.h"
-%include "BuildConfigurationSetting.h"
+
+
+%include "IFieldbusNode.h"
+%template(intFieldBusNode) IndustrialNetwork::Fieldbus::IFieldbusNode<unsigned char, unsigned int, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>;
 %include "BaseNode.h"
+
+%include "IBuildConfigurationSetting.h"
+%include "BuildConfigurationSetting.h"
+%include "IBuildConfiguration.h"
+%template(intBuildConfiguration) IndustrialNetwork::Fieldbus::IBuildConfiguration<IndustrialNetwork::POWERLINK::Core::Configuration::BuildConfigurationSetting>;
+%include "PlkConfiguration.h"
+
+%include "IBaseObject.h"
+%template(intBaseObject) IndustrialNetwork::Fieldbus::IBaseObject<unsigned int, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType>;
 %include "BaseObject.h"
+
 %include "Object.h"
 %include "SubObject.h"
 %include "ControlledNode.h"
@@ -118,5 +133,5 @@ namespace std {
    %template(StringCollection) std::vector<std::string>;
    %template(ConfigurationCollection) std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::PlkConfiguration>;
    %template(SettingsCollection) std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::BuildConfigurationSetting>;
-   %template(NodeIdCollection) std::vector<std::uint8_t>;
+   %template(NodeIdCollection) std::vector<unsigned char>;
 }

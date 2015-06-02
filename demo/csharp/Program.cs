@@ -31,38 +31,104 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace openconfigurator_core_net_app
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             Console.ReadLine();
+            // Retrieve main managing class of the library
             var core = OpenConfiguratorCore.GetInstance();
-            Result res = core.InitLoggingConfiguration("boost_log_settings.ini");
-            Console.WriteLine(res.IsSuccessful());
-            res = core.CreateNetwork("test");
-            Console.WriteLine(res.IsSuccessful());
-            res = core.CreateNode("test", 100, "CN");
-            Console.WriteLine(res.IsSuccessful());
-            res = core.CreateNode("notexisting", 100, "CN");
-            Console.WriteLine(res.IsSuccessful());
-            core.SetCycleTime("test", 20000);
-            Network net = new Network();
+
+            // Init logger class with configuration file path
+            core.InitLoggingConfiguration("boost_log_settings.ini");
+            core.CreateNetwork("test");
+
+            // Create an initial network
+            var net = new Network();
+            core.CreateNetwork("test");
+            core.SetCycleTime("test", 10000); // Set Cycle time
             core.GetNetwork("test", net);
+            Console.WriteLine(net.GetNetworkId()); // Print UUID to console
 
-            Console.WriteLine(net.GetCycleTime());
+            // Add two nodes to the network
+            core.CreateNode("test", 240, "MN");
+            core.CreateNode("test", 1, "CN");
 
-            var coll = new StringCollection();
-            core.GetNetworkIds(coll);
+            // Get a node object from the library
+            var node = new ControlledNode(0);
+            var res = core.GetControlledNode("test", 1, node);
+            Console.WriteLine(res.IsSuccessful());
+            Console.WriteLine(node.GetName());
 
+            // Get a network from the library
+            var net2 = new Network();
+            res = core.GetNetwork("test", net2);
+            Console.WriteLine(res.IsSuccessful()); // should be true
+            Console.WriteLine(net2.GetNetworkId()); // should be the same
+            Console.WriteLine(net2.GetCycleTime()); // should be 10000
+
+            var support = new StringCollection();
+            res = core.GetSupportedSettingIds(support);
+            Console.WriteLine(res.IsSuccessful());
+            foreach (string t in support)
+            {
+                Console.WriteLine(t);
+            }
+
+            // Create settings for a configuration
+            var mnMappingAll = new BuildConfigurationSetting(
+                    "GENERATE_MN_MAPPING_FOR_NODES", "all");
+            var nodeAssignmentAll = new BuildConfigurationSetting(
+                    "GENERATE_MN_NODE_ASSIGNMENT_FOR_NODES", "all");
+            var presTimeOutAll = new BuildConfigurationSetting(
+                    "GENERATE_MN_PRES_TIMEOUT_FOR_NODES", "all");
+
+            // Enable all the settings (are enabled per default)
+            mnMappingAll.SetEnabled(true);
+            nodeAssignmentAll.SetEnabled(true);
+            presTimeOutAll.SetEnabled(true);
+
+            // Print setting info
+            Console.WriteLine(mnMappingAll.GetDescription());
+            Console.WriteLine(nodeAssignmentAll.GetDescription());
+            Console.WriteLine(presTimeOutAll.GetDescription());
+
+            // Create settings configuration
+            /*
+             * <AutoGenerationSettings id="GenerateAll"> <Setting
+             * name="MN_MAPPING_FOR_ALL_NODES" enabled="true"/> <Setting
+             * name="MN_NODE_ASSIGNMENT_FOR_ALL_NODES" enabled="true"/> <Setting
+             * name="MN_PRES_TIMEOUT_FOR_ALL_NODES" enabled="true"/>
+             * </AutoGenerationSettings>
+             */
+            core.CreateConfiguration("test", "all");
+            core.CreateConfigurationSetting("test", "all", "GENERATE_MN_MAPPING_FOR_NODES", "");
+            core.CreateConfigurationSetting("test", "all", "GENERATE_MN_NODE_ASSIGNMENT_FOR_NODES", "");
+            core.CreateConfigurationSetting("test", "all", "GENERATE_MN_PRES_TIMEOUT_FOR_NODES", "");
+
+            // Create specific settings configuration
+            /*
+             * <AutoGenerationSettings id="SpecificConfiguration"> <Setting
+             * name="MN_MAPPING_FOR_NODE" value="1" enabled="true"/> <Setting
+             * name="MN_NODE_ASSIGNMENT_FOR_NODE" value="1" enabled="true"/>
+             * <Setting name="MN_PRES_TIMEOUT_FOR_NODE" value="1" enabled="true"/>
+             * </AutoGenerationSettings>
+             */
+            core.CreateConfiguration("test", "custom");
+            core.CreateConfigurationSetting("test", "custom", "GENERATE_MN_MAPPING_FOR_NODES", "1");
+            core.CreateConfigurationSetting("test", "custom", "GENERATE_MN_NODE_ASSIGNMENT_FOR_NODES", "1");
+            core.CreateConfigurationSetting("test", "custom", "GENERATE_MN_PRES_TIMEOUT_FOR_NODES", "1");
+
+            var coll = new SettingsCollection();
+            Console.WriteLine(core.GetConfigurationSettings("test", "all", coll).GetErrorType());
             Console.WriteLine(coll.Count);
+            Console.WriteLine(core.SetConfigurationSettingEnabled("test", "all",
+                    "GENERATE_MN_MAPPING_FOR_NODES", false).GetErrorType());
+
+            core.CreateConfiguration("test", "none");
 
         }
     }
