@@ -32,34 +32,159 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "MnFeature.h"
 
 using namespace std;
-using namespace IndustrialNetwork::POWERLINK::Core::Node;
+using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
+using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 
-MnFeature::MnFeature(MNFeatureEnum type) : PlkFeature<MNFeatureEnum>(type)
-{}
-
-
-MnFeature::~MnFeature()
-{}
-
-const string MnFeature::GetName()
+namespace IndustrialNetwork
 {
-	return PlkFeatureStrings[this->GetType()];
-}
+	namespace POWERLINK
+	{
+		namespace Core
+		{
+			namespace Node
+			{
 
-template<class T>
-const T MnFeature::GetDefaultValue()
-{
-	return PlkFeatureDefaultValues[this->GetType()];
-}
+				MnFeature::MnFeature(MNFeatureEnum type) : PlkFeature<MNFeatureEnum>(type)
+				{
+					SetTypedValues(PlkFeatureDefaultValues[type], "");
+				}
 
-template<class T>
-const T MnFeature::GetValue()
-{
 
-}
+				MnFeature::~MnFeature()
+				{}
 
-template<class T>
-void MnFeature::SetValue(T value)
-{
+				const string MnFeature::GetName()
+				{
+					return PlkFeatureStrings[this->GetFeatureId()];
+				}
 
+				template<class T>
+				Result MnFeature::GetDefaultValue(T& value)
+				{
+					if (this->GetUntypedDefaultValue().type() == typeid(T))
+					{
+						//return original stored value
+						value =  boost::any_cast<T>(this->GetUntypedDefaultValue());
+						return Result();
+					}
+					return Result(ErrorCode::DATATYPE_MISMATCH);
+				}
+				template Result MnFeature::GetDefaultValue(bool& value);
+				template Result MnFeature::GetDefaultValue(uint8_t& value);
+				template Result MnFeature::GetDefaultValue(uint16_t& value);
+				template Result MnFeature::GetDefaultValue(uint32_t& value);
+
+
+				Result MnFeature::SetTypedValues(string defaultValue, string actualValue)
+				{
+					switch (this->GetFeatureId())
+					{
+						case MNFeatureEnum::DLLErrMNMultipleMN:
+						case MNFeatureEnum::DLLMNFeatureMultiplex:
+						case MNFeatureEnum::DLLMNPResChaining:
+						case MNFeatureEnum::DLLMNFeaturePResTx:
+						case MNFeatureEnum::NMTMNBasicEthernet:
+						case MNFeatureEnum::NMTNetTime:
+						case MNFeatureEnum::NMTNetTimeIsRealTime:
+						case MNFeatureEnum::NMTRelativeTime:
+						case MNFeatureEnum::NMTSimpleBoot:
+							{
+								if (!defaultValue.empty())
+								{
+									bool value = StringToBool(defaultValue);
+									this->SetUntypedDefaultValue(boost::any(value));
+									break;
+								}
+								if (!actualValue.empty())
+								{
+									bool value = StringToBool(actualValue);
+									this->SetUntypedActualValue(boost::any(value));
+									break;
+								}
+							}
+						case MNFeatureEnum::NMTMNMultiplCycMax:
+							{
+								if (!defaultValue.empty())
+								{
+									uint8_t value = HexToInt<uint8_t>(defaultValue);
+									this->SetUntypedDefaultValue(boost::any(value));
+									break;
+								}
+								if (!actualValue.empty())
+								{
+									uint8_t value = HexToInt<uint8_t>(actualValue);
+									this->SetUntypedActualValue(boost::any(value));
+									break;
+								}
+							}
+						case MNFeatureEnum::NMTMNASnd2SoC:
+						case MNFeatureEnum::NMTMNPRes2PReq:
+						case MNFeatureEnum::NMTMNPRes2PRes:
+						case MNFeatureEnum::NMTMNPResRx2SoA:
+						case MNFeatureEnum::NMTMNPResTx2SoA:
+						case MNFeatureEnum::NMTMNSoA2ASndTx:
+						case MNFeatureEnum::NMTMNSoC2PReq:
+							{
+								if (!actualValue.empty())
+								{
+									uint32_t value = HexToInt<uint32_t>(actualValue);
+									this->SetUntypedActualValue(boost::any(value));
+									break;
+								}
+							}
+						case MNFeatureEnum::PDOTPDOChannels:
+							{
+								if (!defaultValue.empty())
+								{
+									uint16_t value = HexToInt<uint16_t>(defaultValue);
+									this->SetUntypedDefaultValue(boost::any(value));
+									break;
+								}
+								if (!actualValue.empty())
+								{
+									uint16_t value = HexToInt<uint16_t>(actualValue);
+									this->SetUntypedActualValue(boost::any(value));
+									break;
+								}
+							}
+						default:
+							break;
+					}
+					return Result();
+				}
+
+				template<class T>
+				Result MnFeature::GetActualValue(T& value)
+				{
+					if (this->GetUntypedActualValue().type() == typeid(T))
+					{
+						//return original stored value
+						value =  boost::any_cast<T>(this->GetUntypedActualValue());
+						return Result();
+					}
+					return Result(ErrorCode::DATATYPE_MISMATCH);
+				}
+				template Result MnFeature::GetActualValue(bool& value);
+				template Result MnFeature::GetActualValue(uint8_t& value);
+				template Result MnFeature::GetActualValue(uint16_t& value);
+				template Result MnFeature::GetActualValue(uint32_t& value);
+
+				template<class T>
+				Result MnFeature::SetActualValue(const T actualValue)
+				{
+					if (this->GetUntypedActualValue().type() == typeid(T))
+					{
+						//return original stored value
+						this->SetUntypedActualValue(boost::any(actualValue));
+						return Result();
+					}
+					return Result(ErrorCode::DATATYPE_MISMATCH);
+				}
+				template Result MnFeature::SetActualValue(const bool value);
+				template Result MnFeature::SetActualValue(const uint8_t value);
+				template Result MnFeature::SetActualValue(const uint16_t value);
+				template Result MnFeature::SetActualValue(const uint32_t value);
+			}
+		}
+	}
 }

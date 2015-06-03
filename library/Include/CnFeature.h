@@ -33,8 +33,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CN_FEATURE_H
 
 #include <string>
+#include <boost/any.hpp>
 #include "PlkFeature.h"
 #include "PlkFeatureEnum.h"
+#include "Utilities.h"
+#include "ErrorCode.h"
+#include "Result.h"
 
 namespace IndustrialNetwork
 {
@@ -56,15 +60,19 @@ namespace IndustrialNetwork
 						virtual ~CnFeature();
 
 						const std::string GetName();
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetTypedValues(std::string defaultValue, std::string actualValue);
 
 						template<class T>
-						const T GetDefaultValue();
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetDefaultValue(T& value);
 
 						template<class T>
-						const T GetValue();
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetActualValue(T& value);
 
 						template<class T>
-						void SetValue(T value);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetActualValue(const T actualValue);
+
+					private:
+
 				};
 
 			}

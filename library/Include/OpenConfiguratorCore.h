@@ -43,6 +43,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Network.h"
 #include "PlkDataType.h"
 #include "AccessType.h"
+#include "LoggingConfiguration.h"
 
 namespace IndustrialNetwork
 {
@@ -117,6 +118,14 @@ namespace IndustrialNetwork
 						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetSubObject();
 
 						//Mapping API
+
+						//Feature API
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetFeatureDefaultValue(IndustrialNetwork::POWERLINK::Core::Node::CNFeatureEnum feature, std::string& defaultValue);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetFeatureDefaultValue(IndustrialNetwork::POWERLINK::Core::Node::MNFeatureEnum feature, std::string& defaultValue);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetFeatureDefaultValue(IndustrialNetwork::POWERLINK::Core::Node::GeneralFeatureEnum feature, std::string& defaultValue);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureValue(const std::string networkId, const std::uint8_t nodeId, IndustrialNetwork::POWERLINK::Core::Node::CNFeatureEnum feature, const std::string value);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureValue(const std::string networkId, const std::uint8_t nodeId, IndustrialNetwork::POWERLINK::Core::Node::MNFeatureEnum feature, const std::string value);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureValue(const std::string networkId, const std::uint8_t nodeId, IndustrialNetwork::POWERLINK::Core::Node::GeneralFeatureEnum feature, const std::string value);
 
 					private:
 						//singleton

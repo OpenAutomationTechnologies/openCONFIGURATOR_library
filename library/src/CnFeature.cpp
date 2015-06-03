@@ -32,21 +32,108 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "CnFeature.h"
 
 using namespace std;
-using namespace IndustrialNetwork::POWERLINK::Core::Node;
+using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
+using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 
-CnFeature::CnFeature(CNFeatureEnum type) : PlkFeature<CNFeatureEnum>(type)
-{}
-
-CnFeature::~CnFeature()
-{}
-
-const string CnFeature::GetName()
+namespace IndustrialNetwork
 {
-	return PlkFeatureStrings[this->GetType()];
-}
+	namespace POWERLINK
+	{
+		namespace Core
+		{
+			namespace Node
+			{
 
-template<class T>
-const T CnFeature::GetDefaultValue()
-{
-	return PlkFeatureDefaultValues[this->GetType()];
+				CnFeature::CnFeature(CNFeatureEnum type) : PlkFeature<CNFeatureEnum>(type)
+				{
+					SetTypedValues(PlkFeatureDefaultValues[type], "");
+				}
+
+				CnFeature::~CnFeature()
+				{}
+
+				const string CnFeature::GetName()
+				{
+					return PlkFeatureStrings[this->GetFeatureId()];
+				}
+
+				template<class T>
+				Result CnFeature::GetDefaultValue(T& value)
+				{
+					if (this->GetUntypedDefaultValue().type() == typeid(T))
+					{
+						//return original stored value
+						value =  boost::any_cast<T>(this->GetUntypedDefaultValue());
+						return Result();
+					}
+					return Result(ErrorCode::DATATYPE_MISMATCH);
+				}
+				template Result CnFeature::GetDefaultValue(bool& value);
+				template Result CnFeature::GetDefaultValue(uint32_t& value);
+
+				Result CnFeature::SetTypedValues(string defaultValue, string actualValue)
+				{
+					switch (this->GetFeatureId())
+					{
+						case CNFeatureEnum::DLLCNFeatureMultiplex:
+						case CNFeatureEnum::DLLCNPResChaining:
+							{
+								if (!defaultValue.empty())
+								{
+								bool value = StringToBool(defaultValue);
+								this->SetUntypedDefaultValue(boost::any(value));
+								break;
+							}
+								if (!actualValue.empty())
+								{
+									bool value = StringToBool(actualValue);
+									this->SetUntypedActualValue(boost::any(value));
+									break;
+								}
+							}
+						case CNFeatureEnum::NMTCNSoC2PReq:
+							{
+								if (!actualValue.empty())
+								{
+									uint32_t value = HexToInt<uint32_t>(actualValue);
+									this->SetUntypedActualValue(boost::any(value));
+									break;
+								}
+							}
+						default:
+							break;
+					}
+					return Result();
+				}
+
+				template<class T>
+				Result CnFeature::GetActualValue(T& value)
+				{
+					if (this->GetUntypedActualValue().type() == typeid(T))
+					{
+						//return original stored value
+						value =  boost::any_cast<T>(this->GetUntypedActualValue());
+						return Result();
+					}
+					return Result(ErrorCode::DATATYPE_MISMATCH);
+				}
+				template Result CnFeature::GetActualValue(bool& value);
+				template Result CnFeature::GetActualValue(uint32_t& value);
+
+				template<class T>
+				Result CnFeature::SetActualValue(const T actualValue)
+				{
+					if (this->GetUntypedActualValue().type() == typeid(T))
+					{
+						//return original stored value
+						this->SetUntypedActualValue(boost::any(actualValue));
+						return Result();
+					}
+					return Result(ErrorCode::DATATYPE_MISMATCH);
+				}
+				template Result CnFeature::SetActualValue(bool value);
+				template Result CnFeature::SetActualValue(uint32_t value);
+			}
+		}
+	}
 }

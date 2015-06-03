@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <cstdint>
 #include <string>
+#include <boost/any.hpp>
 
 namespace IndustrialNetwork
 {
@@ -53,20 +54,43 @@ namespace IndustrialNetwork
 
 					public:
 						PlkFeature(I type) :
-							featureType(type),
-							value()
+							featureId(type),
+							defaultValue(),
+							actualValue()
 						{}
 
 						virtual ~PlkFeature()
 						{}
 
-						const I GetType()
+						const I GetFeatureId()
 						{
-							return this->featureType;
+							return this->featureId;
 						}
+
+						const boost::any GetUntypedDefaultValue()
+						{
+							return this->defaultValue;
+						}
+
+						const boost::any GetUntypedActualValue()
+						{
+							return this->actualValue;
+						}
+
+						void SetUntypedActualValue(const boost::any& actualValue)
+						{
+							this->actualValue = actualValue;
+						}
+
+						void SetUntypedDefaultValue(const boost::any& defaultValue)
+						{
+							this->defaultValue = defaultValue;
+						}
+
 					private:
-						I featureType;
-						std::string value;
+						I featureId;
+						boost::any defaultValue;
+						boost::any actualValue;
 
 				};
 

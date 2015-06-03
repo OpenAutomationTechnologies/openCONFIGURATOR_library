@@ -51,14 +51,18 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						ManagingNode(const std::string nodeName = "");
+						ManagingNode(bool activ, const std::string nodeName = "");
 						virtual ~ManagingNode();
 
 						bool AddNodeAssignement(NodeAssignment);
 						bool RemoveNodeAssignment(NodeAssignment);
 						std::uint32_t GetNodeAssignmentValue();
 
+						bool GetActive();
+						void SetActive(bool active);
+
 					private:
+						bool active;
 				};
 
 			}

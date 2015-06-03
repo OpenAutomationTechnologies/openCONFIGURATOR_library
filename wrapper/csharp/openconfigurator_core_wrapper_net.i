@@ -66,6 +66,8 @@
 %include std_string_ref.i
 %include stdint.i
 
+%ignore GetNetworkManagement();
+
 %{
 
 #include "ErrorCode.h"
@@ -86,6 +88,7 @@
 #include "SubObject.h"
 #include "ControlledNode.h"
 #include "ManagingNode.h"
+#include "PlkFeatureEnum.h"
 #include "OpenConfiguratorCore.h"
 
 %}
@@ -103,7 +106,6 @@
 %include "Network.h"
 %include "Direction.h"
 %include "NodeType.h"
-
 
 %include "IFieldbusNode.h"
 %template(intFieldBusNode) IndustrialNetwork::Fieldbus::IFieldbusNode<unsigned char, unsigned int, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>;
@@ -123,7 +125,9 @@
 %include "SubObject.h"
 %include "ControlledNode.h"
 %include "ManagingNode.h"
+%include "PlkFeatureEnum.h"
 %include "OpenConfiguratorCore.h"
+
 
 namespace std {
    %template(StringCollection) std::vector<std::string>;

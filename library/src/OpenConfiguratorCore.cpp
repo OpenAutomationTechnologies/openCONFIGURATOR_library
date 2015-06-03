@@ -38,7 +38,7 @@ using namespace IndustrialNetwork::POWERLINK::Core::Configuration;
 using namespace IndustrialNetwork::POWERLINK::Core::NetworkHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
-
+using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 
 OpenConfiguratorCore::OpenConfiguratorCore()
 {}
@@ -148,19 +148,29 @@ Result OpenConfiguratorCore::CreateNode(const string networkId, const uint8_t no
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 	if (res.IsSuccessful())
 	{
-
-		if (nodeID < 239)
-		{
-			shared_ptr<ControlledNode> node = make_shared<ControlledNode>(nodeID, nodeName);
-			network.get()->AddNode(node);
-		}
-
+		//Add active managing node to network
 		if (nodeID == 240)
 		{
-			shared_ptr<ManagingNode> node = make_shared<ManagingNode>(nodeName);
-			node = make_shared<ManagingNode>(nodeName);
+			shared_ptr<ManagingNode> node = make_shared<ManagingNode>(true, nodeName);
+			res = network.get()->AddNode(node);
 		}
-
+		//Add redundant managing node to network
+		else if (nodeID >= 241 && nodeID <= 250)
+		{
+			shared_ptr<ManagingNode> node = make_shared<ManagingNode>(false, nodeName);
+			res = network.get()->AddNode(node);
+		}
+		//Add normal controlled node to network
+		else if (nodeID >= 1 && nodeID <= 239)
+		{
+			shared_ptr<ControlledNode> node = make_shared<ControlledNode>(nodeID, nodeName);
+			res = network.get()->AddNode(node);
+	}
+		else
+		{
+			//Nodeid invalid
+			res = Result(ErrorCode::NODEID_INVALID);
+		}
 	}
 
 	return res;
@@ -177,7 +187,7 @@ Result OpenConfiguratorCore::RemoveNode(const string networkId, const uint8_t no
 	return res;
 }
 
-Result OpenConfiguratorCore::GetControlledNode(const string networkId, const uint8_t nodeID, IndustrialNetwork::POWERLINK::Core::Node::ControlledNode& node)
+Result OpenConfiguratorCore::GetControlledNode(const string networkId, const uint8_t nodeID, ControlledNode& node)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -193,7 +203,7 @@ Result OpenConfiguratorCore::GetControlledNode(const string networkId, const uin
 	return res;
 }
 
-Result OpenConfiguratorCore::GetManagingNode(const string networkId, IndustrialNetwork::POWERLINK::Core::Node::ManagingNode& node)
+Result OpenConfiguratorCore::GetManagingNode(const string networkId, ManagingNode& node)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -287,7 +297,7 @@ Result OpenConfiguratorCore::SetConfigurationSettingEnabled(const string network
 	return res;
 }
 
-Result OpenConfiguratorCore::GetConfigurationSettings(const string networkId, const string configID, vector<IndustrialNetwork::POWERLINK::Core::Configuration::BuildConfigurationSetting>& settings)
+Result OpenConfiguratorCore::GetConfigurationSettings(const string networkId, const string configID, vector<BuildConfigurationSetting>& settings)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -328,7 +338,7 @@ Result OpenConfiguratorCore::SetActiveConfiguration(const string networkId, cons
 	return res;
 }
 
-Result OpenConfiguratorCore::GetBuildConfigurations(const string networkId, vector<IndustrialNetwork::POWERLINK::Core::Configuration::PlkConfiguration>& buildConfigurations)
+Result OpenConfiguratorCore::GetBuildConfigurations(const string networkId, vector<PlkConfiguration>& buildConfigurations)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -377,6 +387,72 @@ Result OpenConfiguratorCore::CreateSubObject(const string networkId, const uint8
 			shared_ptr<SubObject> ptr(new SubObject(subObjectId, type, accessType, objectType, pdoMapping, defaultValue, actualValue, highlimit, lowLimit, uniqueIdRef, name));
 			node.get()->AddSubObject(objectId, ptr);
 		}
+	}
+	return res;
+}
+
+Result OpenConfiguratorCore::GetFeatureDefaultValue(CNFeatureEnum feature, string& value)
+{
+	value = PlkFeatureDefaultValues[feature];
+	return Result();
+}
+Result OpenConfiguratorCore::GetFeatureDefaultValue(MNFeatureEnum feature, string& value)
+{
+	value = PlkFeatureDefaultValues[feature];
+	return Result();
+}
+Result OpenConfiguratorCore::GetFeatureDefaultValue(GeneralFeatureEnum feature, string& value)
+{
+	value = PlkFeatureDefaultValues[feature];
+	return Result();
+}
+
+Result OpenConfiguratorCore::SetFeatureValue(const string networkId, const uint8_t nodeId, CNFeatureEnum feature, const string value)
+{
+	shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (res.IsSuccessful())
+	{
+		shared_ptr<ControlledNode> node;
+		res = network.get()->GetControlledNode(nodeId, node);
+		if (res.IsSuccessful())
+		{
+			node.get()->GetNetworkManagement().get()->SetFeatureUntypedActualValue(feature, value);
+		}
+
+	}
+	return res;
+}
+
+Result OpenConfiguratorCore::SetFeatureValue(const string networkId, const uint8_t nodeId, MNFeatureEnum feature, const string value)
+{
+	shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (res.IsSuccessful())
+	{
+		shared_ptr<ControlledNode> node;
+		res = network.get()->GetControlledNode(nodeId, node);
+		if (res.IsSuccessful())
+		{
+			node.get()->GetNetworkManagement().get()->SetFeatureUntypedActualValue(feature, value);
+		}
+	}
+	return res;
+}
+
+Result OpenConfiguratorCore::SetFeatureValue(const string networkId, const uint8_t nodeId, GeneralFeatureEnum feature, const string value)
+{
+	shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (res.IsSuccessful())
+	{
+		shared_ptr<ControlledNode> node;
+		res = network.get()->GetControlledNode(nodeId, node);
+		if (res.IsSuccessful())
+		{
+			node.get()->GetNetworkManagement().get()->SetFeatureUntypedActualValue(feature, value);
+		}
+
 	}
 	return res;
 }

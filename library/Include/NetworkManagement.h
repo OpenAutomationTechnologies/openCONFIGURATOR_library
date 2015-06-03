@@ -33,12 +33,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NETWORK_MANAGEMENT_H
 
 #include <vector>
+#include <memory>
 #include <iostream>
 #include "boost/variant.hpp"
+#include "PlkFeatureEnum.h"
 #include "PlkFeature.h"
 #include "GeneralFeature.h"
 #include "CnFeature.h"
 #include "MnFeature.h"
+#include "Result.h"
+#include "Constants.h"
 
 namespace IndustrialNetwork
 {
@@ -52,30 +56,48 @@ namespace IndustrialNetwork
 				\brief
 				\author rueckerc
 				*/
-				class NetworkManagement
+				class DLLEXPORT NetworkManagement
 				{
 
 					public:
 						NetworkManagement();
 						virtual ~NetworkManagement();
-						/**
-						\param featureName
-						\return std::string&
-						*/
-						template<class T>
-						bool AddFeature(const T& feature);
 
-						template<class T>
-						bool RemoveFeature(const T& feature);
+						template<typename I >
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetFeatureDefaultValue(CNFeatureEnum feature, I& defaultValue);
 
-						template<class T, class I>
-						const I& GetFeature(T feature);
+						template<typename I >
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetFeatureDefaultValue(MNFeatureEnum feature, I& defaultValue);
 
-						template<class T, class I >
-						const I GetFeatureValue(T feature);
+						template<typename I >
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetFeatureDefaultValue(GeneralFeatureEnum feature, I& defaultValue);
+
+						template<typename I >
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetFeatureActualValue(CNFeatureEnum feature, I& actualValue);
+
+						template<typename I >
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetFeatureActualValue(MNFeatureEnum feature, I& actualValue);
+
+						template<typename I >
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetFeatureActualValue(GeneralFeatureEnum feature, I& actualValue);
+
+						template<typename I >
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureActualValue(CNFeatureEnum feature, const I actualValue);
+
+						template<typename I >
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureActualValue(MNFeatureEnum feature, const I actualValue);
+
+						template<typename I >
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureActualValue(GeneralFeatureEnum feature, const I actualValue);
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureUntypedActualValue(CNFeatureEnum feature, const std::string actualValue);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureUntypedActualValue(MNFeatureEnum feature, const std::string actualValue);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureUntypedActualValue(GeneralFeatureEnum feature, const std::string actualValue);
 
 					private:
-						std::vector<boost::variant<GeneralFeature, CnFeature, MnFeature>> featureList; //Preliminary
+						std::vector<std::shared_ptr<MnFeature>> mnFeatureList;
+						std::vector<std::shared_ptr<CnFeature>> cnFeatureList;
+						std::vector<std::shared_ptr<GeneralFeature>> generalFeatureList;
 
 				};
 

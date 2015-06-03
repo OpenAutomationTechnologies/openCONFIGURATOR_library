@@ -34,7 +34,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
 
-ManagingNode::ManagingNode(const string nodeName) : BaseNode(240, nodeName)
+ManagingNode::ManagingNode(bool active, const string nodeName) : BaseNode(240, nodeName),
+	active(active)
 {}
 
 ManagingNode::~ManagingNode()
@@ -94,4 +95,14 @@ uint32_t ManagingNode::GetNodeAssignmentValue()
 	}
 
 	return static_cast<underlying_type<NodeAssignment>::type>(assign);
+}
+
+bool ManagingNode::GetActive()
+{
+	return this->active;
+}
+
+void ManagingNode::SetActive(bool active)
+{
+	this->active = active;
 }

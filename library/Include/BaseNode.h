@@ -84,6 +84,7 @@ namespace IndustrialNetwork
 						virtual std::uint32_t GetNodeAssignmentValue() = 0;
 
 						std::vector<IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment>& GetNodeAssignment();
+						std::shared_ptr<NetworkManagement>& GetNetworkManagement();
 
 					private:
 						std::uint8_t nodeId;

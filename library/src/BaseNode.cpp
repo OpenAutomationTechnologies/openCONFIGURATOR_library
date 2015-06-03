@@ -126,3 +126,8 @@ std::vector<NodeAssignment>& BaseNode::GetNodeAssignment()
 {
 	return this->nodeAssignment;
 }
+
+std::shared_ptr<NetworkManagement>& BaseNode::GetNetworkManagement()
+{
+	return this->networkManagement;
+}

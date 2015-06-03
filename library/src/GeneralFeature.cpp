@@ -31,22 +31,220 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "GeneralFeature.h"
 
-using namespace IndustrialNetwork::POWERLINK::Core::Node;
+using namespace std;
+using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
+using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 
-GeneralFeature::GeneralFeature(GeneralFeatureEnum type) : PlkFeature<GeneralFeatureEnum>(type)
-{}
-
-
-GeneralFeature::~GeneralFeature()
-{}
-
-const std::string GeneralFeature::GetName()
+namespace IndustrialNetwork
 {
-	return PlkFeatureStrings[this->GetType()];
-}
+	namespace POWERLINK
+	{
+		namespace Core
+		{
+			namespace Node
+			{
 
-template<class T>
-const T GeneralFeature::GetDefaultValue()
-{
-	return PlkFeatureDefaultValues[PlkFeature<GeneralFeatureEnum>::GetType()];
+				GeneralFeature::GeneralFeature(GeneralFeatureEnum type) : PlkFeature<GeneralFeatureEnum>(type)
+				{
+					SetTypedValues(PlkFeatureDefaultValues[type], "");
+				}
+
+				GeneralFeature::~GeneralFeature()
+				{}
+
+				const string GeneralFeature::GetName()
+				{
+					return PlkFeatureStrings[this->GetFeatureId()];
+				}
+
+				template<class T>
+				Result GeneralFeature::GetDefaultValue(T& value)
+				{
+					if (this->GetUntypedDefaultValue().type() == typeid(T))
+					{
+						//return original stored value
+						value =  boost::any_cast<T>(this->GetUntypedDefaultValue());
+						return Result();
+					}
+					return Result(ErrorCode::DATATYPE_MISMATCH);
+				}
+				template Result GeneralFeature::GetDefaultValue(bool& value);
+				template Result GeneralFeature::GetDefaultValue(uint8_t& value);
+				template Result GeneralFeature::GetDefaultValue(uint16_t& value);
+				template Result GeneralFeature::GetDefaultValue(uint32_t& value);
+
+				Result GeneralFeature::SetTypedValues(string defaultValue, string actualValue)
+				{
+					switch (this->GetFeatureId())
+					{
+						case GeneralFeatureEnum::CFMConfigManager:
+						case GeneralFeatureEnum::DLLErrBadPhysMode:
+						case GeneralFeatureEnum::DLLErrMacBuffer:
+						case GeneralFeatureEnum::DLLFeatureCN:
+						case GeneralFeatureEnum::NMTFlushArpEntry:
+						case GeneralFeatureEnum::NMTNetHostNameSet:
+						case GeneralFeatureEnum::NMTNodeIDByHW:
+						case GeneralFeatureEnum::NMTPublishActiveNodes:
+						case GeneralFeatureEnum::NMTPublishConfigNodes:
+						case GeneralFeatureEnum::NMTPublishEmergencyNew:
+						case GeneralFeatureEnum::NMTPublishNodeState:
+						case GeneralFeatureEnum::NMTPublishOperational:
+						case GeneralFeatureEnum::NMTPublishPreOp1:
+						case GeneralFeatureEnum::NMTPublishPreOp2:
+						case GeneralFeatureEnum::NMTPublishReadyToOp:
+						case GeneralFeatureEnum::NMTPublishStopped:
+						case GeneralFeatureEnum::NMTPublishTime:
+						case GeneralFeatureEnum::NWLForward:
+						case GeneralFeatureEnum::NWLICMPSupport:
+						case GeneralFeatureEnum::NWLIPSupport:
+						case GeneralFeatureEnum::PDOSelfReceipt:
+						case GeneralFeatureEnum::PHYHubIntegrated:
+						case GeneralFeatureEnum::RT1RT1SecuritySupport:
+						case GeneralFeatureEnum::RT1RT1Support:
+						case GeneralFeatureEnum::RT2RT2Support:
+						case GeneralFeatureEnum::SDOClient:
+						case GeneralFeatureEnum::SDOCmdFileRead:
+						case GeneralFeatureEnum::SDOCmdFileWrite:
+						case GeneralFeatureEnum::SDOCmdLinkName:
+						case GeneralFeatureEnum::SDOCmdReadAllByIndex:
+						case GeneralFeatureEnum::SDOCmdReadByName:
+						case GeneralFeatureEnum::SDOCmdReadMultParam:
+						case GeneralFeatureEnum::SDOCmdWriteAllByIndex:
+						case GeneralFeatureEnum::SDOCmdWriteByName:
+						case GeneralFeatureEnum::SDOCmdWriteMultParam:
+						case GeneralFeatureEnum::SDOServer:
+							{
+								if (!defaultValue.empty())
+								{
+									bool value = StringToBool(defaultValue);
+									this->SetUntypedDefaultValue(boost::any(value));
+									break;
+								}
+								if (!actualValue.empty())
+								{
+									bool value = StringToBool(actualValue);
+									this->SetUntypedActualValue(boost::any(value));
+									break;
+								}
+							}
+						case GeneralFeatureEnum::NMTCycleTimeMax:
+						case GeneralFeatureEnum::NMTCycleTimeMin:
+						case GeneralFeatureEnum::DLLFeatureMN:
+						case GeneralFeatureEnum::NMTBootTimeNotActive:
+						case GeneralFeatureEnum::NMTErrorEntries:
+							{
+								if (!actualValue.empty())
+								{
+									uint32_t value = HexToInt<uint32_t>(actualValue);
+									this->SetUntypedActualValue(boost::any(value));
+									break;
+								}
+							}
+						case GeneralFeatureEnum::NMTCycleTimeGranularity:
+						case GeneralFeatureEnum::NMTMinRedCycleTime:
+						case GeneralFeatureEnum::NMTEmergencyQueueSize:
+						case GeneralFeatureEnum::NMTProductCode:
+						case GeneralFeatureEnum::NMTRevisionNo:
+						case GeneralFeatureEnum::PDOMaxDescrMem:
+						case GeneralFeatureEnum::PDORPDOCycleDataLim:
+						case GeneralFeatureEnum::PDORPDOChannelObjects:
+						case GeneralFeatureEnum::PDOTPDOCycleDataLim:
+						case GeneralFeatureEnum::PHYHubDelay:
+						case GeneralFeatureEnum::PHYHubJitter:
+						case GeneralFeatureEnum::SDOMaxConnections:
+						case GeneralFeatureEnum::SDOMaxParallelConnections:
+							{
+								if (!defaultValue.empty())
+								{
+									uint32_t value = HexToInt<uint32_t>(defaultValue);
+									this->SetUntypedDefaultValue(boost::any(value));
+									break;
+								}
+								if (!actualValue.empty())
+								{
+									uint32_t value = HexToInt<uint32_t>(actualValue);
+									this->SetUntypedActualValue(boost::any(value));
+									break;
+								}
+
+							}
+						case GeneralFeatureEnum::NMTMaxCNNodeID:
+						case GeneralFeatureEnum::NMTMaxCNNumber:
+						case GeneralFeatureEnum::NMTMaxHeartbeats:
+						case GeneralFeatureEnum::PDOGranularity:
+						case GeneralFeatureEnum::PDOTPDOChannelObjects:
+						case GeneralFeatureEnum::PHYExtEPLPorts:
+							{
+								if (!defaultValue.empty())
+								{
+									uint8_t value = HexToInt<uint8_t>(defaultValue);
+									this->SetUntypedDefaultValue(boost::any(value));
+									break;
+								}
+								if (!actualValue.empty())
+								{
+									uint8_t value = HexToInt<uint8_t>(actualValue);
+									this->SetUntypedActualValue(boost::any(value));
+									break;
+								}
+							}
+						case GeneralFeatureEnum::PDORPDOChannels:
+						case GeneralFeatureEnum::PDORPDOOverallObjects:
+						case GeneralFeatureEnum::PDOTPDOOverallObjects:
+						case GeneralFeatureEnum::SDOSeqLayerTxHistorySize:
+							{
+								if (!defaultValue.empty())
+								{
+									uint16_t value = HexToInt<uint16_t>(defaultValue);
+									this->SetUntypedDefaultValue(boost::any(value));
+									break;
+								}
+								if (!actualValue.empty())
+								{
+									uint16_t value = HexToInt<uint16_t>(actualValue);
+									this->SetUntypedActualValue(boost::any(value));
+									break;
+								}
+							}
+						default:
+							break;
+					}
+
+					return Result();
+				}
+
+				template<class T>
+				Result GeneralFeature::GetActualValue(T& value)
+				{
+					if (this->GetUntypedActualValue().type() == typeid(T))
+					{
+						//return original stored value
+						value =  boost::any_cast<T>(this->GetUntypedActualValue());
+						return Result();
+					}
+					return Result(ErrorCode::DATATYPE_MISMATCH);
+				}
+				template Result GeneralFeature::GetActualValue(bool& value);
+				template Result GeneralFeature::GetActualValue(uint8_t& value);
+				template Result GeneralFeature::GetActualValue(uint16_t& value);
+				template Result GeneralFeature::GetActualValue(uint32_t& value);
+
+				template<class T>
+				Result GeneralFeature::SetActualValue(const T actualValue)
+				{
+					if (this->GetUntypedActualValue().type() == typeid(T))
+					{
+						//return original stored value
+						this->SetUntypedActualValue(boost::any(actualValue));
+						return Result();
+					}
+					return Result(ErrorCode::DATATYPE_MISMATCH);
+				}
+				template Result GeneralFeature::SetActualValue(const bool value);
+				template Result GeneralFeature::SetActualValue(const uint8_t value);
+				template Result GeneralFeature::SetActualValue(const uint16_t value);
+				template Result GeneralFeature::SetActualValue(const uint32_t value);
+			}
+		}
+	}
 }

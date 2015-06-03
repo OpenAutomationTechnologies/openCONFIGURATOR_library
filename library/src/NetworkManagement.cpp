@@ -32,35 +32,256 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "NetworkManagement.h"
 
 using namespace std;
-using namespace IndustrialNetwork::POWERLINK::Core::Node;
+using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 
-NetworkManagement::NetworkManagement() :
-	featureList()
-{}
-
-NetworkManagement::~NetworkManagement()
-{}
-
-template<class T>
-bool NetworkManagement::AddFeature(const T& featureName)
+namespace IndustrialNetwork
 {
-	return true;
-}
+	namespace POWERLINK
+	{
+		namespace Core
+		{
+			namespace Node
+			{
+				NetworkManagement::NetworkManagement() :
+					mnFeatureList(vector<shared_ptr<MnFeature>>()),
+					cnFeatureList(vector<shared_ptr<CnFeature>>()),
+					generalFeatureList(vector<shared_ptr<GeneralFeature>>())
 
-template<class T>
-bool NetworkManagement::RemoveFeature(const T& featureName)
-{
-	return true;
-}
+				{}
 
-template<class T, class I>
-const I& NetworkManagement::GetFeature(T feature)
-{
-	return I();
-}
+				NetworkManagement::~NetworkManagement()
+				{}
 
-template<class T, class I >
-const I NetworkManagement::GetFeatureValue(T feature)
-{
-	return I();
+				template<typename I>
+				Result NetworkManagement::GetFeatureDefaultValue(CNFeatureEnum feature, I& defaultValue)
+				{
+					CnFeature test(feature);
+					return test.GetDefaultValue<I>(defaultValue);
+				}
+				template Result NetworkManagement::GetFeatureDefaultValue<bool>(CNFeatureEnum feature, bool& defaultValue);
+				template Result NetworkManagement::GetFeatureDefaultValue<uint32_t>(CNFeatureEnum feature, uint32_t& defaultValue);
+
+				template<typename I >
+				Result NetworkManagement::GetFeatureActualValue(CNFeatureEnum featureid, I& actualValue)
+				{
+					for (auto& feature : this->cnFeatureList)
+					{
+						if (feature.get()->GetFeatureId() == featureid)
+						{
+							return feature.get()->GetActualValue<I>(actualValue);
+						}
+					}
+					return Result(ErrorCode::FEATURE_VALUE_NOT_FOUND);
+				}
+				template Result NetworkManagement::GetFeatureActualValue<bool>(CNFeatureEnum feature, bool& actualValue);
+				template Result NetworkManagement::GetFeatureActualValue<uint32_t>(CNFeatureEnum feature, uint32_t& actualValue);
+
+				template<typename I >
+				Result NetworkManagement::SetFeatureActualValue(CNFeatureEnum featureId, const I actualValue)
+				{
+					//alter existing feature
+					for (auto& feature : this->cnFeatureList)
+					{
+						if (feature.get()->GetFeatureId() == featureId)
+						{
+							return feature.get()->SetActualValue<I>(actualValue);
+						}
+					}
+
+					//create new and alter actual value
+					this->cnFeatureList.push_back(make_shared<CnFeature>(featureId));
+					for (auto& feature : this->cnFeatureList)
+					{
+						if (feature.get()->GetFeatureId() == featureId)
+						{
+							return feature.get()->SetActualValue<I>(actualValue);
+						}
+					}
+					return Result();
+
+				}
+				template Result NetworkManagement::SetFeatureActualValue<bool>(CNFeatureEnum feature, const bool actualValue);
+				template Result NetworkManagement::SetFeatureActualValue<uint32_t>(CNFeatureEnum feature, const uint32_t actualValue);
+
+				template<typename I>
+				Result NetworkManagement::GetFeatureDefaultValue(MNFeatureEnum feature, I& defaultValue)
+				{
+					MnFeature test(feature);
+					return test.GetDefaultValue<I>(defaultValue);
+				}
+				template Result NetworkManagement::GetFeatureDefaultValue<bool>(MNFeatureEnum feature, bool& defaultValue);
+				template Result NetworkManagement::GetFeatureDefaultValue<uint8_t>(MNFeatureEnum feature, uint8_t& defaultValue);
+				template Result NetworkManagement::GetFeatureDefaultValue<uint16_t>(MNFeatureEnum feature, uint16_t& defaultValue);
+				template Result NetworkManagement::GetFeatureDefaultValue<uint32_t>(MNFeatureEnum feature, uint32_t& defaultValue);
+
+				template<typename I >
+				Result NetworkManagement::GetFeatureActualValue(MNFeatureEnum featureid, I& actualValue)
+				{
+					for (auto& feature : this->mnFeatureList)
+					{
+						if (feature.get()->GetFeatureId() == featureid)
+						{
+							return feature.get()->GetActualValue<I>(actualValue);
+						}
+					}
+					return Result(ErrorCode::FEATURE_VALUE_NOT_FOUND);
+				}
+				template Result NetworkManagement::GetFeatureActualValue<bool>(MNFeatureEnum feature, bool& actualValue);
+				template Result NetworkManagement::GetFeatureActualValue<uint8_t>(MNFeatureEnum feature, uint8_t& actualValue);
+				template Result NetworkManagement::GetFeatureActualValue<uint16_t>(MNFeatureEnum feature, uint16_t& actualValue);
+				template Result NetworkManagement::GetFeatureActualValue<uint32_t>(MNFeatureEnum feature, uint32_t& actualValue);
+
+				template<typename I >
+				Result NetworkManagement::SetFeatureActualValue(MNFeatureEnum featureId, const I actualValue)
+				{
+					//alter existing feature
+					for (auto& feature : this->mnFeatureList)
+					{
+						if (feature.get()->GetFeatureId() == featureId)
+						{
+							return feature.get()->SetActualValue<I>(actualValue);
+						}
+					}
+
+					//create new and alter actual value
+					this->mnFeatureList.push_back(make_shared<MnFeature>(featureId));
+					for (auto& feature : this->mnFeatureList)
+					{
+						if (feature.get()->GetFeatureId() == featureId)
+						{
+							return feature.get()->SetActualValue<I>(actualValue);
+						}
+					}
+					return Result();
+				}
+				template Result NetworkManagement::SetFeatureActualValue<bool>(MNFeatureEnum feature, const bool actualValue);
+				template Result NetworkManagement::SetFeatureActualValue<uint8_t>(MNFeatureEnum feature, const uint8_t actualValue);
+				template Result NetworkManagement::SetFeatureActualValue<uint16_t>(MNFeatureEnum feature, const uint16_t actualValue);
+				template Result NetworkManagement::SetFeatureActualValue<uint32_t>(MNFeatureEnum feature, const uint32_t actualValue);
+
+				template<typename I>
+				Result NetworkManagement::GetFeatureDefaultValue(GeneralFeatureEnum feature, I& defaultValue)
+				{
+					GeneralFeature test(feature);
+					return test.GetDefaultValue<I>(defaultValue);
+				}
+				template Result NetworkManagement::GetFeatureDefaultValue<bool>(GeneralFeatureEnum feature, bool& defaultValue);
+				template Result NetworkManagement::GetFeatureDefaultValue<uint8_t>(GeneralFeatureEnum feature, uint8_t& defaultValue);
+				template Result NetworkManagement::GetFeatureDefaultValue<uint16_t>(GeneralFeatureEnum feature, uint16_t& defaultValue);
+				template Result NetworkManagement::GetFeatureDefaultValue<uint32_t>(GeneralFeatureEnum feature, uint32_t& defaultValue);
+
+				template<typename I >
+				Result NetworkManagement::GetFeatureActualValue(GeneralFeatureEnum featureid, I& actualValue)
+				{
+					for (auto& feature : this->generalFeatureList)
+					{
+						if (feature.get()->GetFeatureId() == featureid)
+						{
+							return feature.get()->GetActualValue<I>(actualValue);
+						}
+					}
+					return Result(ErrorCode::FEATURE_VALUE_NOT_FOUND);
+				}
+				template Result NetworkManagement::GetFeatureActualValue<bool>(GeneralFeatureEnum feature, bool& actualValue);
+				template Result NetworkManagement::GetFeatureActualValue<uint8_t>(GeneralFeatureEnum feature, uint8_t& actualValue);
+				template Result NetworkManagement::GetFeatureActualValue<uint16_t>(GeneralFeatureEnum feature, uint16_t& actualValue);
+				template Result NetworkManagement::GetFeatureActualValue<uint32_t>(GeneralFeatureEnum feature, uint32_t& actualValue);
+
+				template<typename I >
+				Result NetworkManagement::SetFeatureActualValue(GeneralFeatureEnum featureId, const I actualValue)
+				{
+					//alter existing feature
+					for (auto& feature : this->generalFeatureList)
+					{
+						if (feature.get()->GetFeatureId() == featureId)
+						{
+							return feature.get()->SetActualValue<I>(actualValue);
+						}
+					}
+
+					//create new and alter actual value
+					this->generalFeatureList.push_back(make_shared<GeneralFeature>(featureId));
+					for (auto& feature : this->generalFeatureList)
+					{
+						if (feature.get()->GetFeatureId() == featureId)
+						{
+							return feature.get()->SetActualValue<I>(actualValue);
+						}
+					}
+					return Result();
+				}
+				template Result NetworkManagement::SetFeatureActualValue<bool>(GeneralFeatureEnum feature, const bool actualValue);
+				template Result NetworkManagement::SetFeatureActualValue<uint8_t>(GeneralFeatureEnum feature, const uint8_t actualValue);
+				template Result NetworkManagement::SetFeatureActualValue<uint16_t>(GeneralFeatureEnum feature, const uint16_t actualValue);
+				template Result NetworkManagement::SetFeatureActualValue<uint32_t>(GeneralFeatureEnum feature, const uint32_t actualValue);
+
+				Result NetworkManagement::SetFeatureUntypedActualValue(CNFeatureEnum featureId, const string actualValue)
+				{
+					//alter existing feature
+					for (auto& feature : this->cnFeatureList)
+					{
+						if (feature.get()->GetFeatureId() == featureId)
+						{
+							return feature.get()->SetTypedValues("", actualValue);
+						}
+					}
+
+					//create new and alter actual value
+					this->cnFeatureList.push_back(make_shared<CnFeature>(featureId));
+					for (auto& feature : this->cnFeatureList)
+					{
+						if (feature.get()->GetFeatureId() == featureId)
+						{
+							return feature.get()->SetTypedValues("", actualValue);
+						}
+					}
+					return Result();
+				}
+				Result NetworkManagement::SetFeatureUntypedActualValue(MNFeatureEnum featureId, const string actualValue)
+				{
+					//alter existing feature
+					for (auto& feature : this->mnFeatureList)
+					{
+						if (feature.get()->GetFeatureId() == featureId)
+						{
+							return feature.get()->SetTypedValues("", actualValue);
+						}
+					}
+
+					//create new and alter actual value
+					this->mnFeatureList.push_back(make_shared<MnFeature>(featureId));
+					for (auto& feature : this->mnFeatureList)
+					{
+						if (feature.get()->GetFeatureId() == featureId)
+						{
+							return feature.get()->SetTypedValues("", actualValue);
+						}
+					}
+					return Result();
+				}
+				Result NetworkManagement::SetFeatureUntypedActualValue(GeneralFeatureEnum featureId, const string actualValue)
+				{
+					//alter existing feature
+					for (auto& feature : this->generalFeatureList)
+					{
+						if (feature.get()->GetFeatureId() == featureId)
+						{
+							return feature.get()->SetTypedValues("", actualValue);
+						}
+					}
+
+					//create new and alter actual value
+					this->generalFeatureList.push_back(make_shared<GeneralFeature>(featureId));
+					for (auto& feature : this->generalFeatureList)
+					{
+						if (feature.get()->GetFeatureId() == featureId)
+						{
+							return feature.get()->SetTypedValues("", actualValue);
+						}
+					}
+					return Result();
+				}
+			}
+		}
+	}
 }

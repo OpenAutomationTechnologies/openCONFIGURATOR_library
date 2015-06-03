@@ -69,6 +69,9 @@
 %include stdint.i
 
 %apply std::string &INOUT { std::string & activeConfiguration };
+%apply std::string &INOUT { std::string & defaultValue };
+
+%ignore GetNetworkManagement();
 
 %{
 
@@ -90,6 +93,7 @@
 #include "SubObject.h"
 #include "ControlledNode.h"
 #include "ManagingNode.h"
+#include "PlkFeatureEnum.h"
 #include "OpenConfiguratorCore.h"
 
 %}
@@ -107,7 +111,6 @@
 %include "Network.h"
 %include "Direction.h"
 %include "NodeType.h"
-
 
 %include "IFieldbusNode.h"
 %template(intFieldBusNode) IndustrialNetwork::Fieldbus::IFieldbusNode<unsigned char, unsigned int, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>;
@@ -127,6 +130,7 @@
 %include "SubObject.h"
 %include "ControlledNode.h"
 %include "ManagingNode.h"
+%include "PlkFeatureEnum.h"
 %include "OpenConfiguratorCore.h"
 
 namespace std {

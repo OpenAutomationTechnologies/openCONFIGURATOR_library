@@ -161,7 +161,7 @@ namespace IndustrialNetwork
 						//return original stored value
 						return boost::any_cast<T>(this->GetActualValue());
 					}
-					throw Result(ErrorCode::DATATYPE_DOES_NOT_MATCH_PLKDATATYPE);
+					throw Result(ErrorCode::DATATYPE_MISMATCH);
 				}
 
 				template string BaseObject::GetTypedActualValue<string>();
@@ -183,7 +183,7 @@ namespace IndustrialNetwork
 					{
 						return boost::any_cast<T>(this->GetActualValue());
 					}
-					throw Result(ErrorCode::DATATYPE_DOES_NOT_MATCH_PLKDATATYPE);
+					throw Result(ErrorCode::DATATYPE_MISMATCH);
 				}
 
 				template string BaseObject::GetTypedDefaultValue<string>();
