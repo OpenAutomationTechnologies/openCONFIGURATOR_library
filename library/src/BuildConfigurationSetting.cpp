@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::Configuration;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
+using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 
 BuildConfigurationSetting::BuildConfigurationSetting()
 	:  IndustrialNetwork::Fieldbus::IBuildConfigurationSetting()
@@ -61,6 +62,14 @@ void BuildConfigurationSetting::InitConfigurationSetting(string id)
 	else if (id == "GENERATE_MN_PRES_TIMEOUT_FOR_NODES")
 	{
 		this->SetDescription(BuildConfigurationIdDescription[BuildConfigurationId::GENERATE_MN_MAPPING_FOR_NODES]);
+	}
+	else
+	{
+		this->SetEnabled(false);
+		boost::format formatter(kMsgConfigurationSettingNotSupported);
+		formatter
+		% id;
+		LOG_FATAL() << formatter.str();
 	}
 }
 

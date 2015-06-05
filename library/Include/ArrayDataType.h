@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstdint>
 #include "ComplexDataType.h"
 #include "PlkDataType.h"
+#include "Constants.h"
 
 namespace IndustrialNetwork
 {
@@ -48,7 +49,7 @@ namespace IndustrialNetwork
 				\brief
 				\author rueckerc
 				*/
-				class ArrayDataType : public IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ComplexDataType
+				class DLLEXPORT ArrayDataType : public IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ComplexDataType
 				{
 
 					public:

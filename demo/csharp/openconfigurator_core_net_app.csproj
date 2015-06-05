@@ -80,6 +80,7 @@
     <Compile Include="SWIGTYPE_p_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__Configuration__BuildConfigurationSetting_t.cs" />
     <Compile Include="SWIGTYPE_p_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__Node__ControlledNode_t.cs" />
     <Compile Include="SWIGTYPE_p_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__Node__ManagingNode_t.cs" />
+    <Compile Include="SWIGTYPE_p_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__Node__NetworkManagement_t.cs" />
     <Compile Include="SWIGTYPE_p_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__ObjectDictionary__Object_t.cs" />
     <Compile Include="SWIGTYPE_p_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__ObjectDictionary__SubObject_t.cs" />
     <Compile Include="SWIGTYPE_p_std__unordered_mapT_unsigned_char_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__Node__BaseNode_t_t.cs" />

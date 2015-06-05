@@ -69,7 +69,8 @@ void ProjectManagerTest::testAddNetwork()
 	unordered_map<string, shared_ptr<Network>> networkList;
 	Result res = ProjectManager::GetInstance().GetNetworks(networkList);
 	CPPUNIT_ASSERT_EQUAL(true, res.IsSuccessful());
-	CPPUNIT_ASSERT_EQUAL(networkList.size(), (unsigned int) 2);
+	auto size = networkList.size();
+	CPPUNIT_ASSERT_EQUAL((unsigned int) size, (unsigned int) 2);
 }
 
 void ProjectManagerTest::testGetNetwork(void)
@@ -88,7 +89,8 @@ void ProjectManagerTest::testRemoveNetwork()
 	unordered_map<string, shared_ptr<Network>> networkList;
 	res = ProjectManager::GetInstance().GetNetworks(networkList);
 	CPPUNIT_ASSERT_EQUAL(true, res.IsSuccessful());
-	CPPUNIT_ASSERT_EQUAL(networkList.size(), (unsigned int) 1);
+	auto size = networkList.size();
+	CPPUNIT_ASSERT_EQUAL((unsigned int) size, (unsigned int) 1);
 }
 
 void ProjectManagerTest::testGetNetworks(void)
@@ -96,5 +98,6 @@ void ProjectManagerTest::testGetNetworks(void)
 	unordered_map<string, shared_ptr<Network>> networkList;
 	Result res = ProjectManager::GetInstance().GetNetworks(networkList);
 	CPPUNIT_ASSERT_EQUAL(true, res.IsSuccessful());
-	CPPUNIT_ASSERT_EQUAL(networkList.size(), (unsigned int) 2);
+	auto size = networkList.size();
+	CPPUNIT_ASSERT_EQUAL((unsigned int) size, (unsigned int) 2);
 }

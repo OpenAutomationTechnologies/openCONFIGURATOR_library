@@ -43,10 +43,10 @@ namespace IndustrialNetwork
 			namespace ObjectDictionary
 			{
 
-				SubObject::SubObject(uint32_t id, PlkDataType type) : BaseObject(id, type)
+				SubObject::SubObject(uint32_t id, PlkDataType type, uint32_t containingNodeId) : BaseObject(id, type, containingNodeId)
 				{}
 
-				SubObject::SubObject(uint32_t id, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, string defaultValue, string actualValue, uint32_t highlimit, uint32_t lowLimit, string uniqueIdRef, string name): BaseObject(id, type, accessType, objectType, pdoMapping, defaultValue, actualValue, highlimit, lowLimit, uniqueIdRef, name)
+				SubObject::SubObject(uint32_t id, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, uint32_t containingNodeId, string defaultValue, string actualValue, uint32_t highlimit, uint32_t lowLimit, string uniqueIdRef, string name): BaseObject(id, type, accessType, objectType, pdoMapping, containingNodeId, defaultValue, actualValue, highlimit, lowLimit, uniqueIdRef, name)
 				{}
 
 				SubObject::~SubObject()

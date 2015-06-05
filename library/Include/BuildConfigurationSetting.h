@@ -33,12 +33,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define PLK_BUILD_CONFIGURATION_SETTING_H
 
 #include <vector>
+#include <boost/format.hpp>
 #include "IResult.h"
 #include "IBuildConfigurationSetting.h"
 #include "BuildConfigurationId.h"
 #include "Result.h"
 #include "ErrorCode.h"
 #include "Constants.h"
+#include "LoggingConfiguration.h"
 
 namespace IndustrialNetwork
 {

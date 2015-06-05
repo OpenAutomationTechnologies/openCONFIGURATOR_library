@@ -36,6 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstdint>
 #include <memory>
 #include <boost/filesystem.hpp>
+#include <boost/format.hpp>
 #include "Constants.h"
 #include "ApplicationProcess.h"
 #include "NetworkManagement.h"
@@ -46,6 +47,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "RxProcessDataMappingObject.h"
 #include "NodeAssignment.h"
 #include "Result.h"
+#include "LoggingConfiguration.h"
 
 namespace IndustrialNetwork
 {
@@ -75,16 +77,21 @@ namespace IndustrialNetwork
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddObject(std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>& objRef);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddSubObject(std::uint32_t objectId, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::SubObject>& subObjRef);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ForceObject(std::uint32_t nodeId, std::string actualValue = "");
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetObjectActualValue(std::uint32_t nodeId, std::string actualValue);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetObject(std::uint32_t nodeId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object& objRef);
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ForceObject(std::uint32_t objectId, bool force, std::string actualValue = "");
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetObjectActualValue(std::uint32_t objectId, std::string actualValue);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetObject(std::uint32_t objectId, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>& objRef);
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ForceSubObject(std::uint32_t objectId, std::uint32_t subObjectId, bool force, std::string actualValue = "");
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetSubObjectActualValue(std::uint32_t objectId, std::uint32_t subObjectId, std::string actualValue);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetSubObject(std::uint32_t objectId, std::uint32_t subObjectId, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::SubObject>& subObjRef);
 
 						virtual bool AddNodeAssignement(NodeAssignment) = 0;
 						virtual bool RemoveNodeAssignment(NodeAssignment) = 0;
 						virtual std::uint32_t GetNodeAssignmentValue() = 0;
 
 						std::vector<IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment>& GetNodeAssignment();
-						std::shared_ptr<NetworkManagement>& GetNetworkManagement();
+						std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::NetworkManagement>& GetNetworkManagement();
 
 					private:
 						std::uint8_t nodeId;
@@ -93,7 +100,7 @@ namespace IndustrialNetwork
 						std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ApplicationProcess> applicationProcess;
 
 						std::vector<IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment> nodeAssignment;
-						std::shared_ptr<NetworkManagement> networkManagement;
+						std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::NetworkManagement> networkManagement;
 						std::vector<std::shared_ptr<DynamicChannel>> dynamicChannelList;
 						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::TxProcessDataMappingObject>> transmitMapping;
 						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::RxProcessDataMappingObject>> receiveMapping;

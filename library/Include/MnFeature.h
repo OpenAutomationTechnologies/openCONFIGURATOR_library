@@ -34,10 +34,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <string>
 #include <boost/any.hpp>
+#include <boost/format.hpp>
 #include "PlkFeature.h"
 #include "PlkFeatureEnum.h"
 #include "Result.h"
 #include "Utilities.h"
+#include "LoggingConfiguration.h"
 
 namespace IndustrialNetwork
 {

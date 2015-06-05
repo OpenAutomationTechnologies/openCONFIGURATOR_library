@@ -41,26 +41,26 @@ ModularControlledNode::ModularControlledNode(uint8_t nodeID, const string nodeNa
 	maxChildren(),
 	unusedSlots(false),
 	multipleChildren(false),
-	rangeList(vector<shared_ptr<IndustrialNetwork::POWERLINK::Core::ModularNode::Range>>()),
-	moduleCollection(vector<shared_ptr<IndustrialNetwork::POWERLINK::Core::ModularNode::Module>>())
+	rangeList(vector<shared_ptr<Range>>()),
+	moduleCollection(vector<shared_ptr<Module>>())
 {}
 
 ModularControlledNode::~ModularControlledNode()
 {}
 
-IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddModule(const IndustrialNetwork::POWERLINK::Core::ModularNode::Module& module)
+Result AddModule(const Module& module)
 {
-	return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result();
+	return Result();
 }
 
-IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ChangeModuleOrder(const IndustrialNetwork::POWERLINK::Core::ModularNode::Module& module, uint32_t newPos, bool reorderModules)
+Result ChangeModuleOrder(const Module& module, uint32_t newPos, bool reorderModules)
 {
-	return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result();
+	return Result();
 }
 
-IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveModule(const IndustrialNetwork::POWERLINK::Core::ModularNode::Module& module, bool reorderModules)
+Result RemoveModule(const Module& module, bool reorderModules)
 {
-	return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result();
+	return Result();
 }
 
 bool ModularControlledNode::RecalculateModularNodeOd()

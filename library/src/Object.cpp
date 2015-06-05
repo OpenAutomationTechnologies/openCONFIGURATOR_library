@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
+using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 
 namespace IndustrialNetwork
 {
@@ -43,24 +44,57 @@ namespace IndustrialNetwork
 		{
 			namespace ObjectDictionary
 			{
-				Object::Object(uint32_t id, PlkDataType type) : BaseObject(id, type),
+				Object::Object(uint32_t id, PlkDataType type, uint32_t containingNodeId) : BaseObject(id, type, containingNodeId),
 					subIndexCollection(unordered_map<uint32_t, shared_ptr<SubObject>>())
 				{}
 
-				Object::Object(uint32_t id, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, string defaultValue, string actualValue, uint32_t highlimit, uint32_t lowLimit, string uniqueIdRef, string name): BaseObject(id, type, accessType, objectType, pdoMapping, defaultValue, actualValue, highlimit, lowLimit, uniqueIdRef, name),
+				Object::Object(uint32_t id, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, uint32_t containingNodeId, string defaultValue, string actualValue, uint32_t highlimit, uint32_t lowLimit, string uniqueIdRef, string name): BaseObject(id, type, accessType, objectType, pdoMapping, containingNodeId, defaultValue, actualValue, highlimit, lowLimit, uniqueIdRef, name),
 					subIndexCollection(unordered_map<uint32_t, shared_ptr<SubObject>>())
 				{}
 
 				Object::~Object()
 				{}
 
-				IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result Object::AddSubobject(shared_ptr<SubObject>& ref)
+				Result Object::AddSubobject(shared_ptr<SubObject>& ref)
 				{
-					if (this->subIndexCollection.find(ref.get()->GetId()) == this->subIndexCollection.end())
-						return Result(ErrorCode::SUBOBJECT_EXISTS);
+					if (this->subIndexCollection.find(ref.get()->GetId()) != this->subIndexCollection.end())
+					{
+						//SubObject does already exists
+						boost::format formatter(kMsgExistingSubObject);
+						formatter
+						% this->GetId()
+						% ref.get()->GetId()
+						% this->GetContainingNode();
+						LOG_FATAL() << formatter.str();
+						return Result(ErrorCode::SUBOBJECT_EXISTS, formatter.str());
+					}
 
 					this->subIndexCollection.insert(pair<uint32_t, shared_ptr<SubObject>>(ref.get()->GetId(), ref));
+					//Log info subobject created
+					boost::format formatter(kMsgSubObjectCreated);
+					formatter
+					% this->GetId()
+					% ref.get()->GetId()
+					% this->GetContainingNode();
+					LOG_INFO() << formatter.str();
+					return Result();
+				}
 
+				Result Object::GetSubObject(uint32_t subObjectId, shared_ptr<SubObject>& ref)
+				{
+					auto iter = this->subIndexCollection.find(subObjectId);
+					if (iter == this->subIndexCollection.end())
+					{
+						//Subobject does not exist
+						boost::format formatter(kMsgNonExistingSubObject);
+						formatter
+						% this->GetId()
+						% ref.get()->GetId()
+						% this->GetContainingNode();
+						LOG_FATAL() << formatter.str();
+						return Result(ErrorCode::SUBOBJECT_DOES_NOT_EXIST, formatter.str());
+					}
+					ref = iter->second;
 					return Result();
 				}
 			}

@@ -34,10 +34,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <map>
 #include <memory>
-
 #include "Network.h"
 #include "PlkConfiguration.h"
 #include "LoggingConfiguration.h"
+#include "Constants.h"
 
 namespace IndustrialNetwork
 {
@@ -51,7 +51,7 @@ namespace IndustrialNetwork
 				\brief Handles different projects in the core library.
 				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
-				class ProjectManager
+				class DLLEXPORT ProjectManager
 				{
 
 					public:

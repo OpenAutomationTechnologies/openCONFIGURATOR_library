@@ -63,8 +63,8 @@ namespace IndustrialNetwork
 
 					public:
 						BaseObject();
-						BaseObject(std::uint32_t id, PlkDataType type);
-						BaseObject(std::uint32_t id, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, std::string defaultValue, std::string actualValue, std::uint32_t highlimit, std::uint32_t lowLimit, std::string uniqueIdRef, std::string name);
+						BaseObject(std::uint32_t id, PlkDataType type, std::uint32_t containingNodeId);
+						BaseObject(std::uint32_t id, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping,  std::uint32_t containingNodeId, std::string defaultValue, std::string actualValue, std::uint32_t highlimit, std::uint32_t lowLimit, std::string uniqueIdRef, std::string name);
 
 						bool operator== (const BaseObject& BaseObject) const;
 						virtual ~BaseObject();
@@ -96,7 +96,8 @@ namespace IndustrialNetwork
 						template<typename T>
 						T GetTypedDefaultValue();
 
-
+						std::uint32_t GetContainingNode();
+						void SetTypedObjectValues(std::string defaultValue = "", std::string actualValue = "");
 
 					private:
 
@@ -107,8 +108,7 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType accessType;
 						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ObjectType objectType;
 						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping pdoMapping;
-
-						void SetTypedObjectValues(std::string defaultValue, std::string actualValue);
+						std::uint32_t containingNodeId;
 				};
 
 			}

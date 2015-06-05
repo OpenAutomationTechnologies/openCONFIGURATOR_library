@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
+using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 
 namespace IndustrialNetwork
 {
@@ -66,7 +67,13 @@ namespace IndustrialNetwork
 						value =  boost::any_cast<T>(this->GetUntypedDefaultValue());
 						return Result();
 					}
-					return Result(ErrorCode::DATATYPE_MISMATCH);
+					//Datatype does not match
+					boost::format formatter(kMsgDatatypeMismatch);
+					formatter
+					% typeid(T).name()
+					% this->GetUntypedDefaultValue().type().name();
+					LOG_FATAL() << formatter.str();
+					return Result(ErrorCode::DATATYPE_MISMATCH, formatter.str());
 				}
 				template Result GeneralFeature::GetDefaultValue(bool& value);
 				template Result GeneralFeature::GetDefaultValue(uint8_t& value);
@@ -222,7 +229,13 @@ namespace IndustrialNetwork
 						value =  boost::any_cast<T>(this->GetUntypedActualValue());
 						return Result();
 					}
-					return Result(ErrorCode::DATATYPE_MISMATCH);
+					//Datatype does not match
+					boost::format formatter(kMsgDatatypeMismatch);
+					formatter
+					% typeid(T).name()
+					% this->GetUntypedActualValue().type().name();
+					LOG_FATAL() << formatter.str();
+					return Result(ErrorCode::DATATYPE_MISMATCH, formatter.str());
 				}
 				template Result GeneralFeature::GetActualValue(bool& value);
 				template Result GeneralFeature::GetActualValue(uint8_t& value);
@@ -238,7 +251,13 @@ namespace IndustrialNetwork
 						this->SetUntypedActualValue(boost::any(actualValue));
 						return Result();
 					}
-					return Result(ErrorCode::DATATYPE_MISMATCH);
+					//Datatype does not match
+					boost::format formatter(kMsgDatatypeMismatch);
+					formatter
+					% typeid(T).name()
+					% this->GetUntypedActualValue().type().name();
+					LOG_FATAL() << formatter.str();
+					return Result(ErrorCode::DATATYPE_MISMATCH, formatter.str());
 				}
 				template Result GeneralFeature::SetActualValue(const bool value);
 				template Result GeneralFeature::SetActualValue(const uint8_t value);

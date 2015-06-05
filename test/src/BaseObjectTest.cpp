@@ -36,7 +36,7 @@ using namespace IndustrialNetwork::POWERLINK::Core::Test;
 CPPUNIT_TEST_SUITE_REGISTRATION(BaseObjectTest);
 
 BaseObjectTest::BaseObjectTest(void) :
-	objectToTest(1000, PlkDataType::BOOLEAN)
+	objectToTest(1000, PlkDataType::BOOLEAN, 1)
 {}
 
 BaseObjectTest::~BaseObjectTest(void)
@@ -48,8 +48,8 @@ void BaseObjectTest::tearDown() {}
 
 void BaseObjectTest::testEqualOperator(void)
 {
-	BaseObject equalTest(1000, PlkDataType::BOOLEAN);
-	BaseObject newEqualTestObject(1000, PlkDataType::BOOLEAN);
+	BaseObject equalTest(1000, PlkDataType::BOOLEAN, 1);
+	BaseObject newEqualTestObject(1000, PlkDataType::BOOLEAN, 1);
 	CPPUNIT_ASSERT_EQUAL(true, (newEqualTestObject == equalTest));
 }
 void BaseObjectTest::testGetDefaultValue()

@@ -36,6 +36,7 @@ using namespace IndustrialNetwork::POWERLINK::Core::NetworkHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
 using namespace IndustrialNetwork::POWERLINK::Core::Configuration;
+using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 
 Network::Network() :
 	networkId(""),
@@ -64,33 +65,54 @@ Network::~Network()
 
 Result Network::AddNode(shared_ptr<ControlledNode>& node)
 {
-	for (auto var : this->nodeCollection)
+	for (auto& var : this->nodeCollection)
 	{
 		if (var.first == node.get()->GetNodeIdentifier())
 		{
-			return Result(ErrorCode::NODE_EXISTS);
+			//Node already exists
+			boost::format formatter(kMsgExistingNode);
+			formatter
+			% (uint32_t) var.first;
+			LOG_FATAL() << formatter.str();
+			return Result(ErrorCode::NODE_EXISTS, formatter.str());
 		}
 	}
+
+	//Log info node created
+	boost::format formatter(kMsgNodeCreated);
+	formatter
+	% (uint32_t) node.get()->GetNodeIdentifier();
+	LOG_INFO() << formatter.str();
 	this->nodeCollection.insert(pair<uint8_t, shared_ptr<BaseNode>>(node.get()->GetNodeIdentifier(), node));
 	return Result();
 }
 
 Result Network::AddNode(shared_ptr<ManagingNode>& node)
 {
-	for (auto var : this->nodeCollection)
+	for (auto& var : this->nodeCollection)
 	{
 		if (var.first == node.get()->GetNodeIdentifier())
 		{
-			return Result(ErrorCode::NODE_EXISTS);
+			//Node already exists
+			boost::format formatter(kMsgExistingNode);
+			formatter
+			% (uint32_t) node.get()->GetNodeIdentifier();
+			LOG_FATAL() << formatter.str();
+			return Result(ErrorCode::NODE_EXISTS, formatter.str());
 		}
 	}
+	//Log info node created
+	boost::format formatter(kMsgNodeCreated);
+	formatter
+	% (uint32_t) node.get()->GetNodeIdentifier();
+	LOG_INFO() << formatter.str();
 	this->nodeCollection.insert(pair<uint8_t, shared_ptr<BaseNode>>(node.get()->GetNodeIdentifier(), node));
 	return Result();
 }
 
 Result Network::GetControlledNode(const uint8_t nodeID, shared_ptr<ControlledNode>& node)
 {
-	for (auto var : this->nodeCollection)
+	for (auto& var : this->nodeCollection)
 	{
 		if (var.first == nodeID)
 		{
@@ -98,12 +120,18 @@ Result Network::GetControlledNode(const uint8_t nodeID, shared_ptr<ControlledNod
 			return Result();
 		}
 	}
-	return Result(ErrorCode::NODE_DOES_NOT_EXIST);
+
+	//Node does not exist
+	boost::format formatter(kMsgExistingNode);
+	formatter
+	% (uint32_t) nodeID;
+	LOG_FATAL() << formatter.str();
+	return Result(ErrorCode::NODE_DOES_NOT_EXIST, formatter.str());
 }
 
 Result Network::GetManagingNode(shared_ptr<ManagingNode>& node)
 {
-	for (auto var : this->nodeCollection)
+	for (auto& var : this->nodeCollection)
 	{
 		if (var.first == 240)
 		{
@@ -111,7 +139,13 @@ Result Network::GetManagingNode(shared_ptr<ManagingNode>& node)
 			return Result();
 		}
 	}
-	return Result(ErrorCode::NODE_DOES_NOT_EXIST);
+
+	//Node does not exist
+	boost::format formatter(kMsgExistingNode);
+	formatter
+	% 240;
+	LOG_FATAL() << formatter.str();
+	return Result(ErrorCode::NODE_DOES_NOT_EXIST, formatter.str());
 }
 
 Result Network::RemoveNode(const uint8_t nodeID)
@@ -123,9 +157,21 @@ Result Network::RemoveNode(const uint8_t nodeID)
 			break;
 	}
 	if (it == this->nodeCollection.end())
-		return Result(ErrorCode::NODE_DOES_NOT_EXIST);
+	{
+		//Node does not exist
+		boost::format formatter(kMsgExistingNode);
+		formatter
+		% (uint32_t) nodeID;
+		LOG_FATAL() << formatter.str();
+		return Result(ErrorCode::NODE_DOES_NOT_EXIST, formatter.str());
+	}
 
 	this->nodeCollection.erase(it);
+	//Log info node removed
+	boost::format formatter(kMsgNodeRemoved);
+	formatter
+	% (uint32_t) nodeID;
+	LOG_INFO() << formatter.str();
 	return Result();
 }
 
@@ -137,7 +183,7 @@ Result Network::GetNodes(unordered_map<uint8_t, shared_ptr<BaseNode>>& nodeColle
 
 Result Network::GetAvailableNodeIds(vector<uint8_t>& nodeIdCollection)
 {
-	for (auto var : this->nodeCollection)
+	for (auto& var : this->nodeCollection)
 	{
 		nodeIdCollection.push_back(var.first);
 	}
@@ -189,23 +235,48 @@ void Network::SetPrescaler(const uint32_t prescaler)
 	this->prescaler = prescaler;
 }
 
-Result Network::SetConfigurationSettingEnabled(const string configName, const string settingName, bool enabled)
+Result Network::SetConfigurationSettingEnabled(const string configID, const string settingName, bool enabled)
 {
-	for (auto config : this->buildConfigurations)
+	for (auto& config : this->buildConfigurations)
 	{
-		if (config.get()->GetConfigurationName() == configName)
+		if (config.get()->GetConfigurationName() == configID)
 		{
-			for (auto setting : config.get()->GetBuildConfigurationSettings())
+			for (auto& setting : config.get()->GetBuildConfigurationSettings())
 			{
 				if (setting.get()->GetName() == settingName)
 				{
 					setting.get()->SetEnabled(enabled);
+					//Convert bool to string for boost::format
+					stringstream enabledStr;
+					enabledStr << std::boolalpha << enabled;
+					//Long info setting enabled
+					boost::format formatter(kMsgConfigurationSettingEnabled);
+					formatter
+					% configID
+					% settingName
+					% this->networkId
+					% enabledStr.str();
+					LOG_INFO() << formatter.str();
 					return Result();
 				}
 			}
+			//Configuration setting does not exist
+			boost::format formatter(kMsgConfigurationSettingNonExisting);
+			formatter
+			% configID
+			% settingName
+			% this->networkId;
+			LOG_FATAL() << formatter.str();
+			return Result(ErrorCode::BUILD_SETTING_DOES_NOT_EXIST, formatter.str());
 		}
 	}
-	return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST);
+	//Configuration does not exist
+	boost::format formatter(kMsgConfigurationNonExisting);
+	formatter
+	% configID
+	% this->networkId;
+	LOG_FATAL() << formatter.str();
+	return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST, formatter.str());
 }
 
 
@@ -219,17 +290,38 @@ Result Network::AddConfigurationSetting(const string configID, shared_ptr<BuildC
 			{
 				if (setting.get()->GetName() == newSetting.get()->GetName() && setting.get()->GetValue() == newSetting.get()->GetValue())
 				{
-					return Result(ErrorCode::BUILD_SETTING_EXISTS);
+					//Configuration setting already exist
+					boost::format formatter(kMsgConfigurationSettingExisting);
+					formatter
+					% newSetting.get()->GetName()
+					% configID
+					% this->networkId;
+					LOG_FATAL() << formatter.str();
+					return Result(ErrorCode::BUILD_SETTING_EXISTS, formatter.str());
 				}
 			}
 			config.get()->AddBuildConfigurationSetting(newSetting);
+
+			//Log info setting added
+			boost::format formatter(kMsgConfigurationSettingAdded);
+			formatter
+			% newSetting.get()->GetName()
+			% configID
+			% this->networkId;
+			LOG_INFO() << formatter.str();
 			return Result();
 		}
 	}
-	return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST);
+	//Configuration does not exist
+	boost::format formatter(kMsgConfigurationNonExisting);
+	formatter
+	% configID
+	% this->networkId;
+	LOG_FATAL() << formatter.str();
+	return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST, formatter.str());
 }
 
-Result Network::RemoveConfigurationSetting(string configID, const string name)
+Result Network::RemoveConfigurationSetting(string configID, const string settingName)
 {
 	for (auto& config : this->buildConfigurations)
 	{
@@ -238,17 +330,39 @@ Result Network::RemoveConfigurationSetting(string configID, const string name)
 			vector<shared_ptr<BuildConfigurationSetting>>::iterator it;
 			for (it = config.get()->GetBuildConfigurationSettings().begin() ; it != config.get()->GetBuildConfigurationSettings().end(); ++it)
 			{
-				if (it->get()->GetName() == name)
+				if (it->get()->GetName() == settingName)
 					break;
 			}
 			if (it == config.get()->GetBuildConfigurationSettings().end())
-				return Result(ErrorCode::BUILD_SETTING_DOES_NOT_EXIST);
+			{
+				//Setting does not exist
+				boost::format formatter(kMsgConfigurationSettingNonExisting);
+				formatter
+				% configID
+				% settingName
+				% this->networkId;
+				LOG_FATAL() << formatter.str();
+				return Result(ErrorCode::BUILD_SETTING_DOES_NOT_EXIST, formatter.str());
+			}
 
 			config.get()->GetBuildConfigurationSettings().erase(it);
+			//Log info setting removed
+			boost::format formatter(kMsgConfigurationSettingRemoved);
+			formatter
+			% configID
+			% settingName
+			% this->networkId;
+			LOG_INFO() << formatter.str();
 			return Result();
 		}
 	}
-	return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST);
+	//Configuration setting does not exist
+	boost::format formatter(kMsgConfigurationNonExisting);
+	formatter
+	% configID
+	% this->networkId;
+	LOG_FATAL() << formatter.str();
+	return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST, formatter.str());
 }
 
 Result Network::AddConfiguration(string configID)
@@ -257,12 +371,25 @@ Result Network::AddConfiguration(string configID)
 	{
 		if (config.get()->GetConfigurationName() == configID)
 		{
-			return Result(ErrorCode::BUILD_CONFIGURATION_EXISTS);
+			//Configuration setting does not exist
+			boost::format formatter(kMsgConfigurationExisting);
+			formatter
+			% configID
+			% this->networkId;
+			LOG_FATAL() << formatter.str();
+			return Result(ErrorCode::BUILD_CONFIGURATION_EXISTS, formatter.str());
 		}
 	}
 	shared_ptr<PlkConfiguration> config = make_shared<PlkConfiguration>(configID);
 	this->buildConfigurations.push_back(config);
+	//Log info configuration added
+	boost::format formatter(kMsgConfigurationAdded);
+	formatter
+	% configID
+	% this->networkId;
+	LOG_INFO() << formatter.str();
 
+	//first configuration added is set active one
 	if (this->buildConfigurations.size() == 1)
 		this->activeConfiguration = configID;
 
@@ -281,9 +408,23 @@ Result Network::RemoveConfiguration(string configID)
 			break;
 	}
 	if (it == this->buildConfigurations.end())
+	{
+		//Configuration does not exist
+		boost::format formatter(kMsgConfigurationNonExisting);
+		formatter
+		% configID
+		% this->networkId;
+		LOG_FATAL() << formatter.str();
 		return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST);
+	}
 
 	this->buildConfigurations.erase(it);
+	//Log info configuration removed
+	boost::format formatter(kMsgConfigurationRemoved);
+	formatter
+	% configID
+	% this->networkId;
+	LOG_INFO() << formatter.str();
 	return Result();
 }
 
@@ -294,10 +435,23 @@ Result Network::ReplaceConfigurationName(const string oldConfigID, const string 
 		if (config.get()->GetConfigurationName() == oldConfigID)
 		{
 			config.get()->SetConfigurationName(newConfigID);
+			//Log info configuration is renamed
+			boost::format formatter(kMsgConfigurationRenamed);
+			formatter
+			% oldConfigID
+			% newConfigID
+			% this->networkId;
+			LOG_INFO() << formatter.str();
 			return Result();
 		}
 	}
-	return Result(ErrorCode::BUILD_SETTING_DOES_NOT_EXIST);
+	//Configuration does not exist
+	boost::format formatter(kMsgConfigurationNonExisting);
+	formatter
+	% oldConfigID
+	% this->networkId;
+	LOG_FATAL() << formatter.str();
+	return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST);
 }
 
 Result Network::GetConfigurationSettings(string configID, vector<shared_ptr<BuildConfigurationSetting>>& returnRef)
@@ -310,7 +464,13 @@ Result Network::GetConfigurationSettings(string configID, vector<shared_ptr<Buil
 			return Result();
 		}
 	}
-	return Result(ErrorCode::BUILD_SETTING_DOES_NOT_EXIST);
+	//Configuration does not exist
+	boost::format formatter(kMsgConfigurationNonExisting);
+	formatter
+	% configID
+	% this->networkId;
+	LOG_FATAL() << formatter.str();
+	return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST);
 }
 
 Result Network::GetBuildConfigurations(std::vector<shared_ptr<PlkConfiguration>>& bcfgs)
@@ -324,15 +484,27 @@ const string& Network::GetActiveConfiguration()
 	return this->activeConfiguration;
 }
 
-bool Network::SetActiveConfiguration(const string configID)
+Result Network::SetActiveConfiguration(const string configID)
 {
 	for (auto& config : this->buildConfigurations)
 	{
 		if (config.get()->GetConfigurationName() == configID)
 		{
 			this->activeConfiguration = configID;
-			return true;
+			//Log info configuration is active
+			boost::format formatter(kMsgConfigurationActive);
+			formatter
+			% configID
+			% this->networkId;
+			LOG_INFO() << formatter.str();
+			return Result();
 		}
 	}
-	return false;
+	//Configuration setting does not exist
+	boost::format formatter(kMsgConfigurationNonExisting);
+	formatter
+	% configID
+	% this->networkId;
+	LOG_FATAL() << formatter.str();
+	return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST);
 }

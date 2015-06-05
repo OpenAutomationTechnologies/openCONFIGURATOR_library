@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <cstdint>
 #include <string>
+#include "Constants.h"
 
 namespace IndustrialNetwork
 {
@@ -47,7 +48,7 @@ namespace IndustrialNetwork
 				\brief
 				\author rueckerc
 				*/
-				class ComplexDataType
+				class DLLEXPORT ComplexDataType
 				{
 
 					public:

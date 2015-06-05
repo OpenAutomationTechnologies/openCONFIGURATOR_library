@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <memory>
 #include "Parameter.h"
+#include "Constants.h"
 
 namespace IndustrialNetwork
 {
@@ -48,7 +49,7 @@ namespace IndustrialNetwork
 				\brief
 				\author rueckerc
 				*/
-				class ApplicationProcess
+				class DLLEXPORT ApplicationProcess
 				{
 
 					public:

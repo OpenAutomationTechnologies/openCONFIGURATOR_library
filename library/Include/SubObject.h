@@ -51,8 +51,8 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						SubObject(std::uint32_t id, PlkDataType type);
-						SubObject(std::uint32_t id, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, std::string defaultValue = "", std::string actualValue = "", std::uint32_t highlimit = 0, std::uint32_t lowLimit = 0,  std::string uniqueIdRef = "", std::string name = "");
+						SubObject(std::uint32_t id, PlkDataType type, std::uint32_t containingNodeId);
+						SubObject(std::uint32_t id, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, std::uint32_t containingNodeId, std::string defaultValue = "", std::string actualValue = "", std::uint32_t highlimit = 0, std::uint32_t lowLimit = 0,  std::string uniqueIdRef = "", std::string name = "");
 						virtual ~SubObject();
 
 				};

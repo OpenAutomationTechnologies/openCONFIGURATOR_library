@@ -33,6 +33,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NETWORK_H
 
 #include <memory>
+#include <iostream>
+#include <boost/format.hpp>
+#include <boost/lexical_cast.hpp>
 #include "Result.h"
 #include "BaseNode.h"
 #include "Module.h"
@@ -44,6 +47,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "PlkConfiguration.h"
 #include "BuildConfigurationId.h"
 #include "BuildConfigurationSetting.h"
+#include "LoggingConfiguration.h"
 
 namespace IndustrialNetwork
 {
@@ -182,7 +186,7 @@ namespace IndustrialNetwork
 						\retval true The active configuration is set.
 						\retval false The active configuration is not set.
 						*/
-						bool SetActiveConfiguration(const std::string configID);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetActiveConfiguration(const std::string configID);
 
 						/**
 						\brief Retrieve all existing build configurations from the network.

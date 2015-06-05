@@ -50,27 +50,30 @@ namespace IndustrialNetwork
 					uniqueIdRef(),
 					accessType(),
 					objectType(),
-					pdoMapping()
+					pdoMapping(),
+					containingNodeId()
 				{}
 
-				BaseObject::BaseObject(uint32_t id,  PlkDataType type) : IBaseObject(id, type),
+				BaseObject::BaseObject(uint32_t id,  PlkDataType type, uint32_t containingNodeId) : IBaseObject(id, type),
 					forceToCDC(false),
 					highLimit(),
 					lowLimit(),
 					uniqueIdRef(),
 					accessType(),
 					objectType(),
-					pdoMapping()
+					pdoMapping(),
+					containingNodeId(containingNodeId)
 				{}
 
-				BaseObject::BaseObject(uint32_t id, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, string defaultValue, string actualValue, uint32_t highlimit, uint32_t lowLimit,  string uniqueIdRef, string name) : IBaseObject(id, type, name),
+				BaseObject::BaseObject(uint32_t id, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, uint32_t containingNodeId, string defaultValue, string actualValue, uint32_t highlimit, uint32_t lowLimit,  string uniqueIdRef, string name) : IBaseObject(id, type, name),
 					forceToCDC(false),
 					highLimit(highlimit),
 					lowLimit(lowLimit),
 					uniqueIdRef(uniqueIdRef),
 					accessType(accessType),
 					objectType(objectType),
-					pdoMapping(pdoMapping)
+					pdoMapping(pdoMapping),
+					containingNodeId(containingNodeId)
 				{
 					SetTypedObjectValues(defaultValue, actualValue);
 				}
@@ -530,6 +533,11 @@ namespace IndustrialNetwork
 								break;
 						}
 					}
+				}
+
+				uint32_t BaseObject::GetContainingNode()
+				{
+					return this->containingNodeId;
 				}
 			}
 		}

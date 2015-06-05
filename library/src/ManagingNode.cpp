@@ -46,19 +46,19 @@ bool ManagingNode::AddNodeAssignement(NodeAssignment assign)
 	switch (assign)
 	{
 
-		case IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment::NMT_NODEASSIGN_START_CN:
-		case IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment::NMT_NODEASSIGN_MANDATORY_CN:
-		case IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment::NMT_NODEASSIGN_KEEPALIVE:
-		case IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment::NMT_NODEASSIGN_SWVERSIONCHECK:
-		case IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment::NMT_NODEASSIGN_SWUPDATE:
-		case IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment::NMT_NODEASSIGN_MULTIPLEXED_CN:
+		case NodeAssignment::NMT_NODEASSIGN_START_CN:
+		case NodeAssignment::NMT_NODEASSIGN_MANDATORY_CN:
+		case NodeAssignment::NMT_NODEASSIGN_KEEPALIVE:
+		case NodeAssignment::NMT_NODEASSIGN_SWVERSIONCHECK:
+		case NodeAssignment::NMT_NODEASSIGN_SWUPDATE:
+		case NodeAssignment::NMT_NODEASSIGN_MULTIPLEXED_CN:
 			return false;
-		case IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment::NMT_NODEASSIGN_NODE_EXISTS:
-		case IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment::NMT_NODEASSIGN_NODE_IS_CN:
-		case IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment::NMT_NODEASSIGN_ASYNCONLY_NODE:
-		case IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment::NMT_NODEASSIGN_RT1:
-		case IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment::NMT_NODEASSIGN_RT2:
-		case IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment::NMT_NODEASSIGN_MN_PRES:
+		case NodeAssignment::NMT_NODEASSIGN_NODE_EXISTS:
+		case NodeAssignment::NMT_NODEASSIGN_NODE_IS_CN:
+		case NodeAssignment::NMT_NODEASSIGN_ASYNCONLY_NODE:
+		case NodeAssignment::NMT_NODEASSIGN_RT1:
+		case NodeAssignment::NMT_NODEASSIGN_RT2:
+		case NodeAssignment::NMT_NODEASSIGN_MN_PRES:
 			{
 				auto it = find(this->GetNodeAssignment().begin(), this->GetNodeAssignment().end(), assign);
 				if (it != this->GetNodeAssignment().end())

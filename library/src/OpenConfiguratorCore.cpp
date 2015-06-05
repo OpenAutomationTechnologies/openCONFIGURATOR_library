@@ -134,12 +134,12 @@ Result OpenConfiguratorCore::SetPrescaler(const string networkId, uint32_t presc
 
 Result OpenConfiguratorCore::BuildConfiguration(const string networkId, ostream& configuration)
 {
-	return Result();
+	return Result(ErrorCode::UNHANDLED_EXCEPTION);
 }
 
 Result OpenConfiguratorCore::BuildProcessImage(const string networkId, ostream& configuration)
 {
-	return Result();
+	return Result(ErrorCode::UNHANDLED_EXCEPTION);
 }
 
 Result OpenConfiguratorCore::CreateNode(const string networkId, const uint8_t nodeID, const string nodeName)
@@ -165,7 +165,7 @@ Result OpenConfiguratorCore::CreateNode(const string networkId, const uint8_t no
 		{
 			shared_ptr<ControlledNode> node = make_shared<ControlledNode>(nodeID, nodeName);
 			res = network.get()->AddNode(node);
-	}
+		}
 		else
 		{
 			//Nodeid invalid
@@ -307,7 +307,7 @@ Result OpenConfiguratorCore::GetConfigurationSettings(const string networkId, co
 		res = network.get()->GetConfigurationSettings(configID, configurationSettings);
 		if (res.IsSuccessful())
 		{
-			for (auto config : configurationSettings)
+			for (auto& config : configurationSettings)
 			{
 				settings.push_back(*config.get());
 			}
@@ -348,7 +348,7 @@ Result OpenConfiguratorCore::GetBuildConfigurations(const string networkId, vect
 		res = network.get()->GetBuildConfigurations(configurations);
 		if (res.IsSuccessful())
 		{
-			for (auto config : configurations)
+			for (auto& config : configurations)
 			{
 				buildConfigurations.push_back(*config.get());
 			}
@@ -367,8 +367,25 @@ Result OpenConfiguratorCore::CreateObject(const string networkId, const uint8_t 
 		res = network.get()->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
-			shared_ptr<Object> ptr(new Object(objectId, type, accessType, objectType, pdoMapping, defaultValue, actualValue, highlimit, lowLimit, uniqueIdRef, name));
-			node.get()->AddObject(ptr);
+			shared_ptr<Object> ptr(new Object(objectId, type, accessType, objectType, pdoMapping, nodeId, defaultValue, actualValue, highlimit, lowLimit, uniqueIdRef, name));
+			res = node.get()->AddObject(ptr);
+		}
+	}
+	return res;
+}
+
+Result OpenConfiguratorCore::CreateDomainObject(const string networkId, const uint8_t nodeId, uint32_t objectId, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, const string uniqueIdRef, const string name)
+{
+	shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (res.IsSuccessful())
+	{
+		shared_ptr<ControlledNode> node;
+		res = network.get()->GetControlledNode(nodeId, node);
+		if (res.IsSuccessful())
+		{
+			shared_ptr<Object> ptr(new Object(objectId, type, accessType, objectType, pdoMapping, nodeId, uniqueIdRef, name));
+			res = node.get()->AddObject(ptr);
 		}
 	}
 	return res;
@@ -384,8 +401,25 @@ Result OpenConfiguratorCore::CreateSubObject(const string networkId, const uint8
 		res = network.get()->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
-			shared_ptr<SubObject> ptr(new SubObject(subObjectId, type, accessType, objectType, pdoMapping, defaultValue, actualValue, highlimit, lowLimit, uniqueIdRef, name));
-			node.get()->AddSubObject(objectId, ptr);
+			shared_ptr<SubObject> ptr(new SubObject(subObjectId, type, accessType, objectType, pdoMapping, nodeId, defaultValue, actualValue, highlimit, lowLimit, uniqueIdRef, name));
+			res = node.get()->AddSubObject(objectId, ptr);
+		}
+	}
+	return res;
+}
+
+Result OpenConfiguratorCore::CreateDomainSubObject(const string networkId, const uint8_t nodeId, uint32_t objectId, uint32_t subObjectId, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, const string uniqueIdRef, const string name)
+{
+	shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (res.IsSuccessful())
+	{
+		shared_ptr<ControlledNode> node;
+		res = network.get()->GetControlledNode(nodeId, node);
+		if (res.IsSuccessful())
+		{
+			shared_ptr<SubObject> ptr(new SubObject(subObjectId, type, accessType, objectType, pdoMapping, nodeId, uniqueIdRef, name));
+			res = node.get()->AddSubObject(objectId, ptr);
 		}
 	}
 	return res;

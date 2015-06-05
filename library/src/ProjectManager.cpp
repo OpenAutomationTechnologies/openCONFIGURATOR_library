@@ -53,39 +53,64 @@ ProjectManager& ProjectManager::GetInstance()
 Result ProjectManager::AddNetwork(const string& networkId, shared_ptr<Network>& network)
 {
 	if (this->networkList.find(networkId) != this->networkList.end())
-		return Result(ErrorCode::NETWORK_EXISTS);
+	{
+		//Network already exists
+		boost::format formatter(kMsgExistingNetwork);
+		formatter
+		% networkId;
+		LOG_FATAL() << formatter.str();
+		return Result(ErrorCode::NETWORK_EXISTS, formatter.str());
+	}
 	this->networkList.insert(make_pair(networkId, network));
+	//Log info network created
+	boost::format formatter(kMsgNetworkCreated);
+	formatter
+	% networkId;
+	LOG_INFO() << formatter.str();
 	return Result();
 }
 
 Result ProjectManager::GetNetwork(const string networkId, shared_ptr<Network>& net)
 {
-	unordered_map<string, shared_ptr<Network>>::const_iterator got = this->networkList.find(networkId);
+	auto got = this->networkList.find(networkId);
 	if (got == this->networkList.end())
 	{
-		return Result(ErrorCode::NETWORK_DOES_NOT_EXIST);
+		//Network does not exist
+		boost::format formatter(kMsgNonExistingNetwork);
+		formatter
+		% networkId;
+		LOG_FATAL() << formatter.str();
+		return Result(ErrorCode::NETWORK_DOES_NOT_EXIST, formatter.str());
 	}
 	else
 	{
-		net = this->networkList.find(networkId)->second;
+		net = got->second;
 		return Result();
 	}
-	return Result();
 }
 
 Result ProjectManager::RemoveNetwork(const string networkId)
 {
-	unordered_map<string, shared_ptr<Network>>::const_iterator got = this->networkList.find(networkId);
+	auto got = this->networkList.find(networkId);
 	if (got == this->networkList.end())
 	{
-		return Result(ErrorCode::NETWORK_DOES_NOT_EXIST);
+		//Network does not exist
+		boost::format formatter(kMsgNonExistingNetwork);
+		formatter
+		% networkId;
+		LOG_FATAL() << formatter.str();
+		return Result(ErrorCode::NETWORK_DOES_NOT_EXIST, formatter.str());
 	}
 	else
 	{
 		this->networkList.erase(networkId);
+		//Log info network removed
+		boost::format formatter(kMsgNetworkRemoved);
+		formatter
+		% networkId;
+		LOG_INFO() << formatter.str();
 		return Result();
 	}
-	return Result();
 }
 
 Result ProjectManager::BuildConfiguration(const string networkId, ostream& configuration)
@@ -109,18 +134,25 @@ Result ProjectManager::GetNetworks(unordered_map<string, shared_ptr<Network>>& n
 Result ProjectManager::ClearNetworkList()
 {
 	this->networkList.clear();
+	LOG_INFO() << "Network list cleared.";
 	return Result();
 }
 
 const vector<string> ProjectManager::GetSupportedSettingIds()
 {
-	vector<string> vect(begin(BuildConfigurationIdName), end(BuildConfigurationIdName)) ;
+	vector<string> vect(begin(BuildConfigurationIdName), end(BuildConfigurationIdName));
+	LOG_INFO() << "Returned supported configuration setting ids.";
 	return vect;
 }
 
 Result ProjectManager::InitLoggingConfiguration(const string configFile)
 {
 	LoggingConfiguration::initConfiguration(configFile);
+	//Log info logging initialised
+	boost::format formatter(kMsgLoggingInitialised);
+	formatter
+	% configFile;
+	LOG_INFO() << formatter.str();
 	return Result();
 }
 
