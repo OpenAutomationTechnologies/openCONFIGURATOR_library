@@ -57,13 +57,14 @@ namespace IndustrialNetwork
 						virtual ~DynamicChannel();
 
 					private:
-						std::uint32_t addressOffset;
-						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType accessType;
-						std::uint32_t bitAlignment;
+						
 						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType;
-						std::uint32_t maxNumber;
+						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType accessType;
 						std::uint32_t startIndex;
 						std::uint32_t endIndex;
+						std::uint32_t maxNumber;
+						std::uint32_t addressOffset;
+						std::uint32_t bitAlignment;	
 
 				};
 

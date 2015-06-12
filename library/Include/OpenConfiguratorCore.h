@@ -44,6 +44,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "PlkDataType.h"
 #include "AccessType.h"
 #include "LoggingConfiguration.h"
+#include "IEC_Datatype.h"
+#include "StructDataType.h"
+#include "ArrayDataType.h"
+#include "EnumDataType.h"
 
 namespace IndustrialNetwork
 {
@@ -128,6 +132,16 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureValue(const std::string networkId, const std::uint8_t nodeId, IndustrialNetwork::POWERLINK::Core::Node::CNFeatureEnum feature, const std::string value);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureValue(const std::string networkId, const std::uint8_t nodeId, IndustrialNetwork::POWERLINK::Core::Node::MNFeatureEnum feature, const std::string value);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureValue(const std::string networkId, const std::uint8_t nodeId, IndustrialNetwork::POWERLINK::Core::Node::GeneralFeatureEnum feature, const std::string value);
+
+						//Application Process API
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateParameter(const std::string networkId, const std::uint8_t nodeId, const std::string uniqueID, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess access);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateParameter(const std::string networkId, const std::uint8_t nodeId, const std::string uniqueID, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess access, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateStructDatatype(const std::string networkId, const std::uint8_t nodeId, const std::string parameterUniqueId, const std::string uniqueID, const std::string name);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateVarDeclaration(const std::string networkId, const std::uint8_t nodeId, const std::string structUniqueId,  const std::string uniqueId, const std::string name, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype datatype, std::uint32_t size = 1, const std::string initialValue = "");
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateArrayDatatype(const std::string networkId, const std::uint8_t nodeId, const std::string parameterUniqueId, const std::string uniqueID, const std::string name, std::uint32_t lowerLimit, std::uint32_t upperLimit, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateEnumDatatype(const std::string networkId, const std::uint8_t nodeId, const std::string parameterUniqueId, const std::string uniqueID, const std::string name, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType, std::uint32_t size = 0);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateEnumValue(const std::string networkId, const std::uint8_t nodeId, const std::string parameterUniqueId, const std::string name, const std::string value);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetDatatypeSize(const std::string networkId, const std::uint8_t nodeId, const std::string dataTypeUniqueId, std::uint32_t& size);
 
 					private:
 						//singleton

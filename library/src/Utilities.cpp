@@ -29,6 +29,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "Utilities.h"
 
+using namespace std;
+using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
+
 namespace IndustrialNetwork
 {
 	namespace POWERLINK
@@ -85,6 +88,56 @@ namespace IndustrialNetwork
 					bool b;
 					is >> boolalpha >> b;
 					return b;
+				}
+
+				uint32_t GetIECDataTypeBitSize(const IEC_Datatype dataType)
+				{
+					switch (dataType)
+					{
+						case IEC_Datatype::UNDEFINED:
+						case IEC_Datatype::STRING:
+						case IEC_Datatype::WSTRING:
+							break;
+						case IEC_Datatype::BITSTRING:
+						case IEC_Datatype::BOOL:
+							{
+								return 1; //Bit datatypes
+								break;
+							}
+						case IEC_Datatype::BYTE:
+						case IEC_Datatype::_CHAR:
+						case IEC_Datatype::SINT:
+						case IEC_Datatype::USINT:
+							{
+								return 8; //Byte datatypes
+								break;
+							}
+						case IEC_Datatype::DWORD:
+						case IEC_Datatype::INT:
+						case IEC_Datatype::UINT:
+							{
+								return 16; //2 Byte datatypes
+								break;
+							}
+						case IEC_Datatype::DINT:
+						case IEC_Datatype::UDINT:
+						case IEC_Datatype::REAL:
+							{
+								return 32; //4 Byte datatypes
+								break;
+							}
+						case IEC_Datatype::LINT:
+						case IEC_Datatype::LWORD:
+						case IEC_Datatype::ULINT:
+						case IEC_Datatype::LREAL:
+							{
+								return 64; //8 Byte datatypes
+								break;
+							}
+						default:
+							break;
+					}
+					return 0;
 				}
 			}
 		}

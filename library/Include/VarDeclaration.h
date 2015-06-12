@@ -32,7 +32,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined VAR_DECLARATION_H
 #define VAR_DECLARATION_H
 
-#include "PlkDataType.h"
+#include <string>
+#include "IEC_Datatype.h"
+#include "ComplexDataType.h"
+#include "Utilities.h"
 
 namespace IndustrialNetwork
 {
@@ -46,16 +49,19 @@ namespace IndustrialNetwork
 				\brief
 				\author rueckerc
 				*/
-				class VarDeclaration
+				class VarDeclaration : public IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ComplexDataType
 				{
 
 					public:
-						VarDeclaration();
+						VarDeclaration(std::string uniqueID, std::string name, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType, std::uint32_t size = 1, std::string initialValue = "");
 						virtual ~VarDeclaration();
 
+						virtual std::uint32_t GetBitSize();
+
 					private:
-						std::uint32_t size;
-						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType;
+						std::string initialValue;
+						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType;
+
 
 				};
 

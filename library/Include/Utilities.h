@@ -37,8 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iomanip>
 #include <string>
 #include <cctype>
-
-using namespace std;
+#include "IEC_Datatype.h"
 
 namespace IndustrialNetwork
 {
@@ -60,7 +59,7 @@ namespace IndustrialNetwork
 				\return A hexadecimal string representation of number.
 				************************************************************************/
 				template <typename T>
-				string IntToHex(const T number, const unsigned int padLength, const string& prefix = "", const string& suffix = "");
+				std::string IntToHex(const T number, const unsigned int padLength, const std::string& prefix = "", const std::string& suffix = "");
 
 				/************************************************************************
 				\brief Convert a string in hex-representation to an integral datatype
@@ -70,9 +69,11 @@ namespace IndustrialNetwork
 				\return The string converted to an integral datatype.
 				************************************************************************/
 				template <typename T>
-				T HexToInt(const string& hexString);
+				T HexToInt(const std::string& hexString);
 
-				bool StringToBool(string str);
+				bool StringToBool(std::string str);
+
+				std::uint32_t GetIECDataTypeBitSize(const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType);
 
 			}
 		}

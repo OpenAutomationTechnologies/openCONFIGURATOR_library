@@ -78,6 +78,17 @@ namespace IndustrialNetwork
 					SetTypedObjectValues(defaultValue, actualValue);
 				}
 
+				BaseObject::BaseObject(uint32_t id, ObjectType objectType, PDOMapping pdoMapping, uint32_t containingNodeId, string uniqueIdRef, string name) : IBaseObject(id, PlkDataType::Domain, name),
+					forceToCDC(false),
+					highLimit(),
+					lowLimit(),
+					uniqueIdRef(uniqueIdRef),
+					accessType(),
+					objectType(objectType),
+					pdoMapping(pdoMapping),
+					containingNodeId(containingNodeId)
+				{}
+
 				BaseObject::~BaseObject()
 				{}
 

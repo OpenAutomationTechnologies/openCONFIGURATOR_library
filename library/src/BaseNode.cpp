@@ -90,9 +90,14 @@ vector<NodeAssignment>& BaseNode::GetNodeAssignment()
 	return this->nodeAssignment;
 }
 
-std::shared_ptr<NetworkManagement>& BaseNode::GetNetworkManagement()
+shared_ptr<NetworkManagement>& BaseNode::GetNetworkManagement()
 {
 	return this->networkManagement;
+}
+
+shared_ptr<ApplicationProcess>& BaseNode::GetApplicationProcess()
+{
+	return this->applicationProcess;
 }
 
 Result BaseNode::AddObject(shared_ptr<Object>& objRef)

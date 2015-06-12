@@ -35,13 +35,12 @@ using namespace IndustrialNetwork::POWERLINK::Core::Test;
 
 CPPUNIT_TEST_SUITE_REGISTRATION(ArrayDataTypeTest);
 
-ArrayDataTypeTest::ArrayDataTypeTest(void)
-{
-}
+ArrayDataTypeTest::ArrayDataTypeTest(void):
+	objectToTest("test", "uniqueID", 5, 10, IEC_Datatype::BOOL)
+{}
 
 ArrayDataTypeTest::~ArrayDataTypeTest(void)
-{
-}
+{}
 
 void ArrayDataTypeTest::setUp() {}
 

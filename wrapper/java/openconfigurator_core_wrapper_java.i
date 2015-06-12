@@ -70,13 +70,19 @@
 
 %apply std::string &INOUT { std::string & activeConfiguration };
 %apply std::string &INOUT { std::string & defaultValue };
+%apply unsigned int& OUTPUT { unsigned int& size };
+
 
 %ignore GetNetworkManagement();
+%ignore PlkFeatureDefaultValues;
+%ignore PlkFeatureStrings;
 
 %{
 
 #include "ErrorCode.h"
-#include "AccessType.h"
+#include "IEC_Datatype.h"
+#include "ParameterAccess.h"
+#include "IEC_Datatype.h"
 #include "ObjectType.h"
 #include "PDOMapping.h"
 #include "PlkDataType.h"
@@ -103,6 +109,8 @@
 %template(intResult) IndustrialNetwork::Fieldbus::IResult<IndustrialNetwork::POWERLINK::Core::ErrorHandling::ErrorCode>;
 %include "Result.h"
 
+%include "IEC_Datatype.h"
+%include "ParameterAccess.h"
 %include "AccessType.h"
 %include "ObjectType.h"
 %include "PDOMapping.h"

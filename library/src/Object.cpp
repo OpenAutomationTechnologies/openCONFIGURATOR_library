@@ -52,6 +52,10 @@ namespace IndustrialNetwork
 					subIndexCollection(unordered_map<uint32_t, shared_ptr<SubObject>>())
 				{}
 
+				Object::Object(uint32_t id, ObjectType objectType, PDOMapping pdoMapping, uint32_t containingNodeId, string uniqueIdRef, string name) : BaseObject(id, objectType, pdoMapping, containingNodeId, uniqueIdRef, name),
+					subIndexCollection(unordered_map<uint32_t, shared_ptr<SubObject>>())
+				{}
+
 				Object::~Object()
 				{}
 

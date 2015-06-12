@@ -52,10 +52,13 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						ComplexDataType();
-						ComplexDataType(const ComplexDataType&);
-						void operator=(const ComplexDataType&);
+						ComplexDataType(std::string uniqueID, std::string name, std::uint32_t size = 0);
 						virtual ~ComplexDataType();
+
+						const std::string& GetName();
+						const std::string& GetUniqueID();
+						std::uint32_t GetSize();
+						virtual std::uint32_t GetBitSize() = 0;
 
 					private:
 						std::string name;

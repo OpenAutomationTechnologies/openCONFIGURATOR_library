@@ -486,7 +486,232 @@ Result OpenConfiguratorCore::SetFeatureValue(const string networkId, const uint8
 		{
 			node.get()->GetNetworkManagement().get()->SetFeatureUntypedActualValue(feature, value);
 		}
+	}
+	return res;
+}
 
+Result OpenConfiguratorCore::CreateParameter(const string networkId, const uint8_t nodeId, const string uniqueID, ParameterAccess access, IEC_Datatype dataType)
+{
+	shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (res.IsSuccessful())
+	{
+		shared_ptr<ControlledNode> node;
+		res = network.get()->GetControlledNode(nodeId, node);
+		if (res.IsSuccessful())
+		{
+			auto ptr = make_shared<Parameter>(uniqueID, access, dataType);
+			return node.get()->GetApplicationProcess().get()->AddParameter(ptr);
+		}
+	}
+	return res;
+}
+
+Result OpenConfiguratorCore::CreateParameter(const string networkId, const uint8_t nodeId, const string uniqueID, ParameterAccess access)
+{
+	shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (res.IsSuccessful())
+	{
+		shared_ptr<ControlledNode> node;
+		res = network.get()->GetControlledNode(nodeId, node);
+		if (res.IsSuccessful())
+		{
+			auto ptr = make_shared<Parameter>(uniqueID, access);
+			return node.get()->GetApplicationProcess().get()->AddParameter(ptr);
+		}
+	}
+	return res;
+}
+
+Result OpenConfiguratorCore::CreateStructDatatype(const string networkId, const uint8_t nodeId, const string parameterUniqueId, const string uniqueId, const string name)
+{
+	shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (res.IsSuccessful())
+	{
+		shared_ptr<ControlledNode> node;
+		res = network.get()->GetControlledNode(nodeId, node);
+		if (res.IsSuccessful())
+		{
+			auto& parameterList = node.get()->GetApplicationProcess().get()->GetParameterList();
+			for (auto& param : parameterList)
+			{
+				if (param.get()->GetUniqueID() == parameterUniqueId)
+				{
+					auto ptr = shared_ptr<ComplexDataType>(new StructDataType(uniqueId, name));
+					param.get()->SetComplexDataType(ptr);
+					param.get()->SetUniqueIDRef(uniqueId);
+					return Result();
+				}
+			}
+
+			boost::format formatter(kMsgParameterNotFound);
+			formatter
+			% parameterUniqueId
+			% (uint32_t) node->GetNodeIdentifier();
+			LOG_FATAL() << formatter.str();
+			return Result(ErrorCode::PARAMETER_NOT_FOUND, formatter.str());
+		}
+	}
+	return res;
+}
+
+Result OpenConfiguratorCore::CreateVarDeclaration(const string networkId, const uint8_t nodeId, const string structUniqueId,  const string uniqueId, const string name,  IEC_Datatype datatype, uint32_t size, const string initialValue)
+{
+	shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (res.IsSuccessful())
+	{
+		shared_ptr<ControlledNode> node;
+		res = network.get()->GetControlledNode(nodeId, node);
+		if (res.IsSuccessful())
+		{
+			auto& parameterList = node.get()->GetApplicationProcess().get()->GetParameterList();
+			for (auto& param : parameterList)
+			{
+				if (param.get()->GetUniqueIDRef() == structUniqueId)
+				{
+					auto ptr = dynamic_pointer_cast<StructDataType>(param->GetComplexDataType());
+					auto sharedVar = make_shared<VarDeclaration>(uniqueId, name, datatype, size, initialValue);
+					return ptr->AddVarDeclaration(sharedVar);
+				}
+			}
+
+			boost::format formatter(kMsgStructDatatypeNotFound);
+			formatter
+			% structUniqueId
+			% (uint32_t) node->GetNodeIdentifier();
+			LOG_FATAL() << formatter.str();
+			return Result(ErrorCode::PARAMETER_NOT_FOUND, formatter.str());
+		}
+	}
+	return res;
+}
+
+Result OpenConfiguratorCore::CreateArrayDatatype(const string networkId, const uint8_t nodeId, const string parameterUniqueId, const string uniqueId, const string name, uint32_t lowerLimit, uint32_t upperLimit, IEC_Datatype dataType)
+{
+	shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (res.IsSuccessful())
+	{
+		shared_ptr<ControlledNode> node;
+		res = network.get()->GetControlledNode(nodeId, node);
+		if (res.IsSuccessful())
+		{
+			auto& parameterList = node.get()->GetApplicationProcess().get()->GetParameterList();
+			for (auto& param : parameterList)
+			{
+				if (param.get()->GetUniqueID() == parameterUniqueId)
+				{
+					auto ptr = shared_ptr<ComplexDataType>(new ArrayDataType(uniqueId, name, lowerLimit, upperLimit, dataType));
+					param.get()->SetComplexDataType(ptr);
+					param->SetUniqueIDRef(uniqueId);
+					return Result();
+				}
+			}
+
+			boost::format formatter(kMsgParameterNotFound);
+			formatter
+			% parameterUniqueId
+			% (uint32_t) node->GetNodeIdentifier();
+			LOG_FATAL() << formatter.str();
+			return Result(ErrorCode::PARAMETER_NOT_FOUND, formatter.str());
+		}
+	}
+	return res;
+}
+
+Result OpenConfiguratorCore::CreateEnumDatatype(const string networkId, const uint8_t nodeId, const string parameterUniqueId, const string uniqueId, const string name, IEC_Datatype dataType, uint32_t size)
+{
+	shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (res.IsSuccessful())
+	{
+		shared_ptr<ControlledNode> node;
+		res = network.get()->GetControlledNode(nodeId, node);
+		if (res.IsSuccessful())
+		{
+			auto& parameterList = node.get()->GetApplicationProcess().get()->GetParameterList();
+			for (auto& param : parameterList)
+			{
+				if (param.get()->GetUniqueIDRef() == uniqueId)
+				{
+					auto ptr = shared_ptr<ComplexDataType>(new EnumDataType(uniqueId, name, dataType, size));
+					param.get()->SetComplexDataType(ptr);
+					return Result();
+				}
+			}
+
+			boost::format formatter(kMsgParameterNotFound);
+			formatter
+			% parameterUniqueId
+			% (uint32_t) node->GetNodeIdentifier();
+			LOG_FATAL() << formatter.str();
+			return Result(ErrorCode::PARAMETER_NOT_FOUND, formatter.str());
+		}
+	}
+	return res;
+}
+
+Result OpenConfiguratorCore::CreateEnumValue(const string networkId, const uint8_t nodeId, const string uniqueId, const string name, const string value)
+{
+	shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (res.IsSuccessful())
+	{
+		shared_ptr<ControlledNode> node;
+		res = network.get()->GetControlledNode(nodeId, node);
+		if (res.IsSuccessful())
+		{
+			auto& parameterList = node.get()->GetApplicationProcess().get()->GetParameterList();
+			for (auto& param : parameterList)
+			{
+				if (param.get()->GetUniqueIDRef() == uniqueId)
+				{
+					auto ptr = dynamic_pointer_cast<EnumDataType>(param->GetComplexDataType());
+					return ptr->AddEnumValue(name, value);
+				}
+			}
+
+			boost::format formatter(kMsgParameterNotFound);
+			formatter
+			% uniqueId
+			% (uint32_t) node->GetNodeIdentifier();
+			LOG_FATAL() << formatter.str();
+			return Result(ErrorCode::PARAMETER_NOT_FOUND, formatter.str());
+		}
+	}
+	return res;
+}
+
+Result OpenConfiguratorCore::GetDatatypeSize(const string networkId, const uint8_t nodeId, const string dataTypeUniqueId, uint32_t& size)
+{
+	shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (res.IsSuccessful())
+	{
+		shared_ptr<ControlledNode> node;
+		res = network->GetControlledNode(nodeId, node);
+		if (res.IsSuccessful())
+		{
+			auto& parameterList = node->GetApplicationProcess()->GetParameterList();
+			for (auto& param : parameterList)
+			{
+				if (param->GetUniqueID() == dataTypeUniqueId || param->GetUniqueIDRef() == dataTypeUniqueId)
+				{
+					size = param->GetBitSize() / 8;
+					return Result();
+				}
+			}
+
+			boost::format formatter(kMsgComplexDatatypeNotFound);
+			formatter
+			% dataTypeUniqueId
+			% (uint32_t) node->GetNodeIdentifier();
+			LOG_FATAL() << formatter.str();
+			return Result(ErrorCode::COMPLEX_DATATYPE_NOT_FOUND, formatter.str());
+		}
 	}
 	return res;
 }

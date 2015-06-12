@@ -95,7 +95,7 @@ namespace IndustrialNetwork
 					return this->name;
 				}
 
-				void SetName(std::string& name)
+				void SetName(const std::string& name)
 				{
 					this->name = name;
 				}

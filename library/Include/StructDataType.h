@@ -32,9 +32,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined STRUCT_DATA_TYPE_H
 #define STRUCT_DATA_TYPE_H
 
+#include <string>
 #include <vector>
+#include <memory>
 #include "ComplexDataType.h"
 #include "VarDeclaration.h"
+#include "Result.h"
 
 namespace IndustrialNetwork
 {
@@ -52,9 +55,14 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						StructDataType();
+						StructDataType(std::string name, std::string uniqueID);
 						virtual ~StructDataType();
-						std::vector<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::VarDeclaration> varDeclarationList;
+
+						virtual std::uint32_t GetBitSize();
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddVarDeclaration(std::shared_ptr<VarDeclaration>& varDecl);
+
+					private:
+						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::VarDeclaration>> varDeclarationList;
 
 				};
 

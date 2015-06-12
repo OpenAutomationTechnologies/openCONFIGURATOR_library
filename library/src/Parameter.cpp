@@ -31,19 +31,63 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "Parameter.h"
 
+using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
+using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 
-Parameter::Parameter():
-	uniqueID(),
-	uniqueIDRef(),
+Parameter::Parameter(string uniqueID, ParameterAccess parameterAccess, string uniqueIDRef) :
+	uniqueID(uniqueID),
+	uniqueIDRef(uniqueIDRef),
 	complexDataType(),
-	dataType(),
-	parameterAccess(),
-	defaultValue(),
-	minValue(),
-	maxValue()
+	parameterAccess(parameterAccess),
+	dataType(IEC_Datatype::UNDEFINED)
 {}
 
+Parameter::Parameter(string uniqueID, ParameterAccess parameterAccess, IEC_Datatype dataType) :
+	uniqueID(uniqueID),
+	uniqueIDRef(uniqueIDRef),
+	complexDataType(),
+	parameterAccess(parameterAccess),
+	dataType(dataType)
+{}
 
 Parameter::~Parameter()
 {}
+
+const string& Parameter::GetUniqueID()
+{
+	return this->uniqueID;
+}
+
+const string& Parameter::GetUniqueIDRef()
+{
+	return this->uniqueIDRef;
+}
+
+void Parameter::SetUniqueIDRef(const std::string& uniqueIDRef)
+{
+	this->uniqueIDRef = uniqueIDRef;
+}
+
+const shared_ptr<ComplexDataType>& Parameter::GetComplexDataType()
+{
+	return this->complexDataType;
+}
+
+void Parameter::SetComplexDataType(shared_ptr<ComplexDataType>& complexType)
+{
+	this->complexDataType = complexType;
+}
+
+ParameterAccess Parameter::GetParameterAccess()
+{
+	return this->parameterAccess;
+}
+
+uint32_t Parameter::GetBitSize()
+{
+	if (!this->uniqueIDRef.empty())
+		return this->complexDataType->GetBitSize();
+	else
+		return GetIECDataTypeBitSize(this->dataType);
+}

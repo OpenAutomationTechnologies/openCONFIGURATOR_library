@@ -34,8 +34,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <cstdint>
 #include "ComplexDataType.h"
-#include "PlkDataType.h"
+#include "IEC_Datatype.h"
 #include "Constants.h"
+#include "Utilities.h"
 
 namespace IndustrialNetwork
 {
@@ -53,15 +54,19 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						ArrayDataType();
-						ArrayDataType(const ArrayDataType&);
-						void operator=(const ArrayDataType&);
+						ArrayDataType(std::string uniqueID, std::string name, std::uint32_t lowerLimit, std::uint32_t upperLimit, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType);
 						virtual ~ArrayDataType();
+
+						std::uint32_t GetLowerLimit();
+						std::uint32_t GetUpperLimit();
+						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype GetDataType();
+
+						virtual std::uint32_t GetBitSize();
 
 					private:
 						std::uint32_t lowerLimit;
 						std::uint32_t upperLimit;
-						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType;
+						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType;
 
 				};
 

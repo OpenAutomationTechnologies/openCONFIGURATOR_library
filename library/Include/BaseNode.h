@@ -93,6 +93,8 @@ namespace IndustrialNetwork
 						std::vector<IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment>& GetNodeAssignment();
 						std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::NetworkManagement>& GetNetworkManagement();
 
+						std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ApplicationProcess>& GetApplicationProcess();
+
 					private:
 						std::uint8_t nodeId;
 						std::string name;

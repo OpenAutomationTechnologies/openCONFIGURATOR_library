@@ -67,10 +67,16 @@
 %include stdint.i
 
 %ignore GetNetworkManagement();
+%ignore PlkFeatureDefaultValues;
+%ignore PlkFeatureStrings;
+
+%apply unsigned int& OUTPUT { unsigned int& size };
 
 %{
 
 #include "ErrorCode.h"
+#include "IEC_Datatype.h"
+#include "ParameterAccess.h"
 #include "AccessType.h"
 #include "ObjectType.h"
 #include "PDOMapping.h"
@@ -98,6 +104,8 @@
 %template(intResult) IndustrialNetwork::Fieldbus::IResult<IndustrialNetwork::POWERLINK::Core::ErrorHandling::ErrorCode>;
 %include "Result.h"
 
+%include "IEC_Datatype.h"
+%include "ParameterAccess.h"
 %include "AccessType.h"
 %include "ObjectType.h"
 %include "PDOMapping.h"

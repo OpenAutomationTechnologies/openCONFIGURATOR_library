@@ -31,14 +31,29 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "ComplexDataType.h"
 
+using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 
-ComplexDataType::ComplexDataType() :
-	name(),
-	uniqueID(),
-	size()
+ComplexDataType::ComplexDataType(string uniqueID, string name, uint32_t size) :
+	name(name),
+	uniqueID(uniqueID),
+	size(size)
 {}
-
 
 ComplexDataType::~ComplexDataType()
 {}
+
+const std::string& ComplexDataType::GetName()
+{
+	return this->name;
+}
+
+const std::string& ComplexDataType::GetUniqueID()
+{
+	return this->uniqueID;
+}
+
+std::uint32_t ComplexDataType::GetSize()
+{
+	return this->size;
+}

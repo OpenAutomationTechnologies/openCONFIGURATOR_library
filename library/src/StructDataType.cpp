@@ -31,12 +31,38 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "StructDataType.h"
 
+using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
+using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 
-StructDataType::StructDataType() : ComplexDataType(),
-	varDeclarationList()
+
+StructDataType::StructDataType(string uniqueID, string name) : ComplexDataType(uniqueID, name),
+	varDeclarationList(vector<shared_ptr<VarDeclaration>>())
 {}
 
 
 StructDataType::~StructDataType()
 {}
+
+uint32_t StructDataType::GetBitSize()
+{
+	uint32_t bitSize = 0;
+	for (auto& var : this->varDeclarationList)
+	{
+		bitSize += var.get()->GetBitSize();
+	}
+	return bitSize;
+}
+
+Result StructDataType::AddVarDeclaration(std::shared_ptr<VarDeclaration>& varDecl)
+{
+	for (auto& var : this->varDeclarationList)
+	{
+		if (var.get()->GetUniqueID() == varDecl.get()->GetUniqueID())
+		{
+			return Result(ErrorCode::VAR_DECLARATION_EXISTS);
+		}
+	}
+	this->varDeclarationList.push_back(varDecl);
+	return Result();
+}

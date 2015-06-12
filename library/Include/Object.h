@@ -59,6 +59,7 @@ namespace IndustrialNetwork
 					public:
 						Object(std::uint32_t id, PlkDataType type, std::uint32_t containingNodeId);
 						Object(std::uint32_t id, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, std::uint32_t containingNodeId, std::string defaultValue = "", std::string actualValue = "", std::uint32_t highlimit = 0, std::uint32_t lowLimit = 0, std::string uniqueIdRef = "", std::string name = "");
+						Object(std::uint32_t id, ObjectType objectType, PDOMapping pdoMapping, std::uint32_t containingNodeId, std::string uniqueIdRef, std::string name = "");
 
 						virtual ~Object();
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddSubobject(std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::SubObject>& ref);

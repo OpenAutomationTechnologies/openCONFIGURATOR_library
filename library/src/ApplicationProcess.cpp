@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
+using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 
 ApplicationProcess::ApplicationProcess() :
 	parameterList(vector<shared_ptr<Parameter>>())
@@ -44,4 +45,53 @@ ApplicationProcess::~ApplicationProcess()
 const vector<shared_ptr<Parameter>>& ApplicationProcess::GetParameterList()
 {
 	return parameterList;
+}
+
+Result ApplicationProcess::AddParameter(shared_ptr<Parameter>& param)
+{
+	for (auto& currentParam : this->parameterList)
+	{
+		if (currentParam.get()->GetUniqueID() == param.get()->GetUniqueID())
+			return Result(ErrorCode::PARAMETER_NOT_FOUND);
+	}
+	this->parameterList.push_back(param);
+	return Result();
+}
+
+Result ApplicationProcess::GetParameter(string uniqueId, shared_ptr<Parameter>& returnParam)
+{
+	for (auto& param : this->parameterList)
+	{
+		if (param.get()->GetUniqueID() == uniqueId)
+		{
+			returnParam = param;
+			return Result();
+		}
+	}
+	return Result(ErrorCode::PARAMETER_NOT_FOUND);
+}
+
+Result ApplicationProcess::GetComplexDataType(string uniqueId, shared_ptr<ComplexDataType>& returnType)
+{
+	for (auto& param : this->parameterList)
+	{
+		if (param.get()->GetUniqueID() == uniqueId)
+		{
+			returnType = param.get()->GetComplexDataType();
+			return Result();
+		}
+	}
+	return Result(ErrorCode::PARAMETER_NOT_FOUND);
+}
+
+uint32_t ApplicationProcess::GetBitSize(std::string uniqueId)
+{
+	for (auto& param : this->parameterList)
+	{
+		if (param.get()->GetUniqueID() == uniqueId)
+		{
+			return param.get()->GetComplexDataType().get()->GetBitSize();
+		}
+	}
+	return 0;
 }

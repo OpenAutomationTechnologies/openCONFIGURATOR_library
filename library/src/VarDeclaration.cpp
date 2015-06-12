@@ -31,14 +31,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "VarDeclaration.h"
 
+using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
+using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 
-
-VarDeclaration::VarDeclaration() :
-	size(),
-	dataType()
+VarDeclaration::VarDeclaration(string uniqueID, string name, IEC_Datatype dataType, uint32_t size, string initialValue) : ComplexDataType(uniqueID, name, size),
+	initialValue(initialValue),
+	dataType(dataType)
 {}
-
 
 VarDeclaration::~VarDeclaration()
 {}
+
+uint32_t VarDeclaration::GetBitSize()
+{
+	return this->GetSize() * GetIECDataTypeBitSize(this->dataType);
+}

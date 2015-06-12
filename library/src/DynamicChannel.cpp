@@ -34,13 +34,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
 
 DynamicChannel::DynamicChannel() :
-	addressOffset(),
-	accessType(),
-	bitAlignment(),
 	dataType(),
-	maxNumber(),
+	accessType(),
 	startIndex(),
-	endIndex()
+	endIndex(),
+	maxNumber(),
+	addressOffset(),	
+	bitAlignment()
 {}
 
 

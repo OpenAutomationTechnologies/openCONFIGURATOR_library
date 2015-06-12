@@ -36,6 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 #include "Parameter.h"
 #include "Constants.h"
+#include "Result.h"
 
 namespace IndustrialNetwork
 {
@@ -57,6 +58,11 @@ namespace IndustrialNetwork
 						virtual ~ApplicationProcess();
 						const std::vector<std::shared_ptr<Parameter>>& GetParameterList();
 
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddParameter(std::shared_ptr<Parameter>& param);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetParameter(std::string uniqueId, std::shared_ptr<Parameter>& returnParam);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetComplexDataType(std::string uniqueId, std::shared_ptr<ComplexDataType>& returnType);
+						std::uint32_t GetBitSize(std::string uniqueIdRef);
+						
 
 					private:
 						std::vector<std::shared_ptr<Parameter>> parameterList;

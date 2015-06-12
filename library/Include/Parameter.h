@@ -32,9 +32,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined PARAMETER_H
 #define PARAMETER_H
 
+#include <memory>
 #include "ComplexDataType.h"
 #include "PlkDataType.h"
 #include "ParameterAccess.h"
+#include "IEC_Datatype.h"
+#include "Utilities.h"
 
 namespace IndustrialNetwork
 {
@@ -52,19 +55,26 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						Parameter();
+						Parameter(std::string uniqueID, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess parameterAccess, std::string uniqueIDRef = "");
+						Parameter(std::string uniqueID, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess parameterAccess, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype datatype);
 						virtual ~Parameter();
+
+						const std::string& GetUniqueID();
+						const std::string& GetUniqueIDRef();
+						void SetUniqueIDRef(const std::string& uniqueIDRef);
+						const std::shared_ptr<ComplexDataType>& GetComplexDataType();
+						void SetComplexDataType(std::shared_ptr<ComplexDataType>& complexType);
+						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess GetParameterAccess();
+						std::uint32_t GetBitSize();
+
+
 
 					private:
 						std::string uniqueID;
 						std::string uniqueIDRef;
-						ComplexDataType complexDataType;
-						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType;
+						std::shared_ptr<ComplexDataType> complexDataType;
 						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess parameterAccess;
-						std::uint32_t defaultValue;
-						std::uint32_t minValue;
-						std::uint32_t maxValue;
-
+						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType;
 				};
 
 			}
