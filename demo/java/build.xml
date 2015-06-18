@@ -12,7 +12,6 @@
 	<property name="deploy.dir" location="./dist/" />
 	<property name="build.dir" location="./build/" />
 	<property name="src.dir" location="./src/" />
-	<property name="lib.dir" location="./lib/" />
 
 	<condition property="isWindows">
 		<os family="windows" />
@@ -22,7 +21,6 @@
 	</condition>
 
 	<target name="init_win" if="isWindows">
-		<mkdir dir="${lib.dir}"/>
 		<mkdir dir="${build.dir}"/>
 		<copy todir="${src.dir}/org/epsg/openconfigurator/core/java/wrapper">
 			<fileset dir="../../build/windows/wrapper/java/Java/src">
@@ -33,7 +31,6 @@
 	</target>
 
 	<target name="init_linux" if="isLinux">
-		<mkdir dir="${lib.dir}"/>
 		<mkdir dir="${build.dir}"/>
 		<copy todir="${src.dir}/org/epsg/openconfigurator/core/java/wrapper">
 			<fileset dir="../../build/linux/wrapper/java/Java/src">

@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+	<Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -30,6 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+	<Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -41,53 +43,67 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AccessType.cs" />
     <Compile Include="BaseNode.cs" />
+    <Compile Include="BaseObject.cs" />
     <Compile Include="BuildConfigurationSetting.cs" />
-    <Compile Include="ControlledNode.cs" />
+    <Compile Include="CNFeatureEnum.cs" />
     <Compile Include="ConfigurationCollection.cs" />
+    <Compile Include="ControlledNode.cs" />
     <Compile Include="Direction.cs" />
+    <Compile Include="ErrorCode.cs" />
+    <Compile Include="GeneralFeatureEnum.cs" />
     <Compile Include="IBuildConfigurationSetting.cs" />
+    <Compile Include="IEC_Datatype.cs" />
     <Compile Include="intBaseObject.cs" />
     <Compile Include="intBuildConfiguration.cs" />
     <Compile Include="intFieldBusNode.cs" />
     <Compile Include="intResult.cs" />
     <Compile Include="ManagingNode.cs" />
+    <Compile Include="MNFeatureEnum.cs" />
     <Compile Include="Network.cs" />
     <Compile Include="NodeAssignment.cs" />
     <Compile Include="NodeIdCollection.cs" />
     <Compile Include="NodeType.cs" />
     <Compile Include="Object.cs" />
-    <Compile Include="OpenConfiguratorCore.cs" />
-    <Compile Include="PlkConfiguration.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="openconfigurator_core_wrapper_netPINVOKE.cs" />
-    <Compile Include="PDOMapping.cs" />
-    <Compile Include="AccessType.cs" />
-    <Compile Include="BaseObject.cs" />
-    <Compile Include="ErrorCode.cs" />
     <Compile Include="ObjectType.cs" />
+    <Compile Include="OpenConfiguratorCore.cs" />
     <Compile Include="openconfigurator_core_wrapper_net.cs" />
+    <Compile Include="openconfigurator_core_wrapper_netPINVOKE.cs" />
+    <Compile Include="ParameterAccess.cs" />
+    <Compile Include="PDOMapping.cs" />
+    <Compile Include="PlkConfiguration.cs" />
     <Compile Include="PlkDataType.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Result.cs" />
     <Compile Include="SettingsCollection.cs" />
     <Compile Include="StringCollection.cs" />
     <Compile Include="SubObject.cs" />
     <Compile Include="SWIGTYPE_p_boost__any.cs" />
     <Compile Include="SWIGTYPE_p_boost__optionalT_std__string_t.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SWIGTYPE_p_boost__optionalT_std__uint32_t_t.cs" />
     <Compile Include="SWIGTYPE_p_std__ostream.cs" />
     <Compile Include="SWIGTYPE_p_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__Configuration__BuildConfigurationSetting_t.cs" />
     <Compile Include="SWIGTYPE_p_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__Node__ControlledNode_t.cs" />
     <Compile Include="SWIGTYPE_p_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__Node__ManagingNode_t.cs" />
-    <Compile Include="SWIGTYPE_p_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__Node__NetworkManagement_t.cs" />
+    <Compile Include="SWIGTYPE_p_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__ObjectDictionary__ApplicationProcess_t.cs" />
     <Compile Include="SWIGTYPE_p_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__ObjectDictionary__Object_t.cs" />
     <Compile Include="SWIGTYPE_p_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__ObjectDictionary__SubObject_t.cs" />
     <Compile Include="SWIGTYPE_p_std__unordered_mapT_unsigned_char_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__Node__BaseNode_t_t.cs" />
     <Compile Include="SWIGTYPE_p_std__unordered_mapT_unsigned_int_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__ObjectDictionary__Object_t_t.cs" />
     <Compile Include="SWIGTYPE_p_std__vectorT_IndustrialNetwork__POWERLINK__Core__Node__NodeAssignment_t.cs" />
-    <Compile Include="SWIGTYPE_p_std__vectorT_shared_ptrT_IndustrialNetwork__POWERLINK__Core__Configuration__PlkConfiguration_t_t.cs" />
     <Compile Include="SWIGTYPE_p_std__vectorT_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__Configuration__BuildConfigurationSetting_t_t.cs" />
+    <Compile Include="SWIGTYPE_p_std__vectorT_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__Configuration__PlkConfiguration_t_t.cs" />
     <Compile Include="SWIGTYPE_p_std__vectorT_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__ObjectDictionary__BaseObject_t_t.cs" />
   </ItemGroup>
   <ItemGroup>

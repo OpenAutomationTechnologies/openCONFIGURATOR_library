@@ -1,9 +1,15 @@
 package org.epsg.openconfigurator.core.java.app;
 
+import org.epsg.openconfigurator.lib.wrapper.AccessType;
 import org.epsg.openconfigurator.lib.wrapper.BuildConfigurationSetting;
 import org.epsg.openconfigurator.lib.wrapper.ControlledNode;
+import org.epsg.openconfigurator.lib.wrapper.IEC_Datatype;
 import org.epsg.openconfigurator.lib.wrapper.Network;
+import org.epsg.openconfigurator.lib.wrapper.ObjectType;
 import org.epsg.openconfigurator.lib.wrapper.OpenConfiguratorCore;
+import org.epsg.openconfigurator.lib.wrapper.PDOMapping;
+import org.epsg.openconfigurator.lib.wrapper.ParameterAccess;
+import org.epsg.openconfigurator.lib.wrapper.PlkDataType;
 import org.epsg.openconfigurator.lib.wrapper.Result;
 import org.epsg.openconfigurator.lib.wrapper.SettingsCollection;
 import org.epsg.openconfigurator.lib.wrapper.StringCollection;
@@ -26,11 +32,11 @@ public class WrapperTestMainMSVC {
 	public static void main(String[] args) {
 		// Retrieve main managing class of the library
 		OpenConfiguratorCore core = OpenConfiguratorCore.GetInstance();
-		
+
 		// Init logger class with configuration file path
 		core.InitLoggingConfiguration("boost_log_settings.ini");
 		core.CreateNetwork("test");
-		
+
 		// Create an initial network
 		Network net = new Network();
 		core.CreateNetwork("test");
@@ -127,9 +133,64 @@ public class WrapperTestMainMSVC {
 		System.out.println(core.GetConfigurationSettings("test", "all", coll).GetErrorType());
 		System.out.println(coll.size());
 		System.out.println(core.SetConfigurationSettingEnabled("test", "all",
-				"GENERATE_MN_MAPPING_FOR_NODES", false).GetErrorType());
+				"GENERATE_MN_MAPPING_FOR_ALL_NODES", false).GetErrorType());
 
 		core.CreateConfiguration("test", "none");
+
+		core.CreateObject("test", (short) 1, 0x1600, PlkDataType.UNSIGNED16, AccessType.RW, ObjectType.RECORD, PDOMapping.RPDO, "1000", "Mapping Object");
+        core.CreateSubObject("test", (short) 1, 0x1600, 0, PlkDataType.UNSIGNED8, AccessType.RW, ObjectType.DEFTYPE, PDOMapping.NO, "0", "NrOfEntries");
+		core.CreateDomainSubObject("test", (short) 1, 0x1600, 0x01, PlkDataType.Domain, AccessType.RO, ObjectType.DEFSTRUCT, PDOMapping.RPDO, "UID_DOM_Index2100_Sub1E", "Domainobject");
+
+        Result test = core.CreateParameter("test", (short) 1, "UID_DOM_Index2100_Sub1E", ParameterAccess.read);
+        System.out.println(test.IsSuccessful());
+        test = core.CreateStructDatatype("test", (short) 1, "notFound", "UID_DT_Index2100_Sub1E", "Index2100_Sub1E");
+        test = core.CreateStructDatatype("test", (short)1, "UID_DOM_Index2100_Sub1E", "UID_DT_Index2100_Sub1E", "Index2100_Sub1E");
+        System.out.println(test.IsSuccessful());
+        test = core.CreateVarDeclaration("test",(short) 1, "notFound", "Index2100_Sub1E_OK", "NetworkStatus", IEC_Datatype.USINT);
+        test = core.CreateVarDeclaration("test", (short)1, "UID_DT_Index2100_Sub1E", "Index2100_Sub1E_OK", "NetworkStatus", IEC_Datatype.USINT);
+        test = core.CreateVarDeclaration("test", (short)1, "UID_DT_Index2100_Sub1E", "UID_Index2100_Sub1E_StatusInput01", "StatusInput01", IEC_Datatype.BITSTRING, 1);
+        test = core.CreateVarDeclaration("test", (short)1, "UID_DT_Index2100_Sub1E", "UID_Index2100_Sub1E_Bit_Unused_01", "StatusInput01", IEC_Datatype.BITSTRING, 1);
+        test = core.CreateVarDeclaration("test", (short)1, "UID_DT_Index2100_Sub1E", "UID_Index2100_Sub1E_StatusInput02", "StatusInput01", IEC_Datatype.BITSTRING, 1);
+        test = core.CreateVarDeclaration("test", (short)1, "UID_DT_Index2100_Sub1E", "UID_Index2100_Sub1E_Bit_Unused_02", "StatusInput01", IEC_Datatype.BITSTRING, 5);
+        System.out.println(test.IsSuccessful());
+
+        test = core.CreateParameter("test", (short)1, "UID_DOM_Index2101_Sub1E", ParameterAccess.read);
+        System.out.println(test.IsSuccessful());
+        test = core.CreateStructDatatype("test", (short)1, "UID_DOM_Index2101_Sub1E", "UID_DT_Index2101_Sub1E", "Index2101_Sub1E");
+        System.out.println(test.IsSuccessful());
+        test = core.CreateVarDeclaration("test", (short)1, "UID_DT_Index2101_Sub1E", "Index2101_Sub1E_OK", "NetworkStatus", IEC_Datatype.USINT);
+        test = core.CreateVarDeclaration("test", (short)1, "UID_DT_Index2101_Sub1E", "UID_Index2101_Sub1E_DigitalInput01", "DigitalInput01", IEC_Datatype.BITSTRING, 1);
+        test = core.CreateVarDeclaration("test", (short)1, "UID_DT_Index2101_Sub1E", "UID_Index2101_Sub1E_DigitalInput02", "DigitalInput02", IEC_Datatype.BITSTRING, 1);
+        test = core.CreateVarDeclaration("test",(short) 1, "UID_DT_Index2101_Sub1E", "UID_Index2101_Sub1E_DigitalInput03", "DigitalInput03", IEC_Datatype.BITSTRING, 1);
+        test = core.CreateVarDeclaration("test", (short)1, "UID_DT_Index2101_Sub1E", "UID_Index2101_Sub1E_DigitalInput04", "DigitalInput04", IEC_Datatype.BITSTRING, 1);
+        test = core.CreateVarDeclaration("test", (short)1, "UID_DT_Index2101_Sub1E", "UID_Index2101_Sub1E_DigitalInput05", "DigitalInput05", IEC_Datatype.BITSTRING, 1);
+        test = core.CreateVarDeclaration("test", (short)1, "UID_DT_Index2101_Sub1E", "UID_Index2101_Sub1E_DigitalInput06", "DigitalInput06", IEC_Datatype.BITSTRING, 1);
+        test = core.CreateVarDeclaration("test",(short) 1, "UID_DT_Index2101_Sub1E", "UID_Index2101_Sub1E_DigitalInput07", "DigitalInput07", IEC_Datatype.BITSTRING, 1);
+        test = core.CreateVarDeclaration("test", (short)1, "UID_DT_Index2101_Sub1E", "UID_Index2101_Sub1E_DigitalInput08", "DigitalInput08", IEC_Datatype.BITSTRING, 1);
+        test = core.CreateVarDeclaration("test",(short) 1, "UID_DT_Index2101_Sub1E", "UID_Index2101_Sub1E_DigitalInput09", "DigitalInput09", IEC_Datatype.BITSTRING, 1);
+        test = core.CreateVarDeclaration("test", (short)1, "UID_DT_Index2101_Sub1E", "UID_Index2101_Sub1E_DigitalInput10", "DigitalInput10", IEC_Datatype.BITSTRING, 1);
+        test = core.CreateVarDeclaration("test",(short) 1, "UID_DT_Index2101_Sub1E", "UID_Index2101_Sub1E_DigitalInput11", "DigitalInput11", IEC_Datatype.BITSTRING, 1);
+        test = core.CreateVarDeclaration("test", (short)1, "UID_DT_Index2101_Sub1E", "UID_Index2101_Sub1E_DigitalInput12", "DigitalInput12", IEC_Datatype.BITSTRING, 1);
+        test = core.CreateVarDeclaration("test",(short) 1, "UID_DT_Index2101_Sub1E", "UID_Index2101_Sub1E_Bit_Unused_01", "Bit_Unused_01", IEC_Datatype.BITSTRING, 4);
+        System.out.println(test.IsSuccessful());
+        test = core.CreateParameter("test", (short)1, "UID_100", ParameterAccess.read, IEC_Datatype.UDINT);
+
+        long[] size = new long[1];
+        test = core.GetDatatypeSize("test", (short)1, "UID_DT_Index2100_Sub1E", size);
+        System.out.println(test.IsSuccessful());
+        System.out.println(size[0]);
+
+        test = core.GetDatatypeSize("test", (short)1, "UID_DT_Index2101_Sub1E", size);
+        System.out.println(test.IsSuccessful());
+        System.out.println(size[0]);
+
+        test = core.GetDatatypeSize("test",(short)1, "UID_100", size);
+        System.out.println(test.IsSuccessful());
+        System.out.println(size[0]);
+
+        test = core.GetDatatypeSize("test",(short) 1, "notFound", size);
+        System.out.println(test.IsSuccessful());
+        System.out.println(size[0]);
 	}
 
 }

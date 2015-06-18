@@ -130,6 +130,62 @@ namespace openconfigurator_core_net_app
 
             core.CreateConfiguration("test", "none");
 
+            core.CreateObject("test", 1, 0x1600, PlkDataType.UNSIGNED16, AccessType.RW, ObjectType.RECORD,
+                PDOMapping.RPDO, "1000", "Mapping Object");
+            core.CreateSubObject("test", 1, 0x1600, 0, PlkDataType.UNSIGNED8, AccessType.RW, ObjectType.DEFTYPE, PDOMapping.NO, "0", "NrOfEntries");
+
+            Console.ReadLine();
+            Result test = core.CreateParameter("test", 1, "UID_DOM_Index2100_Sub1E", ParameterAccess.read);
+            Console.WriteLine(test.IsSuccessful());
+            test = core.CreateStructDatatype("test", 1, "notFound", "UID_DT_Index2100_Sub1E", "Index2100_Sub1E");
+            test = core.CreateStructDatatype("test", 1, "UID_DOM_Index2100_Sub1E", "UID_DT_Index2100_Sub1E", "Index2100_Sub1E");
+            Console.WriteLine(test.IsSuccessful());
+            test = core.CreateVarDeclaration("test", 1, "notFound", "Index2100_Sub1E_OK", "NetworkStatus", IEC_Datatype.USINT);
+            test = core.CreateVarDeclaration("test", 1, "UID_DT_Index2100_Sub1E", "Index2100_Sub1E_OK", "NetworkStatus", IEC_Datatype.USINT);
+            test = core.CreateVarDeclaration("test", 1, "UID_DT_Index2100_Sub1E", "UID_Index2100_Sub1E_StatusInput01", "StatusInput01", IEC_Datatype.BITSTRING, 1);
+            test = core.CreateVarDeclaration("test", 1, "UID_DT_Index2100_Sub1E", "UID_Index2100_Sub1E_Bit_Unused_01", "StatusInput01", IEC_Datatype.BITSTRING, 1);
+            test = core.CreateVarDeclaration("test", 1, "UID_DT_Index2100_Sub1E", "UID_Index2100_Sub1E_StatusInput02", "StatusInput01", IEC_Datatype.BITSTRING, 1);
+            test = core.CreateVarDeclaration("test", 1, "UID_DT_Index2100_Sub1E", "UID_Index2100_Sub1E_Bit_Unused_02", "StatusInput01", IEC_Datatype.BITSTRING, 5);
+            Console.WriteLine(test.IsSuccessful());
+
+            test = core.CreateParameter("test", 1, "UID_DOM_Index2101_Sub1E", ParameterAccess.read);
+            Console.WriteLine(test.IsSuccessful());
+            test = core.CreateStructDatatype("test", 1, "UID_DOM_Index2101_Sub1E", "UID_DT_Index2101_Sub1E", "Index2101_Sub1E");
+            Console.WriteLine(test.IsSuccessful());
+            test = core.CreateVarDeclaration("test", 1, "UID_DT_Index2101_Sub1E", "Index2101_Sub1E_OK", "NetworkStatus", IEC_Datatype.USINT);
+            test = core.CreateVarDeclaration("test", 1, "UID_DT_Index2101_Sub1E", "UID_Index2101_Sub1E_DigitalInput01", "DigitalInput01", IEC_Datatype.BITSTRING, 1);
+            test = core.CreateVarDeclaration("test", 1, "UID_DT_Index2101_Sub1E", "UID_Index2101_Sub1E_DigitalInput02", "DigitalInput02", IEC_Datatype.BITSTRING, 1);
+            test = core.CreateVarDeclaration("test", 1, "UID_DT_Index2101_Sub1E", "UID_Index2101_Sub1E_DigitalInput03", "DigitalInput03", IEC_Datatype.BITSTRING, 1);
+            test = core.CreateVarDeclaration("test", 1, "UID_DT_Index2101_Sub1E", "UID_Index2101_Sub1E_DigitalInput04", "DigitalInput04", IEC_Datatype.BITSTRING, 1);
+            test = core.CreateVarDeclaration("test", 1, "UID_DT_Index2101_Sub1E", "UID_Index2101_Sub1E_DigitalInput05", "DigitalInput05", IEC_Datatype.BITSTRING, 1);
+            test = core.CreateVarDeclaration("test", 1, "UID_DT_Index2101_Sub1E", "UID_Index2101_Sub1E_DigitalInput06", "DigitalInput06", IEC_Datatype.BITSTRING, 1);
+            test = core.CreateVarDeclaration("test", 1, "UID_DT_Index2101_Sub1E", "UID_Index2101_Sub1E_DigitalInput07", "DigitalInput07", IEC_Datatype.BITSTRING, 1);
+            test = core.CreateVarDeclaration("test", 1, "UID_DT_Index2101_Sub1E", "UID_Index2101_Sub1E_DigitalInput08", "DigitalInput08", IEC_Datatype.BITSTRING, 1);
+            test = core.CreateVarDeclaration("test", 1, "UID_DT_Index2101_Sub1E", "UID_Index2101_Sub1E_DigitalInput09", "DigitalInput09", IEC_Datatype.BITSTRING, 1);
+            test = core.CreateVarDeclaration("test", 1, "UID_DT_Index2101_Sub1E", "UID_Index2101_Sub1E_DigitalInput10", "DigitalInput10", IEC_Datatype.BITSTRING, 1);
+            test = core.CreateVarDeclaration("test", 1, "UID_DT_Index2101_Sub1E", "UID_Index2101_Sub1E_DigitalInput11", "DigitalInput11", IEC_Datatype.BITSTRING, 1);
+            test = core.CreateVarDeclaration("test", 1, "UID_DT_Index2101_Sub1E", "UID_Index2101_Sub1E_DigitalInput12", "DigitalInput12", IEC_Datatype.BITSTRING, 1);
+            test = core.CreateVarDeclaration("test", 1, "UID_DT_Index2101_Sub1E", "UID_Index2101_Sub1E_Bit_Unused_01", "Bit_Unused_01", IEC_Datatype.BITSTRING, 4);
+            Console.WriteLine(test.IsSuccessful());
+            test = core.CreateParameter("test", 1, "UID_100", ParameterAccess.read, IEC_Datatype.UDINT);
+
+            uint size;
+            test = core.GetDatatypeSize("test", 1, "UID_DT_Index2100_Sub1E", out size);
+            Console.WriteLine(test.IsSuccessful());
+            Console.WriteLine(size);
+
+            test = core.GetDatatypeSize("test", 1, "UID_DT_Index2101_Sub1E", out size);
+            Console.WriteLine(test.IsSuccessful());
+            Console.WriteLine(size);
+
+            test = core.GetDatatypeSize("test", 1, "UID_100", out size);
+            Console.WriteLine(test.IsSuccessful());
+            Console.WriteLine(size);
+
+            test = core.GetDatatypeSize("test", 1, "notFound", out size);
+            Console.WriteLine(test.IsSuccessful());
+            Console.WriteLine(size);
+
         }
     }
 }
