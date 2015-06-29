@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
+using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 
 namespace logging = boost::log;
 
@@ -109,21 +110,30 @@ class scope_formatter_factory : public logging::formatter_factory<char>
 		}
 };
 
-void LoggingConfiguration::initConfiguration(const string& configurationFile)
+Result LoggingConfiguration::InitConfiguration(const string& configuration)
 {
-	logging::register_simple_formatter_factory< logging::trivial::severity_level, char >("Severity");
-	logging::register_simple_filter_factory< logging::trivial::severity_level, char >("Severity");
+	try
+	{
+		logging::register_simple_formatter_factory< logging::trivial::severity_level, char >("Severity");
+		logging::register_simple_filter_factory< logging::trivial::severity_level, char >("Severity");
 
-	logging::register_simple_formatter_factory< unsigned int, char >("Line");
-	logging::register_simple_filter_factory< unsigned int, char >("Line");
+		logging::register_simple_formatter_factory< unsigned int, char >("Line");
+		logging::register_simple_filter_factory< unsigned int, char >("Line");
 
-	logging::register_formatter_factory("Scope", boost::make_shared<scope_formatter_factory>());
+		logging::register_formatter_factory("Scope", boost::make_shared<scope_formatter_factory>());
 
-	ifstream file(configurationFile);
-	logging::init_from_stream(file);
+		istringstream configStream(configuration);
+		logging::init_from_stream(configStream);
 
-	logging::core::get()->add_global_attribute("Scope", logging::attributes::named_scope());
-	logging::add_common_attributes();
+		logging::core::get()->add_global_attribute("Scope", logging::attributes::named_scope());
+		logging::add_common_attributes();
 
-	sev_logger::get();
+		sev_logger::get();
+		return Result();
+	}
+	catch (const boost::exception& ex)
+	{
+		LOG_FATAL() << boost::diagnostic_information(ex);
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, boost::diagnostic_information(ex));
+	}
 }

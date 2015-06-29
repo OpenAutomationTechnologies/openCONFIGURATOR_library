@@ -36,6 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 #include <utility>
 #include <iostream>
+#include <fstream>
 
 #include "BaseNode.h"
 #include "Constants.h"
@@ -66,7 +67,7 @@ namespace IndustrialNetwork
 						static OpenConfiguratorCore& GetInstance();
 
 						// Library related API
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result InitLoggingConfiguration(const std::string configFile);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result InitLoggingConfiguration(const std::string& configuration);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetSupportedSettingIds(std::vector<std::string>& supportedSettings);
 
 						//Network related API

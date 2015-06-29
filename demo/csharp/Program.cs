@@ -31,6 +31,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 
 using System;
+using System.IO;
+using System.Text;
 
 namespace openconfigurator_core_net_app
 {
@@ -41,9 +43,15 @@ namespace openconfigurator_core_net_app
             Console.ReadLine();
             // Retrieve main managing class of the library
             var core = OpenConfiguratorCore.GetInstance();
+            Console.ReadLine();
 
+            string loggingConfig = string.Empty;
+            using (StreamReader streamReader = new StreamReader("boost_log_settings.ini", Encoding.UTF8))
+            {
+                loggingConfig = streamReader.ReadToEnd();
+            }
             // Init logger class with configuration file path
-            core.InitLoggingConfiguration("boost_log_settings.ini");
+            Result logres = core.InitLoggingConfiguration(loggingConfig);
             core.CreateNetwork("test");
 
             // Create an initial network

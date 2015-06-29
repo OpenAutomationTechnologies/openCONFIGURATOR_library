@@ -145,15 +145,18 @@ const vector<string> ProjectManager::GetSupportedSettingIds()
 	return vect;
 }
 
-Result ProjectManager::InitLoggingConfiguration(const string configFile)
+Result ProjectManager::InitLoggingConfiguration(const string& configuration)
 {
-	LoggingConfiguration::initConfiguration(configFile);
-	//Log info logging initialised
-	boost::format formatter(kMsgLoggingInitialised);
-	formatter
-	% configFile;
-	LOG_INFO() << formatter.str();
-	return Result();
+	Result res = LoggingConfiguration::InitConfiguration(configuration);
+	if (res.IsSuccessful())
+	{
+		//Log info logging initialised
+		boost::format formatter(kMsgLoggingInitialised);
+		formatter
+		% configuration;
+		LOG_INFO() << formatter.str();
+	}
+	return res;
 }
 
 std::vector<std::string> ProjectManager::GetNetworkIds()

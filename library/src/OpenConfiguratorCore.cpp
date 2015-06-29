@@ -52,9 +52,9 @@ OpenConfiguratorCore& OpenConfiguratorCore::GetInstance()
 	return instance;
 }
 
-Result OpenConfiguratorCore::InitLoggingConfiguration(const string configFile)
+Result OpenConfiguratorCore::InitLoggingConfiguration(const string& configuration)
 {
-	return ProjectManager::GetInstance().InitLoggingConfiguration(configFile);
+	return ProjectManager::GetInstance().InitLoggingConfiguration(configuration);
 }
 
 Result OpenConfiguratorCore::GetSupportedSettingIds(vector<string>& supportedSettings)

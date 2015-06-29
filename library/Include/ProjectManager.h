@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <map>
 #include <memory>
+#include <sstream>
 #include "Network.h"
 #include "PlkConfiguration.h"
 #include "LoggingConfiguration.h"
@@ -120,7 +121,7 @@ namespace IndustrialNetwork
 						\param[in] configFile path
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result InitLoggingConfiguration(const std::string configFile);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result InitLoggingConfiguration(const std::string& configuration);
 
 						/**
 						\brief Returns a vector including all the existing network ids.

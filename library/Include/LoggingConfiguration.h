@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <fstream>
 #include "Constants.h"
+#include "Result.h"
 
 #ifdef _MSC_VER
 #pragma warning(push, 0) // Store current warning state and set global warning level 0
@@ -49,6 +50,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <boost/log/utility/setup/formatter_parser.hpp>
 #include <boost/log/utility/setup/filter_parser.hpp>
 #include <boost/log/sources/global_logger_storage.hpp>
+#include <boost/exception/diagnostic_information.hpp>
 
 #ifdef _MSC_VER
 #pragma warning(pop) // Restore previous warning state
@@ -74,7 +76,7 @@ namespace IndustrialNetwork
 						\brief Initialises the boost logger with the configuration file.
 						\param[in] configFile path
 						*/
-						static void initConfiguration(const std::string& configurationFile);
+						static IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result InitConfiguration(const std::string& configuration);
 				};
 
 				BOOST_LOG_INLINE_GLOBAL_LOGGER_DEFAULT(sev_logger, boost::log::sources::severity_logger_mt<boost::log::trivial::severity_level>)

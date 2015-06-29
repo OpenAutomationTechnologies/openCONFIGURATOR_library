@@ -2,6 +2,11 @@
 
 package org.epsg.openconfigurator.core.java.app;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import org.epsg.openconfigurator.lib.wrapper.AccessType;
 import org.epsg.openconfigurator.lib.wrapper.BuildConfigurationSetting;
 import org.epsg.openconfigurator.lib.wrapper.ControlledNode;
@@ -37,7 +42,15 @@ public class WrapperTestMainLinux {
 		OpenConfiguratorCore core = OpenConfiguratorCore.GetInstance();
 
 		// Init logger class with configuration file path
-		core.InitLoggingConfiguration("boost_log_settings.ini");
+		try {
+			byte[] encoded = Files.readAllBytes(Paths
+					.get("boost_log_settings.ini"));
+
+			String config = new String(encoded, Charset.defaultCharset());
+			core.InitLoggingConfiguration(config);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		core.CreateNetwork("test");
 
 		// Create an initial network
