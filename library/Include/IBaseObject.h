@@ -54,25 +54,17 @@ namespace IndustrialNetwork
 					id(),
 					actualValue(boost::any()),
 					defaultValue(boost::any()),
-					dataType(),
+					objectType(),
 					name("")
 
 				{}
 
-				IBaseObject(T id, D dataType, std::string name = "") :
+				IBaseObject(T id, D objectType, std::string name) :
 					id(id),
 					actualValue(boost::any()),
 					defaultValue(boost::any()),
-					dataType(dataType),
+					objectType(objectType),
 					name(name)
-				{}
-
-				IBaseObject(T id) :
-					id(id),
-					actualValue(boost::any()),
-					defaultValue(boost::any()),
-					dataType(),
-					name("")
 				{}
 
 				virtual ~IBaseObject()
@@ -120,22 +112,22 @@ namespace IndustrialNetwork
 					this->defaultValue = defaultValue;
 				}
 
-				const D GetDataType() const
+				const D GetObjectType() const
 				{
-					return this->dataType;
+					return this->objectType;
 				}
 
-				void SetDataType(const D& dataType)
+				void SetObjectType(const D& dataType)
 				{
 
-					this->dataType = dataType;
+					this->objectType = dataType;
 				}
 
 			private:
 				T id;
 				boost::any actualValue;
 				boost::any defaultValue;
-				D dataType;
+				D objectType;
 				std::string name;
 
 

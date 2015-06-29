@@ -256,7 +256,7 @@ Result BaseNode::ForceSubObject(uint32_t objectId, uint32_t subObjectId, bool fo
 		formatter
 		% objectId
 		% subObjectId
-		% nodeId
+		% (uint32_t) nodeId
 		% force;
 		LOG_INFO() << formatter.str();
 

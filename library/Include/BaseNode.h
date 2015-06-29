@@ -35,8 +35,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <cstdint>
 #include <memory>
+
 #include <boost/filesystem.hpp>
 #include <boost/format.hpp>
+
 #include "Constants.h"
 #include "ApplicationProcess.h"
 #include "NetworkManagement.h"

@@ -32,8 +32,24 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined SUBOBJECT_H
 #define SUBOBJECT_H
 
+#include <memory>
+
 #include "BaseObject.h"
 #include "Utilities.h"
+
+namespace IndustrialNetwork
+{
+	namespace POWERLINK
+	{
+		namespace Core
+		{
+			namespace ObjectDictionary
+			{
+				class Object;
+			}
+		}
+	}
+}
 
 namespace IndustrialNetwork
 {
@@ -51,9 +67,20 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						SubObject(std::uint32_t id, PlkDataType type, std::uint32_t containingNodeId);
-						SubObject(std::uint32_t id, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, std::uint32_t containingNodeId, std::string defaultValue = "", std::string actualValue = "", std::uint32_t highlimit = 0, std::uint32_t lowLimit = 0,  std::string uniqueIdRef = "", std::string name = "");
+						SubObject(std::uint32_t id, ObjectType objectType,  std::string name, std::uint8_t containingNode);
+						SubObject(std::uint32_t id, ObjectType objectType,  std::string name, std::uint8_t containingNode, PlkDataType dataType);
+						SubObject(std::uint32_t id, ObjectType objectType,  std::string name, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType); 	
+						SubObject(std::uint32_t id, ObjectType objectType,  std::string name, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping);
+
+						SubObject(std::uint32_t id, ObjectType objectType,  std::string name, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType, std::string defaultValue, std::string actualValue, std::uint32_t highlimit, std::uint32_t lowLimit);
+						SubObject(std::uint32_t id, ObjectType objectType,  std::string name, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping, std::string defaultValue, std::string actualValue, std::uint32_t highlimit, std::uint32_t lowLimit);
+						SubObject(std::uint32_t id, ObjectType objectType,  std::string name, std::uint8_t containingNode, std::string uniqueIdRef);
 						virtual ~SubObject();
+
+						std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>& GetContainingObject();
+
+					private:
+						std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object> containingObject;
 
 				};
 

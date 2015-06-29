@@ -110,13 +110,13 @@ Result Network::AddNode(shared_ptr<ManagingNode>& node)
 	return Result();
 }
 
-Result Network::GetControlledNode(const uint8_t nodeID, shared_ptr<ControlledNode>& node)
+Result Network::GetControlledNode(const uint8_t nodeID, shared_ptr<BaseNode>& node)
 {
 	for (auto& var : this->nodeCollection)
 	{
 		if (var.first == nodeID)
 		{
-			node = dynamic_pointer_cast<ControlledNode>(var.second);
+			node = var.second;
 			return Result();
 		}
 	}

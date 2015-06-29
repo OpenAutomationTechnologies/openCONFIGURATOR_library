@@ -193,11 +193,11 @@ Result OpenConfiguratorCore::GetControlledNode(const string networkId, const uin
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 	if (res.IsSuccessful())
 	{
-		shared_ptr<ControlledNode> nodePtr;
+		shared_ptr<BaseNode> nodePtr;
 		res = network.get()->GetControlledNode(nodeID, nodePtr);
 		if (res.IsSuccessful())
 		{
-			node = *nodePtr.get();
+			node = *dynamic_pointer_cast<ControlledNode>(nodePtr).get();
 		}
 	}
 	return res;
@@ -357,72 +357,132 @@ Result OpenConfiguratorCore::GetBuildConfigurations(const string networkId, vect
 	return res;
 }
 
-Result OpenConfiguratorCore::CreateObject(const string networkId, const uint8_t nodeId, uint32_t objectId, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, string defaultValue, string actualValue, uint32_t highlimit, uint32_t lowLimit, string uniqueIdRef, string name)
+Result OpenConfiguratorCore::CreateObject(const string networkId, const uint8_t nodeId, uint32_t objectId, ObjectType objectType, string name, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping, string defaultValue, string actualValue, uint32_t highLimit, uint32_t lowLimit)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 	if (res.IsSuccessful())
 	{
-		shared_ptr<ControlledNode> node;
+		shared_ptr<BaseNode> node;
 		res = network.get()->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
-			shared_ptr<Object> ptr(new Object(objectId, type, accessType, objectType, pdoMapping, nodeId, defaultValue, actualValue, highlimit, lowLimit, uniqueIdRef, name));
+			shared_ptr<Object> ptr(new Object(objectId, objectType, name, nodeId, dataType, accessType, pdoMapping, defaultValue, actualValue, highLimit, lowLimit));
 			res = node.get()->AddObject(ptr);
 		}
 	}
 	return res;
 }
 
-Result OpenConfiguratorCore::CreateDomainObject(const string networkId, const uint8_t nodeId, uint32_t objectId, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, const string uniqueIdRef, const string name)
+Result OpenConfiguratorCore::CreateDomainObject(const string networkId, const uint8_t nodeId, uint32_t objectId, ObjectType objectType, string name, string uniqueIdRef)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 	if (res.IsSuccessful())
 	{
-		shared_ptr<ControlledNode> node;
+		shared_ptr<BaseNode> node;
 		res = network.get()->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
-			shared_ptr<Object> ptr(new Object(objectId, type, accessType, objectType, pdoMapping, nodeId, uniqueIdRef, name));
-			res = node.get()->AddObject(ptr);
+			shared_ptr<Parameter> param;
+			res = node->GetApplicationProcess()->GetParameter(uniqueIdRef, param);
+			if (res.IsSuccessful())
+			{
+				shared_ptr<Object> ptr(new Object(objectId, objectType, name, nodeId, uniqueIdRef));
+				ptr->SetComplexDataType(param);
+				res = node.get()->AddObject(ptr);
+			}
 		}
 	}
 	return res;
 }
 
-Result OpenConfiguratorCore::CreateSubObject(const string networkId, const uint8_t nodeId, uint32_t objectId, uint32_t subObjectId, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, string defaultValue, string actualValue, uint32_t highlimit, uint32_t lowLimit, string uniqueIdRef, string name)
+Result OpenConfiguratorCore::CreateSubObject(const string networkId, const uint8_t nodeId, uint32_t objectId, uint32_t subObjectId,  ObjectType objectType, string name, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping, string defaultValue, string actualValue, uint32_t highlimit, uint32_t lowLimit)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 	if (res.IsSuccessful())
 	{
-		shared_ptr<ControlledNode> node;
+		shared_ptr<BaseNode> node;
 		res = network.get()->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
-			shared_ptr<SubObject> ptr(new SubObject(subObjectId, type, accessType, objectType, pdoMapping, nodeId, defaultValue, actualValue, highlimit, lowLimit, uniqueIdRef, name));
+			shared_ptr<SubObject> ptr(new SubObject(subObjectId, objectType, name, nodeId, dataType, accessType, pdoMapping, defaultValue, actualValue, highlimit, lowLimit));
 			res = node.get()->AddSubObject(objectId, ptr);
 		}
 	}
 	return res;
 }
 
-Result OpenConfiguratorCore::CreateDomainSubObject(const string networkId, const uint8_t nodeId, uint32_t objectId, uint32_t subObjectId, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, const string uniqueIdRef, const string name)
+Result OpenConfiguratorCore::CreateDomainSubObject(const string networkId, const uint8_t nodeId, uint32_t objectId, uint32_t subObjectId,  ObjectType objectType, string name, string uniqueIdRef)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 	if (res.IsSuccessful())
 	{
-		shared_ptr<ControlledNode> node;
+		shared_ptr<BaseNode> node;
 		res = network.get()->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
-			shared_ptr<SubObject> ptr(new SubObject(subObjectId, type, accessType, objectType, pdoMapping, nodeId, uniqueIdRef, name));
-			res = node.get()->AddSubObject(objectId, ptr);
+			shared_ptr<Parameter> param;
+			res = node->GetApplicationProcess()->GetParameter(uniqueIdRef, param);
+			if (res.IsSuccessful())
+			{
+				shared_ptr<SubObject> ptr(new SubObject(subObjectId, objectType, name, nodeId, uniqueIdRef));
+				ptr->SetComplexDataType(param);
+				res = node.get()->AddSubObject(objectId, ptr);
+			}
 		}
 	}
 	return res;
+}
+
+Result OpenConfiguratorCore::GetObjectSize(const string networkId, const uint8_t nodeId, uint32_t objectId, uint32_t& size)
+{
+	shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (res.IsSuccessful())
+	{
+		shared_ptr<BaseNode> node;
+		res = network.get()->GetControlledNode(nodeId, node);
+		if (res.IsSuccessful())
+		{
+			shared_ptr<Object> object;
+			res = node->GetObject(objectId, object);
+			if (res.IsSuccessful())
+			{
+				size = object->GetBitSize() / 8;
+			}
+		}
+	}
+	return res;
+}
+
+Result OpenConfiguratorCore::GetSubObjectSize(const string networkId, const uint8_t nodeId, uint32_t objectId, uint32_t subObjectId, uint32_t& size)
+{
+	shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (res.IsSuccessful())
+	{
+		shared_ptr<BaseNode> node;
+		res = network.get()->GetControlledNode(nodeId, node);
+		if (res.IsSuccessful())
+		{
+			shared_ptr<Object> object;
+			res = node->GetObject(objectId, object);
+			if (res.IsSuccessful())
+			{
+				shared_ptr<SubObject> subObject;
+				res = object->GetSubObject(subObjectId, subObject);
+				if (res.IsSuccessful())
+				{
+					size = subObject->GetBitSize() / 8;
+				}
+			}
+		}
+	}
+	return res;
+
 }
 
 Result OpenConfiguratorCore::GetFeatureDefaultValue(CNFeatureEnum feature, string& value)
@@ -447,7 +507,7 @@ Result OpenConfiguratorCore::SetFeatureValue(const string networkId, const uint8
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 	if (res.IsSuccessful())
 	{
-		shared_ptr<ControlledNode> node;
+		shared_ptr<BaseNode> node;
 		res = network.get()->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
@@ -464,7 +524,7 @@ Result OpenConfiguratorCore::SetFeatureValue(const string networkId, const uint8
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 	if (res.IsSuccessful())
 	{
-		shared_ptr<ControlledNode> node;
+		shared_ptr<BaseNode> node;
 		res = network.get()->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
@@ -480,7 +540,7 @@ Result OpenConfiguratorCore::SetFeatureValue(const string networkId, const uint8
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 	if (res.IsSuccessful())
 	{
-		shared_ptr<ControlledNode> node;
+		shared_ptr<BaseNode> node;
 		res = network.get()->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
@@ -496,7 +556,7 @@ Result OpenConfiguratorCore::CreateParameter(const string networkId, const uint8
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 	if (res.IsSuccessful())
 	{
-		shared_ptr<ControlledNode> node;
+		shared_ptr<BaseNode> node;
 		res = network.get()->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
@@ -513,7 +573,7 @@ Result OpenConfiguratorCore::CreateParameter(const string networkId, const uint8
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 	if (res.IsSuccessful())
 	{
-		shared_ptr<ControlledNode> node;
+		shared_ptr<BaseNode> node;
 		res = network.get()->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
@@ -530,7 +590,7 @@ Result OpenConfiguratorCore::CreateStructDatatype(const string networkId, const 
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 	if (res.IsSuccessful())
 	{
-		shared_ptr<ControlledNode> node;
+		shared_ptr<BaseNode> node;
 		res = network.get()->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
@@ -563,7 +623,7 @@ Result OpenConfiguratorCore::CreateVarDeclaration(const string networkId, const 
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 	if (res.IsSuccessful())
 	{
-		shared_ptr<ControlledNode> node;
+		shared_ptr<BaseNode> node;
 		res = network.get()->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
@@ -595,7 +655,7 @@ Result OpenConfiguratorCore::CreateArrayDatatype(const string networkId, const u
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 	if (res.IsSuccessful())
 	{
-		shared_ptr<ControlledNode> node;
+		shared_ptr<BaseNode> node;
 		res = network.get()->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
@@ -628,7 +688,7 @@ Result OpenConfiguratorCore::CreateEnumDatatype(const string networkId, const ui
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 	if (res.IsSuccessful())
 	{
-		shared_ptr<ControlledNode> node;
+		shared_ptr<BaseNode> node;
 		res = network.get()->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
@@ -660,7 +720,7 @@ Result OpenConfiguratorCore::CreateEnumValue(const string networkId, const uint8
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 	if (res.IsSuccessful())
 	{
-		shared_ptr<ControlledNode> node;
+		shared_ptr<BaseNode> node;
 		res = network.get()->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
@@ -691,7 +751,7 @@ Result OpenConfiguratorCore::GetDatatypeSize(const string networkId, const uint8
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 	if (res.IsSuccessful())
 	{
-		shared_ptr<ControlledNode> node;
+		shared_ptr<BaseNode> node;
 		res = network->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{

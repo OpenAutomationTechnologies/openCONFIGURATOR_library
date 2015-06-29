@@ -45,7 +45,7 @@ Parameter::Parameter(string uniqueID, ParameterAccess parameterAccess, string un
 
 Parameter::Parameter(string uniqueID, ParameterAccess parameterAccess, IEC_Datatype dataType) :
 	uniqueID(uniqueID),
-	uniqueIDRef(uniqueIDRef),
+	uniqueIDRef(),
 	complexDataType(),
 	parameterAccess(parameterAccess),
 	dataType(dataType)

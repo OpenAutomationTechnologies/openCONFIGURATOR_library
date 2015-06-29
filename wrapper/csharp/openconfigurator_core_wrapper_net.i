@@ -69,6 +69,7 @@
 %ignore GetNetworkManagement();
 %ignore PlkFeatureDefaultValues;
 %ignore PlkFeatureStrings;
+%ignore SetComplexDataType(std::shared_ptr<Parameter>& parameter);
 
 %apply unsigned int& OUTPUT { unsigned int& size };
 
@@ -126,7 +127,7 @@
 %include "PlkConfiguration.h"
 
 %include "IBaseObject.h"
-%template(intBaseObject) IndustrialNetwork::Fieldbus::IBaseObject<unsigned int, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType>;
+%template(intBaseObject) IndustrialNetwork::Fieldbus::IBaseObject<unsigned int, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ObjectType>;
 %include "BaseObject.h"
 
 %include "Object.h"

@@ -44,15 +44,28 @@ namespace IndustrialNetwork
 		{
 			namespace ObjectDictionary
 			{
-				Object::Object(uint32_t id, PlkDataType type, uint32_t containingNodeId) : BaseObject(id, type, containingNodeId),
+				Object::Object(uint32_t id, ObjectType objectType, string name, uint8_t containingNode) : BaseObject(id, objectType, name, containingNode),
+					subIndexCollection(unordered_map<uint32_t, shared_ptr<SubObject>>())
+				{}
+				Object::Object(uint32_t id, ObjectType objectType, string name, uint8_t containingNode, PlkDataType dataType): BaseObject(id, objectType, name, containingNode, dataType),
+					subIndexCollection(unordered_map<uint32_t, shared_ptr<SubObject>>())
+				{}
+				Object::Object(uint32_t id, ObjectType objectType, string name, uint8_t containingNode, PlkDataType dataType, AccessType accessType) : BaseObject(id, objectType, name, containingNode, dataType, accessType),
+					subIndexCollection(unordered_map<uint32_t, shared_ptr<SubObject>>())
+				{}
+				Object::Object(uint32_t id, ObjectType objectType, string name, uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping) : BaseObject(id, objectType, name, containingNode, dataType, accessType, pdoMapping),
 					subIndexCollection(unordered_map<uint32_t, shared_ptr<SubObject>>())
 				{}
 
-				Object::Object(uint32_t id, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, uint32_t containingNodeId, string defaultValue, string actualValue, uint32_t highlimit, uint32_t lowLimit, string uniqueIdRef, string name): BaseObject(id, type, accessType, objectType, pdoMapping, containingNodeId, defaultValue, actualValue, highlimit, lowLimit, uniqueIdRef, name),
+				Object::Object(uint32_t id, ObjectType objectType, string name, uint8_t containingNode, PlkDataType dataType, AccessType accessType, string defaultValue, string actualValue, uint32_t highLimit, uint32_t lowLimit) : BaseObject(id, objectType, name, containingNode, dataType, accessType, defaultValue, actualValue, highLimit, lowLimit),
 					subIndexCollection(unordered_map<uint32_t, shared_ptr<SubObject>>())
 				{}
 
-				Object::Object(uint32_t id, ObjectType objectType, PDOMapping pdoMapping, uint32_t containingNodeId, string uniqueIdRef, string name) : BaseObject(id, objectType, pdoMapping, containingNodeId, uniqueIdRef, name),
+				Object::Object(uint32_t id, ObjectType objectType, string name, uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping, string defaultValue, string actualValue, uint32_t highLimit, uint32_t lowLimit) : BaseObject(id, objectType, name, containingNode, dataType, accessType, pdoMapping, defaultValue, actualValue, highLimit, lowLimit),
+					subIndexCollection(unordered_map<uint32_t, shared_ptr<SubObject>>())
+				{}
+
+				Object::Object(uint32_t id, ObjectType objectType, string name, uint8_t containingNode, string uniqueIdRef) : BaseObject(id, objectType, name, containingNode, uniqueIdRef),
 					subIndexCollection(unordered_map<uint32_t, shared_ptr<SubObject>>())
 				{}
 
@@ -68,7 +81,7 @@ namespace IndustrialNetwork
 						formatter
 						% this->GetId()
 						% ref.get()->GetId()
-						% this->GetContainingNode();
+						% (uint32_t) this->GetContainingNode();
 						LOG_FATAL() << formatter.str();
 						return Result(ErrorCode::SUBOBJECT_EXISTS, formatter.str());
 					}
@@ -79,7 +92,7 @@ namespace IndustrialNetwork
 					formatter
 					% this->GetId()
 					% ref.get()->GetId()
-					% this->GetContainingNode();
+					% (uint32_t) this->GetContainingNode();
 					LOG_INFO() << formatter.str();
 					return Result();
 				}
@@ -93,8 +106,8 @@ namespace IndustrialNetwork
 						boost::format formatter(kMsgNonExistingSubObject);
 						formatter
 						% this->GetId()
-						% ref.get()->GetId()
-						% this->GetContainingNode();
+						% subObjectId
+						% (uint32_t) this->GetContainingNode();
 						LOG_FATAL() << formatter.str();
 						return Result(ErrorCode::SUBOBJECT_DOES_NOT_EXIST, formatter.str());
 					}

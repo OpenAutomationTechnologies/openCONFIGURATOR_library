@@ -42,12 +42,35 @@ namespace IndustrialNetwork
 		{
 			namespace ObjectDictionary
 			{
-
-				SubObject::SubObject(uint32_t id, PlkDataType type, uint32_t containingNodeId) : BaseObject(id, type, containingNodeId)
+				SubObject::SubObject(uint32_t id, ObjectType objectType,  string name, uint8_t containingNode) : BaseObject(id, objectType, name, containingNode),
+					containingObject()
+				{}
+				SubObject::SubObject(uint32_t id, ObjectType objectType,  string name, uint8_t containingNode, PlkDataType dataType): BaseObject(id, objectType, name, containingNode, dataType),
+					containingObject()
+				{}
+				SubObject::SubObject(uint32_t id, ObjectType objectType,  string name, uint8_t containingNode, PlkDataType dataType, AccessType accessType) : BaseObject(id, objectType, name, containingNode, dataType, accessType),
+					containingObject()
+				{}
+				SubObject::SubObject(uint32_t id, ObjectType objectType,  string name, uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping) : BaseObject(id, objectType, name, containingNode, dataType, accessType, pdoMapping), 
+					containingObject()
 				{}
 
-				SubObject::SubObject(uint32_t id, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, uint32_t containingNodeId, string defaultValue, string actualValue, uint32_t highlimit, uint32_t lowLimit, string uniqueIdRef, string name): BaseObject(id, type, accessType, objectType, pdoMapping, containingNodeId, defaultValue, actualValue, highlimit, lowLimit, uniqueIdRef, name)
+				SubObject::SubObject(uint32_t id, ObjectType objectType,  string name, uint8_t containingNode, PlkDataType dataType, AccessType accessType, string defaultValue = "", string actualValue = "", uint32_t highLimit = 0, uint32_t lowLimit = 0) : BaseObject(id, objectType, name, containingNode, dataType, accessType, defaultValue, actualValue, highLimit, lowLimit),
+					containingObject()
 				{}
+
+				SubObject::SubObject(uint32_t id, ObjectType objectType,  string name, uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping, string defaultValue = "", string actualValue = "", uint32_t highLimit = 0, uint32_t lowLimit = 0) : BaseObject(id, objectType, name, containingNode, dataType, accessType, pdoMapping, defaultValue, actualValue, highLimit, lowLimit),
+					containingObject()
+				{}
+
+				SubObject::SubObject(uint32_t id, ObjectType objectType,  string name, uint8_t containingNode, string uniqueIdRef) : BaseObject(id, objectType, name, containingNode, uniqueIdRef),
+					containingObject()
+				{}
+
+				shared_ptr<Object>& SubObject::GetContainingObject()
+				{
+					return this->containingObject;
+				}
 
 				SubObject::~SubObject()
 				{}

@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <unordered_map>
 #include <memory>
 #include <boost/format.hpp>
+
 #include "Result.h"
 #include "BaseObject.h"
 #include "SubObject.h"
@@ -57,9 +58,14 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						Object(std::uint32_t id, PlkDataType type, std::uint32_t containingNodeId);
-						Object(std::uint32_t id, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, std::uint32_t containingNodeId, std::string defaultValue = "", std::string actualValue = "", std::uint32_t highlimit = 0, std::uint32_t lowLimit = 0, std::string uniqueIdRef = "", std::string name = "");
-						Object(std::uint32_t id, ObjectType objectType, PDOMapping pdoMapping, std::uint32_t containingNodeId, std::string uniqueIdRef, std::string name = "");
+						Object(std::uint32_t id, ObjectType objectType,  std::string name, std::uint8_t containingNode);
+						Object(std::uint32_t id, ObjectType objectType,  std::string name, std::uint8_t containingNode, PlkDataType dataType);
+						Object(std::uint32_t id, ObjectType objectType,  std::string name, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType); 	
+						Object(std::uint32_t id, ObjectType objectType,  std::string name, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping);
+
+						Object(std::uint32_t id, ObjectType objectType,  std::string name, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType, std::string defaultValue, std::string actualValue, std::uint32_t highlimit, std::uint32_t lowLimit);
+						Object(std::uint32_t id, ObjectType objectType,  std::string name, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping, std::string defaultValue, std::string actualValue, std::uint32_t highlimit, std::uint32_t lowLimit);
+						Object(std::uint32_t id, ObjectType objectType,  std::string name, std::uint8_t containingNode, std::string uniqueIdRef);
 
 						virtual ~Object();
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddSubobject(std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::SubObject>& ref);

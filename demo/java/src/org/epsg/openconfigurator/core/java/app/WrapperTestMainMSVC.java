@@ -150,9 +150,12 @@ public class WrapperTestMainMSVC {
 
 		core.CreateConfiguration("test", "none");
 
-		core.CreateObject("test", (short) 1, 0x1600, PlkDataType.UNSIGNED16, AccessType.RW, ObjectType.RECORD, PDOMapping.RPDO, "1000", "Mapping Object");
-        core.CreateSubObject("test", (short) 1, 0x1600, 0, PlkDataType.UNSIGNED8, AccessType.RW, ObjectType.DEFTYPE, PDOMapping.NO, "0", "NrOfEntries");
-		core.CreateDomainSubObject("test", (short) 1, 0x1600, 0x01, PlkDataType.Domain, AccessType.RO, ObjectType.DEFSTRUCT, PDOMapping.RPDO, "UID_DOM_Index2100_Sub1E", "Domainobject");
+		core.CreateObject("test", (short) 1, 0x1600, ObjectType.RECORD,"objectName", PlkDataType.UNSIGNED16,
+				AccessType.RW, PDOMapping.RPDO, "1000",
+				"Mapping Object");
+		core.CreateSubObject("test", (short) 1, 0x1600, 0, ObjectType.DEFTYPE,"objectName",
+				PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.NO, "0", "NrOfEntries");
+		core.CreateDomainSubObject("test", (short) 1, 0x1600, 0x01, ObjectType.DEFSTRUCT, "Domain",	"UID_DOM_Index2100_Sub1E");
 
         Result test = core.CreateParameter("test", (short) 1, "UID_DOM_Index2100_Sub1E", ParameterAccess.read);
         System.out.println(test.IsSuccessful());

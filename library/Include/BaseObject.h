@@ -29,14 +29,16 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
-#if !defined BASE_INDEX_H
-#define BASE_INDEX_H
+#if !defined BASE_OBJECT_H
+#define BASE_OBJECT_H
 
 #include <cstdint>
 #include <vector>
 #include <string>
+
 #include <boost/optional.hpp>
 #include <boost/lexical_cast.hpp>
+
 #include "Constants.h"
 #include "IBaseObject.h"
 #include "ObjectType.h"
@@ -45,6 +47,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "PlkDataType.h"
 #include "Utilities.h"
 #include "Result.h"
+#include "Parameter.h"
 
 namespace IndustrialNetwork
 {
@@ -58,14 +61,19 @@ namespace IndustrialNetwork
 				\brief Represents the common basis for all POWERLINK objects.
 				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
-				class DLLEXPORT BaseObject : public IndustrialNetwork::Fieldbus::IBaseObject<std::uint32_t, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType>
+				class DLLEXPORT BaseObject : public IndustrialNetwork::Fieldbus::IBaseObject<std::uint32_t, ObjectType>
 				{
 
 					public:
 						BaseObject();
-						BaseObject(std::uint32_t id, PlkDataType type, std::uint32_t containingNodeId);
-						BaseObject(std::uint32_t id, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping,  std::uint32_t containingNodeId, std::string defaultValue, std::string actualValue, std::uint32_t highlimit, std::uint32_t lowLimit, std::string uniqueIdRef, std::string name);
-						BaseObject(std::uint32_t id, ObjectType objectType, PDOMapping pdoMapping,  std::uint32_t containingNodeId, std::string uniqueIdRef, std::string name);
+						BaseObject(std::uint32_t id, ObjectType objectType, std::string name, std::uint8_t containingNode);
+						BaseObject(std::uint32_t id, ObjectType objectType, std::string name, std::uint8_t containingNode, PlkDataType dataType);
+						BaseObject(std::uint32_t id, ObjectType objectType, std::string name, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType);
+						BaseObject(std::uint32_t id, ObjectType objectType, std::string name, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping);
+
+						BaseObject(std::uint32_t id, ObjectType objectType, std::string name, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType, std::string defaultValue, std::string actualValue, std::uint32_t highlimit, std::uint32_t lowLimit);
+						BaseObject(std::uint32_t id, ObjectType objectType, std::string name, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping, std::string defaultValue, std::string actualValue, std::uint32_t highlimit, std::uint32_t lowLimit);
+						BaseObject(std::uint32_t id, ObjectType objectType, std::string name, std::uint8_t containingNode, std::string uniqueIdRef);
 
 						bool operator== (const BaseObject& BaseObject) const;
 						virtual ~BaseObject();
@@ -83,13 +91,10 @@ namespace IndustrialNetwork
 						void SetUniqueIdRef(boost::optional<std::string>& uniqueIdRef);
 
 						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType GetAccessType() const;
-						void SetAccessType(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType accessType);
 
-						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ObjectType GetObjectType() const;
-						void SetObjectType(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ObjectType objectType);
+						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType GetDataType() const;
 
 						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping GetPDOMapping() const;
-						void SetPDOMapping(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping pdoMapping);
 
 						template<typename T>
 						T GetTypedActualValue();
@@ -97,8 +102,12 @@ namespace IndustrialNetwork
 						template<typename T>
 						T GetTypedDefaultValue();
 
-						std::uint32_t GetContainingNode();
+						std::uint8_t GetContainingNode();
 						void SetTypedObjectValues(std::string defaultValue = "", std::string actualValue = "");
+
+						void SetComplexDataType(std::shared_ptr<Parameter>& parameter);
+
+						std::uint32_t GetBitSize();
 
 					private:
 
@@ -106,10 +115,11 @@ namespace IndustrialNetwork
 						boost::optional<std::uint32_t> highLimit;
 						boost::optional<std::uint32_t> lowLimit;
 						boost::optional<std::string> uniqueIdRef;
-						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType accessType;
-						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ObjectType objectType;
-						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping pdoMapping;
-						std::uint32_t containingNodeId;
+						std::shared_ptr<Parameter> complexDataType;
+						boost::optional<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType> accessType;
+						boost::optional<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType> dataType;
+						boost::optional<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping> pdoMapping;
+						std::uint8_t containingNode;
 				};
 
 			}

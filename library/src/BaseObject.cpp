@@ -48,45 +48,100 @@ namespace IndustrialNetwork
 					highLimit(),
 					lowLimit(),
 					uniqueIdRef(),
+					complexDataType(),
 					accessType(),
-					objectType(),
+					dataType(),
 					pdoMapping(),
-					containingNodeId()
+					containingNode()
 				{}
 
-				BaseObject::BaseObject(uint32_t id,  PlkDataType type, uint32_t containingNodeId) : IBaseObject(id, type),
+				BaseObject::BaseObject(uint32_t id, ObjectType objectType, string name, uint8_t containingNode) : IBaseObject(id, objectType, name),
 					forceToCDC(false),
-					highLimit(),
-					lowLimit(),
-					uniqueIdRef(),
-					accessType(),
-					objectType(),
-					pdoMapping(),
-					containingNodeId(containingNodeId)
+					highLimit(boost::optional<uint32_t>()),
+					lowLimit(boost::optional<uint32_t>()),
+					uniqueIdRef(boost::optional<string>()),
+					complexDataType(),
+					accessType(boost::optional<AccessType>()),
+					dataType(boost::optional<PlkDataType>()),
+					pdoMapping(boost::optional<PDOMapping>()),
+					containingNode(containingNode)
 				{}
 
-				BaseObject::BaseObject(uint32_t id, PlkDataType type, AccessType accessType, ObjectType objectType, PDOMapping pdoMapping, uint32_t containingNodeId, string defaultValue, string actualValue, uint32_t highlimit, uint32_t lowLimit,  string uniqueIdRef, string name) : IBaseObject(id, type, name),
+				BaseObject::BaseObject(uint32_t id, ObjectType objectType, string name, uint8_t containingNode, PlkDataType dataType) : IBaseObject(id, objectType, name),
+					forceToCDC(false),
+					highLimit(boost::optional<uint32_t>()),
+					lowLimit(boost::optional<uint32_t>()),
+					uniqueIdRef(boost::optional<string>()),
+					complexDataType(),
+					accessType(boost::optional<AccessType>()),
+					dataType(dataType),
+					pdoMapping(boost::optional<PDOMapping>()),
+					containingNode(containingNode)
+				{}
+
+				BaseObject::BaseObject(uint32_t id, ObjectType objectType, string name, uint8_t containingNode, PlkDataType dataType, AccessType accessType) : IBaseObject(id, objectType, name),
+					forceToCDC(false),
+					highLimit(boost::optional<uint32_t>()),
+					lowLimit(boost::optional<uint32_t>()),
+					uniqueIdRef(boost::optional<string>()),
+					complexDataType(),
+					accessType(accessType),
+					dataType(dataType),
+					pdoMapping(boost::optional<PDOMapping>()),
+					containingNode(containingNode)
+				{}
+
+				BaseObject::BaseObject(uint32_t id, ObjectType objectType, string name, uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping) : IBaseObject(id, objectType, name),
+					forceToCDC(false),
+					highLimit(boost::optional<uint32_t>()),
+					lowLimit(boost::optional<uint32_t>()),
+					uniqueIdRef(boost::optional<string>()),
+					complexDataType(),
+					accessType(accessType),
+					dataType(dataType),
+					pdoMapping(pdoMapping),
+					containingNode(containingNode)
+				{}
+
+				BaseObject::BaseObject(uint32_t id, ObjectType objectType, string name, uint8_t containingNode, PlkDataType dataType, AccessType accessType, string defaultValue, string actualValue, uint32_t highlimit, uint32_t lowLimit) : IBaseObject(id, objectType, name),
 					forceToCDC(false),
 					highLimit(highlimit),
 					lowLimit(lowLimit),
-					uniqueIdRef(uniqueIdRef),
+					uniqueIdRef(boost::optional<string>()),
+					complexDataType(),
 					accessType(accessType),
-					objectType(objectType),
-					pdoMapping(pdoMapping),
-					containingNodeId(containingNodeId)
+					dataType(dataType),
+					pdoMapping(boost::optional<PDOMapping>()),
+					containingNode(containingNode)
 				{
 					SetTypedObjectValues(defaultValue, actualValue);
 				}
 
-				BaseObject::BaseObject(uint32_t id, ObjectType objectType, PDOMapping pdoMapping, uint32_t containingNodeId, string uniqueIdRef, string name) : IBaseObject(id, PlkDataType::Domain, name),
+				BaseObject::BaseObject(uint32_t id, ObjectType objectType, string name, uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping, string defaultValue, string actualValue, uint32_t highlimit, uint32_t lowLimit) : IBaseObject(id, objectType, name),
 					forceToCDC(false),
-					highLimit(),
-					lowLimit(),
-					uniqueIdRef(uniqueIdRef),
-					accessType(),
-					objectType(objectType),
+					highLimit(highlimit),
+					lowLimit(lowLimit),
+					uniqueIdRef(boost::optional<string>()),
+					complexDataType(),
+					accessType(accessType),
+					dataType(dataType),
 					pdoMapping(pdoMapping),
-					containingNodeId(containingNodeId)
+					containingNode(containingNode)
+				{
+					SetTypedObjectValues(defaultValue, actualValue);
+				}
+
+
+				BaseObject::BaseObject(uint32_t id, ObjectType objectType, string name, uint8_t containingNode, string uniqueIdRef) : IBaseObject(id, objectType, name),
+					forceToCDC(false),
+					highLimit(boost::optional<uint32_t>()),
+					lowLimit(boost::optional<uint32_t>()),
+					uniqueIdRef(uniqueIdRef),
+					complexDataType(),
+					accessType(boost::optional<AccessType>()),
+					dataType(PlkDataType::Domain),
+					pdoMapping(boost::optional<PDOMapping>()),
+					containingNode(containingNode)
 				{}
 
 				BaseObject::~BaseObject()
@@ -139,32 +194,17 @@ namespace IndustrialNetwork
 
 				AccessType BaseObject::GetAccessType() const
 				{
-					return accessType;
+					return accessType.get();
 				}
 
-				void BaseObject::SetAccessType(AccessType accessType)
+				PlkDataType BaseObject::GetDataType() const
 				{
-					this->accessType = accessType;
-				}
-
-				ObjectType BaseObject::GetObjectType() const
-				{
-					return objectType;
-				}
-
-				void BaseObject::SetObjectType(ObjectType objectType)
-				{
-					this->objectType = objectType;
+					return dataType.get();
 				}
 
 				PDOMapping BaseObject::GetPDOMapping() const
 				{
-					return pdoMapping;
-				}
-
-				void BaseObject::SetPDOMapping(PDOMapping pdoMapping)
-				{
-					this->pdoMapping = pdoMapping;
+					return pdoMapping.get();
 				}
 
 				template<typename T>
@@ -546,9 +586,82 @@ namespace IndustrialNetwork
 					}
 				}
 
-				uint32_t BaseObject::GetContainingNode()
+				uint8_t BaseObject::GetContainingNode()
 				{
-					return this->containingNodeId;
+					return this->containingNode;
+				}
+
+				uint32_t BaseObject::GetBitSize()
+				{
+					switch (this->GetDataType())
+					{
+						case PlkDataType::BOOLEAN:
+							return 1;
+						case PlkDataType::UNSIGNED8:
+						case PlkDataType::INTEGER8:
+							return 8;
+						case PlkDataType::UNSIGNED16:
+						case PlkDataType::INTEGER16:
+							return 16;
+						case PlkDataType::INTEGER32:
+						case PlkDataType::UNSIGNED32:
+						case PlkDataType::REAL32:
+						case PlkDataType::IP_ADDRESS:
+							return 32;
+						case PlkDataType::VISIBLE_STRING:
+						case PlkDataType::OCTET_STRING:
+							{
+								if (this->GetTypedActualValue<string>().size() != 0)
+									return 8 * (uint32_t) this->GetTypedActualValue<string>().size();
+								else if (this->GetTypedDefaultValue<string>().size() != 0)
+									return 8 * (uint32_t) this->GetTypedDefaultValue<string>().size();
+								break;
+							}
+						case PlkDataType::UNICODE_STRING:
+							{
+								if (this->GetTypedActualValue<string>().size() != 0)
+									return 16 * (uint32_t) this->GetTypedActualValue<string>().size();
+								else if (this->GetTypedDefaultValue<string>().size() != 0)
+									return 16 * (uint32_t) this->GetTypedDefaultValue<string>().size();
+								break;
+							}
+						case PlkDataType::Domain:
+							{
+								if (this->GetUniqueIdRef().is_initialized())
+								{
+									return this->complexDataType->GetBitSize();
+								}
+								break;
+							}
+						case PlkDataType::INTEGER24:
+						case PlkDataType::UNSIGNED24:
+							return 24;
+						case PlkDataType::INTEGER40:
+						case PlkDataType::UNSIGNED40:
+							return 40;
+						case PlkDataType::INTEGER48:
+						case PlkDataType::UNSIGNED48:
+						case PlkDataType::TIME_OF_DAY:
+						case PlkDataType::TIME_DIFF:
+						case PlkDataType::MAC_ADDRESS:
+							return 48;
+						case PlkDataType::INTEGER56:
+						case PlkDataType::UNSIGNED56:
+							return 56;
+						case PlkDataType::INTEGER64:
+						case PlkDataType::UNSIGNED64:
+						case PlkDataType::REAL64:
+						case PlkDataType::NETTIME:
+							return 64;
+						default:
+							break;
+					}
+					return 0;
+				}
+
+				void BaseObject::SetComplexDataType(shared_ptr<Parameter>& parameter)
+				{
+					this->complexDataType = parameter;
 				}
 			}
 		}
