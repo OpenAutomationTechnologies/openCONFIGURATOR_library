@@ -151,13 +151,13 @@ Result OpenConfiguratorCore::CreateNode(const string networkId, const uint8_t no
 		//Add active managing node to network
 		if (nodeID == 240)
 		{
-			shared_ptr<ManagingNode> node = make_shared<ManagingNode>(true, nodeName);
+			shared_ptr<ManagingNode> node = make_shared<ManagingNode>(true, nodeID, nodeName);
 			res = network.get()->AddNode(node);
 		}
 		//Add redundant managing node to network
 		else if (nodeID >= 241 && nodeID <= 250)
 		{
-			shared_ptr<ManagingNode> node = make_shared<ManagingNode>(false, nodeName);
+			shared_ptr<ManagingNode> node = make_shared<ManagingNode>(false, nodeID, nodeName);
 			res = network.get()->AddNode(node);
 		}
 		//Add normal controlled node to network

@@ -63,6 +63,9 @@ namespace openconfigurator_core_net_app
 
             // Add two nodes to the network
             core.CreateNode("test", 240, "MN");
+            core.CreateNode("test", 241, "Redundant_MN");
+            core.CreateNode("test", 242, "Redundant_MN");
+            core.CreateNode("test", 242, "already_existing");
             core.CreateNode("test", 1, "CN");
 
             // Get a node object from the library

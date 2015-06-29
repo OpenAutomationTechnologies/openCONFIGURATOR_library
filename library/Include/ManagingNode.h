@@ -51,7 +51,7 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						ManagingNode(bool activ, const std::string nodeName = "");
+						ManagingNode(bool activ, std::uint8_t nodeID = 240, const std::string nodeName = "");
 						virtual ~ManagingNode();
 
 						bool AddNodeAssignement(NodeAssignment);
