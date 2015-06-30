@@ -66,9 +66,9 @@ namespace IndustrialNetwork
 				{
 					for (auto& feature : this->cnFeatureList)
 					{
-						if (feature.get()->GetFeatureId() == featureid)
+						if (feature->GetFeatureId() == featureid)
 						{
-							return feature.get()->GetActualValue<I>(actualValue);
+							return feature->GetActualValue<I>(actualValue);
 						}
 					}
 					return Result(ErrorCode::FEATURE_VALUE_NOT_FOUND);
@@ -82,9 +82,9 @@ namespace IndustrialNetwork
 					//alter existing feature
 					for (auto& feature : this->cnFeatureList)
 					{
-						if (feature.get()->GetFeatureId() == featureId)
+						if (feature->GetFeatureId() == featureId)
 						{
-							return feature.get()->SetActualValue<I>(actualValue);
+							return feature->SetActualValue<I>(actualValue);
 						}
 					}
 
@@ -92,9 +92,9 @@ namespace IndustrialNetwork
 					this->cnFeatureList.push_back(make_shared<CnFeature>(featureId));
 					for (auto& feature : this->cnFeatureList)
 					{
-						if (feature.get()->GetFeatureId() == featureId)
+						if (feature->GetFeatureId() == featureId)
 						{
-							return feature.get()->SetActualValue<I>(actualValue);
+							return feature->SetActualValue<I>(actualValue);
 						}
 					}
 					return Result();
@@ -119,9 +119,9 @@ namespace IndustrialNetwork
 				{
 					for (auto& feature : this->mnFeatureList)
 					{
-						if (feature.get()->GetFeatureId() == featureid)
+						if (feature->GetFeatureId() == featureid)
 						{
-							return feature.get()->GetActualValue<I>(actualValue);
+							return feature->GetActualValue<I>(actualValue);
 						}
 					}
 					return Result(ErrorCode::FEATURE_VALUE_NOT_FOUND);
@@ -137,9 +137,9 @@ namespace IndustrialNetwork
 					//alter existing feature
 					for (auto& feature : this->mnFeatureList)
 					{
-						if (feature.get()->GetFeatureId() == featureId)
+						if (feature->GetFeatureId() == featureId)
 						{
-							return feature.get()->SetActualValue<I>(actualValue);
+							return feature->SetActualValue<I>(actualValue);
 						}
 					}
 
@@ -147,9 +147,9 @@ namespace IndustrialNetwork
 					this->mnFeatureList.push_back(make_shared<MnFeature>(featureId));
 					for (auto& feature : this->mnFeatureList)
 					{
-						if (feature.get()->GetFeatureId() == featureId)
+						if (feature->GetFeatureId() == featureId)
 						{
-							return feature.get()->SetActualValue<I>(actualValue);
+							return feature->SetActualValue<I>(actualValue);
 						}
 					}
 					return Result();
@@ -175,9 +175,9 @@ namespace IndustrialNetwork
 				{
 					for (auto& feature : this->generalFeatureList)
 					{
-						if (feature.get()->GetFeatureId() == featureid)
+						if (feature->GetFeatureId() == featureid)
 						{
-							return feature.get()->GetActualValue<I>(actualValue);
+							return feature->GetActualValue<I>(actualValue);
 						}
 					}
 					return Result(ErrorCode::FEATURE_VALUE_NOT_FOUND);
@@ -193,9 +193,9 @@ namespace IndustrialNetwork
 					//alter existing feature
 					for (auto& feature : this->generalFeatureList)
 					{
-						if (feature.get()->GetFeatureId() == featureId)
+						if (feature->GetFeatureId() == featureId)
 						{
-							return feature.get()->SetActualValue<I>(actualValue);
+							return feature->SetActualValue<I>(actualValue);
 						}
 					}
 
@@ -203,9 +203,9 @@ namespace IndustrialNetwork
 					this->generalFeatureList.push_back(make_shared<GeneralFeature>(featureId));
 					for (auto& feature : this->generalFeatureList)
 					{
-						if (feature.get()->GetFeatureId() == featureId)
+						if (feature->GetFeatureId() == featureId)
 						{
-							return feature.get()->SetActualValue<I>(actualValue);
+							return feature->SetActualValue<I>(actualValue);
 						}
 					}
 					return Result();
@@ -220,9 +220,9 @@ namespace IndustrialNetwork
 					//alter existing feature
 					for (auto& feature : this->cnFeatureList)
 					{
-						if (feature.get()->GetFeatureId() == featureId)
+						if (feature->GetFeatureId() == featureId)
 						{
-							return feature.get()->SetTypedValues("", actualValue);
+							return feature->SetTypedValues("", actualValue);
 						}
 					}
 
@@ -230,9 +230,9 @@ namespace IndustrialNetwork
 					this->cnFeatureList.push_back(make_shared<CnFeature>(featureId));
 					for (auto& feature : this->cnFeatureList)
 					{
-						if (feature.get()->GetFeatureId() == featureId)
+						if (feature->GetFeatureId() == featureId)
 						{
-							return feature.get()->SetTypedValues("", actualValue);
+							return feature->SetTypedValues("", actualValue);
 						}
 					}
 					return Result();
@@ -242,9 +242,9 @@ namespace IndustrialNetwork
 					//alter existing feature
 					for (auto& feature : this->mnFeatureList)
 					{
-						if (feature.get()->GetFeatureId() == featureId)
+						if (feature->GetFeatureId() == featureId)
 						{
-							return feature.get()->SetTypedValues("", actualValue);
+							return feature->SetTypedValues("", actualValue);
 						}
 					}
 
@@ -252,9 +252,9 @@ namespace IndustrialNetwork
 					this->mnFeatureList.push_back(make_shared<MnFeature>(featureId));
 					for (auto& feature : this->mnFeatureList)
 					{
-						if (feature.get()->GetFeatureId() == featureId)
+						if (feature->GetFeatureId() == featureId)
 						{
-							return feature.get()->SetTypedValues("", actualValue);
+							return feature->SetTypedValues("", actualValue);
 						}
 					}
 					return Result();
@@ -264,9 +264,9 @@ namespace IndustrialNetwork
 					//alter existing feature
 					for (auto& feature : this->generalFeatureList)
 					{
-						if (feature.get()->GetFeatureId() == featureId)
+						if (feature->GetFeatureId() == featureId)
 						{
-							return feature.get()->SetTypedValues("", actualValue);
+							return feature->SetTypedValues("", actualValue);
 						}
 					}
 
@@ -274,9 +274,9 @@ namespace IndustrialNetwork
 					this->generalFeatureList.push_back(make_shared<GeneralFeature>(featureId));
 					for (auto& feature : this->generalFeatureList)
 					{
-						if (feature.get()->GetFeatureId() == featureId)
+						if (feature->GetFeatureId() == featureId)
 						{
-							return feature.get()->SetTypedValues("", actualValue);
+							return feature->SetTypedValues("", actualValue);
 						}
 					}
 					return Result();

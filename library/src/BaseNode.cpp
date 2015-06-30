@@ -102,23 +102,23 @@ shared_ptr<ApplicationProcess>& BaseNode::GetApplicationProcess()
 
 Result BaseNode::AddObject(shared_ptr<Object>& objRef)
 {
-	if (this->objectDictionary.find(objRef.get()->GetId()) != this->objectDictionary.end())
+	if (this->objectDictionary.find(objRef->GetId()) != this->objectDictionary.end())
 	{
 		//Object already exists
 		boost::format formatter(kMsgExistingObject);
 		formatter
-		% objRef.get()->GetId()
+		% objRef->GetId()
 		% (uint32_t) nodeId;
 		LOG_FATAL() << formatter.str();
 		return Result(ErrorCode::OBJECT_EXISTS, formatter.str());
 	}
 
-	this->objectDictionary.insert(pair<uint32_t, shared_ptr<Object>>(objRef.get()->GetId(), objRef));
+	this->objectDictionary.insert(pair<uint32_t, shared_ptr<Object>>(objRef->GetId(), objRef));
 
 	//Log object creation
 	boost::format formatter(kMsgObjectCreated);
 	formatter
-	% objRef.get()->GetId()
+	% objRef->GetId()
 	% (uint32_t) nodeId;
 	LOG_INFO() << formatter.str();
 	return Result();
@@ -131,13 +131,13 @@ Result BaseNode::AddSubObject(uint32_t objectId, shared_ptr<SubObject>& objRef)
 		//Object does not exist
 		boost::format formatter(kMsgNonExistingObject);
 		formatter
-		% objRef.get()->GetId()
+		% objRef->GetId()
 		% (uint32_t) nodeId;
 		LOG_FATAL() << formatter.str();
 		return Result(ErrorCode::OBJECT_DOES_NOT_EXIST, formatter.str());
 	}
 
-	return this->objectDictionary.find(objectId)->second.get()->AddSubobject(objRef);
+	return this->objectDictionary.find(objectId)->second->AddSubobject(objRef);
 }
 
 Result BaseNode::ForceObject(uint32_t objectId, bool force, string actualValue)
@@ -154,7 +154,7 @@ Result BaseNode::ForceObject(uint32_t objectId, bool force, string actualValue)
 		return Result(ErrorCode::OBJECT_DOES_NOT_EXIST, formatter.str());
 	}
 
-	iter->second.get()->SetForceToCDC(force);
+	iter->second->SetForceToCDC(force);
 	//Log info forced object
 	boost::format formatter(kMsgForceObject);
 	formatter
@@ -164,7 +164,7 @@ Result BaseNode::ForceObject(uint32_t objectId, bool force, string actualValue)
 
 	if (!actualValue.empty())
 	{
-		iter->second.get()->SetTypedObjectValues("", actualValue);
+		iter->second->SetTypedObjectValues("", actualValue);
 		//Log info actual value set
 		boost::format formatter(kMsgSetObjectActualValue);
 		formatter
@@ -193,7 +193,7 @@ Result BaseNode::SetObjectActualValue(uint32_t objectId, string actualValue)
 	}
 	if (!actualValue.empty())
 	{
-		iter->second.get()->SetTypedObjectValues("", actualValue);
+		iter->second->SetTypedObjectValues("", actualValue);
 		//Log info actual value set
 		boost::format formatter(kMsgSetObjectActualValue);
 		formatter
@@ -247,10 +247,10 @@ Result BaseNode::ForceSubObject(uint32_t objectId, uint32_t subObjectId, bool fo
 	}
 
 	shared_ptr<SubObject> subObject;
-	Result res = iter->second.get()->GetSubObject(subObjectId, subObject);
+	Result res = iter->second->GetSubObject(subObjectId, subObject);
 	if (res.IsSuccessful())
 	{
-		subObject.get()->SetForceToCDC(force);
+		subObject->SetForceToCDC(force);
 		//Log info forced subobject
 		boost::format formatter(kMsgForceSubObject);
 		formatter
@@ -262,7 +262,7 @@ Result BaseNode::ForceSubObject(uint32_t objectId, uint32_t subObjectId, bool fo
 
 		if (!actualValue.empty())
 		{
-			iter->second.get()->SetTypedObjectValues("", actualValue);
+			iter->second->SetTypedObjectValues("", actualValue);
 			//Log info actual value set
 			boost::format formatter(kMsgSetSubObjectActualValue);
 			formatter
@@ -300,12 +300,12 @@ Result BaseNode::SetSubObjectActualValue(uint32_t objectId, uint32_t subObjectId
 	}
 
 	shared_ptr<SubObject> subObject;
-	Result res = iter->second.get()->GetSubObject(subObjectId, subObject);
+	Result res = iter->second->GetSubObject(subObjectId, subObject);
 	if (res.IsSuccessful())
 	{
 		if (!actualValue.empty())
 		{
-			iter->second.get()->SetTypedObjectValues("", actualValue);
+			iter->second->SetTypedObjectValues("", actualValue);
 			//Log info actual value set
 			boost::format formatter(kMsgSetSubObjectActualValue);
 			formatter
@@ -341,5 +341,5 @@ Result BaseNode::GetSubObject(uint32_t objectId, uint32_t subObjectId, shared_pt
 		LOG_FATAL() << formatter.str();
 		return Result(ErrorCode::OBJECT_DOES_NOT_EXIST, formatter.str());
 	}
-	return iter->second.get()->GetSubObject(subObjectId, subObjRef);
+	return iter->second->GetSubObject(subObjectId, subObjRef);
 }

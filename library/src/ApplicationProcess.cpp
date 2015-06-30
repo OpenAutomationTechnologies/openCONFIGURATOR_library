@@ -51,7 +51,7 @@ Result ApplicationProcess::AddParameter(shared_ptr<Parameter>& param)
 {
 	for (auto& currentParam : this->parameterList)
 	{
-		if (currentParam.get()->GetUniqueID() == param.get()->GetUniqueID())
+		if (currentParam->GetUniqueID() == param->GetUniqueID())
 			return Result(ErrorCode::PARAMETER_NOT_FOUND);
 	}
 	this->parameterList.push_back(param);
@@ -62,7 +62,7 @@ Result ApplicationProcess::GetParameter(string uniqueId, shared_ptr<Parameter>& 
 {
 	for (auto& param : this->parameterList)
 	{
-		if (param.get()->GetUniqueID() == uniqueId)
+		if (param->GetUniqueID() == uniqueId)
 		{
 			returnParam = param;
 			return Result();
@@ -75,9 +75,9 @@ Result ApplicationProcess::GetComplexDataType(string uniqueId, shared_ptr<Comple
 {
 	for (auto& param : this->parameterList)
 	{
-		if (param.get()->GetUniqueID() == uniqueId)
+		if (param->GetUniqueID() == uniqueId)
 		{
-			returnType = param.get()->GetComplexDataType();
+			returnType = param->GetComplexDataType();
 			return Result();
 		}
 	}
@@ -88,9 +88,9 @@ uint32_t ApplicationProcess::GetBitSize(std::string uniqueId)
 {
 	for (auto& param : this->parameterList)
 	{
-		if (param.get()->GetUniqueID() == uniqueId)
+		if (param->GetUniqueID() == uniqueId)
 		{
-			return param.get()->GetComplexDataType().get()->GetBitSize();
+			return param->GetComplexDataType()->GetBitSize();
 		}
 	}
 	return 0;

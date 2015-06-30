@@ -100,7 +100,7 @@ Result OpenConfiguratorCore::SetCycleTime(const string networkId, uint32_t cycle
 	shared_ptr<Network> networkPtr;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
 	if (res.IsSuccessful())
-		networkPtr.get()->SetCycleTime(cycleTime);
+		networkPtr->SetCycleTime(cycleTime);
 	return res;
 }
 
@@ -109,7 +109,7 @@ Result OpenConfiguratorCore::SetAsyncMtu(const string networkId, uint32_t asyncM
 	shared_ptr<Network> networkPtr;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
 	if (res.IsSuccessful())
-		networkPtr.get()->SetAsyncMTU(asyncMtu);
+		networkPtr->SetAsyncMTU(asyncMtu);
 	return res;
 
 }
@@ -119,7 +119,7 @@ Result OpenConfiguratorCore::SetMultiplexedCycleLength(const string networkId, u
 	shared_ptr<Network> networkPtr;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
 	if (res.IsSuccessful())
-		networkPtr.get()->SetMultiplexedCycleLength(multiplexedCycleLength);
+		networkPtr->SetMultiplexedCycleLength(multiplexedCycleLength);
 	return res;
 }
 
@@ -152,19 +152,19 @@ Result OpenConfiguratorCore::CreateNode(const string networkId, const uint8_t no
 		if (nodeID == 240)
 		{
 			shared_ptr<ManagingNode> node = make_shared<ManagingNode>(true, nodeID, nodeName);
-			res = network.get()->AddNode(node);
+			res = network->AddNode(node);
 		}
 		//Add redundant managing node to network
 		else if (nodeID >= 241 && nodeID <= 250)
 		{
 			shared_ptr<ManagingNode> node = make_shared<ManagingNode>(false, nodeID, nodeName);
-			res = network.get()->AddNode(node);
+			res = network->AddNode(node);
 		}
 		//Add normal controlled node to network
 		else if (nodeID >= 1 && nodeID <= 239)
 		{
 			shared_ptr<ControlledNode> node = make_shared<ControlledNode>(nodeID, nodeName);
-			res = network.get()->AddNode(node);
+			res = network->AddNode(node);
 		}
 		else
 		{
@@ -182,7 +182,7 @@ Result OpenConfiguratorCore::RemoveNode(const string networkId, const uint8_t no
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 	if (res.IsSuccessful())
 	{
-		return network.get()->RemoveNode(nodeID);
+		return network->RemoveNode(nodeID);
 	}
 	return res;
 }
@@ -194,7 +194,7 @@ Result OpenConfiguratorCore::GetControlledNode(const string networkId, const uin
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> nodePtr;
-		res = network.get()->GetControlledNode(nodeID, nodePtr);
+		res = network->GetControlledNode(nodeID, nodePtr);
 		if (res.IsSuccessful())
 		{
 			node = *dynamic_pointer_cast<ControlledNode>(nodePtr).get();
@@ -210,7 +210,7 @@ Result OpenConfiguratorCore::GetManagingNode(const string networkId, ManagingNod
 	if (res.IsSuccessful())
 	{
 		shared_ptr<ManagingNode> nodePtr;
-		res = network.get()->GetManagingNode(nodePtr);
+		res = network->GetManagingNode(nodePtr);
 		if (res.IsSuccessful())
 		{
 			node = *nodePtr.get();
@@ -225,7 +225,7 @@ Result OpenConfiguratorCore::GetAvailableNodeIds(const string networkId, vector<
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 	if (res.IsSuccessful())
 	{
-		return network.get()->GetAvailableNodeIds(nodeIdCollection);
+		return network->GetAvailableNodeIds(nodeIdCollection);
 	}
 	return res;
 }
@@ -236,7 +236,7 @@ Result OpenConfiguratorCore::CreateConfiguration(const string networkId, const s
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 	if (res.IsSuccessful())
 	{
-		return network.get()->AddConfiguration(configID);
+		return network->AddConfiguration(configID);
 	}
 	return res;
 }
@@ -247,7 +247,7 @@ Result OpenConfiguratorCore::RemoveConfiguration(const string networkId, const s
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 	if (res.IsSuccessful())
 	{
-		return network.get()->RemoveConfiguration(configID);
+		return network->RemoveConfiguration(configID);
 	}
 	return res;
 }
@@ -258,7 +258,7 @@ Result OpenConfiguratorCore::ReplaceConfigurationName(const string networkId, co
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 	if (res.IsSuccessful())
 	{
-		return network.get()->ReplaceConfigurationName(oldConfigId, newConfigId);
+		return network->ReplaceConfigurationName(oldConfigId, newConfigId);
 	}
 	return res;
 }
@@ -270,7 +270,7 @@ Result OpenConfiguratorCore::CreateConfigurationSetting(const string networkId, 
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 	if (res.IsSuccessful())
 	{
-		return network.get()->AddConfigurationSetting(configID, make_shared<BuildConfigurationSetting>(name, value));
+		return network->AddConfigurationSetting(configID, make_shared<BuildConfigurationSetting>(name, value));
 	}
 	return res;
 }
@@ -281,7 +281,7 @@ Result OpenConfiguratorCore::RemoveConfigurationSetting(const string networkId, 
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 	if (res.IsSuccessful())
 	{
-		return network.get()->RemoveConfigurationSetting(configID, name);
+		return network->RemoveConfigurationSetting(configID, name);
 	}
 	return res;
 }
@@ -292,7 +292,7 @@ Result OpenConfiguratorCore::SetConfigurationSettingEnabled(const string network
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 	if (res.IsSuccessful())
 	{
-		return network.get()->SetConfigurationSettingEnabled(configID, settingID, enabled);
+		return network->SetConfigurationSettingEnabled(configID, settingID, enabled);
 	}
 	return res;
 }
@@ -304,7 +304,7 @@ Result OpenConfiguratorCore::GetConfigurationSettings(const string networkId, co
 	if (res.IsSuccessful())
 	{
 		vector<shared_ptr<BuildConfigurationSetting>> configurationSettings;
-		res = network.get()->GetConfigurationSettings(configID, configurationSettings);
+		res = network->GetConfigurationSettings(configID, configurationSettings);
 		if (res.IsSuccessful())
 		{
 			for (auto& config : configurationSettings)
@@ -322,7 +322,7 @@ Result OpenConfiguratorCore::GetActiveConfiguration(const string networkId, stri
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 	if (res.IsSuccessful())
 	{
-		activeConfiguration = network.get()->GetActiveConfiguration();
+		activeConfiguration = network->GetActiveConfiguration();
 	}
 	return res;
 }
@@ -333,7 +333,7 @@ Result OpenConfiguratorCore::SetActiveConfiguration(const string networkId, cons
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 	if (res.IsSuccessful())
 	{
-		network.get()->SetActiveConfiguration(configID);
+		network->SetActiveConfiguration(configID);
 	}
 	return res;
 }
@@ -345,7 +345,7 @@ Result OpenConfiguratorCore::GetBuildConfigurations(const string networkId, vect
 	if (res.IsSuccessful())
 	{
 		vector<shared_ptr<PlkConfiguration>> configurations;
-		res = network.get()->GetBuildConfigurations(configurations);
+		res = network->GetBuildConfigurations(configurations);
 		if (res.IsSuccessful())
 		{
 			for (auto& config : configurations)
@@ -364,11 +364,11 @@ Result OpenConfiguratorCore::CreateObject(const string networkId, const uint8_t 
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network.get()->GetControlledNode(nodeId, node);
+		res = network->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
 			shared_ptr<Object> ptr(new Object(objectId, objectType, name, nodeId, dataType, accessType, pdoMapping, defaultValue, actualValue, highLimit, lowLimit));
-			res = node.get()->AddObject(ptr);
+			res = node->AddObject(ptr);
 		}
 	}
 	return res;
@@ -381,7 +381,7 @@ Result OpenConfiguratorCore::CreateDomainObject(const string networkId, const ui
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network.get()->GetControlledNode(nodeId, node);
+		res = network->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
 			shared_ptr<Parameter> param;
@@ -390,7 +390,7 @@ Result OpenConfiguratorCore::CreateDomainObject(const string networkId, const ui
 			{
 				shared_ptr<Object> ptr(new Object(objectId, objectType, name, nodeId, uniqueIdRef));
 				ptr->SetComplexDataType(param);
-				res = node.get()->AddObject(ptr);
+				res = node->AddObject(ptr);
 			}
 		}
 	}
@@ -404,11 +404,11 @@ Result OpenConfiguratorCore::CreateSubObject(const string networkId, const uint8
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network.get()->GetControlledNode(nodeId, node);
+		res = network->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
 			shared_ptr<SubObject> ptr(new SubObject(subObjectId, objectType, name, nodeId, dataType, accessType, pdoMapping, defaultValue, actualValue, highlimit, lowLimit));
-			res = node.get()->AddSubObject(objectId, ptr);
+			res = node->AddSubObject(objectId, ptr);
 		}
 	}
 	return res;
@@ -421,7 +421,7 @@ Result OpenConfiguratorCore::CreateDomainSubObject(const string networkId, const
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network.get()->GetControlledNode(nodeId, node);
+		res = network->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
 			shared_ptr<Parameter> param;
@@ -430,7 +430,7 @@ Result OpenConfiguratorCore::CreateDomainSubObject(const string networkId, const
 			{
 				shared_ptr<SubObject> ptr(new SubObject(subObjectId, objectType, name, nodeId, uniqueIdRef));
 				ptr->SetComplexDataType(param);
-				res = node.get()->AddSubObject(objectId, ptr);
+				res = node->AddSubObject(objectId, ptr);
 			}
 		}
 	}
@@ -444,7 +444,7 @@ Result OpenConfiguratorCore::GetObjectSize(const string networkId, const uint8_t
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network.get()->GetControlledNode(nodeId, node);
+		res = network->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
 			shared_ptr<Object> object;
@@ -465,7 +465,7 @@ Result OpenConfiguratorCore::GetSubObjectSize(const string networkId, const uint
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network.get()->GetControlledNode(nodeId, node);
+		res = network->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
 			shared_ptr<Object> object;
@@ -508,10 +508,10 @@ Result OpenConfiguratorCore::SetFeatureValue(const string networkId, const uint8
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network.get()->GetControlledNode(nodeId, node);
+		res = network->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
-			node.get()->GetNetworkManagement().get()->SetFeatureUntypedActualValue(feature, value);
+			node->GetNetworkManagement()->SetFeatureUntypedActualValue(feature, value);
 		}
 
 	}
@@ -525,10 +525,10 @@ Result OpenConfiguratorCore::SetFeatureValue(const string networkId, const uint8
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network.get()->GetControlledNode(nodeId, node);
+		res = network->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
-			node.get()->GetNetworkManagement().get()->SetFeatureUntypedActualValue(feature, value);
+			node->GetNetworkManagement()->SetFeatureUntypedActualValue(feature, value);
 		}
 	}
 	return res;
@@ -541,10 +541,10 @@ Result OpenConfiguratorCore::SetFeatureValue(const string networkId, const uint8
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network.get()->GetControlledNode(nodeId, node);
+		res = network->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
-			node.get()->GetNetworkManagement().get()->SetFeatureUntypedActualValue(feature, value);
+			node->GetNetworkManagement()->SetFeatureUntypedActualValue(feature, value);
 		}
 	}
 	return res;
@@ -557,11 +557,11 @@ Result OpenConfiguratorCore::CreateParameter(const string networkId, const uint8
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network.get()->GetControlledNode(nodeId, node);
+		res = network->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
 			auto ptr = make_shared<Parameter>(uniqueID, access, dataType);
-			return node.get()->GetApplicationProcess().get()->AddParameter(ptr);
+			return node->GetApplicationProcess()->AddParameter(ptr);
 		}
 	}
 	return res;
@@ -574,11 +574,11 @@ Result OpenConfiguratorCore::CreateParameter(const string networkId, const uint8
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network.get()->GetControlledNode(nodeId, node);
+		res = network->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
 			auto ptr = make_shared<Parameter>(uniqueID, access);
-			return node.get()->GetApplicationProcess().get()->AddParameter(ptr);
+			return node->GetApplicationProcess()->AddParameter(ptr);
 		}
 	}
 	return res;
@@ -591,17 +591,17 @@ Result OpenConfiguratorCore::CreateStructDatatype(const string networkId, const 
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network.get()->GetControlledNode(nodeId, node);
+		res = network->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
-			auto& parameterList = node.get()->GetApplicationProcess().get()->GetParameterList();
+			auto& parameterList = node->GetApplicationProcess()->GetParameterList();
 			for (auto& param : parameterList)
 			{
-				if (param.get()->GetUniqueID() == parameterUniqueId)
+				if (param->GetUniqueID() == parameterUniqueId)
 				{
 					auto ptr = shared_ptr<ComplexDataType>(new StructDataType(uniqueId, name));
-					param.get()->SetComplexDataType(ptr);
-					param.get()->SetUniqueIDRef(uniqueId);
+					param->SetComplexDataType(ptr);
+					param->SetUniqueIDRef(uniqueId);
 					return Result();
 				}
 			}
@@ -624,13 +624,13 @@ Result OpenConfiguratorCore::CreateVarDeclaration(const string networkId, const 
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network.get()->GetControlledNode(nodeId, node);
+		res = network->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
-			auto& parameterList = node.get()->GetApplicationProcess().get()->GetParameterList();
+			auto& parameterList = node->GetApplicationProcess()->GetParameterList();
 			for (auto& param : parameterList)
 			{
-				if (param.get()->GetUniqueIDRef() == structUniqueId)
+				if (param->GetUniqueIDRef() == structUniqueId)
 				{
 					auto ptr = dynamic_pointer_cast<StructDataType>(param->GetComplexDataType());
 					auto sharedVar = make_shared<VarDeclaration>(uniqueId, name, datatype, size, initialValue);
@@ -656,16 +656,16 @@ Result OpenConfiguratorCore::CreateArrayDatatype(const string networkId, const u
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network.get()->GetControlledNode(nodeId, node);
+		res = network->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
-			auto& parameterList = node.get()->GetApplicationProcess().get()->GetParameterList();
+			auto& parameterList = node->GetApplicationProcess()->GetParameterList();
 			for (auto& param : parameterList)
 			{
-				if (param.get()->GetUniqueID() == parameterUniqueId)
+				if (param->GetUniqueID() == parameterUniqueId)
 				{
 					auto ptr = shared_ptr<ComplexDataType>(new ArrayDataType(uniqueId, name, lowerLimit, upperLimit, dataType));
-					param.get()->SetComplexDataType(ptr);
+					param->SetComplexDataType(ptr);
 					param->SetUniqueIDRef(uniqueId);
 					return Result();
 				}
@@ -689,16 +689,16 @@ Result OpenConfiguratorCore::CreateEnumDatatype(const string networkId, const ui
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network.get()->GetControlledNode(nodeId, node);
+		res = network->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
-			auto& parameterList = node.get()->GetApplicationProcess().get()->GetParameterList();
+			auto& parameterList = node->GetApplicationProcess()->GetParameterList();
 			for (auto& param : parameterList)
 			{
-				if (param.get()->GetUniqueIDRef() == uniqueId)
+				if (param->GetUniqueIDRef() == uniqueId)
 				{
 					auto ptr = shared_ptr<ComplexDataType>(new EnumDataType(uniqueId, name, dataType, size));
-					param.get()->SetComplexDataType(ptr);
+					param->SetComplexDataType(ptr);
 					return Result();
 				}
 			}
@@ -721,13 +721,13 @@ Result OpenConfiguratorCore::CreateEnumValue(const string networkId, const uint8
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network.get()->GetControlledNode(nodeId, node);
+		res = network->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
-			auto& parameterList = node.get()->GetApplicationProcess().get()->GetParameterList();
+			auto& parameterList = node->GetApplicationProcess()->GetParameterList();
 			for (auto& param : parameterList)
 			{
-				if (param.get()->GetUniqueIDRef() == uniqueId)
+				if (param->GetUniqueIDRef() == uniqueId)
 				{
 					auto ptr = dynamic_pointer_cast<EnumDataType>(param->GetComplexDataType());
 					return ptr->AddEnumValue(name, value);

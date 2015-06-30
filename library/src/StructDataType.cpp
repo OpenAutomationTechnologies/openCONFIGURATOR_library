@@ -49,7 +49,7 @@ uint32_t StructDataType::GetBitSize()
 	uint32_t bitSize = 0;
 	for (auto& var : this->varDeclarationList)
 	{
-		bitSize += var.get()->GetBitSize();
+		bitSize += var->GetBitSize();
 	}
 	return bitSize;
 }
@@ -58,7 +58,7 @@ Result StructDataType::AddVarDeclaration(std::shared_ptr<VarDeclaration>& varDec
 {
 	for (auto& var : this->varDeclarationList)
 	{
-		if (var.get()->GetUniqueID() == varDecl.get()->GetUniqueID())
+		if (var->GetUniqueID() == varDecl->GetUniqueID())
 		{
 			return Result(ErrorCode::VAR_DECLARATION_EXISTS);
 		}

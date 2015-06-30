@@ -74,24 +74,24 @@ namespace IndustrialNetwork
 
 				Result Object::AddSubobject(shared_ptr<SubObject>& ref)
 				{
-					if (this->subIndexCollection.find(ref.get()->GetId()) != this->subIndexCollection.end())
+					if (this->subIndexCollection.find(ref->GetId()) != this->subIndexCollection.end())
 					{
 						//SubObject does already exists
 						boost::format formatter(kMsgExistingSubObject);
 						formatter
 						% this->GetId()
-						% ref.get()->GetId()
+						% ref->GetId()
 						% (uint32_t) this->GetContainingNode();
 						LOG_FATAL() << formatter.str();
 						return Result(ErrorCode::SUBOBJECT_EXISTS, formatter.str());
 					}
 
-					this->subIndexCollection.insert(pair<uint32_t, shared_ptr<SubObject>>(ref.get()->GetId(), ref));
+					this->subIndexCollection.insert(pair<uint32_t, shared_ptr<SubObject>>(ref->GetId(), ref));
 					//Log info subobject created
 					boost::format formatter(kMsgSubObjectCreated);
 					formatter
 					% this->GetId()
-					% ref.get()->GetId()
+					% ref->GetId()
 					% (uint32_t) this->GetContainingNode();
 					LOG_INFO() << formatter.str();
 					return Result();
