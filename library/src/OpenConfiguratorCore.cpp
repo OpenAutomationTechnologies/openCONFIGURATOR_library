@@ -775,3 +775,57 @@ Result OpenConfiguratorCore::GetDatatypeSize(const string networkId, const uint8
 	}
 	return res;
 }
+
+Result OpenConfiguratorCore::CreateDynamicChannel(const string networkId, const uint8_t nodeId, PlkDataType dataType, AccessType accessType, uint32_t startIndex, uint32_t endIndex, uint32_t maxNumber, uint32_t addressOffset, uint8_t bitAlignment)
+{
+	shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (res.IsSuccessful())
+	{
+		shared_ptr<BaseNode> node;
+		res = network->GetControlledNode(nodeId, node);
+		if (res.IsSuccessful())
+		{
+			auto mnPtr = dynamic_pointer_cast<ManagingNode>(node);
+			auto ptr = shared_ptr<DynamicChannel>(new DynamicChannel(dataType, accessType, startIndex, endIndex, maxNumber, addressOffset, bitAlignment));
+
+			mnPtr->AddDynamicChannel(ptr);
+			return Result();
+		}
+	}
+	return res;
+}
+
+Result OpenConfiguratorCore::SetActiveManagingNode(const string networkId, const uint8_t nodeID)
+{
+	//Only redundant managing nodes can be set active
+	if (nodeID > 240 && nodeID < 253)
+	{
+		shared_ptr<Network> network;
+		Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+		if (res.IsSuccessful())
+		{
+			shared_ptr<BaseNode> node;
+			res = network->GetControlledNode(nodeID, node);
+			if (res.IsSuccessful())
+			{
+				auto mnPtr = dynamic_pointer_cast<ManagingNode>(node);
+				shared_ptr<ManagingNode> oldMN;
+				res = network->GetManagingNode(oldMN);
+				if (res.IsSuccessful())
+				{
+					//Change nodeId from old RMN and set active to false
+					oldMN->SetActive(false);
+					oldMN->SetNodeIdentifier(nodeID);
+
+					//Set new master managing node
+					mnPtr->SetActive(true);
+					mnPtr->SetNodeIdentifier(240);
+				}
+
+			}
+		}
+		return res;
+	}
+	return Result(ErrorCode::NODEID_INVALID);
+}

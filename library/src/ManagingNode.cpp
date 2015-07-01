@@ -33,9 +33,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
+using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 
 ManagingNode::ManagingNode(bool active, std::uint8_t nodeID, const string nodeName) : BaseNode(nodeID, nodeName),
-	active(active)
+	active(active),
+	dynamicChannelList(vector<shared_ptr<DynamicChannel>>())
 {}
 
 ManagingNode::~ManagingNode()
@@ -105,4 +107,22 @@ bool ManagingNode::GetActive()
 void ManagingNode::SetActive(bool active)
 {
 	this->active = active;
+}
+
+void ManagingNode::AddDynamicChannel(std::shared_ptr<DynamicChannel>& channelRef)
+{
+	this->dynamicChannelList.push_back(channelRef);
+}
+
+bool ManagingNode::GetDynamicChannel(PlkDataType dataType, std::shared_ptr<DynamicChannel>& retChannel)
+{
+	for (auto& channel : this->dynamicChannelList)
+	{
+		if (channel->GetDataType() == dataType)
+		{
+			retChannel = channel;
+			return true;
+		}
+	}
+	return false;
 }

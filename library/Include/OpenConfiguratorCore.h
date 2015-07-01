@@ -50,6 +50,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "StructDataType.h"
 #include "ArrayDataType.h"
 #include "EnumDataType.h"
+#include "DynamicChannel.h"
 
 namespace IndustrialNetwork
 {
@@ -146,6 +147,9 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateEnumDatatype(const std::string networkId, const std::uint8_t nodeId, const std::string parameterUniqueId, const std::string uniqueID, const std::string name, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType, std::uint32_t size = 0);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateEnumValue(const std::string networkId, const std::uint8_t nodeId, const std::string parameterUniqueId, const std::string name, const std::string value);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetDatatypeSize(const std::string networkId, const std::uint8_t nodeId, const std::string dataTypeUniqueId, std::uint32_t& size);
+						//Dynamic Channel API
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateDynamicChannel(const std::string networkId, const std::uint8_t nodeId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType accessType, std::uint32_t startIndex, std::uint32_t endIndex, std::uint32_t maxNumber, std::uint32_t addressOffset, std::uint8_t bitAlignment = 0);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetActiveManagingNode(const std::string networkId, const std::uint8_t nodeID);
 
 					private:
 						//singleton

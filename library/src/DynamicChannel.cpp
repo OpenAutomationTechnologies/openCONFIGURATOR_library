@@ -31,18 +31,50 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "DynamicChannel.h"
 
+using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
+using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 
-DynamicChannel::DynamicChannel() :
-	dataType(),
-	accessType(),
-	startIndex(),
-	endIndex(),
-	maxNumber(),
-	addressOffset(),	
-	bitAlignment()
+DynamicChannel::DynamicChannel(PlkDataType dataType, AccessType accessType, uint32_t startIndex, uint32_t endIndex, uint32_t maxNumber, uint32_t addressOffset, uint8_t bitAlignment) :
+	dataType(dataType),
+	accessType(accessType),
+	startIndex(startIndex),
+	endIndex(endIndex),
+	maxNumber(maxNumber),
+	addressOffset(addressOffset),
+	bitAlignment((bitAlignment == 0) ? boost::optional<uint8_t>() : boost::optional<uint8_t>(bitAlignment))
 {}
 
 
 DynamicChannel::~DynamicChannel()
 {}
+
+PlkDataType DynamicChannel::GetDataType()
+{
+	return this->dataType;
+}
+
+AccessType DynamicChannel::GetAccessType()
+{
+	return this->accessType;
+}
+
+uint32_t DynamicChannel::GetStartIndex()
+{
+	return this->startIndex;
+}
+
+uint32_t DynamicChannel::GetMaxNumber()
+{
+	return this->maxNumber;
+}
+
+uint32_t DynamicChannel::GetAddressOffset()
+{
+	return this->addressOffset;
+}
+
+const boost::optional<std::uint32_t> DynamicChannel::GetBitAlignment()
+{
+	return this->bitAlignment;
+}

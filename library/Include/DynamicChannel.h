@@ -34,8 +34,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <string>
 #include <cstdint>
+
+#include <boost/optional.hpp>
+
 #include "AccessType.h"
 #include "PlkDataType.h"
+#include "Constants.h"
 
 namespace IndustrialNetwork
 {
@@ -49,22 +53,29 @@ namespace IndustrialNetwork
 				\brief
 				\author rueckerc
 				*/
-				class DynamicChannel
+				class DLLEXPORT DynamicChannel
 				{
 
 					public:
-						DynamicChannel();
+						DynamicChannel(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType accessType, std::uint32_t startIndex, std::uint32_t endIndex, std::uint32_t maxNumber, std::uint32_t addressOffset, std::uint8_t bitAlignment = 0);
 						virtual ~DynamicChannel();
 
+						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType GetDataType();
+						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType GetAccessType();
+						std::uint32_t GetStartIndex();
+						std::uint32_t GetMaxNumber();
+						std::uint32_t GetAddressOffset();
+						const boost::optional<std::uint32_t> GetBitAlignment();
+
 					private:
-						
+
 						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType;
 						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType accessType;
 						std::uint32_t startIndex;
 						std::uint32_t endIndex;
 						std::uint32_t maxNumber;
 						std::uint32_t addressOffset;
-						std::uint32_t bitAlignment;	
+						boost::optional<std::uint32_t> bitAlignment;
 
 				};
 

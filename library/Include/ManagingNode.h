@@ -32,8 +32,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined MANAGING_NODE_H
 #define MANAGING_NODE_H
 
+#include <vector>
+#include <memory>
+
 #include "BaseNode.h"
 #include "Constants.h"
+#include "DynamicChannel.h"
+#include "PlkDataType.h"
 
 namespace IndustrialNetwork
 {
@@ -61,8 +66,12 @@ namespace IndustrialNetwork
 						bool GetActive();
 						void SetActive(bool active);
 
+						void AddDynamicChannel(std::shared_ptr<DynamicChannel>& channelRef);
+						bool GetDynamicChannel(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType, std::shared_ptr<DynamicChannel>& retChannel);
+
 					private:
 						bool active;
+						std::vector<std::shared_ptr<DynamicChannel>> dynamicChannelList;
 				};
 
 			}
