@@ -128,6 +128,11 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetObjectSize(const std::string networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::uint32_t& size);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetSubObjectSize(const std::string networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::uint32_t subObjectId, std::uint32_t& size);
 
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetObjectActualValue(const std::string networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::string actualValue, bool force = false);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetSubObjectActualValue(const std::string networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::uint32_t subObjectId, std::string actualValue, bool force = false);
+						
+
+
 						//Mapping API
 
 						//Feature API

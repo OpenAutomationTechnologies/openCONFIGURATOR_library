@@ -822,10 +822,41 @@ Result OpenConfiguratorCore::SetActiveManagingNode(const string networkId, const
 					mnPtr->SetActive(true);
 					mnPtr->SetNodeIdentifier(240);
 				}
-
 			}
 		}
 		return res;
 	}
 	return Result(ErrorCode::NODEID_INVALID);
+}
+
+Result OpenConfiguratorCore::SetObjectActualValue(const string networkId, const uint8_t nodeId, uint32_t objectId, string actualValue, bool force)
+{
+	shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (res.IsSuccessful())
+	{
+		shared_ptr<BaseNode> node;
+		res = network->GetControlledNode(nodeId, node);
+		if (res.IsSuccessful())
+		{
+			res = node->ForceObject(objectId, force, actualValue);
+		}
+	}
+	return res;
+}
+
+Result OpenConfiguratorCore::SetSubObjectActualValue(const string networkId, const uint8_t nodeId, uint32_t objectId, uint32_t subObjectId, string actualValue, bool force)
+{
+	shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (res.IsSuccessful())
+	{
+		shared_ptr<BaseNode> node;
+		res = network->GetControlledNode(nodeId, node);
+		if (res.IsSuccessful())
+		{
+			res = node->ForceSubObject(objectId, subObjectId, force, actualValue);
+		}
+	}
+	return res;
 }
