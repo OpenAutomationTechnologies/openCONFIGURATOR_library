@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined IFIELDBUS_NODE_H
 #define IFIELDBUS_NODE_H
 
-#include <unordered_map>
+#include <map>
 #include <string>
 
 namespace IndustrialNetwork
@@ -58,9 +58,9 @@ namespace IndustrialNetwork
 
 				virtual void SetNodeIdentifier(T id) = 0;
 
-				virtual const std::unordered_map<K, std::shared_ptr<V>>& GetObjectDictionary() = 0;
+				virtual const std::map<K, std::shared_ptr<V>>& GetObjectDictionary() = 0;
 
-				virtual void SetObjectDictionary(const std::unordered_map<K, std::shared_ptr<V>>& od) = 0;
+				virtual void SetObjectDictionary(const std::map<K, std::shared_ptr<V>>& od) = 0;
 
 		};
 

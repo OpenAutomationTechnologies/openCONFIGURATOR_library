@@ -38,7 +38,7 @@ using namespace IndustrialNetwork::POWERLINK::Core::NetworkHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 
 ProjectManager::ProjectManager() :
-	networkList(unordered_map<string, shared_ptr<Network>>())
+	networkList(map<string, shared_ptr<Network>>())
 {}
 
 ProjectManager::~ProjectManager()
@@ -125,7 +125,7 @@ Result ProjectManager::BuildProcessImage(const string networkId, ostream& config
 	return Result(ErrorCode::UNHANDLED_EXCEPTION);
 }
 
-Result ProjectManager::GetNetworks(unordered_map<string, shared_ptr<Network>>& networkList)
+Result ProjectManager::GetNetworks(map<string, shared_ptr<Network>>& networkList)
 {
 	networkList = this->networkList;
 	return Result();
@@ -162,7 +162,7 @@ Result ProjectManager::InitLoggingConfiguration(const string& configuration)
 std::vector<std::string> ProjectManager::GetNetworkIds()
 {
 	vector<string> returnVec;
-	unordered_map<string, shared_ptr<Network>>::iterator it;
+	map<string, shared_ptr<Network>>::iterator it;
 	for (it = networkList.begin();  it != networkList.end(); ++it)
 	{
 		returnVec.push_back(it->first);

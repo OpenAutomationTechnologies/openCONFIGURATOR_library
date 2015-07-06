@@ -52,7 +52,8 @@ namespace IndustrialNetwork
 					accessType(),
 					dataType(),
 					pdoMapping(),
-					containingNode()
+					containingNode(),
+					actualValueNotDefaultValue(false)
 				{}
 
 				BaseObject::BaseObject(uint32_t id, ObjectType objectType, string name, uint8_t containingNode) : IBaseObject(id, objectType, name),
@@ -64,31 +65,8 @@ namespace IndustrialNetwork
 					accessType(boost::optional<AccessType>()),
 					dataType(boost::optional<PlkDataType>()),
 					pdoMapping(boost::optional<PDOMapping>()),
-					containingNode(containingNode)
-				{}
-
-				BaseObject::BaseObject(uint32_t id, ObjectType objectType, string name, uint8_t containingNode, PlkDataType dataType) : IBaseObject(id, objectType, name),
-					forceToCDC(false),
-					highLimit(boost::optional<uint32_t>()),
-					lowLimit(boost::optional<uint32_t>()),
-					uniqueIdRef(boost::optional<string>()),
-					complexDataType(),
-					accessType(boost::optional<AccessType>()),
-					dataType(dataType),
-					pdoMapping(boost::optional<PDOMapping>()),
-					containingNode(containingNode)
-				{}
-
-				BaseObject::BaseObject(uint32_t id, ObjectType objectType, string name, uint8_t containingNode, PlkDataType dataType, AccessType accessType) : IBaseObject(id, objectType, name),
-					forceToCDC(false),
-					highLimit(boost::optional<uint32_t>()),
-					lowLimit(boost::optional<uint32_t>()),
-					uniqueIdRef(boost::optional<string>()),
-					complexDataType(),
-					accessType(accessType),
-					dataType(dataType),
-					pdoMapping(boost::optional<PDOMapping>()),
-					containingNode(containingNode)
+					containingNode(containingNode),
+					actualValueNotDefaultValue(false)
 				{}
 
 				BaseObject::BaseObject(uint32_t id, ObjectType objectType, string name, uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping) : IBaseObject(id, objectType, name),
@@ -100,37 +78,9 @@ namespace IndustrialNetwork
 					accessType(accessType),
 					dataType(dataType),
 					pdoMapping(pdoMapping),
-					containingNode(containingNode)
+					containingNode(containingNode),
+					actualValueNotDefaultValue(false)
 				{}
-
-				BaseObject::BaseObject(uint32_t id, ObjectType objectType, string name, uint8_t containingNode, PlkDataType dataType, AccessType accessType, string defaultValue, string actualValue, uint32_t highlimit, uint32_t lowLimit) : IBaseObject(id, objectType, name),
-					forceToCDC(false),
-					highLimit(highlimit),
-					lowLimit(lowLimit),
-					uniqueIdRef(boost::optional<string>()),
-					complexDataType(),
-					accessType(accessType),
-					dataType(dataType),
-					pdoMapping(boost::optional<PDOMapping>()),
-					containingNode(containingNode)
-				{
-					SetTypedObjectValues(defaultValue, actualValue);
-				}
-
-				BaseObject::BaseObject(uint32_t id, ObjectType objectType, string name, uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping, string defaultValue, string actualValue, uint32_t highlimit, uint32_t lowLimit) : IBaseObject(id, objectType, name),
-					forceToCDC(false),
-					highLimit(highlimit),
-					lowLimit(lowLimit),
-					uniqueIdRef(boost::optional<string>()),
-					complexDataType(),
-					accessType(accessType),
-					dataType(dataType),
-					pdoMapping(pdoMapping),
-					containingNode(containingNode)
-				{
-					SetTypedObjectValues(defaultValue, actualValue);
-				}
-
 
 				BaseObject::BaseObject(uint32_t id, ObjectType objectType, string name, uint8_t containingNode, string uniqueIdRef) : IBaseObject(id, objectType, name),
 					forceToCDC(false),
@@ -141,7 +91,8 @@ namespace IndustrialNetwork
 					accessType(boost::optional<AccessType>()),
 					dataType(PlkDataType::Domain),
 					pdoMapping(boost::optional<PDOMapping>()),
-					containingNode(containingNode)
+					containingNode(containingNode),
+					actualValueNotDefaultValue(false)
 				{}
 
 				BaseObject::~BaseObject()
@@ -162,49 +113,64 @@ namespace IndustrialNetwork
 					this->forceToCDC = force;
 				}
 
-				boost::optional<uint32_t> BaseObject::GetHighLimit() const
+				const boost::optional<int64_t>& BaseObject::GetHighLimit() const
 				{
 					return highLimit;
 				}
 
-				void BaseObject::SetHighLimit(uint32_t highLimit)
+				void BaseObject::SetHighLimit(int64_t highLimit)
 				{
 					this->highLimit = highLimit;
 				}
 
-				boost::optional<uint32_t> BaseObject::GetLowLimit() const
+				const boost::optional<int64_t>& BaseObject::GetLowLimit() const
 				{
 					return lowLimit;
 				}
 
-				void BaseObject::SetLowLimit(uint32_t lowLimit)
+				void BaseObject::SetLowLimit(int64_t lowLimit)
 				{
 					this->lowLimit = lowLimit;
 				}
 
-				boost::optional<string> BaseObject::GetUniqueIdRef() const
+				const boost::optional<string>& BaseObject::GetUniqueIdRef() const
 				{
 					return uniqueIdRef;
 				}
 
-				void BaseObject::SetUniqueIdRef(boost::optional<string>& uniqueIdRef)
+				void BaseObject::SetUniqueIdRef(const string& uniqueIdRef)
 				{
 					this->uniqueIdRef = uniqueIdRef;
 				}
 
-				AccessType BaseObject::GetAccessType() const
+				const boost::optional<AccessType>& BaseObject::GetAccessType() const
 				{
-					return accessType.get();
+					return accessType;
 				}
 
-				PlkDataType BaseObject::GetDataType() const
+				const boost::optional<PlkDataType>& BaseObject::GetDataType() const
 				{
-					return dataType.get();
+					return dataType;
 				}
 
-				PDOMapping BaseObject::GetPDOMapping() const
+				const boost::optional<PDOMapping>& BaseObject::GetPDOMapping() const
 				{
-					return pdoMapping.get();
+					return pdoMapping;
+				}
+
+				void BaseObject::SetAccessType(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType accessType)
+				{
+					this->accessType = accessType;
+				}
+
+				void BaseObject::SetDataType(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType)
+				{
+					this->dataType = dataType;
+				}
+
+				void BaseObject::SetPDOMapping(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping pdoMapping)
+				{
+					this->pdoMapping = pdoMapping;
 				}
 
 				template<typename T>
@@ -218,7 +184,153 @@ namespace IndustrialNetwork
 					throw Result(ErrorCode::DATATYPE_MISMATCH);
 				}
 
-				template string BaseObject::GetTypedActualValue<string>();
+				template<> string BaseObject::GetTypedActualValue<string>()
+				{
+					if (this->GetDataType().is_initialized() && !this->GetActualValue().empty())
+					{
+						stringstream convertString;
+						switch (this->GetDataType().get())
+						{
+							case PlkDataType::BOOLEAN:
+								{
+									bool res = boost::any_cast<bool>(this->GetActualValue());
+									return (res) ? "01" : "00";
+								}
+							case PlkDataType::INTEGER8:
+								{
+									convertString << uppercase << setfill('0') << setw(2) << hex << boost::any_cast<int16_t>(this->GetActualValue());
+									return convertString.str();
+								}
+							case PlkDataType::INTEGER16:
+								{
+									convertString << uppercase << setfill('0') << setw(4) << hex << boost::any_cast<int16_t>(this->GetActualValue());
+									return convertString.str();
+								}
+							case PlkDataType::INTEGER24:
+								{
+									convertString << uppercase << setfill('0') << setw(6) << hex << boost::any_cast<int32_t>(this->GetActualValue());
+									return convertString.str();
+								}
+							case PlkDataType::INTEGER32:
+								{
+									convertString << uppercase << setfill('0') << setw(8) << hex << boost::any_cast<int32_t>(this->GetActualValue());
+									return convertString.str();
+								}
+							case PlkDataType::UNSIGNED8:
+								{
+									convertString << uppercase << setfill('0') << setw(2) << hex << boost::any_cast<uint16_t>(this->GetActualValue());
+									return convertString.str();
+								}
+							case PlkDataType::UNSIGNED16:
+								{
+									convertString << uppercase << setfill('0') << setw(4) << hex << boost::any_cast<uint16_t>(this->GetActualValue());
+									return convertString.str();
+								}
+							case PlkDataType::UNSIGNED24:
+								{
+									convertString << uppercase << setfill('0') << setw(6) << hex << boost::any_cast<uint32_t>(this->GetActualValue());
+									return convertString.str();
+								}
+							case PlkDataType::UNSIGNED32:
+								{
+									convertString << uppercase << setfill('0') << setw(8) << hex << boost::any_cast<uint32_t>(this->GetActualValue());
+									return convertString.str();
+								}
+							case PlkDataType::REAL32:
+								{
+									convertString << hex << uppercase << setfill('0') << setw(8) << FloatToSinglePrecisisionHex(boost::any_cast<float>(this->GetActualValue()));
+									return convertString.str();
+								}
+							case PlkDataType::REAL64:
+								{
+									convertString << hex << uppercase << setfill('0') << setw(16) << DoubleToDoublePrecisisionHex(boost::any_cast<double>(this->GetActualValue()));
+									return convertString.str();
+								}
+							case PlkDataType::Domain:
+								break;
+							case PlkDataType::INTEGER40:
+								{
+									convertString << uppercase << setfill('0') << setw(10) << hex << boost::any_cast<int64_t>(this->GetActualValue());
+									return convertString.str();
+								}
+							case PlkDataType::INTEGER48:
+								{
+									convertString << uppercase << setfill('0') << setw(12) << hex << boost::any_cast<int64_t>(this->GetActualValue());
+									return convertString.str();
+								}
+							case PlkDataType::INTEGER56:
+								{
+									convertString << uppercase << setfill('0') << setw(14) << hex << boost::any_cast<int64_t>(this->GetActualValue());
+									return convertString.str();
+								}
+							case PlkDataType::INTEGER64:
+								{
+									convertString << uppercase << setfill('0') << setw(16) << hex << boost::any_cast<int64_t>(this->GetActualValue());
+									return convertString.str();
+								}
+							case PlkDataType::UNSIGNED40:
+								{
+									convertString << uppercase << setfill('0') << setw(10) << hex << boost::any_cast<uint64_t>(this->GetActualValue());
+									return convertString.str();
+								}
+							case PlkDataType::MAC_ADDRESS:
+							case PlkDataType::UNSIGNED48:
+								{
+									convertString << uppercase << setfill('0') << setw(12) << hex << boost::any_cast<uint64_t>(this->GetActualValue());
+									return convertString.str();
+								}
+							case PlkDataType::UNSIGNED56:
+								{
+									convertString << uppercase << setfill('0') << setw(14) << hex << boost::any_cast<uint64_t>(this->GetActualValue());
+									return convertString.str();
+								}
+							case PlkDataType::UNSIGNED64:
+								{
+									convertString << uppercase << setfill('0') << setw(16) << hex << boost::any_cast<uint64_t>(this->GetActualValue());
+									return convertString.str();
+								}
+							case PlkDataType::VISIBLE_STRING:
+							case PlkDataType::OCTET_STRING:
+							case PlkDataType::UNICODE_STRING:
+								{
+									string actualValue = boost::any_cast<string>(this->GetActualValue());
+									for (uint32_t i = 0; i < actualValue.length(); ++i)
+									{
+										convertString << uppercase << hex << unsigned(actualValue.at(i));
+									}
+									return convertString.str();
+								}
+							case PlkDataType::IP_ADDRESS:
+								{
+									string actualValue = boost::any_cast<string>(this->GetActualValue());
+									if (actualValue.substr(0, 2) == "0x")
+									{
+										convertString << uppercase << setw(8) << setfill('0') << hex << HexToInt<uint32_t>(actualValue);
+									}
+									else
+									{
+										vector<string> ipAddressParts;
+										boost::split(ipAddressParts, actualValue, boost::is_any_of("."));
+
+										for (auto& part : ipAddressParts)
+										{
+											convertString << uppercase << setw(2) << setfill('0') << hex << HexToInt<uint32_t>(part);
+										}
+									}
+									return convertString.str();
+								}
+							case PlkDataType::TIME_OF_DAY:
+							case PlkDataType::TIME_DIFF:
+							case PlkDataType::NETTIME:
+								{
+									return boost::any_cast<string>(this->GetActualValue());
+								}
+							default:
+								break;
+						}
+					}
+					return "";
+				}
 				template bool BaseObject::GetTypedActualValue<bool>();
 				template uint8_t BaseObject::GetTypedActualValue<uint8_t>();
 				template uint16_t BaseObject::GetTypedActualValue<uint16_t>();
@@ -235,12 +347,151 @@ namespace IndustrialNetwork
 				{
 					if (this->GetDefaultValue().type() == typeid(T))
 					{
-						return boost::any_cast<T>(this->GetActualValue());
+						return boost::any_cast<T>(this->GetDefaultValue());
 					}
 					throw Result(ErrorCode::DATATYPE_MISMATCH);
 				}
 
-				template string BaseObject::GetTypedDefaultValue<string>();
+				template<> string BaseObject::GetTypedDefaultValue<string>()
+				{
+					if (this->GetDataType().is_initialized() && !this->GetDefaultValue().empty())
+					{
+						stringstream convertString;
+						switch (this->GetDataType().get())
+						{
+							case PlkDataType::BOOLEAN:
+								{
+									bool res = boost::any_cast<bool>(this->GetActualValue());
+									return (res) ? "01" : "00";
+								}
+							case PlkDataType::INTEGER8:
+								{
+									convertString << uppercase << setfill('0') << setw(2) << hex << boost::any_cast<int16_t>(this->GetDefaultValue());
+									return convertString.str();
+								}
+							case PlkDataType::INTEGER16:
+								{
+									convertString << uppercase << setfill('0') << setw(4) << hex << boost::any_cast<int16_t>(this->GetDefaultValue());
+									return convertString.str();
+								}
+							case PlkDataType::INTEGER24:
+								{
+									convertString << uppercase << setfill('0') << setw(6) << hex << boost::any_cast<int32_t>(this->GetDefaultValue());
+									return convertString.str();
+								}
+							case PlkDataType::INTEGER32:
+								{
+									convertString << uppercase << setfill('0') << setw(8) << hex << boost::any_cast<int32_t>(this->GetDefaultValue());
+									return convertString.str();
+								}
+							case PlkDataType::UNSIGNED8:
+								{
+									convertString << uppercase << setfill('0') << setw(2) << hex << boost::any_cast<uint16_t>(this->GetDefaultValue());
+									return convertString.str();
+								}
+							case PlkDataType::UNSIGNED16:
+								{
+									convertString << uppercase << setfill('0') << setw(4) << hex << boost::any_cast<uint16_t>(this->GetDefaultValue());
+									return convertString.str();
+								}
+							case PlkDataType::UNSIGNED24:
+								{
+									convertString << uppercase << setfill('0') << setw(6) << hex << boost::any_cast<uint32_t>(this->GetDefaultValue());
+									return convertString.str();
+								}
+							case PlkDataType::UNSIGNED32:
+								{
+									convertString << uppercase << setfill('0') << setw(8) << hex << boost::any_cast<uint32_t>(this->GetDefaultValue());
+									return convertString.str();
+								}
+							case PlkDataType::REAL32:
+								{
+									convertString << hex << uppercase << setfill('0') << setw(8) << FloatToSinglePrecisisionHex(boost::any_cast<float>(this->GetDefaultValue()));
+									return convertString.str();
+								}
+							case PlkDataType::REAL64:
+								{
+									convertString << hex << uppercase << setfill('0') << setw(16) << DoubleToDoublePrecisisionHex(boost::any_cast<double>(this->GetDefaultValue()));
+									return convertString.str();
+								}
+							case PlkDataType::Domain:
+								break;
+							case PlkDataType::INTEGER40:
+								{
+									convertString << uppercase << setfill('0') << setw(10) << hex << boost::any_cast<int64_t>(this->GetDefaultValue());
+									return convertString.str();
+								}
+							case PlkDataType::INTEGER48:
+								{
+									convertString << uppercase << setfill('0') << setw(12) << hex << boost::any_cast<int64_t>(this->GetDefaultValue());
+									return convertString.str();
+								}
+							case PlkDataType::INTEGER56:
+								{
+									convertString << uppercase << setfill('0') << setw(14) << hex << boost::any_cast<int64_t>(this->GetDefaultValue());
+									return convertString.str();
+								}
+							case PlkDataType::INTEGER64:
+								{
+									convertString << uppercase << setfill('0') << setw(16) << hex << boost::any_cast<int64_t>(this->GetDefaultValue());
+									return convertString.str();
+								}
+							case PlkDataType::UNSIGNED40:
+								{
+									convertString << uppercase << setfill('0') << setw(10) << hex << boost::any_cast<uint64_t>(this->GetDefaultValue());
+									return convertString.str();
+								}
+							case PlkDataType::MAC_ADDRESS:
+							case PlkDataType::UNSIGNED48:
+								{
+									convertString << uppercase << setfill('0') << setw(12) << hex << boost::any_cast<uint64_t>(this->GetDefaultValue());
+									return convertString.str();
+								}
+							case PlkDataType::UNSIGNED56:
+								{
+									convertString << uppercase << setfill('0') << setw(14) << hex << boost::any_cast<uint64_t>(this->GetDefaultValue());
+									return convertString.str();
+								}
+							case PlkDataType::UNSIGNED64:
+								{
+									convertString << uppercase << setfill('0') << setw(16) << hex << boost::any_cast<uint64_t>(this->GetDefaultValue());
+									return convertString.str();
+								}
+							case PlkDataType::VISIBLE_STRING:
+							case PlkDataType::OCTET_STRING:
+							case PlkDataType::UNICODE_STRING:
+								{
+									string defaultValue = boost::any_cast<string>(this->GetDefaultValue());
+									for (uint32_t i = 0; i < defaultValue.length(); ++i)
+									{
+										convertString << uppercase << hex << unsigned(defaultValue.at(i));
+									}
+									return convertString.str();
+								}
+							case PlkDataType::IP_ADDRESS:
+								{
+									string defaultValue = boost::any_cast<string>(this->GetDefaultValue());
+									vector<string> ipAddressParts;
+									boost::split(ipAddressParts, defaultValue, boost::is_any_of("."));
+
+									for (auto& part : ipAddressParts)
+									{
+										convertString << uppercase << setw(2) << setfill('0') << hex << HexToInt<uint32_t>(part);
+									}
+									return convertString.str();
+								}
+							case PlkDataType::TIME_OF_DAY:
+							case PlkDataType::TIME_DIFF:
+							case PlkDataType::NETTIME:
+								{
+									return boost::any_cast<string>(this->GetDefaultValue());
+								}
+							default:
+								break;
+						}
+					}
+					return "";
+				}
 				template bool BaseObject::GetTypedDefaultValue<bool>();
 				template uint8_t BaseObject::GetTypedDefaultValue<uint8_t>();
 				template uint16_t BaseObject::GetTypedDefaultValue<uint16_t>();
@@ -252,11 +503,173 @@ namespace IndustrialNetwork
 				template int64_t BaseObject::GetTypedDefaultValue<int64_t>();
 				template double BaseObject::GetTypedDefaultValue<double>();
 
-				void BaseObject::SetTypedObjectValues(string defaultValue, string actualValue)
+				void BaseObject::SetTypedObjectActualValue(const std::string& actualValue)
 				{
-					if (!defaultValue.empty())
+					if (this->GetDataType().is_initialized())
 					{
-						switch (this->GetDataType())
+						switch (this->GetDataType().get())
+						{
+							case PlkDataType::BOOLEAN:
+								{
+									bool value = StringToBool(actualValue);
+									this->SetActualValue(boost::any(value));
+									if (this->GetDefaultValue().empty())
+										this->actualValueNotDefaultValue = true;
+									else if (this->GetTypedDefaultValue<bool>() != value)
+										this->actualValueNotDefaultValue = true;
+									else
+										this->actualValueNotDefaultValue = false;
+
+									break;
+								}
+							case PlkDataType::INTEGER8:
+							case PlkDataType::INTEGER16:
+								{
+									int16_t value = HexToInt<int16_t>(actualValue);
+									this->SetActualValue(boost::any(value));
+									if (this->GetDefaultValue().empty())
+										this->actualValueNotDefaultValue = true;
+									else if (this->GetTypedDefaultValue<int16_t>() != value)
+										this->actualValueNotDefaultValue = true;
+									else
+										this->actualValueNotDefaultValue = false;
+									break;
+								}
+							case PlkDataType::INTEGER32:
+								{
+									int32_t value = HexToInt<int32_t>(actualValue);
+									this->SetActualValue(boost::any(value));
+									if (this->GetDefaultValue().empty())
+										this->actualValueNotDefaultValue = true;
+									else if (this->GetTypedDefaultValue<int32_t>() != value)
+										this->actualValueNotDefaultValue = true;
+									break;
+								}
+							case PlkDataType::UNSIGNED8:
+							case PlkDataType::UNSIGNED16:
+								{
+									uint16_t value = HexToInt<uint16_t>(actualValue);
+									this->SetActualValue(boost::any(value));
+									if (this->GetDefaultValue().empty())
+										this->actualValueNotDefaultValue = true;
+									else if (this->GetTypedDefaultValue<uint16_t>() != value)
+										this->actualValueNotDefaultValue = true;
+									else
+										this->actualValueNotDefaultValue = false;
+									break;
+								}
+							case PlkDataType::UNSIGNED24:
+							case PlkDataType::UNSIGNED32:
+								{
+									uint32_t value = HexToInt<uint32_t>(actualValue);
+									this->SetActualValue(boost::any(value));
+									if (this->GetDefaultValue().empty())
+										this->actualValueNotDefaultValue = true;
+									else if (this->GetTypedDefaultValue<uint32_t>() != value)
+										this->actualValueNotDefaultValue = true;
+									else
+										this->actualValueNotDefaultValue = false;
+									break;
+								}
+							case PlkDataType::Domain:
+								//Both values must be empty if Domain datatype
+								break;
+							case PlkDataType::INTEGER24:
+								{
+									int32_t value = HexToInt<int32_t>(actualValue);
+									this->SetActualValue(boost::any(value));
+									if (this->GetDefaultValue().empty())
+										this->actualValueNotDefaultValue = true;
+									else if (this->GetTypedDefaultValue<int32_t>() != value)
+										this->actualValueNotDefaultValue = true;
+									else
+										this->actualValueNotDefaultValue = false;
+
+									break;
+								}
+							case PlkDataType::REAL32:
+								{
+									float value = boost::lexical_cast<float>(actualValue);
+									this->SetActualValue(boost::any(value));
+									if (this->GetDefaultValue().empty())
+										this->actualValueNotDefaultValue = true;
+									else if (this->GetTypedDefaultValue<float>() != value)
+										this->actualValueNotDefaultValue = true;
+									else
+										this->actualValueNotDefaultValue = false;
+									break;
+								}
+							case PlkDataType::REAL64:
+								{
+									double value = boost::lexical_cast<double>(actualValue);
+									this->SetActualValue(boost::any(value));
+									if (this->GetDefaultValue().empty())
+										this->actualValueNotDefaultValue = true;
+									else if (this->GetTypedDefaultValue<double>() != value)
+										this->actualValueNotDefaultValue = true;
+									else
+										this->actualValueNotDefaultValue = false;
+									break;
+								}
+							case PlkDataType::INTEGER40:
+							case PlkDataType::INTEGER48:
+							case PlkDataType::INTEGER56:
+							case PlkDataType::INTEGER64:
+								{
+									int64_t value = HexToInt<int64_t>(actualValue);
+									this->SetActualValue(boost::any(value));
+									if (this->GetDefaultValue().empty())
+										this->actualValueNotDefaultValue = true;
+									else if (this->GetTypedDefaultValue<int64_t>() != value)
+										this->actualValueNotDefaultValue = true;
+									else
+										this->actualValueNotDefaultValue = false;
+									break;
+								}
+							case PlkDataType::MAC_ADDRESS:
+							case PlkDataType::UNSIGNED40:
+							case PlkDataType::UNSIGNED48:
+							case PlkDataType::UNSIGNED56:
+							case PlkDataType::UNSIGNED64:
+								{
+									uint64_t value = HexToInt<uint64_t>(actualValue);
+									if (this->GetDefaultValue().empty())
+										this->actualValueNotDefaultValue = true;
+									else if (this->GetTypedDefaultValue<uint64_t>() != value)
+										this->actualValueNotDefaultValue = true;
+									else
+										this->actualValueNotDefaultValue = false;
+									this->SetActualValue(boost::any(value));
+									break;
+								}
+							case PlkDataType::IP_ADDRESS:
+							case PlkDataType::NETTIME:
+							case PlkDataType::VISIBLE_STRING:
+							case PlkDataType::OCTET_STRING:
+							case PlkDataType::UNICODE_STRING:
+							case PlkDataType::TIME_OF_DAY:
+							case PlkDataType::TIME_DIFF:
+								{
+									this->SetActualValue(boost::any(actualValue));
+									if (this->GetDefaultValue().empty())
+										this->actualValueNotDefaultValue = true;
+									else if (this->GetTypedDefaultValue<string>() != actualValue)
+										this->actualValueNotDefaultValue = true;
+									else
+										this->actualValueNotDefaultValue = false;
+									break;
+								}
+							default:
+								break;
+						}
+					}
+				}
+
+				void BaseObject::SetTypedObjectDefaultValue(const std::string& defaultValue)
+				{
+					if (this->GetDataType().is_initialized())
+					{
+						switch (this->GetDataType().get())
 						{
 							case PlkDataType::BOOLEAN:
 								{
@@ -264,12 +677,7 @@ namespace IndustrialNetwork
 									this->SetDefaultValue(boost::any(value));
 									break;
 								}
-							case PlkDataType::INTEGER8:
-								{
-									int8_t value = HexToInt<int8_t>(defaultValue);
-									this->SetDefaultValue(boost::any(value));
-									break;
-								}
+							case PlkDataType::INTEGER8: //Set int16_t datatype to avoid stream problems with char datatypes
 							case PlkDataType::INTEGER16:
 								{
 									int16_t value = HexToInt<int16_t>(defaultValue);
@@ -282,12 +690,7 @@ namespace IndustrialNetwork
 									this->SetDefaultValue(boost::any(value));
 									break;
 								}
-							case PlkDataType::UNSIGNED8:
-								{
-									uint8_t value = HexToInt<uint8_t>(defaultValue);
-									this->SetDefaultValue(boost::any(value));
-									break;
-								}
+							case PlkDataType::UNSIGNED8: //Set uint16_t datatype to avoid stream problems with char datatypes
 							case PlkDataType::UNSIGNED16:
 								{
 									uint16_t value = HexToInt<uint16_t>(defaultValue);
@@ -302,33 +705,8 @@ namespace IndustrialNetwork
 								}
 							case PlkDataType::REAL32:
 								{
-									double value = boost::lexical_cast<double>(defaultValue);
+									float value = boost::lexical_cast<float>(defaultValue);
 									this->SetDefaultValue(boost::any(value));
-									break;
-								}
-							case PlkDataType::VISIBLE_STRING:
-								{
-									this->SetDefaultValue(boost::any(defaultValue));
-									break;
-								}
-							case PlkDataType::OCTET_STRING:
-								{
-									this->SetDefaultValue(boost::any(defaultValue));
-									break;
-								}
-							case PlkDataType::UNICODE_STRING:
-								{
-									this->SetDefaultValue(boost::any(defaultValue));
-									break;
-								}
-							case PlkDataType::TIME_OF_DAY:
-								{
-									this->SetDefaultValue(boost::any(defaultValue));
-									break;
-								}
-							case PlkDataType::TIME_DIFF:
-								{
-									this->SetDefaultValue(boost::any(defaultValue));
 									break;
 								}
 							case PlkDataType::Domain:
@@ -347,23 +725,8 @@ namespace IndustrialNetwork
 									break;
 								}
 							case PlkDataType::INTEGER40:
-								{
-									int64_t value = HexToInt<int64_t>(defaultValue);
-									this->SetDefaultValue(boost::any(value));
-									break;
-								}
 							case PlkDataType::INTEGER48:
-								{
-									int64_t value = HexToInt<int64_t>(defaultValue);
-									this->SetDefaultValue(boost::any(value));
-									break;
-								}
 							case PlkDataType::INTEGER56:
-								{
-									int64_t value = HexToInt<int64_t>(defaultValue);
-									this->SetDefaultValue(boost::any(value));
-									break;
-								}
 							case PlkDataType::INTEGER64:
 								{
 									int64_t value = HexToInt<int64_t>(defaultValue);
@@ -376,208 +739,25 @@ namespace IndustrialNetwork
 									this->SetDefaultValue(boost::any(value));
 									break;
 								}
+							case PlkDataType::MAC_ADDRESS:
 							case PlkDataType::UNSIGNED40:
-								{
-									uint64_t value = HexToInt<uint64_t>(defaultValue);
-									this->SetDefaultValue(boost::any(value));
-									break;
-								}
 							case PlkDataType::UNSIGNED48:
-								{
-									uint64_t value = HexToInt<uint64_t>(defaultValue);
-									this->SetDefaultValue(boost::any(value));
-									break;
-								}
 							case PlkDataType::UNSIGNED56:
-								{
-									uint64_t value = HexToInt<uint64_t>(defaultValue);
-									this->SetDefaultValue(boost::any(value));
-									break;
-								}
 							case PlkDataType::UNSIGNED64:
 								{
 									uint64_t value = HexToInt<uint64_t>(defaultValue);
 									this->SetDefaultValue(boost::any(value));
-									break;
-								}
-							case PlkDataType::MAC_ADDRESS:
-								{
-									this->SetDefaultValue(boost::any(defaultValue));
-									break;
-								}
-							case PlkDataType::IP_ADDRESS:
-								{
-									this->SetDefaultValue(boost::any(defaultValue));
-									break;
-								}
-							case PlkDataType::NETTIME:
-								{
-									this->SetDefaultValue(boost::any(defaultValue));
-									break;
-								}
-							default:
-								break;
-						}
-					}
-					if (!actualValue.empty())
-					{
-						switch (this->GetDataType())
-						{
-							case PlkDataType::BOOLEAN:
-								{
-									bool value = StringToBool(actualValue);
-									this->SetActualValue(boost::any(value));
-									break;
-								}
-							case PlkDataType::INTEGER8:
-								{
-									int8_t value = HexToInt<int8_t>(actualValue);
-									this->SetActualValue(boost::any(value));
-									break;
-								}
-							case PlkDataType::INTEGER16:
-								{
-									int16_t value = HexToInt<int16_t>(actualValue);
-									this->SetActualValue(boost::any(value));
-									break;
-								}
-							case PlkDataType::INTEGER32:
-								{
-									int32_t value = HexToInt<int32_t>(actualValue);
-									this->SetActualValue(boost::any(value));
-									break;
-								}
-							case PlkDataType::UNSIGNED8:
-								{
-									uint8_t value = HexToInt<uint8_t>(actualValue);
-									this->SetActualValue(boost::any(value));
-									break;
-								}
-							case PlkDataType::UNSIGNED16:
-								{
-									uint16_t value = HexToInt<uint16_t>(actualValue);
-									this->SetActualValue(boost::any(value));
-									break;
-								}
-							case PlkDataType::UNSIGNED32:
-								{
-									uint32_t value = HexToInt<uint32_t>(actualValue);
-									this->SetActualValue(boost::any(value));
-									break;
-								}
-							case PlkDataType::REAL32:
-								{
-									double value = boost::lexical_cast<double>(actualValue);
-									this->SetActualValue(boost::any(value));
 									break;
 								}
 							case PlkDataType::VISIBLE_STRING:
-								{
-									this->SetActualValue(boost::any(actualValue));
-									break;
-								}
 							case PlkDataType::OCTET_STRING:
-								{
-									this->SetActualValue(boost::any(defaultValue));
-									break;
-								}
 							case PlkDataType::UNICODE_STRING:
-								{
-									this->SetActualValue(boost::any(actualValue));
-									break;
-								}
 							case PlkDataType::TIME_OF_DAY:
-								{
-									this->SetActualValue(boost::any(actualValue));
-									break;
-								}
 							case PlkDataType::TIME_DIFF:
-								{
-									this->SetActualValue(boost::any(actualValue));
-									break;
-								}
-							case PlkDataType::Domain:
-								//Both values must be empty if Domain datatype
-								break;
-							case PlkDataType::INTEGER24:
-								{
-									int32_t value = HexToInt<int32_t>(actualValue);
-									this->SetActualValue(boost::any(value));
-									break;
-								}
-							case PlkDataType::REAL64:
-								{
-									double value = boost::lexical_cast<double>(actualValue);
-									this->SetActualValue(boost::any(value));
-									break;
-								}
-							case PlkDataType::INTEGER40:
-								{
-									int64_t value = HexToInt<int64_t>(actualValue);
-									this->SetActualValue(boost::any(value));
-									break;
-								}
-							case PlkDataType::INTEGER48:
-								{
-									int64_t value = HexToInt<int64_t>(actualValue);
-									this->SetActualValue(boost::any(value));
-									break;
-								}
-							case PlkDataType::INTEGER56:
-								{
-									int64_t value = HexToInt<int64_t>(actualValue);
-									this->SetActualValue(boost::any(value));
-									break;
-								}
-							case PlkDataType::INTEGER64:
-								{
-									int64_t value = HexToInt<int64_t>(actualValue);
-									this->SetActualValue(boost::any(value));
-									break;
-								}
-							case PlkDataType::UNSIGNED24:
-								{
-									uint32_t value = HexToInt<uint32_t>(actualValue);
-									this->SetActualValue(boost::any(value));
-									break;
-								}
-							case PlkDataType::UNSIGNED40:
-								{
-									uint64_t value = HexToInt<uint64_t>(actualValue);
-									this->SetActualValue(boost::any(value));
-									break;
-								}
-							case PlkDataType::UNSIGNED48:
-								{
-									uint64_t value = HexToInt<uint64_t>(actualValue);
-									this->SetActualValue(boost::any(value));
-									break;
-								}
-							case PlkDataType::UNSIGNED56:
-								{
-									uint64_t value = HexToInt<uint64_t>(defaultValue);
-									this->SetActualValue(boost::any(value));
-									break;
-								}
-							case PlkDataType::UNSIGNED64:
-								{
-									uint64_t value = HexToInt<uint64_t>(actualValue);
-									this->SetActualValue(boost::any(value));
-									break;
-								}
-							case PlkDataType::MAC_ADDRESS:
-								{
-									this->SetActualValue(boost::any(actualValue));
-									break;
-								}
 							case PlkDataType::IP_ADDRESS:
-								{
-									this->SetActualValue(boost::any(actualValue));
-									break;
-								}
 							case PlkDataType::NETTIME:
 								{
-									this->SetActualValue(boost::any(actualValue));
+									this->SetDefaultValue(boost::any(defaultValue));
 									break;
 								}
 							default:
@@ -593,68 +773,71 @@ namespace IndustrialNetwork
 
 				uint32_t BaseObject::GetBitSize()
 				{
-					switch (this->GetDataType())
+					if (this->GetDataType().is_initialized())
 					{
-						case PlkDataType::BOOLEAN:
-							return 1;
-						case PlkDataType::UNSIGNED8:
-						case PlkDataType::INTEGER8:
-							return 8;
-						case PlkDataType::UNSIGNED16:
-						case PlkDataType::INTEGER16:
-							return 16;
-						case PlkDataType::INTEGER32:
-						case PlkDataType::UNSIGNED32:
-						case PlkDataType::REAL32:
-						case PlkDataType::IP_ADDRESS:
-							return 32;
-						case PlkDataType::VISIBLE_STRING:
-						case PlkDataType::OCTET_STRING:
-							{
-								if (this->GetTypedActualValue<string>().size() != 0)
-									return 8 * (uint32_t) this->GetTypedActualValue<string>().size();
-								else if (this->GetTypedDefaultValue<string>().size() != 0)
-									return 8 * (uint32_t) this->GetTypedDefaultValue<string>().size();
-								break;
-							}
-						case PlkDataType::UNICODE_STRING:
-							{
-								if (this->GetTypedActualValue<string>().size() != 0)
-									return 16 * (uint32_t) this->GetTypedActualValue<string>().size();
-								else if (this->GetTypedDefaultValue<string>().size() != 0)
-									return 16 * (uint32_t) this->GetTypedDefaultValue<string>().size();
-								break;
-							}
-						case PlkDataType::Domain:
-							{
-								if (this->GetUniqueIdRef().is_initialized())
+						switch (this->GetDataType().get())
+						{
+							case PlkDataType::BOOLEAN:
+							case PlkDataType::UNSIGNED8:
+							case PlkDataType::INTEGER8:
+								return 8;
+							case PlkDataType::UNSIGNED16:
+							case PlkDataType::INTEGER16:
+								return 16;
+							case PlkDataType::INTEGER32:
+							case PlkDataType::UNSIGNED32:
+							case PlkDataType::REAL32:
+							case PlkDataType::IP_ADDRESS:
+								return 32;
+							case PlkDataType::VISIBLE_STRING:
+							case PlkDataType::OCTET_STRING:
+							case PlkDataType::UNICODE_STRING:
 								{
-									return this->complexDataType->GetBitSize();
+									if (this->GetTypedActualValue<string>().size() != 0)
+										return 8 * (uint32_t) this->GetTypedActualValue<string>().size();
+									else if (this->GetTypedDefaultValue<string>().size() != 0)
+										return 8 * (uint32_t) this->GetTypedDefaultValue<string>().size();
+									break;
 								}
+							/*case PlkDataType::UNICODE_STRING:
+								{
+									if (this->GetTypedActualValue<string>().size() != 0)
+										return 16 * (uint32_t) this->GetTypedActualValue<string>().size();
+									else if (this->GetTypedDefaultValue<string>().size() != 0)
+										return 16 * (uint32_t) this->GetTypedDefaultValue<string>().size();
+									break;
+						}*///Since we do not have Unicode support calculate normal octet size for string
+							case PlkDataType::Domain:
+								{
+									if (this->GetUniqueIdRef().is_initialized())
+									{
+										return this->complexDataType->GetBitSize();
+									}
+									break;
+								}
+							case PlkDataType::INTEGER24:
+							case PlkDataType::UNSIGNED24:
+								return 24;
+							case PlkDataType::INTEGER40:
+							case PlkDataType::UNSIGNED40:
+								return 40;
+							case PlkDataType::INTEGER48:
+							case PlkDataType::UNSIGNED48:
+							case PlkDataType::TIME_OF_DAY:
+							case PlkDataType::TIME_DIFF:
+							case PlkDataType::MAC_ADDRESS:
+								return 48;
+							case PlkDataType::INTEGER56:
+							case PlkDataType::UNSIGNED56:
+								return 56;
+							case PlkDataType::INTEGER64:
+							case PlkDataType::UNSIGNED64:
+							case PlkDataType::REAL64:
+							case PlkDataType::NETTIME:
+								return 64;
+							default:
 								break;
-							}
-						case PlkDataType::INTEGER24:
-						case PlkDataType::UNSIGNED24:
-							return 24;
-						case PlkDataType::INTEGER40:
-						case PlkDataType::UNSIGNED40:
-							return 40;
-						case PlkDataType::INTEGER48:
-						case PlkDataType::UNSIGNED48:
-						case PlkDataType::TIME_OF_DAY:
-						case PlkDataType::TIME_DIFF:
-						case PlkDataType::MAC_ADDRESS:
-							return 48;
-						case PlkDataType::INTEGER56:
-						case PlkDataType::UNSIGNED56:
-							return 56;
-						case PlkDataType::INTEGER64:
-						case PlkDataType::UNSIGNED64:
-						case PlkDataType::REAL64:
-						case PlkDataType::NETTIME:
-							return 64;
-						default:
-							break;
+						}
 					}
 					return 0;
 				}
@@ -663,7 +846,21 @@ namespace IndustrialNetwork
 				{
 					this->complexDataType = parameter;
 				}
+
+				bool BaseObject::WriteToConfiguration() const
+				{
+					if ((this->forceToCDC == true //Object forced
+					        || this->actualValueNotDefaultValue == true) //Actual value != default value
+					        && (this->GetAccessType() == AccessType::RW //correct AccessType
+					            || this->GetAccessType() == AccessType::RWS
+					            || this->GetAccessType() == AccessType::WO
+					            || this->GetAccessType() == AccessType::WOS))
+						return true;
+					else
+						return false;
+				}
 			}
 		}
 	}
 }
+

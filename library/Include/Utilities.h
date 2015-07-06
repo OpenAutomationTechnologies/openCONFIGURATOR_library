@@ -37,6 +37,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iomanip>
 #include <string>
 #include <cctype>
+#include <limits.h>
+#include <math.h>
+#include <bitset>
+
 #include "IEC_Datatype.h"
 
 namespace IndustrialNetwork
@@ -74,6 +78,9 @@ namespace IndustrialNetwork
 				bool StringToBool(std::string str);
 
 				std::uint32_t GetIECDataTypeBitSize(const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType);
+
+				int32_t FloatToSinglePrecisisionHex(float value);
+				int64_t DoubleToDoublePrecisisionHex(double value);
 
 			}
 		}

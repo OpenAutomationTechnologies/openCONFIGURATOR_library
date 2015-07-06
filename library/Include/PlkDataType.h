@@ -49,6 +49,7 @@ namespace IndustrialNetwork
 				*/
 				enum class PlkDataType : std::uint32_t
 				{
+					UNDEFINED = 0x0000,
 					BOOLEAN = 0x0001,
 					INTEGER8 = 0x0002,
 					INTEGER16 = 0x0003,

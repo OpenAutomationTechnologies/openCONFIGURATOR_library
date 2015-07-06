@@ -112,7 +112,10 @@
 %include "ObjectType.h"
 %include "PDOMapping.h"
 %include "PlkDataType.h"
+
+%typemap(csbase) IndustrialNetwork ::POWERLINK::Core::Node::NodeAssignment "uint"
 %include "NodeAssignment.h"
+
 %include "DynamicChannel.h"
 %include "Network.h"
 %include "Direction.h"

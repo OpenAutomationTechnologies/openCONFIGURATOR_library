@@ -51,6 +51,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ArrayDataType.h"
 #include "EnumDataType.h"
 #include "DynamicChannel.h"
+#include "ConfigurationGenerator.h"
 
 namespace IndustrialNetwork
 {
@@ -73,28 +74,28 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetSupportedSettingIds(std::vector<std::string>& supportedSettings);
 
 						//Network related API
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateNetwork(const std::string networkId);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveNetwork(const std::string networkId);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetNetwork(const std::string networkId, IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network& network);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateNetwork(const std::string& networkId);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveNetwork(const std::string& networkId);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetNetwork(const std::string& networkId, IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network& network);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetNetworkIds(std::vector<std::string>& networkList);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ClearNetworks();
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetCycleTime(const std::string networkId, std::uint32_t cycleTime);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetAsyncMtu(const std::string networkId, std::uint32_t asyncMtu);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetMultiplexedCycleLength(const std::string networkId, std::uint32_t multiplexedCycleLength);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetPrescaler(const std::string networkId, std::uint32_t prescaler);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetCycleTime(const std::string& networkId, std::uint32_t cycleTime);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetAsyncMtu(const std::string& networkId, std::uint32_t asyncMtu);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetMultiplexedCycleLength(const std::string& networkId, std::uint32_t multiplexedCycleLength);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetPrescaler(const std::string& networkId, std::uint32_t prescaler);
 
 						//Build related API
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildConfiguration(const std::string networkId, std::ostream& configuration);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildProcessImage(const std::string networkId, std::ostream& configuration);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildConfiguration(const std::string& networkId, std::ostream& configuration);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildProcessImage(const std::string& networkId, std::ostream& configuration);
 
 						//Node related API
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateNode(const std::string networkId, const std::uint8_t nodeID, const std::string nodeName);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveNode(const std::string networkId, const std::uint8_t nodeID);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateNode(const std::string& networkId, const std::uint8_t nodeID, const std::string& nodeName);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveNode(const std::string& networkId, const std::uint8_t nodeID);
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetControlledNode(const std::string networkId, const std::uint8_t nodeID, IndustrialNetwork::POWERLINK::Core::Node::ControlledNode& node);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetManagingNode(const std::string networkId, IndustrialNetwork::POWERLINK::Core::Node::ManagingNode& node);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetAvailableNodeIds(const std::string networkId, std::vector<std::uint8_t>& nodeIdCollection);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetControlledNode(const std::string& networkId, const std::uint8_t nodeID, IndustrialNetwork::POWERLINK::Core::Node::ControlledNode& node);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetManagingNode(const std::string& networkId, IndustrialNetwork::POWERLINK::Core::Node::ManagingNode& node);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetAvailableNodeIds(const std::string& networkId, std::vector<std::uint8_t>& nodeIdCollection);
 
 						//Modular Node API
 						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateModularHeadNode();
@@ -106,31 +107,35 @@ namespace IndustrialNetwork
 						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DeleteModule();
 
 						//Build Configuration related API
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetConfigurationSettingEnabled(const std::string networkId, const std::string  configID, const std::string  settingID, bool enabled);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateConfigurationSetting(const std::string networkId, const std::string configID, const std::string name, const std::string value);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveConfigurationSetting(const std::string networkId, const std::string configID, const std::string name);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateConfiguration(const std::string networkId, const std::string configID);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveConfiguration(const std::string networkId, const std::string configID);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ReplaceConfigurationName(const std::string networkId, const std::string oldConfigId, const std::string newConfigId);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetConfigurationSettings(const std::string networkId, const std::string configID, std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::BuildConfigurationSetting>&);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetActiveConfiguration(const std::string networkId, std::string& activeConfiguration);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetActiveConfiguration(const std::string networkId, const std::string configID);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetBuildConfigurations(const std::string networkId, std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::PlkConfiguration>& bcfgs);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetConfigurationSettingEnabled(const std::string& networkId, const std::string&  configID, const std::string&  settingID, bool enabled);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateConfigurationSetting(const std::string& networkId, const std::string& configID, const std::string& name, const std::string& value);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveConfigurationSetting(const std::string& networkId, const std::string& configID, const std::string& name);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateConfiguration(const std::string& networkId, const std::string& configID);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveConfiguration(const std::string& networkId, const std::string& configID);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ReplaceConfigurationName(const std::string& networkId, const std::string& oldConfigId, const std::string& newConfigId);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetConfigurationSettings(const std::string& networkId, const std::string& configID, std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::BuildConfigurationSetting>&);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetActiveConfiguration(const std::string& networkId, std::string& activeConfiguration);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetActiveConfiguration(const std::string& networkId, const std::string& configID);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetBuildConfigurations(const std::string& networkId, std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::PlkConfiguration>& bcfgs);
 
 						//Object related API
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateObject(const std::string networkId, const std::uint8_t nodeId, std::uint32_t objectId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ObjectType objectType, std::string name, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType accessType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping pdoMapping, std::string defaultValue = "", std::string actualValue = "", std::uint32_t highlimit = 0, std::uint32_t lowLimit = 0);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateDomainObject(const std::string networkId, const std::uint8_t nodeId, std::uint32_t objectId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ObjectType objectType, std::string name, std::string uniqueIdRef);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateObject(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ObjectType objectType, const std::string& name, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType accessType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping pdoMapping, const std::string& defaultValueToSet, const std::string& actualValueToSet);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetObjectLimits(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::int64_t highlimit, std::int64_t lowLimit);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateDomainObject(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ObjectType objectType, const std::string& name, const std::string& uniqueIdRef);
 
 						//SubObject related API
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateSubObject(const std::string networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::uint32_t subObjectId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ObjectType objectType, std::string name, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType accessType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping pdoMapping, std::string defaultValue = "", std::string actualValue = "", std::uint32_t highlimit = 0, std::uint32_t lowLimit = 0);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateDomainSubObject(const std::string networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::uint32_t subObjectId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ObjectType objectType, std::string name, std::string uniqueIdRef);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateSubObject(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::uint32_t subObjectId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ObjectType objectType, const std::string& name, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType accessType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping pdoMapping, const std::string& defaultValueToSet, const std::string& actualValueToSet);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetSubObjectLimits(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::uint32_t subObjectId, std::int64_t highlimit, std::int64_t lowLimit);
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetObjectSize(const std::string networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::uint32_t& size);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetSubObjectSize(const std::string networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::uint32_t subObjectId, std::uint32_t& size);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateDomainSubObject(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::uint32_t subObjectId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ObjectType objectType, const std::string& name, const std::string& uniqueIdRef);
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetObjectActualValue(const std::string networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::string actualValue, bool force = false);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetSubObjectActualValue(const std::string networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::uint32_t subObjectId, std::string actualValue, bool force = false);
-						
+						//Object Size API
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetObjectSize(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::uint32_t& size);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetSubObjectSize(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::uint32_t subObjectId, std::uint32_t& size);
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetObjectActualValue(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, const std::string& actualValue, bool force = false);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetSubObjectActualValue(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::uint32_t subObjectId, const std::string& actualValue, bool force = false);
+
 
 
 						//Mapping API
@@ -139,22 +144,22 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetFeatureDefaultValue(IndustrialNetwork::POWERLINK::Core::Node::CNFeatureEnum feature, std::string& defaultValue);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetFeatureDefaultValue(IndustrialNetwork::POWERLINK::Core::Node::MNFeatureEnum feature, std::string& defaultValue);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetFeatureDefaultValue(IndustrialNetwork::POWERLINK::Core::Node::GeneralFeatureEnum feature, std::string& defaultValue);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureValue(const std::string networkId, const std::uint8_t nodeId, IndustrialNetwork::POWERLINK::Core::Node::CNFeatureEnum feature, const std::string value);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureValue(const std::string networkId, const std::uint8_t nodeId, IndustrialNetwork::POWERLINK::Core::Node::MNFeatureEnum feature, const std::string value);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureValue(const std::string networkId, const std::uint8_t nodeId, IndustrialNetwork::POWERLINK::Core::Node::GeneralFeatureEnum feature, const std::string value);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureValue(const std::string& networkId, const std::uint8_t nodeId, IndustrialNetwork::POWERLINK::Core::Node::CNFeatureEnum feature, const std::string& value);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureValue(const std::string& networkId, const std::uint8_t nodeId, IndustrialNetwork::POWERLINK::Core::Node::MNFeatureEnum feature, const std::string& value);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureValue(const std::string& networkId, const std::uint8_t nodeId, IndustrialNetwork::POWERLINK::Core::Node::GeneralFeatureEnum feature, const std::string& value);
 
 						//Application Process API
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateParameter(const std::string networkId, const std::uint8_t nodeId, const std::string uniqueID, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess access);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateParameter(const std::string networkId, const std::uint8_t nodeId, const std::string uniqueID, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess access, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateStructDatatype(const std::string networkId, const std::uint8_t nodeId, const std::string parameterUniqueId, const std::string uniqueID, const std::string name);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateVarDeclaration(const std::string networkId, const std::uint8_t nodeId, const std::string structUniqueId, const std::string uniqueId, const std::string name, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype datatype, std::uint32_t size = 1, const std::string initialValue = "");
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateArrayDatatype(const std::string networkId, const std::uint8_t nodeId, const std::string parameterUniqueId, const std::string uniqueID, const std::string name, std::uint32_t lowerLimit, std::uint32_t upperLimit, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateEnumDatatype(const std::string networkId, const std::uint8_t nodeId, const std::string parameterUniqueId, const std::string uniqueID, const std::string name, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType, std::uint32_t size = 0);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateEnumValue(const std::string networkId, const std::uint8_t nodeId, const std::string parameterUniqueId, const std::string name, const std::string value);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetDatatypeSize(const std::string networkId, const std::uint8_t nodeId, const std::string dataTypeUniqueId, std::uint32_t& size);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateParameter(const std::string& networkId, const std::uint8_t nodeId, const std::string& uniqueID, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess access);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateParameter(const std::string& networkId, const std::uint8_t nodeId, const std::string& uniqueID, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess access, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateStructDatatype(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterUniqueId, const std::string& uniqueID, const std::string& name);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateVarDeclaration(const std::string& networkId, const std::uint8_t nodeId, const std::string& structUniqueId, const std::string& uniqueId, const std::string& name, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype datatype, std::uint32_t size = 1, const std::string& initialValue = "");
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateArrayDatatype(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterUniqueId, const std::string& uniqueID, const std::string& name, std::uint32_t lowerLimit, std::uint32_t upperLimit, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateEnumDatatype(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterUniqueId, const std::string& uniqueID, const std::string& name, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType, std::uint32_t size = 0);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateEnumValue(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterUniqueId, const std::string& name, const std::string& value);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetDatatypeSize(const std::string& networkId, const std::uint8_t nodeId, const std::string& dataTypeUniqueId, std::uint32_t& size);
 						//Dynamic Channel API
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateDynamicChannel(const std::string networkId, const std::uint8_t nodeId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType accessType, std::uint32_t startIndex, std::uint32_t endIndex, std::uint32_t maxNumber, std::uint32_t addressOffset, std::uint8_t bitAlignment = 0);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetActiveManagingNode(const std::string networkId, const std::uint8_t nodeID);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateDynamicChannel(const std::string& networkId, const std::uint8_t nodeId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType accessType, std::uint32_t startIndex, std::uint32_t endIndex, std::uint32_t maxNumber, std::uint32_t addressOffset, std::uint8_t bitAlignment = 0);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetActiveManagingNode(const std::string& networkId, const std::uint8_t nodeID);
 
 					private:
 						//singleton

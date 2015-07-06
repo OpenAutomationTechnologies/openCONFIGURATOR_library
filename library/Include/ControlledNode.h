@@ -70,6 +70,9 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapAllRxObjects();
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapAllTxObjects();
 
+						std::uint32_t GetConfigurationObjectCount();
+						std::uint32_t GetConfigurationObjectSize();
+
 					private:
 						IndustrialNetwork::POWERLINK::Core::Node::PlkOperationMode operationMode;
 				};

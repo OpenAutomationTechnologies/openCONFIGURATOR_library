@@ -74,8 +74,8 @@ namespace IndustrialNetwork
 						void SetName(const std::string& name);
 						std::uint8_t GetNodeIdentifier();
 						void SetNodeIdentifier(std::uint8_t nodeId);
-						const std::unordered_map<std::uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>>& GetObjectDictionary();
-						void SetObjectDictionary(const std::unordered_map<uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>>& od);
+						const std::map<std::uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>>& GetObjectDictionary();
+						void SetObjectDictionary(const std::map<uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>>& od);
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddObject(std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>& objRef);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddSubObject(std::uint32_t objectId, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::SubObject>& subObjRef);
@@ -97,10 +97,13 @@ namespace IndustrialNetwork
 
 						std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ApplicationProcess>& GetApplicationProcess();
 
+						virtual std::uint32_t GetConfigurationObjectCount() = 0;
+						virtual std::uint32_t GetConfigurationObjectSize() = 0;
+
 					private:
 						std::uint8_t nodeId;
 						std::string name;
-						std::unordered_map<std::uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>> objectDictionary;
+						std::map<std::uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>> objectDictionary;
 						std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ApplicationProcess> applicationProcess;
 
 						std::vector<IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment> nodeAssignment;

@@ -46,7 +46,7 @@ namespace openconfigurator_core_net_app
             Console.ReadLine();
 
             string loggingConfig = string.Empty;
-            using (StreamReader streamReader = new StreamReader("boost_log_settings.ini", Encoding.UTF8))
+            using (var streamReader = new StreamReader("boost_log_settings.ini", Encoding.UTF8))
             {
                 loggingConfig = streamReader.ReadToEnd();
             }
@@ -66,6 +66,15 @@ namespace openconfigurator_core_net_app
             core.CreateNode("test", 241, "Redundant_MN");
             core.CreateNode("test", 242, "Redundant_MN");
             core.CreateNode("test", 242, "already_existing");
+
+            core.CreateNode("test", 5, "Redundant_MN");
+            //core.CreateNode("test", 20, "Redundant_MN");
+            //core.CreateNode("test", 30, "already_existing");
+
+            var result = core.SetActiveManagingNode("test", 242);
+            Console.WriteLine(result.IsSuccessful());
+            Console.ReadLine();
+
             core.CreateNode("test", 1, "CN");
 
             // Get a node object from the library
@@ -141,9 +150,82 @@ namespace openconfigurator_core_net_app
 
             core.CreateConfiguration("test", "none");
 
-            core.CreateObject("test", 1, 0x1600, PlkDataType.UNSIGNED16, AccessType.RW, ObjectType.RECORD,
-                PDOMapping.RPDO, "1000", "Mapping Object");
-            core.CreateSubObject("test", 1, 0x1600, 0, PlkDataType.UNSIGNED8, AccessType.RW, ObjectType.DEFTYPE, PDOMapping.NO, "0", "NrOfEntries");
+            core.CreateObject("test", 240, 0x1600, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
+            core.CreateSubObject("test", 240, 0x1600, 0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "10");
+            core.CreateSubObject("test", 240, 0x1600, 1, ObjectType.VAR, "testName", PlkDataType.UNSIGNED16, AccessType.RW, PDOMapping.DEFAULT, "0", "100");
+            core.CreateSubObject("test", 240, 0x1600, 2, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0x100");
+            core.CreateSubObject("test", 240, 0x1600, 3, ObjectType.VAR, "testName", PlkDataType.UNSIGNED64, AccessType.RW, PDOMapping.DEFAULT, "0", "0x0010000000202104");
+
+            core.CreateObject("test", 5, 0x1600, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
+            core.CreateSubObject("test", 5, 0x1600, 0, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "10");
+            core.CreateSubObject("test", 5, 0x1600, 1, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED16, AccessType.RW, PDOMapping.DEFAULT, "0", "0x100");
+            core.CreateSubObject("test", 5, 0x1600, 2, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED24, AccessType.RW, PDOMapping.DEFAULT, "0", "0x100");
+            core.CreateSubObject("test", 5, 0x1600, 3, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0x100");
+            core.CreateSubObject("test", 5, 0x1600, 4, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED40, AccessType.RW, PDOMapping.DEFAULT, "0", "0x100");
+            core.CreateSubObject("test", 5, 0x1600, 6, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED56, AccessType.RW, PDOMapping.NO, "", "100");
+            core.CreateSubObject("test", 5, 0x1600, 7, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED64, AccessType.RW, PDOMapping.NO, "0", "0x0010000000202104");
+
+            core.CreateObject("test", 5, 0x1602, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
+            core.CreateSubObject("test", 5, 0x1602, 0, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.NO, "0", "0x10");
+            core.CreateSubObject("test", 5, 0x1602, 1, ObjectType.DEFTYPE, "testName", PlkDataType.INTEGER16, AccessType.RW, PDOMapping.NO, "0", "0x100");
+            core.CreateSubObject("test", 5, 0x1602, 2, ObjectType.DEFTYPE, "testName", PlkDataType.INTEGER24, AccessType.RW, PDOMapping.NO, "0", "0x100");
+            core.CreateSubObject("test", 5, 0x1602, 3, ObjectType.DEFTYPE, "testName", PlkDataType.INTEGER32, AccessType.RW, PDOMapping.NO, "", "100");
+            core.CreateSubObject("test", 5, 0x1602, 4, ObjectType.DEFTYPE, "testName", PlkDataType.INTEGER40, AccessType.RW, PDOMapping.NO, "", "100");
+            core.CreateSubObject("test", 5, 0x1602, 5, ObjectType.DEFTYPE, "testName", PlkDataType.INTEGER48, AccessType.RW, PDOMapping.NO, "", "100");
+            core.CreateSubObject("test", 5, 0x1602, 6, ObjectType.DEFTYPE, "testName", PlkDataType.INTEGER56, AccessType.RW, PDOMapping.NO, "", "100");
+            core.CreateSubObject("test", 5, 0x1602, 7, ObjectType.DEFTYPE, "testName", PlkDataType.INTEGER64, AccessType.RW, PDOMapping.NO, "0", "0x0010000000202104");
+
+            core.CreateObject("test", 5, 0x1610, ObjectType.DEFTYPE, "Name", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
+            core.CreateSubObject("test", 5, 0x1610, 0x00, ObjectType.DEFTYPE, "Name", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.RPDO, "0", "15");
+            core.CreateSubObject("test", 5, 0x1610, 0x0d, ObjectType.DEFTYPE, "Name", PlkDataType.UNICODE_STRING, AccessType.RW, PDOMapping.RPDO, "100", "WriteThisString");
+            core.CreateSubObject("test", 5, 0x1610, 0x01, ObjectType.DEFTYPE, "Name", PlkDataType.VISIBLE_STRING, AccessType.RW, PDOMapping.RPDO, "100", "WriteThisString");
+            core.CreateSubObject("test", 5, 0x1610, 0x02, ObjectType.DEFTYPE, "Name", PlkDataType.OCTET_STRING, AccessType.RW, PDOMapping.RPDO, "100", "WriteThisString");
+            core.CreateSubObject("test", 5, 0x1610, 0x03, ObjectType.DEFTYPE, "Name", PlkDataType.IP_ADDRESS, AccessType.RW, PDOMapping.RPDO, "100", "0x64646464");
+            core.CreateSubObject("test", 5, 0x1610, 0x0b, ObjectType.DEFTYPE, "Name", PlkDataType.IP_ADDRESS, AccessType.RW, PDOMapping.RPDO, "100", "254.254.254.254");
+            core.CreateSubObject("test", 5, 0x1610, 0x0c, ObjectType.DEFTYPE, "Name", PlkDataType.IP_ADDRESS, AccessType.RW, PDOMapping.RPDO, "100", "1.1.1.1");
+            core.CreateSubObject("test", 5, 0x1610, 0x04, ObjectType.DEFTYPE, "Name", PlkDataType.BOOLEAN, AccessType.RW, PDOMapping.RPDO, "false", "true");
+            core.CreateSubObject("test", 5, 0x1610, 0x05, ObjectType.DEFTYPE, "Name", PlkDataType.MAC_ADDRESS, AccessType.RW, PDOMapping.RPDO, "0", "0x000A086121012");
+            core.CreateSubObject("test", 5, 0x1610, 0x06, ObjectType.DEFTYPE, "Name", PlkDataType.REAL32, AccessType.RW, PDOMapping.RPDO, "0", "1267.43233E12");
+            core.CreateSubObject("test", 5, 0x1610, 0x07, ObjectType.DEFTYPE, "Name", PlkDataType.REAL32, AccessType.RW, PDOMapping.RPDO, "0", "1.234532432");
+            core.CreateSubObject("test", 5, 0x1610, 0x08, ObjectType.DEFTYPE, "Name", PlkDataType.REAL64, AccessType.RW, PDOMapping.RPDO, "0", "-1E4");
+            core.CreateSubObject("test", 5, 0x1610, 0x09, ObjectType.DEFTYPE, "Name", PlkDataType.REAL64, AccessType.RW, PDOMapping.RPDO, "0", "12.78e-2");
+            core.CreateSubObject("test", 5, 0x1610, 0x0a, ObjectType.DEFTYPE, "Name", PlkDataType.REAL64, AccessType.RW, PDOMapping.RPDO, "6", "-0");
+            core.CreateSubObject("test", 5, 0x1610, 0x10, ObjectType.DEFTYPE, "Name", PlkDataType.REAL64, AccessType.RW, PDOMapping.RPDO, "6", "-0");
+
+            core.CreateObject("test", 5, 0x1A00, ObjectType.DEFTYPE, "Name", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
+            core.CreateSubObject("test", 5, 0x1A00, 0x00, ObjectType.DEFTYPE, "Name", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.RPDO, "0", "5");
+            core.CreateSubObject("test", 5, 0x1A00, 0x0d, ObjectType.DEFTYPE, "Name", PlkDataType.UNICODE_STRING, AccessType.RW, PDOMapping.RPDO, "100", "WriteThisString");
+            core.CreateSubObject("test", 5, 0x1A00, 0x01, ObjectType.DEFTYPE, "Name", PlkDataType.VISIBLE_STRING, AccessType.RW, PDOMapping.RPDO, "100", "WriteThisString");
+            core.CreateSubObject("test", 5, 0x1A00, 0x02, ObjectType.DEFTYPE, "Name", PlkDataType.OCTET_STRING, AccessType.RW, PDOMapping.RPDO, "100", "WriteThisString");
+            core.CreateSubObject("test", 5, 0x1A00, 0x03, ObjectType.DEFTYPE, "Name", PlkDataType.IP_ADDRESS, AccessType.RW, PDOMapping.RPDO, "100", "0x64646464");
+            core.CreateSubObject("test", 5, 0x1A00, 0x0b, ObjectType.DEFTYPE, "Name", PlkDataType.IP_ADDRESS, AccessType.RW, PDOMapping.RPDO, "100", "254.254.254.254");
+            core.CreateSubObject("test", 5, 0x1A00, 0x0c, ObjectType.DEFTYPE, "Name", PlkDataType.IP_ADDRESS, AccessType.RW, PDOMapping.RPDO, "100", "1.1.1.1");
+            core.CreateSubObject("test", 5, 0x1A00, 0x04, ObjectType.DEFTYPE, "Name", PlkDataType.BOOLEAN, AccessType.RW, PDOMapping.RPDO, "false", "true");
+            core.CreateSubObject("test", 5, 0x1A00, 0x05, ObjectType.DEFTYPE, "Name", PlkDataType.MAC_ADDRESS, AccessType.RW, PDOMapping.RPDO, "0", "0x000A086121012");
+            core.CreateSubObject("test", 5, 0x1A00, 0x06, ObjectType.DEFTYPE, "Name", PlkDataType.REAL32, AccessType.RW, PDOMapping.RPDO, "0", "1267.43233E12");
+            core.CreateSubObject("test", 5, 0x1A00, 0x07, ObjectType.DEFTYPE, "Name", PlkDataType.REAL32, AccessType.RW, PDOMapping.RPDO, "0", "1.234532432");
+            core.CreateSubObject("test", 5, 0x1A00, 0x08, ObjectType.DEFTYPE, "Name", PlkDataType.REAL64, AccessType.RW, PDOMapping.RPDO, "0", "-1E4");
+            core.CreateSubObject("test", 5, 0x1A00, 0x09, ObjectType.DEFTYPE, "Name", PlkDataType.REAL64, AccessType.RW, PDOMapping.RPDO, "0", "12.78e-2");
+            core.CreateSubObject("test", 5, 0x1A00, 0x0a, ObjectType.DEFTYPE, "Name", PlkDataType.REAL64, AccessType.RW, PDOMapping.RPDO, "6", "-0");
+            core.CreateSubObject("test", 5, 0x1A00, 0x10, ObjectType.DEFTYPE, "Name", PlkDataType.REAL64, AccessType.RW, PDOMapping.RPDO, "6", "-0");
+
+            core.CreateObject("test", 5, 0x1400, ObjectType.DEFTYPE, "Name", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
+            core.CreateSubObject("test", 5, 0x1400, 0x00, ObjectType.DEFTYPE, "Name", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.RPDO, "0", "15");
+            core.CreateSubObject("test", 5, 0x1400, 0x01, ObjectType.DEFTYPE, "Name", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.RPDO, "100", "5");
+
+
+            core.CreateObject("test", 5, 0x2000, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
+            core.CreateSubObject("test", 5, 0x2000, 0x0b, ObjectType.DEFTYPE, "Name", PlkDataType.IP_ADDRESS, AccessType.RW, PDOMapping.RPDO, "100", "254.254.254.254");
+
+
+            uint obsize = 0;
+            res = core.GetObjectSize("test", 1, 0x1601, out obsize);
+            Console.WriteLine(obsize);
+            Console.WriteLine(res.IsSuccessful());
+
+            res = core.GetSubObjectSize("test", 1, 0x1601, 0, out obsize);
+            Console.WriteLine(obsize);
+            Console.WriteLine(res.IsSuccessful());
 
             Console.ReadLine();
             Result test = core.CreateParameter("test", 1, "UID_DOM_Index2100_Sub1E", ParameterAccess.read);
@@ -197,6 +279,23 @@ namespace openconfigurator_core_net_app
             Console.WriteLine(test.IsSuccessful());
             Console.WriteLine(size);
 
+            res = core.CreateDomainObject("test", 1, 0x2000, ObjectType.DEFSTRUCT, "domain", "UID_DOM_Index2101_Sub1E");
+            Console.WriteLine(res.GetErrorType());
+
+            res = core.GetObjectSize("test", 1, 0x2000, out obsize);
+            Console.WriteLine(obsize);
+            Console.WriteLine(res.IsSuccessful());
+
+            res = core.CreateDomainSubObject("test", 1, 0x2000, 0x1, ObjectType.DEFSTRUCT, "domain", "UID_DOM_Index2101_Sub1E");
+            Console.WriteLine(res.GetErrorType());
+
+            res = core.GetSubObjectSize("test", 1, 0x2000, 0x1, out obsize);
+            Console.WriteLine(obsize);
+            Console.WriteLine(res.IsSuccessful());
+
+            res = core.BuildConfiguration("test", new SWIGTYPE_p_std__ostream(new IntPtr(10), true));
+            Console.WriteLine();
+            Console.WriteLine(res.IsSuccessful());
         }
     }
 }

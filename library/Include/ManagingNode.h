@@ -68,6 +68,10 @@ namespace IndustrialNetwork
 
 						void AddDynamicChannel(std::shared_ptr<DynamicChannel>& channelRef);
 						bool GetDynamicChannel(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType, std::shared_ptr<DynamicChannel>& retChannel);
+						
+						std::uint32_t GetConfigurationObjectCount();
+						std::uint32_t GetConfigurationObjectSize();
+
 
 					private:
 						bool active;

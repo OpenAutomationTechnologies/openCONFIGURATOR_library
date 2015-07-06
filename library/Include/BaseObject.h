@@ -35,9 +35,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstdint>
 #include <vector>
 #include <string>
+#include <sstream>
 
 #include <boost/optional.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/algorithm/string.hpp>
 
 #include "Constants.h"
 #include "IBaseObject.h"
@@ -67,12 +69,7 @@ namespace IndustrialNetwork
 					public:
 						BaseObject();
 						BaseObject(std::uint32_t id, ObjectType objectType, std::string name, std::uint8_t containingNode);
-						BaseObject(std::uint32_t id, ObjectType objectType, std::string name, std::uint8_t containingNode, PlkDataType dataType);
-						BaseObject(std::uint32_t id, ObjectType objectType, std::string name, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType);
 						BaseObject(std::uint32_t id, ObjectType objectType, std::string name, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping);
-
-						BaseObject(std::uint32_t id, ObjectType objectType, std::string name, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType, std::string defaultValue, std::string actualValue, std::uint32_t highlimit, std::uint32_t lowLimit);
-						BaseObject(std::uint32_t id, ObjectType objectType, std::string name, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping, std::string defaultValue, std::string actualValue, std::uint32_t highlimit, std::uint32_t lowLimit);
 						BaseObject(std::uint32_t id, ObjectType objectType, std::string name, std::uint8_t containingNode, std::string uniqueIdRef);
 
 						bool operator== (const BaseObject& BaseObject) const;
@@ -81,20 +78,25 @@ namespace IndustrialNetwork
 						bool GetForceToCDC() const;
 						void SetForceToCDC(bool force);
 
-						boost::optional<std::uint32_t> GetHighLimit() const;
-						void SetHighLimit(std::uint32_t highLimit);
+						bool WriteToConfiguration() const;
 
-						boost::optional<std::uint32_t> GetLowLimit() const;
-						void SetLowLimit(std::uint32_t lowLimit);
+						const boost::optional<std::int64_t>& GetHighLimit() const;
+						void SetHighLimit(std::int64_t highLimit);
 
-						boost::optional<std::string> GetUniqueIdRef() const;
-						void SetUniqueIdRef(boost::optional<std::string>& uniqueIdRef);
+						const boost::optional<std::int64_t>& GetLowLimit() const;
+						void SetLowLimit(std::int64_t lowLimit);
 
-						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType GetAccessType() const;
+						const boost::optional<std::string>& GetUniqueIdRef() const;
+						void SetUniqueIdRef(const std::string& uniqueIdRef);
 
-						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType GetDataType() const;
+						const boost::optional<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType>& GetAccessType() const;
+						void SetAccessType(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType accessType);
 
-						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping GetPDOMapping() const;
+						const boost::optional<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType>& GetDataType() const;
+						void SetDataType(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType);
+
+						const boost::optional<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping>& GetPDOMapping() const;
+						void SetPDOMapping(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping pdoMapping);
 
 						template<typename T>
 						T GetTypedActualValue();
@@ -103,7 +105,8 @@ namespace IndustrialNetwork
 						T GetTypedDefaultValue();
 
 						std::uint8_t GetContainingNode();
-						void SetTypedObjectValues(std::string defaultValue = "", std::string actualValue = "");
+						void SetTypedObjectActualValue(const std::string& actualValueToSet);
+						void SetTypedObjectDefaultValue(const std::string& defaultValueToSet);
 
 						void SetComplexDataType(std::shared_ptr<Parameter>& parameter);
 
@@ -112,14 +115,15 @@ namespace IndustrialNetwork
 					private:
 
 						bool forceToCDC;
-						boost::optional<std::uint32_t> highLimit;
-						boost::optional<std::uint32_t> lowLimit;
+						boost::optional<std::int64_t> highLimit;
+						boost::optional<std::int64_t> lowLimit;
 						boost::optional<std::string> uniqueIdRef;
 						std::shared_ptr<Parameter> complexDataType;
 						boost::optional<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType> accessType;
 						boost::optional<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType> dataType;
 						boost::optional<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping> pdoMapping;
 						std::uint8_t containingNode;
+						bool actualValueNotDefaultValue;
 				};
 
 			}

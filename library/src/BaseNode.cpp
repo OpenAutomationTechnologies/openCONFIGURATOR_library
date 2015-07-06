@@ -40,7 +40,7 @@ using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 BaseNode::BaseNode(uint8_t nodeId, const string& name) :
 	nodeId(nodeId),
 	name(name),
-	objectDictionary(unordered_map<uint32_t, shared_ptr<Object>>()),
+	objectDictionary(map<uint32_t, shared_ptr<Object>>()),
 	applicationProcess(make_shared<ApplicationProcess>()),
 	nodeAssignment(vector<NodeAssignment>()),
 	networkManagement(make_shared<NetworkManagement>()),
@@ -75,12 +75,12 @@ void BaseNode::SetNodeIdentifier(uint8_t nodeId)
 	this->nodeId = nodeId;
 }
 
-const unordered_map<uint32_t, shared_ptr<Object>>& BaseNode::GetObjectDictionary()
+const map<uint32_t, shared_ptr<Object>>& BaseNode::GetObjectDictionary()
 {
 	return objectDictionary;
 }
 
-void BaseNode::SetObjectDictionary(const unordered_map<uint32_t, shared_ptr<Object>>& od)
+void BaseNode::SetObjectDictionary(const map<uint32_t, shared_ptr<Object>>& od)
 {
 	objectDictionary = od;
 }
@@ -164,7 +164,7 @@ Result BaseNode::ForceObject(uint32_t objectId, bool force, string actualValue)
 
 	if (!actualValue.empty())
 	{
-		iter->second->SetTypedObjectValues("", actualValue);
+		iter->second->SetTypedObjectActualValue(actualValue);
 		//Log info actual value set
 		boost::format formatter(kMsgSetObjectActualValue);
 		formatter
@@ -193,7 +193,7 @@ Result BaseNode::SetObjectActualValue(uint32_t objectId, string actualValue)
 	}
 	if (!actualValue.empty())
 	{
-		iter->second->SetTypedObjectValues("", actualValue);
+		iter->second->SetTypedObjectActualValue(actualValue);
 		//Log info actual value set
 		boost::format formatter(kMsgSetObjectActualValue);
 		formatter
@@ -262,7 +262,7 @@ Result BaseNode::ForceSubObject(uint32_t objectId, uint32_t subObjectId, bool fo
 
 		if (!actualValue.empty())
 		{
-			iter->second->SetTypedObjectValues("", actualValue);
+			iter->second->SetTypedObjectActualValue(actualValue);
 			//Log info actual value set
 			boost::format formatter(kMsgSetSubObjectActualValue);
 			formatter
@@ -305,7 +305,7 @@ Result BaseNode::SetSubObjectActualValue(uint32_t objectId, uint32_t subObjectId
 	{
 		if (!actualValue.empty())
 		{
-			iter->second->SetTypedObjectValues("", actualValue);
+			iter->second->SetTypedObjectActualValue(actualValue);
 			//Log info actual value set
 			boost::format formatter(kMsgSetSubObjectActualValue);
 			formatter

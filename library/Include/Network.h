@@ -110,7 +110,7 @@ namespace IndustrialNetwork
 						/param[in] node vector reference.
 						/return Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetNodes(std::unordered_map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetNodes(std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
 
 						/**
 						/brief Retrieve all exising node ids in the network.
@@ -215,7 +215,7 @@ namespace IndustrialNetwork
 						std::uint32_t asyncMTU;
 						std::uint32_t multiplexedCycleLength;
 						std::uint32_t prescaler;
-						std::unordered_map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>> nodeCollection;
+						std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>> nodeCollection;
 						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Configuration::PlkConfiguration>> buildConfigurations;
 						std::string activeConfiguration;
 				};

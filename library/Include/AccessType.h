@@ -46,10 +46,10 @@ namespace IndustrialNetwork
 				\brief
 				\author rueckerc
 				*/
-				enum class AccessType : std::int8_t
+				enum class AccessType : std::uint8_t
 				{
-				    INVALID = -1,
-				    RW,
+					UNDEFINED = 0,
+				    RW = 1,
 				    WO,
 				    RO,
 				    CONST,

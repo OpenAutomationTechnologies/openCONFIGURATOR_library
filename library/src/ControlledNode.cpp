@@ -38,7 +38,12 @@ using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 
 ControlledNode::ControlledNode(uint8_t nodeID, const string nodeName) : BaseNode(nodeID, nodeName),
 	operationMode(PlkOperationMode::NORMAL)
-{}
+{
+	AddNodeAssignement(NodeAssignment::MNT_NODEASSIGN_VALID);
+	AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_NODE_EXISTS);
+	AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_NODE_IS_CN);
+	AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_START_CN);
+}
 
 ControlledNode::~ControlledNode()
 {}
@@ -53,7 +58,7 @@ bool ControlledNode::AddNodeAssignement(NodeAssignment assign)
 	else
 	{
 		auto it = find(this->GetNodeAssignment().begin(), this->GetNodeAssignment().end(), assign);
-		if (it != this->GetNodeAssignment().end())
+		if (it == this->GetNodeAssignment().end())
 			this->GetNodeAssignment().push_back(assign);
 		else
 			return false;
@@ -99,4 +104,56 @@ Result ControlledNode::MapAllRxObjects()
 Result ControlledNode::MapAllTxObjects()
 {
 	return Result();
+}
+
+uint32_t ControlledNode::GetConfigurationObjectCount()
+{
+	uint32_t count = 0;
+	for (auto& object : this->GetObjectDictionary())
+	{
+		for (auto& subobject : object.second->GetSubObjectCollection())
+		{
+			if (object.first >= 0x1600 && object.first <= 0x16FF && subobject.first == 0x0) //Count for reset and actual NrOfEntries
+			{
+				if (!subobject.second->GetActualValue().empty())
+					count += 2;
+			}
+			else if (object.first >= 0x1A00 && object.first <= 0x1AFF && subobject.first == 0x0) //Count for reset and actual NrOfEntries
+			{
+				if (!subobject.second->GetActualValue().empty())
+					count += 2;
+			}
+			else if (subobject.second->WriteToConfiguration())
+			{
+				count++;
+			}
+		}
+	}
+	return count;
+}
+
+uint32_t ControlledNode::GetConfigurationObjectSize()
+{
+	uint32_t size = 0;
+	for (auto& object : this->GetObjectDictionary())
+	{
+		for (auto& subobject : object.second->GetSubObjectCollection())
+		{
+			if (object.first >= 0x1600 && object.first <= 0x16FF && subobject.first == 0x0) //Count for reset and actual NrOfEntries
+			{
+				if (!subobject.second->GetActualValue().empty())
+					size += 2 * subobject.second->GetBitSize();
+			}
+			else if (object.first >= 0x1A00 && object.first <= 0x1AFF && subobject.first == 0x0) //Count for reset and actual NrOfEntries
+			{
+				if (!subobject.second->GetActualValue().empty())
+					size += 2 * subobject.second->GetBitSize();
+			}
+			else if (subobject.second->WriteToConfiguration())
+			{
+				size+= subobject.second->GetBitSize();
+			}
+		}
+	}
+	return size;
 }

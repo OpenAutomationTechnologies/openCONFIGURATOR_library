@@ -45,28 +45,15 @@ namespace IndustrialNetwork
 			namespace ObjectDictionary
 			{
 				Object::Object(uint32_t id, ObjectType objectType, string name, uint8_t containingNode) : BaseObject(id, objectType, name, containingNode),
-					subIndexCollection(unordered_map<uint32_t, shared_ptr<SubObject>>())
+					subIndexCollection(map<uint32_t, shared_ptr<SubObject>>())
 				{}
-				Object::Object(uint32_t id, ObjectType objectType, string name, uint8_t containingNode, PlkDataType dataType): BaseObject(id, objectType, name, containingNode, dataType),
-					subIndexCollection(unordered_map<uint32_t, shared_ptr<SubObject>>())
-				{}
-				Object::Object(uint32_t id, ObjectType objectType, string name, uint8_t containingNode, PlkDataType dataType, AccessType accessType) : BaseObject(id, objectType, name, containingNode, dataType, accessType),
-					subIndexCollection(unordered_map<uint32_t, shared_ptr<SubObject>>())
-				{}
+
 				Object::Object(uint32_t id, ObjectType objectType, string name, uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping) : BaseObject(id, objectType, name, containingNode, dataType, accessType, pdoMapping),
-					subIndexCollection(unordered_map<uint32_t, shared_ptr<SubObject>>())
-				{}
-
-				Object::Object(uint32_t id, ObjectType objectType, string name, uint8_t containingNode, PlkDataType dataType, AccessType accessType, string defaultValue, string actualValue, uint32_t highLimit, uint32_t lowLimit) : BaseObject(id, objectType, name, containingNode, dataType, accessType, defaultValue, actualValue, highLimit, lowLimit),
-					subIndexCollection(unordered_map<uint32_t, shared_ptr<SubObject>>())
-				{}
-
-				Object::Object(uint32_t id, ObjectType objectType, string name, uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping, string defaultValue, string actualValue, uint32_t highLimit, uint32_t lowLimit) : BaseObject(id, objectType, name, containingNode, dataType, accessType, pdoMapping, defaultValue, actualValue, highLimit, lowLimit),
-					subIndexCollection(unordered_map<uint32_t, shared_ptr<SubObject>>())
+					subIndexCollection(map<uint32_t, shared_ptr<SubObject>>())
 				{}
 
 				Object::Object(uint32_t id, ObjectType objectType, string name, uint8_t containingNode, string uniqueIdRef) : BaseObject(id, objectType, name, containingNode, uniqueIdRef),
-					subIndexCollection(unordered_map<uint32_t, shared_ptr<SubObject>>())
+					subIndexCollection(map<uint32_t, shared_ptr<SubObject>>())
 				{}
 
 				Object::~Object()
@@ -113,6 +100,11 @@ namespace IndustrialNetwork
 					}
 					ref = iter->second;
 					return Result();
+				}
+
+				const std::map<std::uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::SubObject>>& Object::GetSubObjectCollection()
+				{
+					return this->subIndexCollection;
 				}
 			}
 		}

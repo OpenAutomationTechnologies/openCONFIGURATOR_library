@@ -46,9 +46,9 @@ namespace IndustrialNetwork
 				\brief
 				\author rueckerc
 				*/
-				enum class PDOMapping : std::int8_t
+				enum class PDOMapping : std::uint8_t
 				{
-					NOT_DEFINED = -1,
+					UNDEFINED = 0,
 					NO,
 					DEFAULT,
 					OPTIONAL,

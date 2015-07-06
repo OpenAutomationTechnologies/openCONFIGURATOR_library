@@ -44,7 +44,7 @@ Network::Network() :
 	asyncMTU(300), //DS 301 V1.2.1
 	multiplexedCycleLength(0), //DS 301 V1.2.1
 	prescaler(2), //DS 301 V1.2.1
-	nodeCollection(unordered_map<uint8_t, shared_ptr<BaseNode>>()),
+	nodeCollection(map<uint8_t, shared_ptr<BaseNode>>()),
 	buildConfigurations(vector<shared_ptr<PlkConfiguration>>()),
 	activeConfiguration("")
 {}
@@ -55,7 +55,7 @@ Network::Network(const string networkId) :
 	asyncMTU(300), //DS 301 V1.2.1
 	multiplexedCycleLength(0), //DS 301 V1.2.1
 	prescaler(2), //DS 301 V1.2.1
-	nodeCollection(unordered_map<uint8_t, shared_ptr<BaseNode>>()),
+	nodeCollection(map<uint8_t, shared_ptr<BaseNode>>()),
 	buildConfigurations(vector<shared_ptr<PlkConfiguration>>()),
 	activeConfiguration("")
 {}
@@ -150,7 +150,7 @@ Result Network::GetManagingNode(shared_ptr<ManagingNode>& node)
 
 Result Network::RemoveNode(const uint8_t nodeID)
 {
-	unordered_map<uint8_t, shared_ptr<BaseNode>>::iterator it;
+	map<uint8_t, shared_ptr<BaseNode>>::iterator it;
 	for (it = this->nodeCollection.begin() ; it != this->nodeCollection.end(); ++it)
 	{
 		if (it->first == nodeID)
@@ -175,7 +175,7 @@ Result Network::RemoveNode(const uint8_t nodeID)
 	return Result();
 }
 
-Result Network::GetNodes(unordered_map<uint8_t, shared_ptr<BaseNode>>& nodeCollection)
+Result Network::GetNodes(map<uint8_t, shared_ptr<BaseNode>>& nodeCollection)
 {
 	nodeCollection = this->nodeCollection;
 	return Result();

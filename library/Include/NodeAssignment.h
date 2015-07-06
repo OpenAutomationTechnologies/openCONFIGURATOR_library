@@ -61,7 +61,8 @@ namespace IndustrialNetwork
 					NMT_NODEASSIGN_RT1 = 0x00000400,
 					NMT_NODEASSIGN_RT2 = 0x00000800,
 					NMT_NODEASSIGN_MN_PRES = 0x00001000,
-					NMT_NODEASSIGN_PRES_CHAINING = 0x00004000
+					NMT_NODEASSIGN_PRES_CHAINING = 0x00004000,
+					MNT_NODEASSIGN_VALID = 0x80000000
 				};
 
 				inline NodeAssignment operator | (NodeAssignment lhs, NodeAssignment rhs)

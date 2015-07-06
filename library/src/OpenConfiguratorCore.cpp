@@ -63,13 +63,13 @@ Result OpenConfiguratorCore::GetSupportedSettingIds(vector<string>& supportedSet
 	return Result();
 }
 
-Result OpenConfiguratorCore::CreateNetwork(const string networkId)
+Result OpenConfiguratorCore::CreateNetwork(const std::string& networkId)
 {
 	shared_ptr<Network> net = make_shared<Network>(networkId);
 	return ProjectManager::GetInstance().AddNetwork(networkId, net);
 }
 
-Result OpenConfiguratorCore::RemoveNetwork(const string networkId)
+Result OpenConfiguratorCore::RemoveNetwork(const std::string& networkId)
 {
 	return ProjectManager::GetInstance().RemoveNetwork(networkId);
 }
@@ -85,7 +85,7 @@ Result OpenConfiguratorCore::ClearNetworks()
 	return ProjectManager::GetInstance().ClearNetworkList();
 }
 
-Result OpenConfiguratorCore::GetNetwork(const string networkId, Network& network)
+Result OpenConfiguratorCore::GetNetwork(const std::string& networkId, Network& network)
 {
 	shared_ptr<Network> networkPtr;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
@@ -95,7 +95,7 @@ Result OpenConfiguratorCore::GetNetwork(const string networkId, Network& network
 
 }
 
-Result OpenConfiguratorCore::SetCycleTime(const string networkId, uint32_t cycleTime)
+Result OpenConfiguratorCore::SetCycleTime(const std::string& networkId, uint32_t cycleTime)
 {
 	shared_ptr<Network> networkPtr;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
@@ -104,7 +104,7 @@ Result OpenConfiguratorCore::SetCycleTime(const string networkId, uint32_t cycle
 	return res;
 }
 
-Result OpenConfiguratorCore::SetAsyncMtu(const string networkId, uint32_t asyncMtu)
+Result OpenConfiguratorCore::SetAsyncMtu(const std::string& networkId, uint32_t asyncMtu)
 {
 	shared_ptr<Network> networkPtr;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
@@ -114,7 +114,7 @@ Result OpenConfiguratorCore::SetAsyncMtu(const string networkId, uint32_t asyncM
 
 }
 
-Result OpenConfiguratorCore::SetMultiplexedCycleLength(const string networkId, uint32_t multiplexedCycleLength)
+Result OpenConfiguratorCore::SetMultiplexedCycleLength(const std::string& networkId, uint32_t multiplexedCycleLength)
 {
 	shared_ptr<Network> networkPtr;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
@@ -123,7 +123,7 @@ Result OpenConfiguratorCore::SetMultiplexedCycleLength(const string networkId, u
 	return res;
 }
 
-Result OpenConfiguratorCore::SetPrescaler(const string networkId, uint32_t prescaler)
+Result OpenConfiguratorCore::SetPrescaler(const std::string& networkId, uint32_t prescaler)
 {
 	shared_ptr<Network> networkPtr;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
@@ -132,17 +132,23 @@ Result OpenConfiguratorCore::SetPrescaler(const string networkId, uint32_t presc
 	return res;
 }
 
-Result OpenConfiguratorCore::BuildConfiguration(const string networkId, ostream& configuration)
+Result OpenConfiguratorCore::BuildConfiguration(const std::string& networkId, ostream& configuration)
+{
+	shared_ptr<Network> networkPtr;
+	stringstream config;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
+	if (res.IsSuccessful())
+		ConfigurationGenerator::GetInstance().GenerateNetworkConfiguration(networkPtr, config);
+
+	return res;
+}
+
+Result OpenConfiguratorCore::BuildProcessImage(const std::string& networkId, ostream& configuration)
 {
 	return Result(ErrorCode::UNHANDLED_EXCEPTION);
 }
 
-Result OpenConfiguratorCore::BuildProcessImage(const string networkId, ostream& configuration)
-{
-	return Result(ErrorCode::UNHANDLED_EXCEPTION);
-}
-
-Result OpenConfiguratorCore::CreateNode(const string networkId, const uint8_t nodeID, const string nodeName)
+Result OpenConfiguratorCore::CreateNode(const std::string& networkId, const uint8_t nodeID, const std::string& nodeName)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -176,7 +182,7 @@ Result OpenConfiguratorCore::CreateNode(const string networkId, const uint8_t no
 	return res;
 }
 
-Result OpenConfiguratorCore::RemoveNode(const string networkId, const uint8_t nodeID)
+Result OpenConfiguratorCore::RemoveNode(const std::string& networkId, const uint8_t nodeID)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -187,7 +193,7 @@ Result OpenConfiguratorCore::RemoveNode(const string networkId, const uint8_t no
 	return res;
 }
 
-Result OpenConfiguratorCore::GetControlledNode(const string networkId, const uint8_t nodeID, ControlledNode& node)
+Result OpenConfiguratorCore::GetControlledNode(const std::string& networkId, const uint8_t nodeID, ControlledNode& node)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -203,7 +209,7 @@ Result OpenConfiguratorCore::GetControlledNode(const string networkId, const uin
 	return res;
 }
 
-Result OpenConfiguratorCore::GetManagingNode(const string networkId, ManagingNode& node)
+Result OpenConfiguratorCore::GetManagingNode(const std::string& networkId, ManagingNode& node)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -219,7 +225,7 @@ Result OpenConfiguratorCore::GetManagingNode(const string networkId, ManagingNod
 	return res;
 }
 
-Result OpenConfiguratorCore::GetAvailableNodeIds(const string networkId, vector<uint8_t>& nodeIdCollection)
+Result OpenConfiguratorCore::GetAvailableNodeIds(const std::string& networkId, vector<uint8_t>& nodeIdCollection)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -230,7 +236,7 @@ Result OpenConfiguratorCore::GetAvailableNodeIds(const string networkId, vector<
 	return res;
 }
 
-Result OpenConfiguratorCore::CreateConfiguration(const string networkId, const string configID)
+Result OpenConfiguratorCore::CreateConfiguration(const std::string& networkId, const std::string& configID)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -241,7 +247,7 @@ Result OpenConfiguratorCore::CreateConfiguration(const string networkId, const s
 	return res;
 }
 
-Result OpenConfiguratorCore::RemoveConfiguration(const string networkId, const string configID)
+Result OpenConfiguratorCore::RemoveConfiguration(const std::string& networkId, const std::string& configID)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -252,7 +258,7 @@ Result OpenConfiguratorCore::RemoveConfiguration(const string networkId, const s
 	return res;
 }
 
-Result OpenConfiguratorCore::ReplaceConfigurationName(const string networkId, const string oldConfigId, const string newConfigId)
+Result OpenConfiguratorCore::ReplaceConfigurationName(const std::string& networkId, const std::string& oldConfigId, const std::string& newConfigId)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -263,8 +269,7 @@ Result OpenConfiguratorCore::ReplaceConfigurationName(const string networkId, co
 	return res;
 }
 
-Result OpenConfiguratorCore::CreateConfigurationSetting(const string networkId, const string configID,
-        const string name, const string value)
+Result OpenConfiguratorCore::CreateConfigurationSetting(const std::string& networkId, const std::string& configID, const std::string& name, const std::string& value)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -275,7 +280,7 @@ Result OpenConfiguratorCore::CreateConfigurationSetting(const string networkId, 
 	return res;
 }
 
-Result OpenConfiguratorCore::RemoveConfigurationSetting(const string networkId, const string configID, const string name)
+Result OpenConfiguratorCore::RemoveConfigurationSetting(const std::string& networkId, const std::string& configID, const std::string& name)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -286,7 +291,7 @@ Result OpenConfiguratorCore::RemoveConfigurationSetting(const string networkId, 
 	return res;
 }
 
-Result OpenConfiguratorCore::SetConfigurationSettingEnabled(const string networkId, const string configID, const string settingID, bool enabled)
+Result OpenConfiguratorCore::SetConfigurationSettingEnabled(const std::string& networkId, const std::string& configID, const std::string& settingID, bool enabled)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -297,7 +302,7 @@ Result OpenConfiguratorCore::SetConfigurationSettingEnabled(const string network
 	return res;
 }
 
-Result OpenConfiguratorCore::GetConfigurationSettings(const string networkId, const string configID, vector<BuildConfigurationSetting>& settings)
+Result OpenConfiguratorCore::GetConfigurationSettings(const std::string& networkId, const std::string& configID, vector<BuildConfigurationSetting>& settings)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -316,7 +321,7 @@ Result OpenConfiguratorCore::GetConfigurationSettings(const string networkId, co
 	return res;
 }
 
-Result OpenConfiguratorCore::GetActiveConfiguration(const string networkId, string& activeConfiguration)
+Result OpenConfiguratorCore::GetActiveConfiguration(const std::string& networkId, string& activeConfiguration)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -327,7 +332,7 @@ Result OpenConfiguratorCore::GetActiveConfiguration(const string networkId, stri
 	return res;
 }
 
-Result OpenConfiguratorCore::SetActiveConfiguration(const string networkId, const string configID)
+Result OpenConfiguratorCore::SetActiveConfiguration(const std::string& networkId, const std::string& configID)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -338,7 +343,7 @@ Result OpenConfiguratorCore::SetActiveConfiguration(const string networkId, cons
 	return res;
 }
 
-Result OpenConfiguratorCore::GetBuildConfigurations(const string networkId, vector<PlkConfiguration>& buildConfigurations)
+Result OpenConfiguratorCore::GetBuildConfigurations(const std::string& networkId, vector<PlkConfiguration>& buildConfigurations)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -357,7 +362,7 @@ Result OpenConfiguratorCore::GetBuildConfigurations(const string networkId, vect
 	return res;
 }
 
-Result OpenConfiguratorCore::CreateObject(const string networkId, const uint8_t nodeId, uint32_t objectId, ObjectType objectType, string name, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping, string defaultValue, string actualValue, uint32_t highLimit, uint32_t lowLimit)
+Result OpenConfiguratorCore::CreateObject(const std::string& networkId, const uint8_t nodeId, uint32_t objectId, ObjectType objectType, const string& name, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping, const string& defaultValueToSet, const string& actualValueToSet)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -367,14 +372,52 @@ Result OpenConfiguratorCore::CreateObject(const string networkId, const uint8_t 
 		res = network->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
-			shared_ptr<Object> ptr(new Object(objectId, objectType, name, nodeId, dataType, accessType, pdoMapping, defaultValue, actualValue, highLimit, lowLimit));
+			shared_ptr<Object> ptr(new Object(objectId, objectType, name, nodeId));
+
+			if (dataType != PlkDataType::UNDEFINED)
+				ptr->SetDataType(dataType);
+
+			if (accessType != AccessType::UNDEFINED)
+				ptr->SetAccessType(accessType);
+
+			if (pdoMapping != PDOMapping::UNDEFINED)
+				ptr->SetPDOMapping(pdoMapping);
+
+			if (!defaultValueToSet.empty())
+				ptr->SetTypedObjectDefaultValue(defaultValueToSet);
+
+			if (!actualValueToSet.empty())
+				ptr->SetTypedObjectActualValue(actualValueToSet);
+
 			res = node->AddObject(ptr);
 		}
 	}
 	return res;
 }
 
-Result OpenConfiguratorCore::CreateDomainObject(const string networkId, const uint8_t nodeId, uint32_t objectId, ObjectType objectType, string name, string uniqueIdRef)
+Result OpenConfiguratorCore::SetObjectLimits(const std::string& networkId, const uint8_t nodeId, uint32_t objectId, int64_t highlimit, int64_t lowLimit)
+{
+	shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (res.IsSuccessful())
+	{
+		shared_ptr<BaseNode> node;
+		res = network->GetControlledNode(nodeId, node);
+		if (res.IsSuccessful())
+		{
+			shared_ptr<Object> obj;
+			res = node->GetObject(objectId, obj);
+			if (res.IsSuccessful())
+			{
+				obj->SetHighLimit(highlimit);
+				obj->SetLowLimit(lowLimit);
+			}
+		}
+	}
+	return res;
+}
+
+Result OpenConfiguratorCore::CreateDomainObject(const std::string& networkId, const uint8_t nodeId, uint32_t objectId, ObjectType objectType, const string& name, const string& uniqueIdRef)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -397,7 +440,7 @@ Result OpenConfiguratorCore::CreateDomainObject(const string networkId, const ui
 	return res;
 }
 
-Result OpenConfiguratorCore::CreateSubObject(const string networkId, const uint8_t nodeId, uint32_t objectId, uint32_t subObjectId,  ObjectType objectType, string name, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping, string defaultValue, string actualValue, uint32_t highlimit, uint32_t lowLimit)
+Result OpenConfiguratorCore::CreateSubObject(const std::string& networkId, const uint8_t nodeId, uint32_t objectId, uint32_t subObjectId, ObjectType objectType, const string& name, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping, const string& defaultValueToSet, const string& actualValueToSet)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -407,14 +450,52 @@ Result OpenConfiguratorCore::CreateSubObject(const string networkId, const uint8
 		res = network->GetControlledNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
-			shared_ptr<SubObject> ptr(new SubObject(subObjectId, objectType, name, nodeId, dataType, accessType, pdoMapping, defaultValue, actualValue, highlimit, lowLimit));
+			shared_ptr<SubObject> ptr(new SubObject(subObjectId, objectType, name, nodeId));
+
+			if (dataType != PlkDataType::UNDEFINED)
+				ptr->SetDataType(dataType);
+
+			if (accessType != AccessType::UNDEFINED)
+				ptr->SetAccessType(accessType);
+
+			if (pdoMapping != PDOMapping::UNDEFINED)
+				ptr->SetPDOMapping(pdoMapping);
+
+			if (!defaultValueToSet.empty())
+				ptr->SetTypedObjectDefaultValue(defaultValueToSet);
+
+			if (!actualValueToSet.empty())
+				ptr->SetTypedObjectActualValue(actualValueToSet);
+
 			res = node->AddSubObject(objectId, ptr);
 		}
 	}
 	return res;
 }
 
-Result OpenConfiguratorCore::CreateDomainSubObject(const string networkId, const uint8_t nodeId, uint32_t objectId, uint32_t subObjectId,  ObjectType objectType, string name, string uniqueIdRef)
+Result OpenConfiguratorCore::SetSubObjectLimits(const std::string& networkId, const uint8_t nodeId, uint32_t objectId, uint32_t subObjectId, int64_t highlimit, int64_t lowLimit)
+{
+	shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (res.IsSuccessful())
+	{
+		shared_ptr<BaseNode> node;
+		res = network->GetControlledNode(nodeId, node);
+		if (res.IsSuccessful())
+		{
+			shared_ptr<SubObject> subObj;
+			res = node->GetSubObject(objectId, subObjectId, subObj);
+			if (res.IsSuccessful())
+			{
+				subObj->SetHighLimit(highlimit);
+				subObj->SetLowLimit(lowLimit);
+			}
+		}
+	}
+	return res;
+}
+
+Result OpenConfiguratorCore::CreateDomainSubObject(const std::string& networkId, const uint8_t nodeId, uint32_t objectId, uint32_t subObjectId, ObjectType objectType, const string& name, const string& uniqueIdRef)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -437,7 +518,7 @@ Result OpenConfiguratorCore::CreateDomainSubObject(const string networkId, const
 	return res;
 }
 
-Result OpenConfiguratorCore::GetObjectSize(const string networkId, const uint8_t nodeId, uint32_t objectId, uint32_t& size)
+Result OpenConfiguratorCore::GetObjectSize(const std::string& networkId, const uint8_t nodeId, uint32_t objectId, uint32_t& size)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -458,7 +539,7 @@ Result OpenConfiguratorCore::GetObjectSize(const string networkId, const uint8_t
 	return res;
 }
 
-Result OpenConfiguratorCore::GetSubObjectSize(const string networkId, const uint8_t nodeId, uint32_t objectId, uint32_t subObjectId, uint32_t& size)
+Result OpenConfiguratorCore::GetSubObjectSize(const std::string& networkId, const uint8_t nodeId, uint32_t objectId, uint32_t subObjectId, uint32_t& size)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -501,7 +582,7 @@ Result OpenConfiguratorCore::GetFeatureDefaultValue(GeneralFeatureEnum feature, 
 	return Result();
 }
 
-Result OpenConfiguratorCore::SetFeatureValue(const string networkId, const uint8_t nodeId, CNFeatureEnum feature, const string value)
+Result OpenConfiguratorCore::SetFeatureValue(const std::string& networkId, const uint8_t nodeId, CNFeatureEnum feature, const std::string& value)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -518,7 +599,7 @@ Result OpenConfiguratorCore::SetFeatureValue(const string networkId, const uint8
 	return res;
 }
 
-Result OpenConfiguratorCore::SetFeatureValue(const string networkId, const uint8_t nodeId, MNFeatureEnum feature, const string value)
+Result OpenConfiguratorCore::SetFeatureValue(const std::string& networkId, const uint8_t nodeId, MNFeatureEnum feature, const std::string& value)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -534,7 +615,7 @@ Result OpenConfiguratorCore::SetFeatureValue(const string networkId, const uint8
 	return res;
 }
 
-Result OpenConfiguratorCore::SetFeatureValue(const string networkId, const uint8_t nodeId, GeneralFeatureEnum feature, const string value)
+Result OpenConfiguratorCore::SetFeatureValue(const std::string& networkId, const uint8_t nodeId, GeneralFeatureEnum feature, const std::string& value)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -550,7 +631,7 @@ Result OpenConfiguratorCore::SetFeatureValue(const string networkId, const uint8
 	return res;
 }
 
-Result OpenConfiguratorCore::CreateParameter(const string networkId, const uint8_t nodeId, const string uniqueID, ParameterAccess access, IEC_Datatype dataType)
+Result OpenConfiguratorCore::CreateParameter(const std::string& networkId, const uint8_t nodeId, const std::string& uniqueID, ParameterAccess access, IEC_Datatype dataType)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -567,7 +648,7 @@ Result OpenConfiguratorCore::CreateParameter(const string networkId, const uint8
 	return res;
 }
 
-Result OpenConfiguratorCore::CreateParameter(const string networkId, const uint8_t nodeId, const string uniqueID, ParameterAccess access)
+Result OpenConfiguratorCore::CreateParameter(const std::string& networkId, const uint8_t nodeId, const std::string& uniqueID, ParameterAccess access)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -584,7 +665,7 @@ Result OpenConfiguratorCore::CreateParameter(const string networkId, const uint8
 	return res;
 }
 
-Result OpenConfiguratorCore::CreateStructDatatype(const string networkId, const uint8_t nodeId, const string parameterUniqueId, const string uniqueId, const string name)
+Result OpenConfiguratorCore::CreateStructDatatype(const std::string& networkId, const uint8_t nodeId, const std::string& parameterUniqueId, const std::string& uniqueId, const std::string& name)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -617,7 +698,7 @@ Result OpenConfiguratorCore::CreateStructDatatype(const string networkId, const 
 	return res;
 }
 
-Result OpenConfiguratorCore::CreateVarDeclaration(const string networkId, const uint8_t nodeId, const string structUniqueId,  const string uniqueId, const string name,  IEC_Datatype datatype, uint32_t size, const string initialValue)
+Result OpenConfiguratorCore::CreateVarDeclaration(const std::string& networkId, const uint8_t nodeId, const std::string& structUniqueId, const std::string& uniqueId, const std::string& name, IEC_Datatype datatype, uint32_t size, const std::string& initialValue)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -649,7 +730,7 @@ Result OpenConfiguratorCore::CreateVarDeclaration(const string networkId, const 
 	return res;
 }
 
-Result OpenConfiguratorCore::CreateArrayDatatype(const string networkId, const uint8_t nodeId, const string parameterUniqueId, const string uniqueId, const string name, uint32_t lowerLimit, uint32_t upperLimit, IEC_Datatype dataType)
+Result OpenConfiguratorCore::CreateArrayDatatype(const std::string& networkId, const uint8_t nodeId, const std::string& parameterUniqueId, const std::string& uniqueId, const std::string& name, uint32_t lowerLimit, uint32_t upperLimit, IEC_Datatype dataType)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -682,7 +763,7 @@ Result OpenConfiguratorCore::CreateArrayDatatype(const string networkId, const u
 	return res;
 }
 
-Result OpenConfiguratorCore::CreateEnumDatatype(const string networkId, const uint8_t nodeId, const string parameterUniqueId, const string uniqueId, const string name, IEC_Datatype dataType, uint32_t size)
+Result OpenConfiguratorCore::CreateEnumDatatype(const std::string& networkId, const uint8_t nodeId, const std::string& parameterUniqueId, const std::string& uniqueId, const std::string& name, IEC_Datatype dataType, uint32_t size)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -714,7 +795,7 @@ Result OpenConfiguratorCore::CreateEnumDatatype(const string networkId, const ui
 	return res;
 }
 
-Result OpenConfiguratorCore::CreateEnumValue(const string networkId, const uint8_t nodeId, const string uniqueId, const string name, const string value)
+Result OpenConfiguratorCore::CreateEnumValue(const std::string& networkId, const uint8_t nodeId, const std::string& uniqueId, const std::string& name, const std::string& value)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -745,7 +826,7 @@ Result OpenConfiguratorCore::CreateEnumValue(const string networkId, const uint8
 	return res;
 }
 
-Result OpenConfiguratorCore::GetDatatypeSize(const string networkId, const uint8_t nodeId, const string dataTypeUniqueId, uint32_t& size)
+Result OpenConfiguratorCore::GetDatatypeSize(const std::string& networkId, const uint8_t nodeId, const std::string& dataTypeUniqueId, uint32_t& size)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -776,7 +857,7 @@ Result OpenConfiguratorCore::GetDatatypeSize(const string networkId, const uint8
 	return res;
 }
 
-Result OpenConfiguratorCore::CreateDynamicChannel(const string networkId, const uint8_t nodeId, PlkDataType dataType, AccessType accessType, uint32_t startIndex, uint32_t endIndex, uint32_t maxNumber, uint32_t addressOffset, uint8_t bitAlignment)
+Result OpenConfiguratorCore::CreateDynamicChannel(const std::string& networkId, const uint8_t nodeId, PlkDataType dataType, AccessType accessType, uint32_t startIndex, uint32_t endIndex, uint32_t maxNumber, uint32_t addressOffset, uint8_t bitAlignment)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -796,7 +877,7 @@ Result OpenConfiguratorCore::CreateDynamicChannel(const string networkId, const 
 	return res;
 }
 
-Result OpenConfiguratorCore::SetActiveManagingNode(const string networkId, const uint8_t nodeID)
+Result OpenConfiguratorCore::SetActiveManagingNode(const std::string& networkId, const uint8_t nodeID)
 {
 	//Only redundant managing nodes can be set active
 	if (nodeID > 240 && nodeID < 253)
@@ -829,7 +910,7 @@ Result OpenConfiguratorCore::SetActiveManagingNode(const string networkId, const
 	return Result(ErrorCode::NODEID_INVALID);
 }
 
-Result OpenConfiguratorCore::SetObjectActualValue(const string networkId, const uint8_t nodeId, uint32_t objectId, string actualValue, bool force)
+Result OpenConfiguratorCore::SetObjectActualValue(const std::string& networkId, const uint8_t nodeId, uint32_t objectId, const string& actualValue, bool force)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -845,7 +926,7 @@ Result OpenConfiguratorCore::SetObjectActualValue(const string networkId, const 
 	return res;
 }
 
-Result OpenConfiguratorCore::SetSubObjectActualValue(const string networkId, const uint8_t nodeId, uint32_t objectId, uint32_t subObjectId, string actualValue, bool force)
+Result OpenConfiguratorCore::SetSubObjectActualValue(const std::string& networkId, const uint8_t nodeId, uint32_t objectId, uint32_t subObjectId, const string& actualValue, bool force)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);

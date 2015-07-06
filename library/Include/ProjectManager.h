@@ -92,7 +92,7 @@ namespace IndustrialNetwork
 						\param[out] networkList& to the network list.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetNetworks(std::unordered_map<std::string, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network>>& networkList);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetNetworks(std::map<std::string, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network>>& networkList);
 
 						/**
 						\brief Clears the network list of the library.
@@ -138,7 +138,7 @@ namespace IndustrialNetwork
 						/**
 						List of managed networks.
 						*/
-						std::unordered_map<std::string, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network>> networkList;
+						std::map<std::string, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network>> networkList;
 
 				};
 

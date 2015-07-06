@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined OBJECT_H
 #define OBJECT_H
 
-#include <unordered_map>
+#include <map>
 #include <memory>
 #include <boost/format.hpp>
 
@@ -59,20 +59,17 @@ namespace IndustrialNetwork
 
 					public:
 						Object(std::uint32_t id, ObjectType objectType,  std::string name, std::uint8_t containingNode);
-						Object(std::uint32_t id, ObjectType objectType,  std::string name, std::uint8_t containingNode, PlkDataType dataType);
-						Object(std::uint32_t id, ObjectType objectType,  std::string name, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType); 	
 						Object(std::uint32_t id, ObjectType objectType,  std::string name, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping);
-
-						Object(std::uint32_t id, ObjectType objectType,  std::string name, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType, std::string defaultValue, std::string actualValue, std::uint32_t highlimit, std::uint32_t lowLimit);
-						Object(std::uint32_t id, ObjectType objectType,  std::string name, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping, std::string defaultValue, std::string actualValue, std::uint32_t highlimit, std::uint32_t lowLimit);
 						Object(std::uint32_t id, ObjectType objectType,  std::string name, std::uint8_t containingNode, std::string uniqueIdRef);
 
 						virtual ~Object();
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddSubobject(std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::SubObject>& ref);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetSubObject(std::uint32_t subObjectId, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::SubObject>& ref);
 
+						const std::map<std::uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::SubObject>>& GetSubObjectCollection();
+
 					private:
-						std::unordered_map<std::uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::SubObject>> subIndexCollection;
+						std::map<std::uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::SubObject>> subIndexCollection;
 
 				};
 

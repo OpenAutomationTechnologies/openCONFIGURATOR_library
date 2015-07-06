@@ -40,7 +40,6 @@ namespace IndustrialNetwork
 		{
 			namespace Utilities
 			{
-
 				template <typename T>
 				string IntToHex(const T number, const unsigned int padLength, const string& prefix, const string& suffix)
 				{
@@ -60,14 +59,23 @@ namespace IndustrialNetwork
 				template <typename T>
 				T HexToInt(const string& hexString)
 				{
-					// Strip prefix if necessary
-					string valueStr = (hexString.substr(0, 2) == "0x")
-					                  ? hexString.substr(2)
-					                  : hexString;
 					stringstream stream;
 					T value = 0;
-					stream << hex << valueStr;
-					stream >> value;
+					if (hexString.substr(0, 2) == "0x")
+					{
+						// Strip prefix if necessary
+						string valueStr = (hexString.substr(0, 2) == "0x")
+						                  ? hexString.substr(2)
+						                  : hexString;
+
+						stream << hex << valueStr;
+						stream >> value;
+					}
+					else
+					{
+						stream << dec << hexString;
+						stream >> value;
+					}
 					return value;
 				}
 
@@ -138,6 +146,49 @@ namespace IndustrialNetwork
 							break;
 					}
 					return 0;
+				}
+
+				//Convert float into the 32-bit binary encoding into hexadecimal (IEEE 754)
+				//Adapted from http://www.technical-recipes.com/2012/converting-between-binary-and-decimal-representations-of-ieee-754-floating-point-numbers-in-c/
+				int32_t FloatToSinglePrecisisionHex(float value)
+				{
+					union
+					{
+						float input;
+						int   output;
+					} data;
+
+					data.input = value;
+
+					std::bitset<sizeof(float) * CHAR_BIT>   bits(data.output);
+					std::string outputString = bits.to_string<char, std::char_traits<char>, std::allocator<char>>();
+
+					std::bitset<32> set(outputString);
+					int32_t hex = set.to_ulong();
+
+					return hex;
+				}
+
+				//Convert double into the 64-bit binary encoding into hexadecimal (IEEE 754)
+				//Adapted from http://www.technical-recipes.com/2012/converting-between-binary-and-decimal-representations-of-ieee-754-floating-point-numbers-in-c/
+				int64_t DoubleToDoublePrecisisionHex(double value)
+				{
+					union
+					{
+						double input;
+						long long output;
+					} data;
+
+					data.input = value;
+
+					std::bitset<sizeof(double) * CHAR_BIT>   bits(data.output);
+
+					std::string outputString = bits.to_string<char, std::char_traits<char>, std::allocator<char>>();
+
+					std::bitset<64> set(outputString);
+					int64_t hex = set.to_ullong();
+
+					return hex;
 				}
 			}
 		}

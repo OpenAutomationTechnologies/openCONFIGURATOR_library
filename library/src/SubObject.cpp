@@ -45,21 +45,8 @@ namespace IndustrialNetwork
 				SubObject::SubObject(uint32_t id, ObjectType objectType,  string name, uint8_t containingNode) : BaseObject(id, objectType, name, containingNode),
 					containingObject()
 				{}
-				SubObject::SubObject(uint32_t id, ObjectType objectType,  string name, uint8_t containingNode, PlkDataType dataType): BaseObject(id, objectType, name, containingNode, dataType),
-					containingObject()
-				{}
-				SubObject::SubObject(uint32_t id, ObjectType objectType,  string name, uint8_t containingNode, PlkDataType dataType, AccessType accessType) : BaseObject(id, objectType, name, containingNode, dataType, accessType),
-					containingObject()
-				{}
+
 				SubObject::SubObject(uint32_t id, ObjectType objectType,  string name, uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping) : BaseObject(id, objectType, name, containingNode, dataType, accessType, pdoMapping), 
-					containingObject()
-				{}
-
-				SubObject::SubObject(uint32_t id, ObjectType objectType,  string name, uint8_t containingNode, PlkDataType dataType, AccessType accessType, string defaultValue = "", string actualValue = "", uint32_t highLimit = 0, uint32_t lowLimit = 0) : BaseObject(id, objectType, name, containingNode, dataType, accessType, defaultValue, actualValue, highLimit, lowLimit),
-					containingObject()
-				{}
-
-				SubObject::SubObject(uint32_t id, ObjectType objectType,  string name, uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping, string defaultValue = "", string actualValue = "", uint32_t highLimit = 0, uint32_t lowLimit = 0) : BaseObject(id, objectType, name, containingNode, dataType, accessType, pdoMapping, defaultValue, actualValue, highLimit, lowLimit),
 					containingObject()
 				{}
 
