@@ -63,41 +63,15 @@ namespace openconfigurator_core_net_app
 
             // Add two nodes to the network
             core.CreateNode("test", 240, "MN");
-            core.CreateNode("test", 241, "Redundant_MN");
-            core.CreateNode("test", 242, "Redundant_MN");
-            core.CreateNode("test", 242, "already_existing");
 
-            core.CreateNode("test", 5, "Redundant_MN");
+            
             //core.CreateNode("test", 20, "Redundant_MN");
             //core.CreateNode("test", 30, "already_existing");
 
             var result = core.SetActiveManagingNode("test", 242);
             Console.WriteLine(result.IsSuccessful());
             Console.ReadLine();
-
-            core.CreateNode("test", 1, "CN");
-
-            // Get a node object from the library
-            var node = new ControlledNode(0);
-            var res = core.GetControlledNode("test", 1, node);
-            Console.WriteLine(res.IsSuccessful());
-            Console.WriteLine(node.GetName());
-
-            // Get a network from the library
-            var net2 = new Network();
-            res = core.GetNetwork("test", net2);
-            Console.WriteLine(res.IsSuccessful()); // should be true
-            Console.WriteLine(net2.GetNetworkId()); // should be the same
-            Console.WriteLine(net2.GetCycleTime()); // should be 10000
-
-            var support = new StringCollection();
-            res = core.GetSupportedSettingIds(support);
-            Console.WriteLine(res.IsSuccessful());
-            foreach (string t in support)
-            {
-                Console.WriteLine(t);
-            }
-
+            
             // Create settings for a configuration
             var mnMappingAll = new BuildConfigurationSetting(
                     "GENERATE_MN_MAPPING_FOR_NODES", "all");
@@ -150,11 +124,79 @@ namespace openconfigurator_core_net_app
 
             core.CreateConfiguration("test", "none");
 
+            core.CreateObject("test", 240, 0x1F81, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
+            core.CreateSubObject("test", 240, 0x1F81, 0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "3", "3");
+            core.CreateSubObject("test", 240, 0x1F81, 1, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            core.CreateSubObject("test", 240, 0x1F81, 2, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            core.CreateSubObject("test", 240, 0x1F81, 5, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            core.CreateSubObject("test", 240, 0x1F81, 10, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            core.CreateSubObject("test", 240, 0x1F81, 20, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+
             core.CreateObject("test", 240, 0x1600, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
             core.CreateSubObject("test", 240, 0x1600, 0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "10");
             core.CreateSubObject("test", 240, 0x1600, 1, ObjectType.VAR, "testName", PlkDataType.UNSIGNED16, AccessType.RW, PDOMapping.DEFAULT, "0", "100");
             core.CreateSubObject("test", 240, 0x1600, 2, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0x100");
             core.CreateSubObject("test", 240, 0x1600, 3, ObjectType.VAR, "testName", PlkDataType.UNSIGNED64, AccessType.RW, PDOMapping.DEFAULT, "0", "0x0010000000202104");
+
+            core.CreateObject("test", 240, 0x1F26, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
+            core.CreateSubObject("test", 240, 0x1F26, 0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "4", "4");
+            core.CreateSubObject("test", 240, 0x1F26, 1, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            core.CreateSubObject("test", 240, 0x1F26, 5, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            core.CreateSubObject("test", 240, 0x1F26, 10, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            core.CreateSubObject("test", 240, 0x1F26, 20, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+
+            core.CreateObject("test", 240, 0x1F27, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
+            core.CreateSubObject("test", 240, 0x1F27, 0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "4", "4");
+            core.CreateSubObject("test", 240, 0x1F27, 1, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            core.CreateSubObject("test", 240, 0x1F27, 5, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            core.CreateSubObject("test", 240, 0x1F27, 10, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            core.CreateSubObject("test", 240, 0x1F27, 20, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            
+            core.CreateNode("test", 10, "Redundant_MN");
+            core.CreateObject("test", 10, 0x1020, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
+            core.CreateSubObject("test", 10, 0x1020, 0, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "2", "2");
+            core.CreateSubObject("test", 10, 0x1020, 1, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            core.CreateSubObject("test", 10, 0x1020, 2, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+
+            core.CreateNode("test", 20, "Redundant_MN");
+            core.CreateObject("test", 20, 0x1020, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
+            core.CreateSubObject("test", 20, 0x1020, 0, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "2", "2");
+            core.CreateSubObject("test", 20, 0x1020, 1, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            core.CreateSubObject("test", 20, 0x1020, 2, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            
+            core.CreateNode("test", 1, "CN");
+            core.CreateObject("test", 1, 0x1020, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
+            core.CreateSubObject("test", 1, 0x1020, 0, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "2", "2");
+            core.CreateSubObject("test", 1, 0x1020, 1, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            core.CreateSubObject("test", 1, 0x1020, 2, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+
+            // Get a node object from the library
+            var node = new ControlledNode(0);
+            var res = core.GetControlledNode("test", 1, node);
+            Console.WriteLine(res.IsSuccessful());
+            Console.WriteLine(node.GetName());
+
+            // Get a network from the library
+            var net2 = new Network();
+            res = core.GetNetwork("test", net2);
+            Console.WriteLine(res.IsSuccessful()); // should be true
+            Console.WriteLine(net2.GetNetworkId()); // should be the same
+            Console.WriteLine(net2.GetCycleTime()); // should be 10000
+
+            var support = new StringCollection();
+            res = core.GetSupportedSettingIds(support);
+            Console.WriteLine(res.IsSuccessful());
+            foreach (string t in support)
+            {
+                Console.WriteLine(t);
+            }
+
+            core.CreateNode("test", 5, "Redundant_MN");
+
+            core.CreateObject("test", 5, 0x1020, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
+            core.CreateSubObject("test", 5, 0x1020, 0, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "2", "2");
+            core.CreateSubObject("test", 5, 0x1020, 1, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            core.CreateSubObject("test", 5, 0x1020, 2, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
 
             core.CreateObject("test", 5, 0x1600, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
             core.CreateSubObject("test", 5, 0x1600, 0, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "10");

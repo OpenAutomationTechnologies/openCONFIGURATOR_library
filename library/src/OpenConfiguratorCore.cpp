@@ -138,7 +138,9 @@ Result OpenConfiguratorCore::BuildConfiguration(const std::string& networkId, os
 	stringstream config;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
 	if (res.IsSuccessful())
-		ConfigurationGenerator::GetInstance().GenerateNetworkConfiguration(networkPtr, config);
+		res = networkPtr->GenerateConfiguration();
+	if (res.IsSuccessful())
+		res = ConfigurationGenerator::GetInstance().GenerateNetworkConfiguration(networkPtr, config);
 
 	return res;
 }
@@ -200,7 +202,7 @@ Result OpenConfiguratorCore::GetControlledNode(const std::string& networkId, con
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> nodePtr;
-		res = network->GetControlledNode(nodeID, nodePtr);
+		res = network->GetBaseNode(nodeID, nodePtr);
 		if (res.IsSuccessful())
 		{
 			node = *dynamic_pointer_cast<ControlledNode>(nodePtr).get();
@@ -369,7 +371,8 @@ Result OpenConfiguratorCore::CreateObject(const std::string& networkId, const ui
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network->GetControlledNode(nodeId, node);
+		res = network->GetBaseNode(nodeId, node);
+
 		if (res.IsSuccessful())
 		{
 			shared_ptr<Object> ptr(new Object(objectId, objectType, name, nodeId));
@@ -402,7 +405,7 @@ Result OpenConfiguratorCore::SetObjectLimits(const std::string& networkId, const
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network->GetControlledNode(nodeId, node);
+		res = network->GetBaseNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
 			shared_ptr<Object> obj;
@@ -424,7 +427,7 @@ Result OpenConfiguratorCore::CreateDomainObject(const std::string& networkId, co
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network->GetControlledNode(nodeId, node);
+		res = network->GetBaseNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
 			shared_ptr<Parameter> param;
@@ -447,7 +450,7 @@ Result OpenConfiguratorCore::CreateSubObject(const std::string& networkId, const
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network->GetControlledNode(nodeId, node);
+		res = network->GetBaseNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
 			shared_ptr<SubObject> ptr(new SubObject(subObjectId, objectType, name, nodeId));
@@ -480,7 +483,7 @@ Result OpenConfiguratorCore::SetSubObjectLimits(const std::string& networkId, co
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network->GetControlledNode(nodeId, node);
+		res = network->GetBaseNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
 			shared_ptr<SubObject> subObj;
@@ -502,7 +505,7 @@ Result OpenConfiguratorCore::CreateDomainSubObject(const std::string& networkId,
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network->GetControlledNode(nodeId, node);
+		res = network->GetBaseNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
 			shared_ptr<Parameter> param;
@@ -525,7 +528,7 @@ Result OpenConfiguratorCore::GetObjectSize(const std::string& networkId, const u
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network->GetControlledNode(nodeId, node);
+		res = network->GetBaseNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
 			shared_ptr<Object> object;
@@ -546,7 +549,7 @@ Result OpenConfiguratorCore::GetSubObjectSize(const std::string& networkId, cons
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network->GetControlledNode(nodeId, node);
+		res = network->GetBaseNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
 			shared_ptr<Object> object;
@@ -589,7 +592,7 @@ Result OpenConfiguratorCore::SetFeatureValue(const std::string& networkId, const
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network->GetControlledNode(nodeId, node);
+		res = network->GetBaseNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
 			node->GetNetworkManagement()->SetFeatureUntypedActualValue(feature, value);
@@ -606,7 +609,7 @@ Result OpenConfiguratorCore::SetFeatureValue(const std::string& networkId, const
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network->GetControlledNode(nodeId, node);
+		res = network->GetBaseNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
 			node->GetNetworkManagement()->SetFeatureUntypedActualValue(feature, value);
@@ -622,7 +625,7 @@ Result OpenConfiguratorCore::SetFeatureValue(const std::string& networkId, const
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network->GetControlledNode(nodeId, node);
+		res = network->GetBaseNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
 			node->GetNetworkManagement()->SetFeatureUntypedActualValue(feature, value);
@@ -638,7 +641,7 @@ Result OpenConfiguratorCore::CreateParameter(const std::string& networkId, const
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network->GetControlledNode(nodeId, node);
+		res = network->GetBaseNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
 			auto ptr = make_shared<Parameter>(uniqueID, access, dataType);
@@ -655,7 +658,7 @@ Result OpenConfiguratorCore::CreateParameter(const std::string& networkId, const
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network->GetControlledNode(nodeId, node);
+		res = network->GetBaseNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
 			auto ptr = make_shared<Parameter>(uniqueID, access);
@@ -672,7 +675,7 @@ Result OpenConfiguratorCore::CreateStructDatatype(const std::string& networkId, 
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network->GetControlledNode(nodeId, node);
+		res = network->GetBaseNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
 			auto& parameterList = node->GetApplicationProcess()->GetParameterList();
@@ -705,7 +708,7 @@ Result OpenConfiguratorCore::CreateVarDeclaration(const std::string& networkId, 
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network->GetControlledNode(nodeId, node);
+		res = network->GetBaseNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
 			auto& parameterList = node->GetApplicationProcess()->GetParameterList();
@@ -737,7 +740,7 @@ Result OpenConfiguratorCore::CreateArrayDatatype(const std::string& networkId, c
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network->GetControlledNode(nodeId, node);
+		res = network->GetBaseNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
 			auto& parameterList = node->GetApplicationProcess()->GetParameterList();
@@ -770,7 +773,7 @@ Result OpenConfiguratorCore::CreateEnumDatatype(const std::string& networkId, co
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network->GetControlledNode(nodeId, node);
+		res = network->GetBaseNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
 			auto& parameterList = node->GetApplicationProcess()->GetParameterList();
@@ -802,7 +805,7 @@ Result OpenConfiguratorCore::CreateEnumValue(const std::string& networkId, const
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network->GetControlledNode(nodeId, node);
+		res = network->GetBaseNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
 			auto& parameterList = node->GetApplicationProcess()->GetParameterList();
@@ -833,7 +836,7 @@ Result OpenConfiguratorCore::GetDatatypeSize(const std::string& networkId, const
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network->GetControlledNode(nodeId, node);
+		res = network->GetBaseNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
 			auto& parameterList = node->GetApplicationProcess()->GetParameterList();
@@ -864,7 +867,7 @@ Result OpenConfiguratorCore::CreateDynamicChannel(const std::string& networkId, 
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network->GetControlledNode(nodeId, node);
+		res = network->GetBaseNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
 			auto mnPtr = dynamic_pointer_cast<ManagingNode>(node);
@@ -887,7 +890,7 @@ Result OpenConfiguratorCore::SetActiveManagingNode(const std::string& networkId,
 		if (res.IsSuccessful())
 		{
 			shared_ptr<BaseNode> node;
-			res = network->GetControlledNode(nodeID, node);
+			res = network->GetBaseNode(nodeID, node);
 			if (res.IsSuccessful())
 			{
 				auto mnPtr = dynamic_pointer_cast<ManagingNode>(node);
@@ -917,7 +920,7 @@ Result OpenConfiguratorCore::SetObjectActualValue(const std::string& networkId, 
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network->GetControlledNode(nodeId, node);
+		res = network->GetBaseNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
 			res = node->ForceObject(objectId, force, actualValue);
@@ -933,7 +936,7 @@ Result OpenConfiguratorCore::SetSubObjectActualValue(const std::string& networkI
 	if (res.IsSuccessful())
 	{
 		shared_ptr<BaseNode> node;
-		res = network->GetControlledNode(nodeId, node);
+		res = network->GetBaseNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
 			res = node->ForceSubObject(objectId, subObjectId, force, actualValue);

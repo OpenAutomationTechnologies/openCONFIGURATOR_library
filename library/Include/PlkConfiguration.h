@@ -33,11 +33,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define PLK_CONFIGURATION_H
 
 #include <iostream>
+#include <memory>
+#include <chrono>
+
 #include "IBuildConfiguration.h"
 #include "Result.h"
 #include "ErrorCode.h"
 #include "Constants.h"
 #include "BuildConfigurationSetting.h"
+#include "BaseNode.h"
 
 namespace IndustrialNetwork
 {
@@ -56,13 +60,25 @@ namespace IndustrialNetwork
 
 					public:
 						PlkConfiguration();
-						PlkConfiguration(std::string name);
+						PlkConfiguration(const std::string& name);
 						~PlkConfiguration();
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GenerateConfiguration();
-						const std::string GetConfigurationName();
-						void SetConfigurationName(const std::string);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GenerateConfiguration(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
+
+						const std::string& GetConfigurationName();
+						void SetConfigurationName(const std::string&);
 					private:
 						std::string configurationName;
+
+						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeCycleTime();
+						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeNodeAssignment();
+						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributePResPayloadLimitList();
+						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeAsyncMtu();
+						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributePrescaler();
+						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeMultiplCycleCount();
+						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeSDOSeqLayerTimeout();
+						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeSDOCmdLayerTimeout();
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeDateTimeStamps(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
 				};
 
 			}

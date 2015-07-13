@@ -152,10 +152,10 @@ uint32_t ManagingNode::GetConfigurationObjectCount()
 				if (!subobject.second->GetActualValue().empty())
 					count += 2;
 			}
-			else if (object.first >= 0x1F81 && subobject.first != 0x0) //Count for node assignement and reassignment
+			else if (object.first >= 0x1F81 && subobject.first != 0x0) //Count for node assignement and reassignment and 1F22
 			{
 				if (subobject.second->WriteToConfiguration())
-					count += 2;
+					count += 3;
 			}
 			else if (subobject.second->WriteToConfiguration())
 			{

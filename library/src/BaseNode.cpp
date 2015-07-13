@@ -262,7 +262,7 @@ Result BaseNode::ForceSubObject(uint32_t objectId, uint32_t subObjectId, bool fo
 
 		if (!actualValue.empty())
 		{
-			iter->second->SetTypedObjectActualValue(actualValue);
+			subObject->SetTypedObjectActualValue(actualValue);
 			//Log info actual value set
 			boost::format formatter(kMsgSetSubObjectActualValue);
 			formatter
@@ -305,7 +305,7 @@ Result BaseNode::SetSubObjectActualValue(uint32_t objectId, uint32_t subObjectId
 	{
 		if (!actualValue.empty())
 		{
-			iter->second->SetTypedObjectActualValue(actualValue);
+			subObject->SetTypedObjectActualValue(actualValue);
 			//Log info actual value set
 			boost::format formatter(kMsgSetSubObjectActualValue);
 			formatter

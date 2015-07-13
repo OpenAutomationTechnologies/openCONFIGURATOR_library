@@ -34,35 +34,103 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::Configuration;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
+using namespace IndustrialNetwork::POWERLINK::Core::Node;
 
-
-PlkConfiguration::PlkConfiguration() : 
+PlkConfiguration::PlkConfiguration() :
 	IBuildConfiguration<BuildConfigurationSetting>(),
 	configurationName("")
 {}
 
-PlkConfiguration::PlkConfiguration(std::string name) : 
+PlkConfiguration::PlkConfiguration(const string& name) :
 	IBuildConfiguration<BuildConfigurationSetting>(),
 	configurationName(name)
 {}
 
-
 PlkConfiguration::~PlkConfiguration()
 {}
 
-Result PlkConfiguration::GenerateConfiguration()
+Result PlkConfiguration::GenerateConfiguration(const map<uint8_t, shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection)
 {
-	return Result();
+	Result res = DistributeDateTimeStamps(nodeCollection);
+	return res;
 }
 
-const string PlkConfiguration::GetConfigurationName()
+const string& PlkConfiguration::GetConfigurationName()
 {
 	return this->configurationName;
 }
 
-void PlkConfiguration::SetConfigurationName(const string configName)
+void PlkConfiguration::SetConfigurationName(const string& configName)
 {
 	this->configurationName = configName;
+}
+
+Result PlkConfiguration::DistributeDateTimeStamps(const map<uint8_t, shared_ptr<BaseNode>>& nodeCollection)
+{
+	Result res;
+	// Get current locale time
+	auto now = chrono::system_clock::now();
+
+	// Create days since 01/01/1984
+	tm timeinfo = tm();
+	timeinfo.tm_year = 84;   // year: 1984
+	timeinfo.tm_mon = 0;      // month: january
+	timeinfo.tm_mday = 1;     // day: 1st
+	time_t epoch = mktime(&timeinfo);
+
+	auto epoch_time_point = chrono::system_clock::from_time_t (epoch);
+	auto daysSinceEpoch = chrono::duration_cast<chrono::duration<int, ratio<60 * 60 * 24>>> (now - epoch_time_point);
+
+	// Create milliseconds since midnight
+	time_t tnow = chrono::system_clock::to_time_t(now);
+	tm* date = localtime(&tnow); // today
+	date->tm_hour = 0; // set to midnight
+	date->tm_min = 0;
+	date->tm_sec = 0;
+	auto midnight = chrono::system_clock::from_time_t(mktime(date));
+	auto millisecondsSinceMidnight = chrono::duration_cast<chrono::milliseconds>(now - midnight);
+
+	cout << hex << daysSinceEpoch.count() << endl;
+	cout << hex << millisecondsSinceMidnight.count() << endl;
+
+	stringstream dateString;
+	dateString << daysSinceEpoch.count();
+
+	stringstream timeString;
+	timeString << millisecondsSinceMidnight.count();
+
+	for (auto& node :  nodeCollection)
+	{
+		if (node.first == 240)
+		{
+			for (auto& nodeIds :  nodeCollection)
+			{
+				if (node.first != nodeIds.first)
+				{
+					res = node.second->SetSubObjectActualValue(0x1F26, nodeIds.first, dateString.str());
+					if (!res.IsSuccessful())
+						return res;
+					res = node.second->SetSubObjectActualValue(0x1F27, nodeIds.first, timeString.str());
+					if (!res.IsSuccessful())
+						return res;
+				}
+			}
+		}
+		else
+		{
+			res = node.second->SetSubObjectActualValue(0x1020, 0x1, dateString.str());
+			if (!res.IsSuccessful())
+				return res;
+			res = node.second->SetSubObjectActualValue(0x1020, 0x2, timeString.str());
+			if (
+				
+				!res.IsSuccessful())
+				return res;
+
+		}
+
+	}
+	return res;
 }
 
 

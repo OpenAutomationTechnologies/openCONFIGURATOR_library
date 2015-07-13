@@ -84,6 +84,10 @@ Result Network::AddNode(shared_ptr<ControlledNode>& node)
 	% (uint32_t) node->GetNodeIdentifier();
 	LOG_INFO() << formatter.str();
 	this->nodeCollection.insert(pair<uint8_t, shared_ptr<BaseNode>>(node->GetNodeIdentifier(), node));
+
+	//Force Node Assignement with actual value "0"
+	this->nodeCollection.at(240)->ForceSubObject(0x1F81, node->GetNodeIdentifier(), true, "0");
+
 	return Result();
 }
 
@@ -110,7 +114,7 @@ Result Network::AddNode(shared_ptr<ManagingNode>& node)
 	return Result();
 }
 
-Result Network::GetControlledNode(const uint8_t nodeID, shared_ptr<BaseNode>& node)
+Result Network::GetBaseNode(const uint8_t nodeID, shared_ptr<BaseNode>& node)
 {
 	for (auto& var : this->nodeCollection)
 	{
@@ -507,4 +511,17 @@ Result Network::SetActiveConfiguration(const string configID)
 	% this->networkId;
 	LOG_FATAL() << formatter.str();
 	return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST);
+}
+
+Result Network::GenerateConfiguration()
+{
+	Result res;
+	for (auto& config : this->buildConfigurations)
+	{
+		if (config->GetConfigurationName() == this->GetActiveConfiguration())
+		{
+			res = config->GenerateConfiguration(this->nodeCollection);
+		}
+	}
+	return res;
 }
