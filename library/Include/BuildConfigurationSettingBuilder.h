@@ -1,6 +1,6 @@
 /************************************************************************
-\file PLKBuildConfigurationSetting.h
-\brief Implementation of the Class PLKBuildConfigurationSetting
+\file BuildConfigurationSettingBuilder.h
+\brief Implementation of the Class BuildConfigurationSettingBuilder
 \author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 \date 28-Apr-2015 14:40:00
 ************************************************************************/
@@ -29,17 +29,15 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
-#if !defined PLK_BUILD_CONFIGURATION_SETTING_H
-#define PLK_BUILD_CONFIGURATION_SETTING_H
+#if !defined PLK_BUILD_CONFIGURATION_SETTING_BUILDER_H
+#define PLK_BUILD_CONFIGURATION_SETTING_BUILDER_H
 
-#include <vector>
 #include <map>
+#include <cstdint>
 #include <memory>
-#include <boost/format.hpp>
-#include "IResult.h"
+
 #include "IBuildConfigurationSetting.h"
 #include "BuildConfigurationId.h"
-#include "BuildConfigurationSettingBuilder.h"
 #include "Result.h"
 #include "ErrorCode.h"
 #include "Constants.h"
@@ -54,28 +52,15 @@ namespace IndustrialNetwork
 		{
 			namespace Configuration
 			{
-				/**
-				\brief Represents one build configuration setting in the POWERLINK network.
-				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
-				*/
-				class DLLEXPORT BuildConfigurationSetting : public IndustrialNetwork::Fieldbus::IBuildConfigurationSetting
+				class BuildConfigurationSettingBuilder
 				{
 					public:
-						BuildConfigurationSetting();
-						~BuildConfigurationSetting();
+						BuildConfigurationSettingBuilder()
+						{}
+						~BuildConfigurationSettingBuilder()
+						{}
+						virtual IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GenerateConfiguration(const std::string& value, const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection) = 0;
 
-						/**
-						\brief Constructor for the BuildConfigurationHandler class.
-						\param[in] id BuildConfigurationSettingId for the setting.
-						\param[in] value string of the setting. Default value is empty.
-						*/
-						BuildConfigurationSetting(std::string name, std::string value = "");
-
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GenerateConfiguration(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
-
-					private:
-						void InitConfigurationSetting(std::string id);
-						std::shared_ptr<BuildConfigurationSettingBuilder> configurationBuilder;
 				};
 			}
 		}

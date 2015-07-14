@@ -71,24 +71,7 @@ namespace openconfigurator_core_net_app
             var result = core.SetActiveManagingNode("test", 242);
             Console.WriteLine(result.IsSuccessful());
             Console.ReadLine();
-            
-            // Create settings for a configuration
-            var mnMappingAll = new BuildConfigurationSetting(
-                    "GENERATE_MN_MAPPING_FOR_NODES", "all");
-            var nodeAssignmentAll = new BuildConfigurationSetting(
-                    "GENERATE_MN_NODE_ASSIGNMENT_FOR_NODES", "all");
-            var presTimeOutAll = new BuildConfigurationSetting(
-                    "GENERATE_MN_PRES_TIMEOUT_FOR_NODES", "all");
-
-            // Enable all the settings (are enabled per default)
-            mnMappingAll.SetEnabled(true);
-            nodeAssignmentAll.SetEnabled(true);
-            presTimeOutAll.SetEnabled(true);
-
-            // Print setting info
-            Console.WriteLine(mnMappingAll.GetDescription());
-            Console.WriteLine(nodeAssignmentAll.GetDescription());
-            Console.WriteLine(presTimeOutAll.GetDescription());
+          
 
             // Create settings configuration
             /*
@@ -113,14 +96,17 @@ namespace openconfigurator_core_net_app
              */
             core.CreateConfiguration("test", "custom");
             core.CreateConfigurationSetting("test", "custom", "GENERATE_MN_MAPPING_FOR_NODES", "1");
-            core.CreateConfigurationSetting("test", "custom", "GENERATE_MN_NODE_ASSIGNMENT_FOR_NODES", "1");
+            core.CreateConfigurationSetting("test", "custom", "GENERATE_MN_NODE_ASSIGNMENT_FOR_NODES", "");
             core.CreateConfigurationSetting("test", "custom", "GENERATE_MN_PRES_TIMEOUT_FOR_NODES", "1");
+
 
             var coll = new SettingsCollection();
             Console.WriteLine(core.GetConfigurationSettings("test", "all", coll).GetErrorType());
             Console.WriteLine(coll.Count);
             Console.WriteLine(core.SetConfigurationSettingEnabled("test", "all",
-                    "GENERATE_MN_MAPPING_FOR_NODES", false).GetErrorType());
+                    "GENERATE_MN_NODE_ASSIGNMENT_FOR_NODES", false).GetErrorType());
+
+            core.SetActiveConfiguration("test", "custom");
 
             core.CreateConfiguration("test", "none");
 

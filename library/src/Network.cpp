@@ -176,7 +176,20 @@ Result Network::RemoveNode(const uint8_t nodeID)
 	formatter
 	% (uint32_t) nodeID;
 	LOG_INFO() << formatter.str();
-	return Result();
+
+	//Remove CN related MN objects
+	shared_ptr<ManagingNode> mn;
+	Result res = this->GetManagingNode(mn);
+	if (res.IsSuccessful())
+	{
+		//Reset 0x1F26 / nodeID
+		mn->ForceSubObject(0x1F26, nodeID, false, "0");
+		//Reset 0x1F27 / nodeID
+		mn->ForceSubObject(0x1F27, nodeID, false, "0");
+		//Reset 0x1F82 / nodeID
+		mn->ForceSubObject(0x1F81, nodeID, false, "0");
+	}
+	return res;
 }
 
 Result Network::GetNodes(map<uint8_t, shared_ptr<BaseNode>>& nodeCollection)

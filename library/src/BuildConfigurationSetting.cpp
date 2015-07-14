@@ -35,13 +35,16 @@ using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::Configuration;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
+using namespace IndustrialNetwork::POWERLINK::Core::Node;
 
 BuildConfigurationSetting::BuildConfigurationSetting()
-	:  IndustrialNetwork::Fieldbus::IBuildConfigurationSetting()
+	:  IndustrialNetwork::Fieldbus::IBuildConfigurationSetting(),
+	   configurationBuilder(std::shared_ptr<BuildConfigurationSettingBuilder>())
 {}
 
 BuildConfigurationSetting::BuildConfigurationSetting(string id, string value)
-	:  IndustrialNetwork::Fieldbus::IBuildConfigurationSetting(id, value)
+	:  IndustrialNetwork::Fieldbus::IBuildConfigurationSetting(id, value),
+	   configurationBuilder(std::shared_ptr<BuildConfigurationSettingBuilder>())
 {
 	InitConfigurationSetting(id);
 }
@@ -54,14 +57,7 @@ void BuildConfigurationSetting::InitConfigurationSetting(string id)
 	if (id == "GENERATE_MN_MAPPING_FOR_NODES")
 	{
 		this->SetDescription(BuildConfigurationIdDescription[BuildConfigurationId::GENERATE_MN_MAPPING_FOR_NODES]);
-	}
-	else if (id == "GENERATE_MN_NODE_ASSIGNMENT_FOR_NODES")
-	{
-		this->SetDescription(BuildConfigurationIdDescription[BuildConfigurationId::GENERATE_MN_NODE_ASSIGNMENT_FOR_NODES]);
-	}
-	else if (id == "GENERATE_MN_PRES_TIMEOUT_FOR_NODES")
-	{
-		this->SetDescription(BuildConfigurationIdDescription[BuildConfigurationId::GENERATE_MN_MAPPING_FOR_NODES]);
+		//Add builder for setting
 	}
 	else
 	{
@@ -71,5 +67,13 @@ void BuildConfigurationSetting::InitConfigurationSetting(string id)
 		% id;
 		LOG_FATAL() << formatter.str();
 	}
+}
+
+Result BuildConfigurationSetting::GenerateConfiguration(const map<uint8_t, shared_ptr<BaseNode>>& nodeCollection)
+{
+	if (this->configurationBuilder) // Remove when all builder are implemented
+		return this->configurationBuilder->GenerateConfiguration(this->GetValue(), nodeCollection);
+	else
+		return Result();
 }
 

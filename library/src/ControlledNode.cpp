@@ -39,10 +39,10 @@ using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 ControlledNode::ControlledNode(uint8_t nodeID, const string nodeName) : BaseNode(nodeID, nodeName),
 	operationMode(PlkOperationMode::NORMAL)
 {
-	AddNodeAssignement(NodeAssignment::MNT_NODEASSIGN_VALID);
-	AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_NODE_EXISTS);
-	AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_NODE_IS_CN);
-	AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_START_CN);
+	this->AddNodeAssignement(NodeAssignment::MNT_NODEASSIGN_VALID);
+	this->AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_NODE_EXISTS);
+	this->AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_NODE_IS_CN);
+	this->AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_START_CN);
 }
 
 ControlledNode::~ControlledNode()
@@ -151,7 +151,7 @@ uint32_t ControlledNode::GetConfigurationObjectSize()
 			}
 			else if (subobject.second->WriteToConfiguration())
 			{
-				size+= subobject.second->GetBitSize();
+				size += subobject.second->GetBitSize();
 			}
 		}
 	}

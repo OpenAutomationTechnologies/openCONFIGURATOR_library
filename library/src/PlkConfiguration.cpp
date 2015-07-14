@@ -51,7 +51,19 @@ PlkConfiguration::~PlkConfiguration()
 
 Result PlkConfiguration::GenerateConfiguration(const map<uint8_t, shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection)
 {
-	Result res = DistributeDateTimeStamps(nodeCollection);
+	Result res;
+	for (auto& config_setting : this->GetBuildConfigurationSettings())
+	{
+		if (config_setting->IsEnabled())
+		{
+			res = config_setting->GenerateConfiguration(nodeCollection);
+		}
+	}
+
+	res = DistributeNodeAssignment(nodeCollection);
+	if (!res.IsSuccessful())
+		return res;
+	res = DistributeDateTimeStamps(nodeCollection);
 	return res;
 }
 
@@ -101,7 +113,7 @@ Result PlkConfiguration::DistributeDateTimeStamps(const map<uint8_t, shared_ptr<
 
 	for (auto& node :  nodeCollection)
 	{
-		if (node.first == 240)
+		if (node.first == 240) //Set MN date and time objects 1F26 / 1F27
 		{
 			for (auto& nodeIds :  nodeCollection)
 			{
@@ -118,19 +130,36 @@ Result PlkConfiguration::DistributeDateTimeStamps(const map<uint8_t, shared_ptr<
 		}
 		else
 		{
+			//Set CN date and time objects 1020/01 and 1020/02
 			res = node.second->SetSubObjectActualValue(0x1020, 0x1, dateString.str());
 			if (!res.IsSuccessful())
 				return res;
 			res = node.second->SetSubObjectActualValue(0x1020, 0x2, timeString.str());
-			if (
-				
-				!res.IsSuccessful())
+			if (!res.IsSuccessful())
 				return res;
-
 		}
 
 	}
 	return res;
+}
+
+Result PlkConfiguration::DistributeNodeAssignment(const map<uint8_t, shared_ptr<BaseNode>>& nodeCollection)
+{
+	stringstream nodeAssignmentStr;
+	auto& mn = nodeCollection.at(240);
+
+	for (auto& node : nodeCollection)
+	{
+		if (node.first != 240)
+		{
+			nodeAssignmentStr << node.second->GetNodeAssignmentValue();
+			mn->SetSubObjectActualValue(0x1F81, node.second->GetNodeIdentifier(), nodeAssignmentStr.str());
+			nodeAssignmentStr.str(string());
+		}
+	}
+
+
+	return Result();
 }
 
 

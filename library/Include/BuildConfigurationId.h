@@ -49,22 +49,16 @@ namespace IndustrialNetwork
 				enum BuildConfigurationId
 				{
 					GENERATE_MN_MAPPING_FOR_NODES, ///< Generate the MN mapping for nodes in the POWERLINK network.
-					GENERATE_MN_NODE_ASSIGNMENT_FOR_NODES, ///< Generate the MN node assignment for all nodes in the POWERLINK network.
-					GENERATE_MN_PRES_TIMEOUT_FOR_NODES, ///< Generate the MN PRes timeouts for all nodes in the POWERLINK network.
 				};
 
 				static const std::string BuildConfigurationIdName[] =
 				{
 					"GENERATE_MN_MAPPING_FOR_NODES", ///< Generate the MN mapping for nodes in the POWERLINK network.
-					"GENERATE_MN_NODE_ASSIGNMENT_FOR_NODES", ///< Generate the MN node assignment for nodes in the POWERLINK network.
-					"GENERATE_MN_PRES_TIMEOUT_FOR_NODES", ///< Generate the MN PRes timeouts for nodes in the POWERLINK network.
 				};
 
 				static const std::string BuildConfigurationIdDescription[] =
 				{
 					"Generate the MN mapping for nodes in the POWERLINK network.",
-					"Generate the MN node assignment for nodes in the POWERLINK network.",
-					"Generate the MN PRes timeouts for nodes in the POWERLINK network.",
 				};
 			}
 		}

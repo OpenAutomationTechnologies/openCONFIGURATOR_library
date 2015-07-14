@@ -70,13 +70,14 @@ namespace IndustrialNetwork
 						std::string configurationName;
 
 						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeCycleTime();
-						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeNodeAssignment();
 						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributePResPayloadLimitList();
 						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeAsyncMtu();
 						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributePrescaler();
 						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeMultiplCycleCount();
 						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeSDOSeqLayerTimeout();
 						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeSDOCmdLayerTimeout();
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeNodeAssignment(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeDateTimeStamps(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
 				};

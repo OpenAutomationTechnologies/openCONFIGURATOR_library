@@ -99,75 +99,37 @@ Result ConfigurationGenerator::WriteNodeAssignement(const shared_ptr<Network>& n
 {
 	map<uint8_t, shared_ptr<BaseNode>> nodes;
 	Result res = net->GetNodes(nodes);
-
-	if (!res.IsSuccessful())
-		return res;
-
-	shared_ptr<ManagingNode> mn;
-	res = net->GetManagingNode(mn);
-
-	if (!res.IsSuccessful())
-		return res;
-
-	shared_ptr<Object> obj;
-	res = mn->GetObject(0x1F81, obj);
-	if (!res.IsSuccessful())
-		return res;
-
-
-	for (auto& nodeIds :  nodes)
+	if (res.IsSuccessful())
 	{
-		if (nodeIds.first != 240)
+		for (auto& node : nodes)
 		{
-			shared_ptr<SubObject> subObj;
-			res = obj->GetSubObject(nodeIds.first, subObj);
-			if (!res.IsSuccessful())
-				return res;
-
-			if (subObj->WriteToConfiguration())
+			if (node.first != 240)
 			{
+				if (!writeNodeValid)
+					node.second->RemoveNodeAssignment(NodeAssignment::MNT_NODEASSIGN_VALID);
+
 				if (writeNodeValid)
 					configurationOutput << "//// NodeId Reassignment" << endl;
 				else
 					configurationOutput << "//// NodeId Assignment" << endl;
-				configurationOutput << hex << uppercase << obj->GetId();
+
+				configurationOutput << hex << uppercase << 0x1F81;
 				configurationOutput << "\t";
-				configurationOutput << hex << uppercase << setw(2) << setfill('0') << subObj->GetId();
+				configurationOutput << hex << uppercase << setw(2) << setfill('0') << (uint32_t) node.first;
 				configurationOutput << "\t";
-				configurationOutput << hex << uppercase << setw(8) << setfill('0') << (subObj->GetBitSize() / 8);
+				configurationOutput << hex << uppercase << setw(8) << setfill('0') << 0x4;
 				configurationOutput << "\t";
-				configurationOutput << subObj->GetTypedActualValue<string>() << endl;
+				configurationOutput << hex << uppercase << setw(8) << setfill('0') << node.second->GetNodeAssignmentValue() << endl;
+
+				if (!writeNodeValid)
+					node.second->AddNodeAssignement(NodeAssignment::MNT_NODEASSIGN_VALID);
+
+
 			}
 		}
 	}
 	configurationOutput << endl;
 
-//map<uint8_t, shared_ptr<BaseNode>> nodes;
-//Result res = net->GetNodes(nodes);
-//if (res.IsSuccessful())
-//{
-//	for (auto& node : nodes)
-//	{
-//		if (node.first != 240)
-//		{
-//			if (!writeNodeValid)
-//				node.second->RemoveNodeAssignment(NodeAssignment::MNT_NODEASSIGN_VALID);
-
-//			configurationOutput << hex << uppercase << 0x1F81;
-//			configurationOutput << "\t";
-//			configurationOutput << hex << uppercase << setw(2) << setfill('0') << (uint32_t) node.first;
-//			configurationOutput << "\t";
-//			configurationOutput << hex << uppercase << setw(8) << setfill('0') << 0x4;
-//			configurationOutput << "\t";
-//			configurationOutput << hex << uppercase << setw(8) << setfill('0') << node.second->GetNodeAssignmentValue() << endl;
-
-//			if (!writeNodeValid)
-//				node.second->AddNodeAssignement(NodeAssignment::MNT_NODEASSIGN_VALID);
-
-
-//		}
-//	}
-//}
 	return res;
 }
 
@@ -193,7 +155,7 @@ Result ConfigurationGenerator::WriteControlledNodeConfiguration(const shared_ptr
 	if (cn.use_count() == 0)
 		return Result();
 
-	configurationOutput << "////Configuration Data for CN-" << dec << (uint32_t) node->GetNodeIdentifier() << endl;
+	configurationOutput << "////Configuration Data for CN: " << node->GetName() << "(" << dec << (uint32_t) node->GetNodeIdentifier() << ")"<< endl;
 	configurationOutput << hex << uppercase << "1F22";
 	configurationOutput << "\t";
 	configurationOutput << hex << uppercase << setw(2) << setfill('0') << (uint32_t) node->GetNodeIdentifier();
@@ -244,7 +206,7 @@ Result ConfigurationGenerator::WriteMappingObjects(const shared_ptr<BaseNode>& n
 		if ((object.first >= 0x1600 && object.first <= 0x16FF) || (object.first >= 0x1A00 && object.first <= 0x1AFF))
 		{
 			uint16_t numberOfIndicesToWrite = 0;
-			auto subobject = object.second->GetSubObjectCollection().at((uint8_t) 0);
+			auto& subobject = object.second->GetSubObjectCollection().at((uint8_t) 0);
 			if (subobject->WriteToConfiguration())
 				numberOfIndicesToWrite = subobject->GetTypedActualValue<uint16_t>();
 
