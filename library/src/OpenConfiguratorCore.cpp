@@ -132,7 +132,7 @@ Result OpenConfiguratorCore::SetPrescaler(const std::string& networkId, uint32_t
 	return res;
 }
 
-Result OpenConfiguratorCore::BuildConfiguration(const std::string& networkId, ostream& configuration)
+Result OpenConfiguratorCore::BuildConfiguration(const std::string& networkId, string& configurationOutput)
 {
 	shared_ptr<Network> networkPtr;
 	stringstream config;
@@ -142,10 +142,11 @@ Result OpenConfiguratorCore::BuildConfiguration(const std::string& networkId, os
 	if (res.IsSuccessful())
 		res = ConfigurationGenerator::GetInstance().GenerateNetworkConfiguration(networkPtr, config);
 
+	configurationOutput = config.str();
 	return res;
 }
 
-Result OpenConfiguratorCore::BuildProcessImage(const std::string& networkId, ostream& configuration)
+Result OpenConfiguratorCore::BuildProcessImage(const std::string& networkId, string& configurationOutput)
 {
 	return Result(ErrorCode::UNHANDLED_EXCEPTION);
 }

@@ -177,7 +177,7 @@ namespace openconfigurator_core_net_app
                 Console.WriteLine(t);
             }
 
-            core.CreateNode("test", 5, "Redundant_MN");
+            core.CreateNode("test", 5, "node");
 
             core.CreateObject("test", 5, 0x1020, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
             core.CreateSubObject("test", 5, 0x1020, 0, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "2", "2");
@@ -230,7 +230,7 @@ namespace openconfigurator_core_net_app
             core.CreateSubObject("test", 5, 0x1A00, 0x0c, ObjectType.DEFTYPE, "Name", PlkDataType.IP_ADDRESS, AccessType.RW, PDOMapping.RPDO, "100", "1.1.1.1");
             core.CreateSubObject("test", 5, 0x1A00, 0x04, ObjectType.DEFTYPE, "Name", PlkDataType.BOOLEAN, AccessType.RW, PDOMapping.RPDO, "false", "true");
             core.CreateSubObject("test", 5, 0x1A00, 0x05, ObjectType.DEFTYPE, "Name", PlkDataType.MAC_ADDRESS, AccessType.RW, PDOMapping.RPDO, "0", "0x000A086121012");
-            core.CreateSubObject("test", 5, 0x1A00, 0x06, ObjectType.DEFTYPE, "Name", PlkDataType.REAL32, AccessType.RW, PDOMapping.RPDO, "0", "1267.43233E12");
+            core.CreateSubObject("test", 5, 0x1A00, 0x06, ObjectType.DEFTYPE, "Name", PlkDataType.REAL32, AccessType.RW, PDOMapping.RPDO, "0", "1267432.33E12");
             core.CreateSubObject("test", 5, 0x1A00, 0x07, ObjectType.DEFTYPE, "Name", PlkDataType.REAL32, AccessType.RW, PDOMapping.RPDO, "0", "1.234532432");
             core.CreateSubObject("test", 5, 0x1A00, 0x08, ObjectType.DEFTYPE, "Name", PlkDataType.REAL64, AccessType.RW, PDOMapping.RPDO, "0", "-1E4");
             core.CreateSubObject("test", 5, 0x1A00, 0x09, ObjectType.DEFTYPE, "Name", PlkDataType.REAL64, AccessType.RW, PDOMapping.RPDO, "0", "12.78e-2");
@@ -321,8 +321,14 @@ namespace openconfigurator_core_net_app
             Console.WriteLine(obsize);
             Console.WriteLine(res.IsSuccessful());
 
-            res = core.BuildConfiguration("test", new SWIGTYPE_p_std__ostream(new IntPtr(10), true));
-            Console.WriteLine();
+            string tempString;
+            res = core.BuildConfiguration("test", out tempString);
+            Console.WriteLine(res.IsSuccessful());
+
+            res = core.RemoveNode("test", 1);
+            Console.WriteLine(res.IsSuccessful());
+
+            res = core.BuildConfiguration("test", out tempString);
             Console.WriteLine(res.IsSuccessful());
         }
     }

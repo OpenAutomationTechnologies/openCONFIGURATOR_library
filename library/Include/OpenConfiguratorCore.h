@@ -86,8 +86,8 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetPrescaler(const std::string& networkId, std::uint32_t prescaler);
 
 						//Build related API
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildConfiguration(const std::string& networkId, std::ostream& configuration);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildProcessImage(const std::string& networkId, std::ostream& configuration);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildConfiguration(const std::string& networkId, std::string& configurationOutput);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildProcessImage(const std::string& networkId, std::string& configurationOutput);
 
 						//Node related API
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateNode(const std::string& networkId, const std::uint8_t nodeID, const std::string& nodeName);

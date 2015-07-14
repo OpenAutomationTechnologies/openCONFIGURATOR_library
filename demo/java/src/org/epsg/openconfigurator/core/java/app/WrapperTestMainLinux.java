@@ -38,7 +38,7 @@ public class WrapperTestMainLinux {
 	}
 
 	public static void main(String[] args) {
-		// Retrieve main managing class of the library
+	// Retrieve main managing class of the library
 		OpenConfiguratorCore core = OpenConfiguratorCore.GetInstance();
 
 		// Init logger class with configuration file path
@@ -62,7 +62,6 @@ public class WrapperTestMainLinux {
 
 		// Add two nodes to the network
 		core.CreateNode("test", (short) 240, "MN");
-		core.CreateNode("test", (short) 1, "CN");
 
 		// Get a node object from the library
 		ControlledNode node = new ControlledNode((short)0);
@@ -83,41 +82,6 @@ public class WrapperTestMainLinux {
 			System.out.println(support.get(i));
 
 		}
-
-		// Create settings for a configuration
-		BuildConfigurationSetting mnMapping_all = new BuildConfigurationSetting(
-				"GENERATE_MN_MAPPING_FOR_NODES", "all");
-		BuildConfigurationSetting nodeAssignment_all = new BuildConfigurationSetting(
-				"GENERATE_MN_NODE_ASSIGNMENT_FOR_NODES", "all");
-		BuildConfigurationSetting presTimeOut_all = new BuildConfigurationSetting(
-				"GENERATE_MN_PRES_TIMEOUT_FOR_NODES", "all");
-
-		BuildConfigurationSetting mnMapping_1 = new BuildConfigurationSetting(
-				"GENERATE_MN_MAPPING_FOR_NODEs", "1");
-		BuildConfigurationSetting nodeAssignment_1 = new BuildConfigurationSetting(
-				"GENERATE_MN_NODE_ASSIGNMENT_FOR_NODEs", "1");
-		BuildConfigurationSetting presTimeOut_1 = new BuildConfigurationSetting(
-				"GENERATE_MN_PRES_TIMEOUT_FOR_NODES", "1");
-
-		BuildConfigurationSetting mnMapping_all_disabled = new BuildConfigurationSetting(
-				"GENERATE_MN_MAPPING_FOR_NODES", "all");
-		mnMapping_all_disabled.SetEnabled(false);
-		BuildConfigurationSetting nodeAssignment_all_disabled = new BuildConfigurationSetting(
-				"GENERATE_MN_NODE_ASSIGNMENT_FOR_NODES", "all");
-		nodeAssignment_all_disabled.SetEnabled(false);
-		BuildConfigurationSetting presTimeOut_all_disabled = new BuildConfigurationSetting(
-				"GENERATE_MN_PRES_TIMEOUT_FOR_NODES", "all");
-		presTimeOut_all_disabled.SetEnabled(false);
-
-		// Enable all the settings (are enabled per default)
-		mnMapping_all.SetEnabled(true);
-		nodeAssignment_all.SetEnabled(true);
-		presTimeOut_all.SetEnabled(true);
-
-		// Print setting info
-		System.out.println(mnMapping_all.GetDescription());
-		System.out.println(nodeAssignment_all.GetDescription());
-		System.out.println(presTimeOut_all.GetDescription());
 
 		// Create settings configuration
 		/*
@@ -152,15 +116,130 @@ public class WrapperTestMainLinux {
 				"GENERATE_MN_MAPPING_FOR_ALL_NODES", false).GetErrorType());
 
 		core.CreateConfiguration("test", "none");
+		
+		core.CreateObject("test", (short) 240, 0x1F81, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
+        core.CreateSubObject("test", (short) 240, 0x1F81, 0x0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "3", "3");
+        core.CreateSubObject("test", (short) 240, 0x1F81, (short)1, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+        core.CreateSubObject("test", (short) 240, 0x1F81, (short)2, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+        core.CreateSubObject("test", (short) 240, 0x1F81, (short) 5, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+        core.CreateSubObject("test", (short) 240, 0x1F81, (short) 10, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+        core.CreateSubObject("test", (short) 240, 0x1F81, (short)20, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
 
-		core.CreateObject("test", (short) 1, 0x1600, ObjectType.RECORD,"objectName", PlkDataType.UNSIGNED16,
+        core.CreateObject("test", (short) 240, 0x1600, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
+        core.CreateSubObject("test", (short) 240, 0x1600, 0x0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "10");
+        core.CreateSubObject("test", (short) 240, 0x1600, 0x1, ObjectType.VAR, "testName", PlkDataType.UNSIGNED16, AccessType.RW, PDOMapping.DEFAULT, "0", "100");
+        core.CreateSubObject("test", (short) 240, 0x1600, 0x2, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "100");
+        core.CreateSubObject("test", (short) 240, 0x1600, 0x3, ObjectType.VAR, "testName", PlkDataType.UNSIGNED64, AccessType.RW, PDOMapping.DEFAULT, "0", "0x0010000000202104");
+
+        core.CreateObject("test", (short) 240, 0x1F26, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
+        core.CreateSubObject("test", (short) 240, 0x1F26, (short)0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "4", "4");
+        core.CreateSubObject("test", (short) 240, 0x1F26, (short)1, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+        core.CreateSubObject("test", (short) 240, 0x1F26, (short) 5, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+        core.CreateSubObject("test", (short) 240, 0x1F26, (short) 10, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+        core.CreateSubObject("test", (short) 240, 0x1F26, (short)20, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+
+        core.CreateObject("test", (short) 240, 0x1F27, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
+        core.CreateSubObject("test", (short) 240, 0x1F27, (short)0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "4", "4");
+        core.CreateSubObject("test", (short) 240, 0x1F27, (short)1, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+        core.CreateSubObject("test", (short) 240, 0x1F27, (short)5, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+        core.CreateSubObject("test", (short) 240, 0x1F27, (short)10, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+        core.CreateSubObject("test", (short) 240, 0x1F27, (short)20, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+        
+        core.CreateNode("test", (short) 10, "Redundant_MN");
+		
+        core.CreateObject("test", (short) 10, 0x1020, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
+        core.CreateSubObject("test", (short) 10, 0x1020, (short)0, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "2", "2");
+        core.CreateSubObject("test", (short) 10, 0x1020, (short)1, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+        core.CreateSubObject("test", (short) 10, 0x1020, (short)2, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+
+        core.CreateNode("test", (short)20, "Redundant_MN");
+        core.CreateObject("test", (short)20, 0x1020, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
+        core.CreateSubObject("test", (short)20, 0x1020, (short)0, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "2", "2");
+        core.CreateSubObject("test",(short) 20, 0x1020, (short)1, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+        core.CreateSubObject("test", (short)20, 0x1020, (short)2, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+        
+        core.CreateNode("test", (short)1, "CN");
+		
+        core.CreateObject("test", (short)1, 0x1020, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
+        core.CreateSubObject("test", (short)1, 0x1020, (short)0, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "2", "2");
+        core.CreateSubObject("test", (short)1, 0x1020, 1, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+        core.CreateSubObject("test", (short)1, 0x1020, 2, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+
+        core.CreateNode("test", (short) 5, "Redundant_MN");
+
+        core.CreateObject("test", (short) 5, 0x1020, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
+        core.CreateSubObject("test", (short) 5, 0x1020, 0, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "2", "2");
+        core.CreateSubObject("test", (short) 5, 0x1020, 1, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+        core.CreateSubObject("test", (short) 5, 0x1020, 2, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+
+        core.CreateObject("test", (short) 5, 0x1600, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
+        core.CreateSubObject("test", (short) 5, 0x1600, 0, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "10");
+        core.CreateSubObject("test", (short) 5, 0x1600, 1, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED16, AccessType.RW, PDOMapping.DEFAULT, "0", "100");
+        core.CreateSubObject("test", (short) 5, 0x1600, 2, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED24, AccessType.RW, PDOMapping.DEFAULT, "0", "100");
+        core.CreateSubObject("test", (short) 5, 0x1600, 3, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "100");
+        core.CreateSubObject("test", (short) 5, 0x1600, 4, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED40, AccessType.RW, PDOMapping.DEFAULT, "0", "100");
+        core.CreateSubObject("test", (short) 5, 0x1600, 6, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED56, AccessType.RW, PDOMapping.NO, "", "100");
+        core.CreateSubObject("test", (short) 5, 0x1600, 7, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED64, AccessType.RW, PDOMapping.NO, "0", "0x0010000000202104");
+
+        core.CreateObject("test", (short) 5, 0x1602, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
+        core.CreateSubObject("test", (short) 5, 0x1602, 0, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.NO, "0", "10");
+        core.CreateSubObject("test", (short) 5, 0x1602, 1, ObjectType.DEFTYPE, "testName", PlkDataType.INTEGER16, AccessType.RW, PDOMapping.NO, "0", "100");
+        core.CreateSubObject("test", (short) 5, 0x1602, 2, ObjectType.DEFTYPE, "testName", PlkDataType.INTEGER24, AccessType.RW, PDOMapping.NO, "0", "100");
+        core.CreateSubObject("test", (short) 5, 0x1602, 3, ObjectType.DEFTYPE, "testName", PlkDataType.INTEGER32, AccessType.RW, PDOMapping.NO, "", "100");
+        core.CreateSubObject("test", (short) 5, 0x1602, 4, ObjectType.DEFTYPE, "testName", PlkDataType.INTEGER40, AccessType.RW, PDOMapping.NO, "", "100");
+        core.CreateSubObject("test", (short) 5, 0x1602, 5, ObjectType.DEFTYPE, "testName", PlkDataType.INTEGER48, AccessType.RW, PDOMapping.NO, "", "100");
+        core.CreateSubObject("test", (short) 5, 0x1602, 6, ObjectType.DEFTYPE, "testName", PlkDataType.INTEGER56, AccessType.RW, PDOMapping.NO, "", "100");
+        core.CreateSubObject("test", (short) 5, 0x1602, 7, ObjectType.DEFTYPE, "testName", PlkDataType.INTEGER64, AccessType.RW, PDOMapping.NO, "0", "0x0010000000202104");
+
+        core.CreateObject("test", (short) 5, 0x1610, ObjectType.DEFTYPE, "Name", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
+        core.CreateSubObject("test", (short) 5, 0x1610, 0x00, ObjectType.DEFTYPE, "Name", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.RPDO, "0", "15");
+        core.CreateSubObject("test", (short) 5, 0x1610, 0x0d, ObjectType.DEFTYPE, "Name", PlkDataType.UNICODE_STRING, AccessType.RW, PDOMapping.RPDO, "100", "WriteThisString");
+        core.CreateSubObject("test", (short) 5, 0x1610, 0x01, ObjectType.DEFTYPE, "Name", PlkDataType.VISIBLE_STRING, AccessType.RW, PDOMapping.RPDO, "100", "WriteThisString");
+        core.CreateSubObject("test", (short) 5, 0x1610, 0x02, ObjectType.DEFTYPE, "Name", PlkDataType.OCTET_STRING, AccessType.RW, PDOMapping.RPDO, "100", "WriteThisString");
+        core.CreateSubObject("test", (short) 5, 0x1610, 0x03, ObjectType.DEFTYPE, "Name", PlkDataType.IP_ADDRESS, AccessType.RW, PDOMapping.RPDO, "100", "0x64646464");
+        core.CreateSubObject("test", (short) 5, 0x1610, 0x0b, ObjectType.DEFTYPE, "Name", PlkDataType.IP_ADDRESS, AccessType.RW, PDOMapping.RPDO, "100", "254.254.254.254");
+        core.CreateSubObject("test", (short) 5, 0x1610, 0x0c, ObjectType.DEFTYPE, "Name", PlkDataType.IP_ADDRESS, AccessType.RW, PDOMapping.RPDO, "100", "1.1.1.1");
+        core.CreateSubObject("test", (short) 5, 0x1610, 0x04, ObjectType.DEFTYPE, "Name", PlkDataType.BOOLEAN, AccessType.RW, PDOMapping.RPDO, "false", "true");
+        core.CreateSubObject("test", (short) 5, 0x1610, 0x05, ObjectType.DEFTYPE, "Name", PlkDataType.MAC_ADDRESS, AccessType.RW, PDOMapping.RPDO, "0", "0x000A086121012");
+        core.CreateSubObject("test", (short) 5, 0x1610, 0x06, ObjectType.DEFTYPE, "Name", PlkDataType.REAL32, AccessType.RW, PDOMapping.RPDO, "0", "1267.43233E12");
+        core.CreateSubObject("test", (short) 5, 0x1610, 0x07, ObjectType.DEFTYPE, "Name", PlkDataType.REAL32, AccessType.RW, PDOMapping.RPDO, "0", "1.234532432");
+        core.CreateSubObject("test", (short) 5, 0x1610, 0x08, ObjectType.DEFTYPE, "Name", PlkDataType.REAL64, AccessType.RW, PDOMapping.RPDO, "0", "-1E4");
+        core.CreateSubObject("test", (short) 5, 0x1610, 0x09, ObjectType.DEFTYPE, "Name", PlkDataType.REAL64, AccessType.RW, PDOMapping.RPDO, "0", "12.78e-2");
+        core.CreateSubObject("test", (short) 5, 0x1610, 0x0a, ObjectType.DEFTYPE, "Name", PlkDataType.REAL64, AccessType.RW, PDOMapping.RPDO, "6", "-0");
+        core.CreateSubObject("test", (short) 5, 0x1610, 0x10, ObjectType.DEFTYPE, "Name", PlkDataType.REAL64, AccessType.RW, PDOMapping.RPDO, "6", "-0");
+
+        core.CreateObject("test", (short) 5, 0x1A00, ObjectType.DEFTYPE, "Name", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
+        core.CreateSubObject("test", (short) 5, 0x1A00, 0x00, ObjectType.DEFTYPE, "Name", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.RPDO, "0", "5");
+        core.CreateSubObject("test", (short) 5, 0x1A00, 0x0d, ObjectType.DEFTYPE, "Name", PlkDataType.UNICODE_STRING, AccessType.RW, PDOMapping.RPDO, "100", "WriteThisString");
+        core.CreateSubObject("test", (short) 5, 0x1A00, 0x01, ObjectType.DEFTYPE, "Name", PlkDataType.VISIBLE_STRING, AccessType.RW, PDOMapping.RPDO, "100", "WriteThisString");
+        core.CreateSubObject("test", (short) 5, 0x1A00, 0x02, ObjectType.DEFTYPE, "Name", PlkDataType.OCTET_STRING, AccessType.RW, PDOMapping.RPDO, "100", "WriteThisString");
+        core.CreateSubObject("test", (short) 5, 0x1A00, 0x03, ObjectType.DEFTYPE, "Name", PlkDataType.IP_ADDRESS, AccessType.RW, PDOMapping.RPDO, "100", "0x64646464");
+        core.CreateSubObject("test", (short) 5, 0x1A00, 0x0b, ObjectType.DEFTYPE, "Name", PlkDataType.IP_ADDRESS, AccessType.RW, PDOMapping.RPDO, "100", "254.254.254.254");
+        core.CreateSubObject("test", (short) 5, 0x1A00, 0x0c, ObjectType.DEFTYPE, "Name", PlkDataType.IP_ADDRESS, AccessType.RW, PDOMapping.RPDO, "100", "1.1.1.1");
+        core.CreateSubObject("test", (short) 5, 0x1A00, 0x04, ObjectType.DEFTYPE, "Name", PlkDataType.BOOLEAN, AccessType.RW, PDOMapping.RPDO, "false", "true");
+        core.CreateSubObject("test", (short) 5, 0x1A00, 0x05, ObjectType.DEFTYPE, "Name", PlkDataType.MAC_ADDRESS, AccessType.RW, PDOMapping.RPDO, "0", "0x000A086121012");
+        core.CreateSubObject("test", (short) 5, 0x1A00, 0x06, ObjectType.DEFTYPE, "Name", PlkDataType.REAL32, AccessType.RW, PDOMapping.RPDO, "0", "1267.43233E12");
+        core.CreateSubObject("test", (short) 5, 0x1A00, 0x07, ObjectType.DEFTYPE, "Name", PlkDataType.REAL32, AccessType.RW, PDOMapping.RPDO, "0", "1.234532432");
+        core.CreateSubObject("test", (short) 5, 0x1A00, 0x08, ObjectType.DEFTYPE, "Name", PlkDataType.REAL64, AccessType.RW, PDOMapping.RPDO, "0", "-1E4");
+        core.CreateSubObject("test", (short) 5, 0x1A00, 0x09, ObjectType.DEFTYPE, "Name", PlkDataType.REAL64, AccessType.RW, PDOMapping.RPDO, "0", "12.78e-2");
+        core.CreateSubObject("test", (short) 5, 0x1A00, 0x0a, ObjectType.DEFTYPE, "Name", PlkDataType.REAL64, AccessType.RW, PDOMapping.RPDO, "6", "-0");
+        core.CreateSubObject("test", (short) 5, 0x1A00, 0x10, ObjectType.DEFTYPE, "Name", PlkDataType.REAL64, AccessType.RW, PDOMapping.RPDO, "6", "-0");
+
+        core.CreateObject("test", (short) 5, 0x1400, ObjectType.DEFTYPE, "Name", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
+        core.CreateSubObject("test", (short) 5, 0x1400, 0x00, ObjectType.DEFTYPE, "Name", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.RPDO, "0", "15");
+        core.CreateSubObject("test", (short) 5, 0x1400, 0x01, ObjectType.DEFTYPE, "Name", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.RPDO, "100", "5");
+
+        core.CreateObject("test", (short) 5, 0x2000, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
+        core.CreateSubObject("test", (short) 5, 0x2000, 0x0b, ObjectType.DEFTYPE, "Name", PlkDataType.IP_ADDRESS, AccessType.RW, PDOMapping.RPDO, "100", "254.254.254.254");
+
+		core.CreateObject("test", (short) 1, 0x2000, ObjectType.RECORD,"objectName", PlkDataType.UNSIGNED16,
 				AccessType.RW, PDOMapping.RPDO, "1000",
 				"Mapping Object");
-		core.CreateSubObject("test", (short) 1, 0x1600, 0, ObjectType.DEFTYPE,"objectName",
+		core.CreateSubObject("test", (short) 1, 0x2000, 0x0, ObjectType.DEFTYPE,"objectName",
 				PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.NO, "0", "NrOfEntries");
-		core.CreateDomainSubObject("test", (short) 1, 0x1600, 0x01, ObjectType.DEFSTRUCT, "Domain",	"UID_DOM_Index2100_Sub1E");
+		core.CreateDomainSubObject("test", (short) 1, 0x2000, 0x1, ObjectType.DEFSTRUCT, "Domain",	"UID_DOM_Index2100_Sub1E");
 
-		Result test = core.CreateParameter("test", (short) 1, "UID_DOM_Index2100_Sub1E", ParameterAccess.read);
+        Result test = core.CreateParameter("test", (short) 1, "UID_DOM_Index2100_Sub1E", ParameterAccess.read);
         System.out.println(test.IsSuccessful());
         test = core.CreateStructDatatype("test", (short) 1, "notFound", "UID_DT_Index2100_Sub1E", "Index2100_Sub1E");
         test = core.CreateStructDatatype("test", (short)1, "UID_DOM_Index2100_Sub1E", "UID_DT_Index2100_Sub1E", "Index2100_Sub1E");
@@ -210,6 +289,9 @@ public class WrapperTestMainLinux {
         test = core.GetDatatypeSize("test",(short) 1, "notFound", size);
         System.out.println(test.IsSuccessful());
         System.out.println(size[0]);
+		
+        String[] configOutput = new String[1];
+        res = core.BuildConfiguration("test", configOutput);
 	}
 
 }
