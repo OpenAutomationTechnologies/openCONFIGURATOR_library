@@ -234,7 +234,10 @@ uint32_t Network::GetPrescaler()
 
 void Network::SetCycleTime(const uint32_t cycleTime)
 {
+	stringstream cycleTimeStr;
 	this->cycleTime = cycleTime;
+	cycleTimeStr << cycleTime;
+	this->nodeCollection.at(240)->SetSubObjectActualValue(0x1006, 0x0, cycleTimeStr.str());
 }
 
 void Network::SetAsyncMTU(const uint32_t asyncMTU)

@@ -42,6 +42,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Constants.h"
 #include "BuildConfigurationSetting.h"
 #include "BaseNode.h"
+#include "SubObject.h"
 
 namespace IndustrialNetwork
 {
@@ -69,11 +70,12 @@ namespace IndustrialNetwork
 					private:
 						std::string configurationName;
 
-						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeCycleTime();
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeCycleTime(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeAsyncMtu(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributePrescaler(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeMultiplCycleCount(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
+
 						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributePResPayloadLimitList();
-						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeAsyncMtu();
-						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributePrescaler();
-						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeMultiplCycleCount();
 						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeSDOSeqLayerTimeout();
 						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeSDOCmdLayerTimeout();
 

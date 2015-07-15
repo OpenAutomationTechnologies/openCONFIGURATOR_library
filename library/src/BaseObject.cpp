@@ -176,10 +176,13 @@ namespace IndustrialNetwork
 				template<typename T>
 				T BaseObject::GetTypedActualValue()
 				{
-					if (this->GetActualValue().type() == typeid(T))
+					if (this->GetDataType().is_initialized() && !this->GetActualValue().empty())
 					{
-						//return original stored value
-						return boost::any_cast<T>(this->GetActualValue());
+						if (this->GetActualValue().type() == typeid(T))
+						{
+							//return original stored value
+							return boost::any_cast<T>(this->GetActualValue());
+						}
 					}
 					throw Result(ErrorCode::DATATYPE_MISMATCH);
 				}
@@ -345,9 +348,12 @@ namespace IndustrialNetwork
 				template<typename T>
 				T BaseObject::GetTypedDefaultValue()
 				{
-					if (this->GetDefaultValue().type() == typeid(T))
+					if (this->GetDataType().is_initialized() && !this->GetDefaultValue().empty())
 					{
-						return boost::any_cast<T>(this->GetDefaultValue());
+						if (this->GetDefaultValue().type() == typeid(T))
+						{
+							return boost::any_cast<T>(this->GetDefaultValue());
+						}
 					}
 					throw Result(ErrorCode::DATATYPE_MISMATCH);
 				}

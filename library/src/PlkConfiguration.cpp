@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::Configuration;
+using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
 
@@ -59,10 +60,27 @@ Result PlkConfiguration::GenerateConfiguration(const map<uint8_t, shared_ptr<Ind
 			res = config_setting->GenerateConfiguration(nodeCollection);
 		}
 	}
+	//Distribute the 0x1006/0x0 to all nodes
+	res = DistributeCycleTime(nodeCollection);
+	if (!res.IsSuccessful())
+		return res;
+
+	res = DistributeMultiplCycleCount(nodeCollection);
+	if (!res.IsSuccessful())
+		return res;
+
+	res = DistributeAsyncMtu(nodeCollection);
+	if (!res.IsSuccessful())
+		return res;
+
+	res = DistributePrescaler(nodeCollection);
+	if (!res.IsSuccessful())
+		return res;
 
 	res = DistributeNodeAssignment(nodeCollection);
 	if (!res.IsSuccessful())
 		return res;
+
 	res = DistributeDateTimeStamps(nodeCollection);
 	return res;
 }
@@ -157,8 +175,153 @@ Result PlkConfiguration::DistributeNodeAssignment(const map<uint8_t, shared_ptr<
 			nodeAssignmentStr.str(string());
 		}
 	}
+	return Result();
+}
 
+Result PlkConfiguration::DistributeCycleTime(const map<uint8_t, shared_ptr<BaseNode>>& nodeCollection)
+{
+	stringstream cycleTimeStr;
 
+	//Get managing node
+	auto& mn = nodeCollection.at(240);
+	shared_ptr<SubObject> cycleTimeObject;
+
+	//Get Cycle Time object
+	Result res = mn->GetSubObject(0x1006, 0x0, cycleTimeObject);
+	if (!res.IsSuccessful())
+		return res;
+
+	//If actual value exists
+	if (cycleTimeObject->WriteToConfiguration())
+	{
+		//Convert to cycle time to string
+		cycleTimeStr << cycleTimeObject->GetTypedActualValue<uint32_t>();
+	}
+	//0x1006 / 0x0 has to be written so return error if not
+	else
+	{
+		//Convert to cycle time to string
+		cycleTimeStr << cycleTimeObject->GetTypedDefaultValue<uint32_t>();
+	}
+
+	for (auto& node : nodeCollection)
+	{
+		if (node.first != 240)
+		{
+			//Set every node 0x1006 / 0x0 actual value to cycle time
+			res = node.second->SetSubObjectActualValue(0x1006, 0x0, cycleTimeStr.str());
+			if (!res.IsSuccessful())
+				return res; //If error occurs during set of cycle time return
+		}
+	}
+	return Result();
+}
+
+Result PlkConfiguration::DistributeMultiplCycleCount(const map<uint8_t, shared_ptr<BaseNode>>& nodeCollection)
+{
+	stringstream multiplCycleCountStr;
+
+	//Get managing node
+	auto& mn = nodeCollection.at(240);
+	shared_ptr<SubObject> multiplCycleCountObject;
+
+	//Get multiplexed cycle count object
+	Result res = mn->GetSubObject(0x1F98, 0x07, multiplCycleCountObject);
+	if (!res.IsSuccessful())
+		return res;
+
+	if (multiplCycleCountObject->WriteToConfiguration())
+	{
+		//Convert multiplexed cycle count to string
+		multiplCycleCountStr << multiplCycleCountObject->GetTypedActualValue<uint16_t>();
+	}
+	else
+	{
+		multiplCycleCountStr << multiplCycleCountObject->GetTypedDefaultValue<uint16_t>();
+	}
+
+	for (auto& node : nodeCollection)
+	{
+		if (node.first != 240)
+		{
+			//Set every node 0x1F98 / 0x7 actual value to multiplexed cycle count
+			res = node.second->SetSubObjectActualValue(0x1F98, 0x07, multiplCycleCountStr.str());
+			if (!res.IsSuccessful())
+				return res; //If error occurs during set of multiplexed cycle count return
+		}
+	}
+	return Result();
+}
+
+Result PlkConfiguration::DistributeAsyncMtu(const map<uint8_t, shared_ptr<BaseNode>>& nodeCollection)
+{
+	stringstream asyncMtuStr;
+
+	//Get managing node
+	auto& mn = nodeCollection.at(240);
+	shared_ptr<SubObject> asynMtuObject;
+
+	//Get Async MTU object
+	Result res = mn->GetSubObject(0x1F98, 0x8, asynMtuObject);
+	if (!res.IsSuccessful())
+		return res;
+
+	if (asynMtuObject->WriteToConfiguration())
+	{
+		//Convert Async MTU to string
+		asyncMtuStr << asynMtuObject->GetTypedActualValue<uint16_t>();
+	}
+	else
+	{
+		asyncMtuStr << asynMtuObject->GetTypedDefaultValue<uint16_t>();
+	}
+
+	for (auto& node : nodeCollection)
+	{
+		if (node.first != 240)
+		{
+			//Set every node 0x1F98 / 0x8 actual value to async MTU
+			res = node.second->SetSubObjectActualValue(0x1F98, 0x8, asyncMtuStr.str());
+			if (!res.IsSuccessful())
+				return res; //If error occurs during set of cycle time return
+		}
+	}
+	return Result();
+}
+
+Result PlkConfiguration::DistributePrescaler(const map<uint8_t, shared_ptr<BaseNode>>& nodeCollection)
+{
+	stringstream prescalerStr;
+
+	//Get managing node
+	auto& mn = nodeCollection.at(240);
+	shared_ptr<SubObject> prescalerObject;
+
+	//Get Cycle Time object
+	Result res = mn->GetSubObject(0x1F98, 0x9, prescalerObject);
+	if (!res.IsSuccessful())
+		return res;
+
+	if (prescalerObject->WriteToConfiguration())
+	{
+		//Convert prescaler to string
+		prescalerStr << prescalerObject->GetTypedActualValue<uint16_t>();
+	}
+	else
+	{
+		prescalerStr << prescalerObject->GetTypedDefaultValue<uint16_t>();
+	}
+
+	for (auto& node : nodeCollection)
+	{
+		if (node.first != 240)
+		{
+			//Set every node 0x1F98 / 0x9 actual value to prescaler
+			res = node.second->SetSubObjectActualValue(0x1F98, 0x9, prescalerStr.str());
+			if (!res.IsSuccessful())
+				return res; //If error occurs during set of prescaler return
+		}
+	}
 	return Result();
 }
 
