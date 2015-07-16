@@ -53,35 +53,50 @@ PlkConfiguration::~PlkConfiguration()
 Result PlkConfiguration::GenerateConfiguration(const map<uint8_t, shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection)
 {
 	Result res;
+	//Generate autogeneration settings
 	for (auto& config_setting : this->GetBuildConfigurationSettings())
 	{
-		if (config_setting->IsEnabled())
+		if (config_setting->IsEnabled()) //Generate only if enabled
 		{
+			//Call settings builder
 			res = config_setting->GenerateConfiguration(nodeCollection);
+			if (!res.IsSuccessful())
+				return res;
 		}
 	}
+
+	//Distribute the 0x1020/0x1 and 0x2 to all CNs and RMNs
+	//Distribute the 0x1f26/NodeID and 0x1F27/NodeID to MN and RMNs
+	res = DistributeDateTimeStamps(nodeCollection);
+	if (!res.IsSuccessful())
+		return res;
+
 	//Distribute the 0x1006/0x0 to all nodes
 	res = DistributeCycleTime(nodeCollection);
 	if (!res.IsSuccessful())
 		return res;
 
+	//Distribute the 0x1F98 / 0x7 to all nodes
 	res = DistributeMultiplCycleCount(nodeCollection);
 	if (!res.IsSuccessful())
 		return res;
 
+	//Distribute the 0x1F98 / 0x8 to all nodes
 	res = DistributeAsyncMtu(nodeCollection);
 	if (!res.IsSuccessful())
 		return res;
 
+	//Distribute the 0x1F98 / 0x9 to all nodes
 	res = DistributePrescaler(nodeCollection);
 	if (!res.IsSuccessful())
 		return res;
 
+	//Distribute the CN node assignments to MN and RMNs
 	res = DistributeNodeAssignment(nodeCollection);
 	if (!res.IsSuccessful())
 		return res;
 
-	res = DistributeDateTimeStamps(nodeCollection);
+
 	return res;
 }
 
@@ -108,7 +123,9 @@ Result PlkConfiguration::DistributeDateTimeStamps(const map<uint8_t, shared_ptr<
 	timeinfo.tm_mday = 1;     // day: 1st
 	time_t epoch = mktime(&timeinfo);
 
+	//Create new epoch time (01/01/1984)
 	auto epoch_time_point = chrono::system_clock::from_time_t (epoch);
+	//Days since that epoch
 	auto daysSinceEpoch = chrono::duration_cast<chrono::duration<int, ratio<60 * 60 * 24>>> (now - epoch_time_point);
 
 	// Create milliseconds since midnight
@@ -120,33 +137,41 @@ Result PlkConfiguration::DistributeDateTimeStamps(const map<uint8_t, shared_ptr<
 	auto midnight = chrono::system_clock::from_time_t(mktime(date));
 	auto millisecondsSinceMidnight = chrono::duration_cast<chrono::milliseconds>(now - midnight);
 
-	cout << hex << daysSinceEpoch.count() << endl;
-	cout << hex << millisecondsSinceMidnight.count() << endl;
-
 	stringstream dateString;
-	dateString << daysSinceEpoch.count();
+	dateString << daysSinceEpoch.count(); //write days to string
 
 	stringstream timeString;
-	timeString << millisecondsSinceMidnight.count();
+	timeString << millisecondsSinceMidnight.count(); //write milliseconds to string
 
 	for (auto& node :  nodeCollection)
 	{
-		if (node.first == 240) //Set MN date and time objects 1F26 / 1F27
+		//Distribute to MN and RMNs
+		if (dynamic_pointer_cast<ManagingNode>(node.second)) //Set MN date and time objects 1F26 / 1F27
 		{
 			for (auto& nodeIds :  nodeCollection)
 			{
-				if (node.first != nodeIds.first)
+				if (nodeIds.first == 240) //Avoid distributing values for MN nodeID
+					continue;
+
+				res = node.second->SetSubObjectActualValue(0x1F26, nodeIds.first, dateString.str());
+				if (!res.IsSuccessful())
+					return res;
+				res = node.second->SetSubObjectActualValue(0x1F27, nodeIds.first, timeString.str());
+				if (!res.IsSuccessful())
+					return res;
+
+				if (node.first != 240) //write 1020 values to RMNs
 				{
-					res = node.second->SetSubObjectActualValue(0x1F26, nodeIds.first, dateString.str());
+					res = node.second->SetSubObjectActualValue(0x1020, 0x1, dateString.str());
 					if (!res.IsSuccessful())
 						return res;
-					res = node.second->SetSubObjectActualValue(0x1F27, nodeIds.first, timeString.str());
+					res = node.second->SetSubObjectActualValue(0x1020, 0x2, timeString.str());
 					if (!res.IsSuccessful())
 						return res;
 				}
 			}
 		}
-		else
+		else // Node is CN
 		{
 			//Set CN date and time objects 1020/01 and 1020/02
 			res = node.second->SetSubObjectActualValue(0x1020, 0x1, dateString.str());
@@ -164,16 +189,21 @@ Result PlkConfiguration::DistributeDateTimeStamps(const map<uint8_t, shared_ptr<
 Result PlkConfiguration::DistributeNodeAssignment(const map<uint8_t, shared_ptr<BaseNode>>& nodeCollection)
 {
 	stringstream nodeAssignmentStr;
-	auto& mn = nodeCollection.at(240);
-
 	for (auto& node : nodeCollection)
 	{
-		if (node.first != 240)
+		if (node.first == 240) //Dont distribute assignement for MN
+			continue;
+
+		nodeAssignmentStr << node.second->GetNodeAssignmentValue(); //Retrieve assignment from CN or RMN
+		for (auto& mn :  nodeCollection)
 		{
-			nodeAssignmentStr << node.second->GetNodeAssignmentValue();
-			mn->SetSubObjectActualValue(0x1F81, node.second->GetNodeIdentifier(), nodeAssignmentStr.str());
-			nodeAssignmentStr.str(string());
+			//Distribute to MN and RMNs
+			if (dynamic_pointer_cast<ManagingNode>(mn.second)) //Set MN or RMN node assignement objects
+			{
+				mn.second->SetSubObjectActualValue(0x1F81, node.first, nodeAssignmentStr.str()); //Set actual value with assignment
+			}
 		}
+		nodeAssignmentStr.str(string()); //reset stringstream
 	}
 	return Result();
 }
@@ -283,7 +313,7 @@ Result PlkConfiguration::DistributeAsyncMtu(const map<uint8_t, shared_ptr<BaseNo
 			//Set every node 0x1F98 / 0x8 actual value to async MTU
 			res = node.second->SetSubObjectActualValue(0x1F98, 0x8, asyncMtuStr.str());
 			if (!res.IsSuccessful())
-				return res; //If error occurs during set of cycle time return
+				return res; //If error occurs during set of async MTU return
 		}
 	}
 	return Result();

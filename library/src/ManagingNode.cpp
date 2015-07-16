@@ -37,12 +37,14 @@ using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 
 ManagingNode::ManagingNode(bool active, std::uint8_t nodeID, const string nodeName) : BaseNode(nodeID, nodeName),
 	active(active),
-	dynamicChannelList(vector<shared_ptr<DynamicChannel>>())
+	dynamicChannelList(vector<shared_ptr<DynamicChannel>>()),
+	rmnCount(0)
 {
-	if(nodeID != 240)
+	if (nodeID != 240) //Add assignments for RMNs only
 	{
 		AddNodeAssignement(NodeAssignment::MNT_NODEASSIGN_VALID);
 		AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_NODE_EXISTS);
+		AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_NODE_IS_CN);
 	}
 
 }
@@ -152,17 +154,25 @@ uint32_t ManagingNode::GetConfigurationObjectCount()
 				if (!subobject.second->GetActualValue().empty())
 					count += 2;
 			}
-			else if (object.first >= 0x1F81 && subobject.first != 0x0) //Count for node assignement and reassignment and 1F22
+			else if (object.first == 0x1F81 && subobject.first != 0x0) //Count for node assignement and reassignment
 			{
 				if (subobject.second->WriteToConfiguration())
-					count += 3;
+				{
+					count += 2; //Add assignment and reassignment count
+					if (this->GetNodeIdentifier() == 240) //Count 1F22 only for active managing node
+						count += 1;
+				}
 			}
 			else if (subobject.second->WriteToConfiguration())
 			{
 				count++;
 			}
+
 		}
 	}
+	//Remove reassignment count for RMNs
+	count -= this->GetRmnCount();
+
 	return count;
 }
 
@@ -183,16 +193,33 @@ uint32_t ManagingNode::GetConfigurationObjectSize()
 				if (!subobject.second->GetActualValue().empty())
 					size += 2 * subobject.second->GetBitSize();
 			}
-			else if (object.first >= 0x1F81 && subobject.first != 0x0) //Size for node assignement and reassignment
+			else if (object.first == 0x1F81 && subobject.first != 0x0) //Size for node assignement and reassignment
 			{
 				if (subobject.second->WriteToConfiguration())
-					size+= 2 * subobject.second->GetBitSize();
+				{
+					size += 2 * subobject.second->GetBitSize();
+					if (this->GetNodeIdentifier() == 240) //Count 1F22 only for active managing node
+						size += subobject.second->GetBitSize();
+				}
 			}
 			else if (subobject.second->WriteToConfiguration())
 			{
-				size+= subobject.second->GetBitSize();
+				size += subobject.second->GetBitSize();
 			}
 		}
 	}
+	//Remove reassignment size count for RMNs
+	size -= 32 * this->GetRmnCount();
+
 	return size;
+}
+
+uint16_t ManagingNode::GetRmnCount()
+{
+	return this->rmnCount;
+}
+
+void ManagingNode::SetRmnCount(std::uint16_t count)
+{
+	this->rmnCount = count;
 }

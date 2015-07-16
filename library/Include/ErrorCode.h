@@ -121,7 +121,8 @@ namespace IndustrialNetwork
 					DATATYPE_MISMATCH, // < The conversion of a requested value into the destined datatype is not possible.
 					COMPLEX_DATATYPE_NOT_FOUND, // < A complex datatype does not exist for a node.
 					VAR_DECLARATION_EXISTS, // < A VarDeclaration with the same uniqueId already exists.
-					ENUM_VALUE_EXISTS // < An Enum Value with the same name already exists.
+					ENUM_VALUE_EXISTS, // < An Enum Value with the same name already exists.
+					FORCED_VALUE_OVERWRITE // < A forced value must not be overwritten by the library.
 				};
 
 			}

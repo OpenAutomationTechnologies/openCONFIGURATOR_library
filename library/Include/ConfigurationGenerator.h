@@ -69,10 +69,11 @@ namespace IndustrialNetwork
 						void operator=(ConfigurationGenerator const&);
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteManagingNodeObjectCount(const std::shared_ptr<Network>& net, std::stringstream& configurationOutput);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteNodeAssignement(const std::shared_ptr<Network>& net, std::stringstream& configurationOutput, bool writeNodeValid);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteNodeAssignement(const std::shared_ptr<Network>& net, std::stringstream& configurationOutput, bool writeNodeValid, bool writeComments);
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteManagingNodeConfiguration(const std::shared_ptr<Network>& net, std::stringstream& configurationOutput);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteControlledNodeConfiguration(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node, std::stringstream& configurationOutput);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteControlledNodeConfiguration(const std::shared_ptr<Network>& net, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node, std::stringstream& configurationOutput);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteRedundantManagingNodeConfiguration(const std::shared_ptr<Network>& net, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node, std::stringstream& configurationOutput);
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteMappingNrOfEntriesZero(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node, std::stringstream& configurationOutput);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteMappingObjects(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node, std::stringstream& configurationOutput);

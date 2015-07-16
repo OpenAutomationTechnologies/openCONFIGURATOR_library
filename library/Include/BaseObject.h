@@ -50,6 +50,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Utilities.h"
 #include "Result.h"
 #include "Parameter.h"
+#include "LoggingConfiguration.h"
 
 namespace IndustrialNetwork
 {

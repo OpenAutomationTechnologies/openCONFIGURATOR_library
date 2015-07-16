@@ -191,6 +191,17 @@ Result BaseNode::SetObjectActualValue(uint32_t objectId, string actualValue)
 		LOG_FATAL() << formatter.str();
 		return Result(ErrorCode::OBJECT_DOES_NOT_EXIST, formatter.str());
 	}
+	if (iter->second->GetForceToCDC())
+	{
+		//Actual value must not be set because forced
+		boost::format formatter(kMsgForcedValueOverwriteObject);
+		formatter
+		% actualValue
+		% iter->first
+		% (uint32_t) this->GetNodeIdentifier();
+		LOG_FATAL() << formatter.str();
+		return Result(ErrorCode::FORCED_VALUE_OVERWRITE, formatter.str());
+	}
 	if (!actualValue.empty())
 	{
 		iter->second->SetTypedObjectActualValue(actualValue);
@@ -303,6 +314,18 @@ Result BaseNode::SetSubObjectActualValue(uint32_t objectId, uint32_t subObjectId
 	Result res = iter->second->GetSubObject(subObjectId, subObject);
 	if (res.IsSuccessful())
 	{
+		if (subObject->GetForceToCDC())
+		{
+			//Actual value must not be set because forced
+			boost::format formatter(kMsgForcedValueOverwriteSubObject);
+			formatter
+			% actualValue
+			% objectId
+			% subObject->GetId()
+			% (uint32_t) this->GetNodeIdentifier();
+			LOG_WARN() << formatter.str();
+			return Result();
+		}
 		if (!actualValue.empty())
 		{
 			subObject->SetTypedObjectActualValue(actualValue);

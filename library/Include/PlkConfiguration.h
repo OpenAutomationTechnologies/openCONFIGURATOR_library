@@ -43,6 +43,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "BuildConfigurationSetting.h"
 #include "BaseNode.h"
 #include "SubObject.h"
+#include "ManagingNode.h"
 
 namespace IndustrialNetwork
 {

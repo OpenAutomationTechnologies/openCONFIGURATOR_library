@@ -85,8 +85,8 @@ Result Network::AddNode(shared_ptr<ControlledNode>& node)
 	LOG_INFO() << formatter.str();
 	this->nodeCollection.insert(pair<uint8_t, shared_ptr<BaseNode>>(node->GetNodeIdentifier(), node));
 
-	//Force Node Assignement with actual value "0"
-	this->nodeCollection.at(240)->ForceSubObject(0x1F81, node->GetNodeIdentifier(), true, "0");
+	//Set Node Assignement with actual value "0"
+	this->nodeCollection.at(240)->SetSubObjectActualValue(0x1F81, node->GetNodeIdentifier(), "0");
 
 	return Result();
 }
@@ -110,7 +110,22 @@ Result Network::AddNode(shared_ptr<ManagingNode>& node)
 	formatter
 	% (uint32_t) node->GetNodeIdentifier();
 	LOG_INFO() << formatter.str();
+
 	this->nodeCollection.insert(pair<uint8_t, shared_ptr<BaseNode>>(node->GetNodeIdentifier(), node));
+
+	//if not active MN
+	if (node->GetNodeIdentifier() != 240)
+	{
+		for (auto& rmn : this->nodeCollection)
+		{
+			shared_ptr<ManagingNode> rmnPtr = dynamic_pointer_cast<ManagingNode>(rmn.second);
+			if (rmnPtr.get())
+			{
+				//Increment RMN count
+				rmnPtr->SetRmnCount(rmnPtr->GetRmnCount() + 1);
+			}
+		}
+	}
 	return Result();
 }
 
@@ -154,12 +169,10 @@ Result Network::GetManagingNode(shared_ptr<ManagingNode>& node)
 
 Result Network::RemoveNode(const uint8_t nodeID)
 {
-	map<uint8_t, shared_ptr<BaseNode>>::iterator it;
-	for (it = this->nodeCollection.begin() ; it != this->nodeCollection.end(); ++it)
-	{
-		if (it->first == nodeID)
-			break;
-	}
+	if (nodeID == 240)
+		return Result(ErrorCode::NODEID_INVALID);
+
+	auto it = this->nodeCollection.find(nodeID);
 	if (it == this->nodeCollection.end())
 	{
 		//Node does not exist
@@ -170,6 +183,15 @@ Result Network::RemoveNode(const uint8_t nodeID)
 		return Result(ErrorCode::NODE_DOES_NOT_EXIST, formatter.str());
 	}
 
+	if (dynamic_pointer_cast<ManagingNode>(it->second))//if RMN is removed
+	{
+		shared_ptr<ManagingNode> mn;
+		Result res = this->GetManagingNode(mn);
+		if (!res.IsSuccessful())
+			return res;
+		mn->SetRmnCount(mn->GetRmnCount() - 1); //Decrement the RMN count in MN
+
+	}
 	this->nodeCollection.erase(it);
 	//Log info node removed
 	boost::format formatter(kMsgNodeRemoved);

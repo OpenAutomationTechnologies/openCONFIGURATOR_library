@@ -183,8 +183,11 @@ namespace IndustrialNetwork
 							//return original stored value
 							return boost::any_cast<T>(this->GetActualValue());
 						}
+
+						throw Result(ErrorCode::DATATYPE_MISMATCH);
 					}
-					throw Result(ErrorCode::DATATYPE_MISMATCH);
+					throw Result(ErrorCode::NO_DEFAULT_OR_ACTUAL_VALUE);
+
 				}
 
 				template<> string BaseObject::GetTypedActualValue<string>()
@@ -332,7 +335,7 @@ namespace IndustrialNetwork
 								break;
 						}
 					}
-					return "";
+					throw Result(ErrorCode::NO_DEFAULT_OR_ACTUAL_VALUE);
 				}
 				template bool BaseObject::GetTypedActualValue<bool>();
 				template uint8_t BaseObject::GetTypedActualValue<uint8_t>();
@@ -354,8 +357,9 @@ namespace IndustrialNetwork
 						{
 							return boost::any_cast<T>(this->GetDefaultValue());
 						}
+						throw Result(ErrorCode::DATATYPE_MISMATCH);
 					}
-					throw Result(ErrorCode::DATATYPE_MISMATCH);
+					throw Result(ErrorCode::NO_DEFAULT_OR_ACTUAL_VALUE);
 				}
 
 				template<> string BaseObject::GetTypedDefaultValue<string>()
@@ -496,7 +500,7 @@ namespace IndustrialNetwork
 								break;
 						}
 					}
-					return "";
+					throw Result(ErrorCode::NO_DEFAULT_OR_ACTUAL_VALUE);
 				}
 				template bool BaseObject::GetTypedDefaultValue<bool>();
 				template uint8_t BaseObject::GetTypedDefaultValue<uint8_t>();

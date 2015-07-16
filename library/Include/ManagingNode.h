@@ -72,10 +72,14 @@ namespace IndustrialNetwork
 						std::uint32_t GetConfigurationObjectCount();
 						std::uint32_t GetConfigurationObjectSize();
 
+						std::uint16_t GetRmnCount();
+						void SetRmnCount(std::uint16_t count);
+
 
 					private:
 						bool active;
 						std::vector<std::shared_ptr<DynamicChannel>> dynamicChannelList;
+						std::uint16_t rmnCount;
 				};
 
 			}

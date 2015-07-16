@@ -52,34 +52,40 @@ ConfigurationGenerator& ConfigurationGenerator::GetInstance()
 
 Result ConfigurationGenerator::GenerateNetworkConfiguration(const shared_ptr<Network>& net, stringstream& configurationOutput)
 {
+	//Write the active managing node object count including Assignments and 1F22 objects
 	Result res = WriteManagingNodeObjectCount(net, configurationOutput);
 	if (!res.IsSuccessful())
 		return res;
-	res = WriteNodeAssignement(net, configurationOutput, false);
+
+	//Write the node assignments
+	res = WriteNodeAssignement(net, configurationOutput, false, true);
 	if (!res.IsSuccessful())
 		return res;
+
+	//Write the managing node configuration
 	res = WriteManagingNodeConfiguration(net, configurationOutput);
 	if (!res.IsSuccessful())
 		return res;
-	//TODO: Check if redundant managing node exists and change behaviour
 
 	map<uint8_t, shared_ptr<BaseNode>> nodes;
 	res = net->GetNodes(nodes);
-	if (res.IsSuccessful())
-	{
-		for (auto& node : nodes)
-		{
-			res = WriteControlledNodeConfiguration(node.second, configurationOutput);
-			if (!res.IsSuccessful())
-				return res;
-		}
-	}
-	res = WriteNodeAssignement(net, configurationOutput, true);
 	if (!res.IsSuccessful())
 		return res;
 
-	LOG_INFO() << configurationOutput.str();
+	//Write CN configuration including RMNs
+	for (auto& node : nodes)
+	{
+		if (node.first == 240) //skip MN already written
+			continue;
 
+		//Write controlled node or RMN configuration
+		res = WriteControlledNodeConfiguration(net, node.second, configurationOutput);
+		if (!res.IsSuccessful())
+			return res;
+	}
+
+	//Write the node reassignment
+	res = WriteNodeAssignement(net, configurationOutput, true, true);
 	return res;
 }
 
@@ -95,39 +101,47 @@ Result ConfigurationGenerator::WriteManagingNodeObjectCount(const shared_ptr<Net
 	return res;
 }
 
-Result ConfigurationGenerator::WriteNodeAssignement(const shared_ptr<Network>& net, stringstream& configurationOutput, bool writeNodeValid)
+Result ConfigurationGenerator::WriteNodeAssignement(const shared_ptr<Network>& net, stringstream& configurationOutput, bool writeNodeValid, bool writeComments)
 {
 	map<uint8_t, shared_ptr<BaseNode>> nodes;
 	Result res = net->GetNodes(nodes);
-	if (res.IsSuccessful())
+	if (!res.IsSuccessful())
+		return res;
+
+	for (auto& node : nodes)
 	{
-		for (auto& node : nodes)
+		//Determine if Node is RMN
+		if (dynamic_pointer_cast<ManagingNode>(node.second))
 		{
-			if (node.first != 240)
-			{
-				if (!writeNodeValid)
-					node.second->RemoveNodeAssignment(NodeAssignment::MNT_NODEASSIGN_VALID);
-
-				if (writeNodeValid)
-					configurationOutput << "//// NodeId Reassignment" << endl;
-				else
-					configurationOutput << "//// NodeId Assignment" << endl;
-
-				configurationOutput << hex << uppercase << 0x1F81;
-				configurationOutput << "\t";
-				configurationOutput << hex << uppercase << setw(2) << setfill('0') << (uint32_t) node.first;
-				configurationOutput << "\t";
-				configurationOutput << hex << uppercase << setw(8) << setfill('0') << 0x4;
-				configurationOutput << "\t";
-				configurationOutput << hex << uppercase << setw(8) << setfill('0') << node.second->GetNodeAssignmentValue() << endl;
-
-				if (!writeNodeValid)
-					node.second->AddNodeAssignement(NodeAssignment::MNT_NODEASSIGN_VALID);
-
-
-			}
+			//Skip if node is RMN and write Reassignment or node is AMN
+			if (writeNodeValid && node.second->GetNodeIdentifier() != 240 || node.second->GetNodeIdentifier() == 240) //Do not write Node Reassignment for RMNscontinue;
+				continue;
 		}
+
+		//Write Assignment with no node valid bit therefore remove the bit first
+		if (!writeNodeValid)
+			node.second->RemoveNodeAssignment(NodeAssignment::MNT_NODEASSIGN_VALID);
+
+		//Write comments according to writeComments flag
+		if (!writeNodeValid && writeComments)
+			configurationOutput << "//// NodeId Assignment" << endl;
+		else if (writeNodeValid && writeComments)
+			configurationOutput << "//// NodeId Reassignment" << endl;
+
+
+		configurationOutput << hex << uppercase << 0x1F81;
+		configurationOutput << "\t";
+		configurationOutput << hex << uppercase << setw(2) << setfill('0') << (uint32_t) node.first;
+		configurationOutput << "\t";
+		configurationOutput << hex << uppercase << setw(8) << setfill('0') << 0x4;
+		configurationOutput << "\t";
+		configurationOutput << hex << uppercase << setw(8) << setfill('0') << node.second->GetNodeAssignmentValue() << endl;
+
+		//If valid bit has been remove add it again
+		if (!writeNodeValid)
+			node.second->AddNodeAssignement(NodeAssignment::MNT_NODEASSIGN_VALID);
 	}
+
 	configurationOutput << endl;
 
 	return res;
@@ -139,39 +153,108 @@ Result ConfigurationGenerator::WriteManagingNodeConfiguration(const shared_ptr<N
 	shared_ptr<ManagingNode> mn;
 	Result res = net->GetManagingNode(mn);
 	if (res.IsSuccessful())
-	{
-		WriteMappingNrOfEntriesZero(mn, configurationOutput);
-		WriteCommunicationProfileArea(mn, configurationOutput);
-		WriteMappingObjects(mn, configurationOutput);
-		WriteManufacturerSpecificProfileArea(mn, configurationOutput);
-		WriteMappingNrOfEntries(mn, configurationOutput);
-	}
+		return res;
+
+	//Reset Mapping objects
+	res = WriteMappingNrOfEntriesZero(mn, configurationOutput);
+	if (!res.IsSuccessful())
+		return res;
+
+	//Write Communication Profile area
+	res = WriteCommunicationProfileArea(mn, configurationOutput);
+	if (!res.IsSuccessful())
+		return res;
+
+	//Write Mapping objects
+	res = WriteMappingObjects(mn, configurationOutput);
+	if (!res.IsSuccessful())
+		return res;
+
+	//Write manufacturer specific objects
+	res = WriteManufacturerSpecificProfileArea(mn, configurationOutput);
+	if (!res.IsSuccessful())
+		return res;
+
+	//Write mapping number of entries
+	res = WriteMappingNrOfEntries(mn, configurationOutput);
 	return res;
 }
 
-Result ConfigurationGenerator::WriteControlledNodeConfiguration(const shared_ptr<BaseNode>& node, stringstream& configurationOutput)
+Result ConfigurationGenerator::WriteRedundantManagingNodeConfiguration(const shared_ptr<Network>& net, const shared_ptr<BaseNode>& node, stringstream& configurationOutput)
+{
+	auto rmn = dynamic_pointer_cast<ManagingNode>(node); //This should not fail because it can either be MN or CN
+
+	//Write the 1F22 object for RMN
+	configurationOutput << "////Configuration Data for CN: " << node->GetName() << "(" << dec << (uint32_t) node->GetNodeIdentifier() << ")" << endl;
+	configurationOutput << hex << uppercase << "1F22";
+	configurationOutput << "\t";
+	configurationOutput << hex << uppercase << setw(2) << setfill('0') << (uint32_t) node->GetNodeIdentifier();
+	configurationOutput << "\t";
+	configurationOutput << hex << uppercase << setw(8) << setfill('0') << rmn->GetConfigurationObjectSize() << endl;
+	configurationOutput << hex << uppercase << setw(8) << setfill('0') << rmn->GetConfigurationObjectCount() << endl;
+
+	Result res = WriteNodeAssignement(net, configurationOutput, false, false);
+	if (!res.IsSuccessful())
+		return res;
+
+	res = WriteMappingNrOfEntriesZero(rmn, configurationOutput);
+	if (!res.IsSuccessful())
+		return res;
+
+	res = WriteCommunicationProfileArea(rmn, configurationOutput);
+	if (!res.IsSuccessful())
+		return res;
+
+	res = WriteMappingObjects(rmn, configurationOutput);
+	if (!res.IsSuccessful())
+		return res;
+
+	res = WriteManufacturerSpecificProfileArea(rmn, configurationOutput);
+	if (!res.IsSuccessful())
+		return res;
+
+	res = WriteMappingNrOfEntries(rmn, configurationOutput);
+	if (!res.IsSuccessful())
+		return res;
+
+	res = WriteNodeAssignement(net, configurationOutput, true, false);
+	return res;
+}
+
+Result ConfigurationGenerator::WriteControlledNodeConfiguration(const shared_ptr<Network>& net, const shared_ptr<BaseNode>& node, stringstream& configurationOutput)
 {
 	auto cn = dynamic_pointer_cast<ControlledNode>(node);
-	if (cn.use_count() == 0)
-		return Result();
+	if (!cn) //If cast fails this is an RMN
+		return WriteRedundantManagingNodeConfiguration(net, node, configurationOutput);
 
-	configurationOutput << "////Configuration Data for CN: " << node->GetName() << "(" << dec << (uint32_t) node->GetNodeIdentifier() << ")"<< endl;
+	configurationOutput << "////Configuration Data for CN: " << node->GetName() << "(" << dec << (uint32_t) node->GetNodeIdentifier() << ")" << endl;
 	configurationOutput << hex << uppercase << "1F22";
 	configurationOutput << "\t";
 	configurationOutput << hex << uppercase << setw(2) << setfill('0') << (uint32_t) node->GetNodeIdentifier();
 	configurationOutput << "\t";
 	configurationOutput << hex << uppercase << setw(8) << setfill('0') << cn->GetConfigurationObjectSize() << endl;
 	configurationOutput << hex << uppercase << setw(8) << setfill('0') << cn->GetConfigurationObjectCount() << endl;
+	
+	Result res = WriteMappingNrOfEntriesZero(node, configurationOutput);
+	if (!res.IsSuccessful())
+		return res;
 
-	WriteMappingNrOfEntriesZero(node, configurationOutput);
-	WriteCommunicationProfileArea(node, configurationOutput);
-	WriteManufacturerSpecificProfileArea(node, configurationOutput);
-	WriteMappingObjects(node, configurationOutput);
-	WriteMappingNrOfEntries(node, configurationOutput);
+	res = WriteCommunicationProfileArea(node, configurationOutput);
+	if (!res.IsSuccessful())
+		return res;
 
+	res = WriteManufacturerSpecificProfileArea(node, configurationOutput);
+	if (!res.IsSuccessful())
+		return res;
+
+	res = WriteMappingObjects(node, configurationOutput);
+	if (!res.IsSuccessful())
+		return res;
+
+	res = WriteMappingNrOfEntries(node, configurationOutput);
 	configurationOutput << endl;
 
-	return Result();
+	return res;
 }
 
 Result ConfigurationGenerator::WriteMappingNrOfEntriesZero(const shared_ptr<BaseNode>& node, stringstream& configurationOutput)

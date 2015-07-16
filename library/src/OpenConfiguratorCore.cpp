@@ -151,7 +151,7 @@ Result OpenConfiguratorCore::BuildProcessImage(const std::string& networkId, str
 	return Result(ErrorCode::UNHANDLED_EXCEPTION);
 }
 
-Result OpenConfiguratorCore::CreateNode(const std::string& networkId, const uint8_t nodeID, const std::string& nodeName)
+Result OpenConfiguratorCore::CreateNode(const std::string& networkId, const uint8_t nodeID, const std::string& nodeName, const bool isRmn)
 {
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -164,7 +164,7 @@ Result OpenConfiguratorCore::CreateNode(const std::string& networkId, const uint
 			res = network->AddNode(node);
 		}
 		//Add redundant managing node to network
-		else if (nodeID >= 241 && nodeID <= 250)
+		else if (nodeID >= 241 && nodeID <= 250 || isRmn) //allow the RMN to have normal nodeIDs
 		{
 			shared_ptr<ManagingNode> node = make_shared<ManagingNode>(false, nodeID, nodeName);
 			res = network->AddNode(node);

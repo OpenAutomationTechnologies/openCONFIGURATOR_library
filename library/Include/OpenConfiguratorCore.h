@@ -90,7 +90,7 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildProcessImage(const std::string& networkId, std::string& configurationOutput);
 
 						//Node related API
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateNode(const std::string& networkId, const std::uint8_t nodeID, const std::string& nodeName);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateNode(const std::string& networkId, const std::uint8_t nodeID, const std::string& nodeName, const bool isRmn = false);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveNode(const std::string& networkId, const std::uint8_t nodeID);
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetControlledNode(const std::string& networkId, const std::uint8_t nodeID, IndustrialNetwork::POWERLINK::Core::Node::ControlledNode& node);

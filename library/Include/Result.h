@@ -87,6 +87,9 @@ namespace IndustrialNetwork
 				const std::string kMsgIndexInvalid = "Index 0x%X invalid for node %d.";
 				const std::string kMsgUnsupportedAttributeType = "Attributetype '%d' not supported for this operation.";
 
+				const std::string kMsgForcedValueOverwriteObject = "Overwrite actual value: %s on object 0x%X on node %d failed because value has been forced. ";
+				const std::string kMsgForcedValueOverwriteSubObject = "Overwrite actual value: %s on subobject 0x%X/0x%X on node %d failed because value has been forced.";
+
 				const std::string kMsgNoNodesConfigured = "Configuration does not contain any POWERLINK-Nodes.";
 				const std::string kMsgNoControlledNodesConfigured = "Configuration does not contain any POWERLINK-CNs.";
 				const std::string kMsgNoManagingNodeConfigured = "Configuration does not contain any POWERLINK-MN.";
