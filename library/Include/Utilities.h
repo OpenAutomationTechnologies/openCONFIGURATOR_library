@@ -40,6 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <limits.h>
 #include <math.h>
 #include <bitset>
+#include <vector>
 
 #include "IEC_Datatype.h"
 
@@ -81,6 +82,9 @@ namespace IndustrialNetwork
 
 				int32_t FloatToSinglePrecisisionHex(float value);
 				int64_t DoubleToDoublePrecisisionHex(double value);
+
+				template <typename T>
+				std::string ReverseHex(const T number);
 
 			}
 		}

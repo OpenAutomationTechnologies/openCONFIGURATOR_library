@@ -136,13 +136,16 @@ Result OpenConfiguratorCore::BuildConfiguration(const std::string& networkId, st
 {
 	shared_ptr<Network> networkPtr;
 	stringstream config;
+	stringstream hexOutput;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
 	if (res.IsSuccessful())
 		res = networkPtr->GenerateConfiguration();
 	if (res.IsSuccessful())
-		res = ConfigurationGenerator::GetInstance().GenerateNetworkConfiguration(networkPtr, config);
+		res = ConfigurationGenerator::GetInstance().GenerateNetworkConfiguration(networkPtr, config, hexOutput);
 
 	configurationOutput = config.str();
+	cout << hexOutput.str() << endl << endl;
+
 	return res;
 }
 

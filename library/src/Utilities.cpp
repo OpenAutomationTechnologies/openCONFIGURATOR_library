@@ -190,6 +190,56 @@ namespace IndustrialNetwork
 
 					return hex;
 				}
+
+				template <typename T>
+				std::string ReverseHex(const T number)
+				{
+					vector<string> splitString;
+					stringstream originalStr;
+					stringstream reverseStr;
+					originalStr << hex << uppercase << number;
+					string tempStr(originalStr.str());
+
+					for (uint32_t start = 0; start < tempStr.size(); start += 2)
+					{
+						splitString.push_back(tempStr.substr(start, start + 2));
+					}
+
+					for (vector<string>::reverse_iterator i = splitString.rbegin();
+					        i != splitString.rend(); ++i)
+					{
+						reverseStr << *i;
+					}
+
+					return reverseStr.str();
+				}
+
+				template<> string ReverseHex<string>(const string number)
+				{
+					vector<string> splitString;
+					stringstream reverseStr;
+
+					for (uint32_t start = 0; start < number.size(); start += 2)
+					{
+						splitString.push_back(number.substr(start, start + 2));
+					}
+
+					for (vector<string>::reverse_iterator i = splitString.rbegin();
+					        i != splitString.rend(); ++i)
+					{
+						reverseStr << *i;
+					}
+
+					return reverseStr.str();
+				}
+
+				template string ReverseHex<unsigned short>(const unsigned short number);
+				template string ReverseHex<unsigned int>(const unsigned int number);
+				template string ReverseHex<unsigned long long>(const unsigned long long number);
+
+				template string ReverseHex<short>(const short number);
+				template string ReverseHex<int>(const int number);
+				template string ReverseHex<long long>(const long long number);
 			}
 		}
 	}

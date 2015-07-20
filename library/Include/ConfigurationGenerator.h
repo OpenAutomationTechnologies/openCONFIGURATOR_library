@@ -44,6 +44,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ManagingNode.h"
 #include "Object.h"
 #include "LoggingConfiguration.h"
+#include "Utilities.h"
 
 namespace IndustrialNetwork
 {
@@ -60,7 +61,7 @@ namespace IndustrialNetwork
 						virtual ~ConfigurationGenerator(void);
 						static ConfigurationGenerator& GetInstance();
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GenerateNetworkConfiguration(const std::shared_ptr<Network>& net, std::stringstream& configurationOutput);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GenerateNetworkConfiguration(const std::shared_ptr<Network>& net, std::stringstream& configurationOutput, std::stringstream& hexOutput);
 
 					private:
 						//singleton
@@ -68,18 +69,18 @@ namespace IndustrialNetwork
 						ConfigurationGenerator(ConfigurationGenerator const&);
 						void operator=(ConfigurationGenerator const&);
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteManagingNodeObjectCount(const std::shared_ptr<Network>& net, std::stringstream& configurationOutput);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteNodeAssignement(const std::shared_ptr<Network>& net, std::stringstream& configurationOutput, bool writeNodeValid, bool writeComments);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteManagingNodeObjectCount(const std::shared_ptr<Network>& net, std::stringstream& configurationOutput, std::stringstream& hexOutput);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteNodeAssignement(const std::shared_ptr<Network>& net, std::stringstream& configurationOutput, std::stringstream& hexOutput, bool writeNodeValid, bool writeComments);
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteManagingNodeConfiguration(const std::shared_ptr<Network>& net, std::stringstream& configurationOutput);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteControlledNodeConfiguration(const std::shared_ptr<Network>& net, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node, std::stringstream& configurationOutput);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteRedundantManagingNodeConfiguration(const std::shared_ptr<Network>& net, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node, std::stringstream& configurationOutput);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteManagingNodeConfiguration(const std::shared_ptr<Network>& net, std::stringstream& configurationOutput, std::stringstream& hexOutput);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteControlledNodeConfiguration(const std::shared_ptr<Network>& net, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node, std::stringstream& configurationOutput, std::stringstream& hexOutput);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteRedundantManagingNodeConfiguration(const std::shared_ptr<Network>& net, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node, std::stringstream& configurationOutput, std::stringstream& hexOutput);
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteMappingNrOfEntriesZero(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node, std::stringstream& configurationOutput);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteMappingObjects(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node, std::stringstream& configurationOutput);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteMappingNrOfEntries(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node, std::stringstream& configurationOutput);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteCommunicationProfileArea(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node, std::stringstream& configurationOutput);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteManufacturerSpecificProfileArea(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node, std::stringstream& configurationOutput);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteMappingNrOfEntriesZero(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node, std::stringstream& configurationOutput, std::stringstream& hexOutput);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteMappingObjects(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node, std::stringstream& configurationOutput, std::stringstream& hexOutput);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteMappingNrOfEntries(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node, std::stringstream& configurationOutput, std::stringstream& hexOutput);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteCommunicationProfileArea(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node, std::stringstream& configurationOutput, std::stringstream& hexOutput);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteManufacturerSpecificProfileArea(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node, std::stringstream& configurationOutput, std::stringstream& hexOutput);
 
 
 				};
