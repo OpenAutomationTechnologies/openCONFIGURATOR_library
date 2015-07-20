@@ -71,18 +71,23 @@ namespace IndustrialNetwork
 					private:
 						std::string configurationName;
 
+						//Distribute MN OD -> CN OD
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeCycleTime(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeAsyncMtu(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributePrescaler(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeMultiplCycleCount(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
-
-						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributePResPayloadLimitList();
-						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeSDOSeqLayerTimeout();
-						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeSDOCmdLayerTimeout();
-
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeNodeAssignment(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
-
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeDateTimeStamps(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeNodeAssignment(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);						
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeMultiplCycleCount(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeAsyncMtu(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributePrescaler(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);		
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeMultiplCycleAssign(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);		
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeSDOSeqLayerTimeout(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeSDOCmdLayerTimeout(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
+						
+						//Distribute CN OD -> MN OD
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributePResTimeOut(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributePReqPayloadLimit(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributePResPayloadLimit(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
+
+
 				};
 
 			}

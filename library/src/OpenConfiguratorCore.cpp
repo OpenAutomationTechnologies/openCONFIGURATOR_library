@@ -164,7 +164,7 @@ Result OpenConfiguratorCore::CreateNode(const std::string& networkId, const uint
 			res = network->AddNode(node);
 		}
 		//Add redundant managing node to network
-		else if (nodeID >= 241 && nodeID <= 250 || isRmn) //allow the RMN to have normal nodeIDs
+		else if ((nodeID >= 241 && nodeID <= 250) || isRmn) //allow the RMN to have normal nodeIDs
 		{
 			shared_ptr<ManagingNode> node = make_shared<ManagingNode>(false, nodeID, nodeName);
 			res = network->AddNode(node);

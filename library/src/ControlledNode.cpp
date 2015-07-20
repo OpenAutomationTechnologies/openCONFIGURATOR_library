@@ -111,17 +111,35 @@ uint32_t ControlledNode::GetConfigurationObjectCount()
 	uint32_t count = 0;
 	for (auto& object : this->GetObjectDictionary())
 	{
+		uint32_t mappingObjNrOfEntries = 0;
+		uint32_t mappingObjCount = 0;
 		for (auto& subobject : object.second->GetSubObjectCollection())
 		{
-			if (object.first >= 0x1600 && object.first <= 0x16FF && subobject.first == 0x0) //Count for reset and actual NrOfEntries
+			if (object.first >= 0x1600 && object.first < 0x1700) //Count for reset and actual NrOfEntries
 			{
-				if (!subobject.second->GetActualValue().empty())
-					count += 2;
+				if (subobject.second->WriteToConfiguration() && subobject.first == 0x0)
+				{
+					count += 2; //Add count for mapping set and reset
+					mappingObjNrOfEntries = subobject.second->GetTypedActualValue<uint16_t>(); //Set actual nr of mapping objects
+				}
+				else if (subobject.second->WriteToConfiguration() && mappingObjCount < mappingObjNrOfEntries) //Only count mapping objects of they are activated
+				{
+					count++;
+					mappingObjCount++;
+				}
 			}
-			else if (object.first >= 0x1A00 && object.first <= 0x1AFF && subobject.first == 0x0) //Count for reset and actual NrOfEntries
+			else if (object.first >= 0x1A00 && object.first < 0x1B00) //Count for reset and actual NrOfEntries
 			{
-				if (!subobject.second->GetActualValue().empty())
-					count += 2;
+				if (subobject.second->WriteToConfiguration()  && subobject.first == 0x0)
+				{
+					count += 2; //Add count for mapping set and reset
+					mappingObjNrOfEntries = subobject.second->GetTypedActualValue<uint16_t>(); //Set actual nr of mapping objects
+				}
+				else if (subobject.second->WriteToConfiguration() && mappingObjCount < mappingObjNrOfEntries) //Only count mapping objects of they are activated
+				{
+					count++;
+					mappingObjCount++;
+				}
 			}
 			else if (subobject.second->WriteToConfiguration())
 			{
@@ -137,17 +155,35 @@ uint32_t ControlledNode::GetConfigurationObjectSize()
 	uint32_t size = 0;
 	for (auto& object : this->GetObjectDictionary())
 	{
+		uint32_t mappingObjNrOfEntries = 0;
+		uint32_t mappingObjCount = 0;
 		for (auto& subobject : object.second->GetSubObjectCollection())
 		{
-			if (object.first >= 0x1600 && object.first <= 0x16FF && subobject.first == 0x0) //Count for reset and actual NrOfEntries
+			if (object.first >= 0x1600 && object.first < 0x1700) //Count for reset and actual NrOfEntries
 			{
-				if (!subobject.second->GetActualValue().empty())
-					size += 2 * subobject.second->GetBitSize();
+				if (subobject.second->WriteToConfiguration() && subobject.first == 0x0)
+				{
+					size += 2 * subobject.second->GetBitSize(); //Add size of NrOfEntries set and reset
+					mappingObjNrOfEntries = subobject.second->GetTypedActualValue<uint16_t>(); //Set actual nr of mapping objects
+				}
+				else if (subobject.second->WriteToConfiguration() && mappingObjCount < mappingObjNrOfEntries) //Only count mapping objects of they are activated
+				{
+					size += subobject.second->GetBitSize();
+					mappingObjCount++;
+				}
 			}
-			else if (object.first >= 0x1A00 && object.first <= 0x1AFF && subobject.first == 0x0) //Count for reset and actual NrOfEntries
+			else if (object.first >= 0x1A00 && object.first < 0x1B00) //Count for reset and actual NrOfEntries
 			{
-				if (!subobject.second->GetActualValue().empty())
-					size += 2 * subobject.second->GetBitSize();
+				if (subobject.second->WriteToConfiguration() && subobject.first == 0x0)
+				{
+					size += 2 * subobject.second->GetBitSize();//Add size of NrOfEntries
+					mappingObjNrOfEntries = subobject.second->GetTypedActualValue<uint16_t>(); //Set actual nr of mapping objects
+				}
+				else if (subobject.second->WriteToConfiguration() && mappingObjCount < mappingObjNrOfEntries) //Only count mapping objects of they are activated
+				{
+					size += subobject.second->GetBitSize();
+					mappingObjCount++;
+				}
 			}
 			else if (subobject.second->WriteToConfiguration())
 			{

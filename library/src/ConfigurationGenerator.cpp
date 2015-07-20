@@ -114,7 +114,8 @@ Result ConfigurationGenerator::WriteNodeAssignement(const shared_ptr<Network>& n
 		if (dynamic_pointer_cast<ManagingNode>(node.second))
 		{
 			//Skip if node is RMN and write Reassignment or node is AMN
-			if (writeNodeValid && node.second->GetNodeIdentifier() != 240 || node.second->GetNodeIdentifier() == 240) //Do not write Node Reassignment for RMNscontinue;
+			if ((writeNodeValid && node.second->GetNodeIdentifier() != 240) 
+				|| node.second->GetNodeIdentifier() == 240) //Do not write Node Reassignment for RMNscontinue;
 				continue;
 		}
 
@@ -152,7 +153,7 @@ Result ConfigurationGenerator::WriteManagingNodeConfiguration(const shared_ptr<N
 	//Write Managing Node Object Count
 	shared_ptr<ManagingNode> mn;
 	Result res = net->GetManagingNode(mn);
-	if (res.IsSuccessful())
+	if (!res.IsSuccessful())
 		return res;
 
 	//Reset Mapping objects
@@ -234,7 +235,7 @@ Result ConfigurationGenerator::WriteControlledNodeConfiguration(const shared_ptr
 	configurationOutput << "\t";
 	configurationOutput << hex << uppercase << setw(8) << setfill('0') << cn->GetConfigurationObjectSize() << endl;
 	configurationOutput << hex << uppercase << setw(8) << setfill('0') << cn->GetConfigurationObjectCount() << endl;
-	
+
 	Result res = WriteMappingNrOfEntriesZero(node, configurationOutput);
 	if (!res.IsSuccessful())
 		return res;
@@ -261,7 +262,7 @@ Result ConfigurationGenerator::WriteMappingNrOfEntriesZero(const shared_ptr<Base
 {
 	for (auto& object : node->GetObjectDictionary())
 	{
-		if ((object.first >= 0x1600 && object.first <= 0x16FF) || (object.first >= 0x1A00 && object.first <= 0x1AFF))
+		if ((object.first >= 0x1600 && object.first < 0x1700) || (object.first >= 0x1A00 && object.first < 0x1B00))
 		{
 			auto subobject = object.second->GetSubObjectCollection().find((uint32_t) 0);
 			if (subobject != object.second->GetSubObjectCollection().end())
@@ -286,7 +287,25 @@ Result ConfigurationGenerator::WriteMappingObjects(const shared_ptr<BaseNode>& n
 {
 	for (auto& object : node->GetObjectDictionary())
 	{
-		if ((object.first >= 0x1600 && object.first <= 0x16FF) || (object.first >= 0x1A00 && object.first <= 0x1AFF))
+		if ((object.first >= 0x1800 && object.first < 0x1900)
+		        || (object.first >= 0x1400 && object.first < 0x1500))
+		{
+			for (auto& subobject : object.second->GetSubObjectCollection())
+			{
+				if (subobject.second->WriteToConfiguration() && subobject.first != 0)
+				{
+					configurationOutput << hex << uppercase << object.first;
+					configurationOutput << "\t";
+					configurationOutput << hex << uppercase << setw(2) << setfill('0') << subobject.first;
+					configurationOutput << "\t";
+					configurationOutput << hex << uppercase << setw(8) << setfill('0') << (subobject.second->GetBitSize() / 8);
+					configurationOutput << "\t";
+					configurationOutput << subobject.second->GetTypedActualValue<string>() << endl;
+				}
+			}
+		}
+		else if ((object.first >= 0x1600 && object.first < 0x1700)
+		         || (object.first >= 0x1A00 && object.first < 0x1B00))
 		{
 			uint16_t numberOfIndicesToWrite = 0;
 			auto& subobject = object.second->GetSubObjectCollection().at((uint8_t) 0);
@@ -318,7 +337,7 @@ Result ConfigurationGenerator::WriteMappingNrOfEntries(const shared_ptr<BaseNode
 {
 	for (auto& object : node->GetObjectDictionary())
 	{
-		if ((object.first >= 0x1600 && object.first <= 0x16FF) || (object.first >= 0x1A00 && object.first <= 0x1AFF))
+		if ((object.first >= 0x1600 && object.first < 0x1700) || (object.first >= 0x1A00 && object.first < 0x1B00))
 		{
 			auto subobject = object.second->GetSubObjectCollection().find((uint32_t) 0);
 			if (subobject != object.second->GetSubObjectCollection().end())

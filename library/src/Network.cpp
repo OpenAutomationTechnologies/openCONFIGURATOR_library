@@ -199,19 +199,33 @@ Result Network::RemoveNode(const uint8_t nodeID)
 	% (uint32_t) nodeID;
 	LOG_INFO() << formatter.str();
 
-	//Remove CN related MN objects
-	shared_ptr<ManagingNode> mn;
-	Result res = this->GetManagingNode(mn);
-	if (res.IsSuccessful())
+	//Remove CN related MN and RMN objects
+	for (auto& rmn : this->nodeCollection)
 	{
-		//Reset 0x1F26 / nodeID
-		mn->ForceSubObject(0x1F26, nodeID, false, "0");
-		//Reset 0x1F27 / nodeID
-		mn->ForceSubObject(0x1F27, nodeID, false, "0");
-		//Reset 0x1F82 / nodeID
-		mn->ForceSubObject(0x1F81, nodeID, false, "0");
+		if (dynamic_pointer_cast<ManagingNode>(rmn.second))
+		{
+			//Reset 0x1F26 / nodeID
+			rmn.second->ForceSubObject(0x1F26, nodeID, false, "0");
+			//Reset 0x1F27 / nodeID
+			rmn.second->ForceSubObject(0x1F27, nodeID, false, "0");
+			//Reset 0x1F82 / nodeID
+			rmn.second->ForceSubObject(0x1F81, nodeID, false, "0");
+			//Reset 0x1F9B / nodeID
+			rmn.second->ForceSubObject(0x1F9B, nodeID, false, "0");
+			//Reset 0x1F92 / nodeID
+			rmn.second->ForceSubObject(0x1F92, nodeID, false, "25000");
+			//Reset 0x1F92 / nodeID
+			rmn.second->ForceSubObject(0x1F8B, nodeID, false, "36");
+			//Reset 0x1F8D / nodeID from all CNs
+			rmn.second->ForceSubObject(0x1F8D, nodeID, false, "36");
+		}
+		else
+		{
+			//Reset 0x1F8D / nodeID from all CNs
+			rmn.second->ForceSubObject(0x1F8D, nodeID, false, "0");
+		}
 	}
-	return res;
+	return Result();
 }
 
 Result Network::GetNodes(map<uint8_t, shared_ptr<BaseNode>>& nodeCollection)

@@ -142,17 +142,35 @@ uint32_t ManagingNode::GetConfigurationObjectCount()
 	uint32_t count = 0;
 	for (auto& object : this->GetObjectDictionary())
 	{
+		uint32_t mappingObjNrOfEntries = 0;
+		uint32_t mappingObjCount = 0;
 		for (auto& subobject : object.second->GetSubObjectCollection())
 		{
-			if (object.first >= 0x1600 && object.first <= 0x16FF && subobject.first == 0x0) //Count for reset and actual NrOfEntries
+			if (object.first >= 0x1600 && object.first < 0x1700) //Count for reset and actual NrOfEntries
 			{
-				if (!subobject.second->GetActualValue().empty())
-					count += 2;
+				if (subobject.second->WriteToConfiguration() && subobject.first == 0x0)
+				{
+					count += 2; //Add count for mapping set and reset
+					mappingObjNrOfEntries = subobject.second->GetTypedActualValue<uint16_t>(); //Set actual nr of mapping objects
+				}
+				else if (subobject.second->WriteToConfiguration() && mappingObjCount < mappingObjNrOfEntries) //Only count mapping objects of they are activated
+				{
+					count++;
+					mappingObjCount++;
+				}
 			}
-			else if (object.first >= 0x1A00 && object.first <= 0x1AFF && subobject.first == 0x0) //Count for reset and actual NrOfEntries
+			else if (object.first >= 0x1A00 && object.first < 0x1B00) //Count for reset and actual NrOfEntries
 			{
-				if (!subobject.second->GetActualValue().empty())
-					count += 2;
+				if (subobject.second->WriteToConfiguration()  && subobject.first == 0x0)
+				{
+					count += 2; //Add count for mapping set and reset
+					mappingObjNrOfEntries = subobject.second->GetTypedActualValue<uint16_t>(); //Set actual nr of mapping objects
+				}
+				else if (subobject.second->WriteToConfiguration() && mappingObjCount < mappingObjNrOfEntries) //Only count mapping objects of they are activated
+				{
+					count++;
+					mappingObjCount++;
+				}
 			}
 			else if (object.first == 0x1F81 && subobject.first != 0x0) //Count for node assignement and reassignment
 			{
@@ -160,14 +178,13 @@ uint32_t ManagingNode::GetConfigurationObjectCount()
 				{
 					count += 2; //Add assignment and reassignment count
 					if (this->GetNodeIdentifier() == 240) //Count 1F22 only for active managing node
-						count += 1;
+						count++;
 				}
 			}
 			else if (subobject.second->WriteToConfiguration())
 			{
 				count++;
 			}
-
 		}
 	}
 	//Remove reassignment count for RMNs
@@ -181,17 +198,35 @@ uint32_t ManagingNode::GetConfigurationObjectSize()
 	uint32_t size = 0;
 	for (auto& object : this->GetObjectDictionary())
 	{
+		uint32_t mappingObjNrOfEntries = 0;
+		uint32_t mappingObjCount = 0;
 		for (auto& subobject : object.second->GetSubObjectCollection())
 		{
-			if (object.first >= 0x1600 && object.first <= 0x16FF && subobject.first == 0x0) //Size for reset and actual NrOfEntries
+			if (object.first >= 0x1600 && object.first < 0x1700) //Count for reset and actual NrOfEntries
 			{
-				if (!subobject.second->GetActualValue().empty())
-					size += 2 * subobject.second->GetBitSize();
+				if (subobject.second->WriteToConfiguration() && subobject.first == 0x0)
+				{
+					size += 2 * subobject.second->GetBitSize(); //Add size of NrOfEntries set and reset
+					mappingObjNrOfEntries = subobject.second->GetTypedActualValue<uint16_t>(); //Set actual nr of mapping objects
+				}
+				else if (subobject.second->WriteToConfiguration() && mappingObjCount < mappingObjNrOfEntries) //Only count mapping objects of they are activated
+				{
+					size += subobject.second->GetBitSize();
+					mappingObjCount++;
+				}
 			}
-			else if (object.first >= 0x1A00 && object.first <= 0x1AFF && subobject.first == 0x0) //Size for reset and actual NrOfEntries
+			else if (object.first >= 0x1A00 && object.first < 0x1B00) //Count for reset and actual NrOfEntries
 			{
-				if (!subobject.second->GetActualValue().empty())
-					size += 2 * subobject.second->GetBitSize();
+				if (subobject.second->WriteToConfiguration() && subobject.first == 0x0)
+				{
+					size += 2 * subobject.second->GetBitSize();//Add size of NrOfEntries
+					mappingObjNrOfEntries = subobject.second->GetTypedActualValue<uint16_t>(); //Set actual nr of mapping objects
+				}
+				else if (subobject.second->WriteToConfiguration() && mappingObjCount < mappingObjNrOfEntries) //Only count mapping objects of they are activated
+				{
+					size += subobject.second->GetBitSize();
+					mappingObjCount++;
+				}
 			}
 			else if (object.first == 0x1F81 && subobject.first != 0x0) //Size for node assignement and reassignment
 			{

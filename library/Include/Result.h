@@ -61,8 +61,8 @@ namespace IndustrialNetwork
 				const std::string kMsgSubObjectCreated = "Subobject 0x%X/0x%X  created on node %d.";
 				const std::string kMsgNonExistingObject = "Object 0x%X does not exist on node %d.";
 				const std::string kMsgNonExistingSubObject = "Subobject 0x%X/0x%X does not exist on node %d.";
-				const std::string kMsgForceObject = "Set force flage on object 0x%X on node %d to '%s'.";
-				const std::string kMsgForceSubObject = "Set force flage on subobject 0x%X/0x%X on node %d to '%s'.";
+				const std::string kMsgForceObject = "Set force flag on object 0x%X on node %d to '%s'.";
+				const std::string kMsgForceSubObject = "Set force flag on subobject 0x%X/0x%X on node %d to '%s'.";
 				const std::string kMsgSetObjectActualValue = "Set actual value: %s on object 0x%X on node %d.";
 				const std::string kMsgSetSubObjectActualValue = "Set actual value: %s on subobject 0x%X/0x%X on node %d.";
 				const std::string kMsgDatatypeMismatch = "Datatype '%s' does not match expected datatype '%s'.";
@@ -86,6 +86,7 @@ namespace IndustrialNetwork
 				const std::string kMsgSubIndexInvalid = "Subindex 0x%X/0x%X invalid for node %d.";
 				const std::string kMsgIndexInvalid = "Index 0x%X invalid for node %d.";
 				const std::string kMsgUnsupportedAttributeType = "Attributetype '%d' not supported for this operation.";
+				const std::string kMsgCycleTimeOnMnNotSet = "Cycle time has to be set on the managing node of the POWERLINK network.";
 
 				const std::string kMsgForcedValueOverwriteObject = "Overwrite actual value: %s on object 0x%X on node %d failed because value has been forced. ";
 				const std::string kMsgForcedValueOverwriteSubObject = "Overwrite actual value: %s on subobject 0x%X/0x%X on node %d failed because value has been forced.";
