@@ -164,7 +164,10 @@ Result BaseNode::ForceObject(uint32_t objectId, bool force, string actualValue)
 
 	if (!actualValue.empty())
 	{
-		iter->second->SetTypedObjectActualValue(actualValue);
+		Result res = iter->second->SetTypedObjectActualValue(actualValue);
+		if(!res.IsSuccessful())
+			return res;
+
 		//Log info actual value set
 		boost::format formatter(kMsgSetObjectActualValue);
 		formatter
@@ -204,7 +207,10 @@ Result BaseNode::SetObjectActualValue(uint32_t objectId, string actualValue)
 	}
 	if (!actualValue.empty())
 	{
-		iter->second->SetTypedObjectActualValue(actualValue);
+		Result res = iter->second->SetTypedObjectActualValue(actualValue);
+		if(!res.IsSuccessful())
+			return res;
+
 		//Log info actual value set
 		boost::format formatter(kMsgSetObjectActualValue);
 		formatter
@@ -273,7 +279,10 @@ Result BaseNode::ForceSubObject(uint32_t objectId, uint32_t subObjectId, bool fo
 
 		if (!actualValue.empty())
 		{
-			subObject->SetTypedObjectActualValue(actualValue);
+			res = subObject->SetTypedObjectActualValue(actualValue);
+			if(!res.IsSuccessful())
+				return res;
+
 			//Log info actual value set
 			boost::format formatter(kMsgSetSubObjectActualValue);
 			formatter
@@ -328,7 +337,10 @@ Result BaseNode::SetSubObjectActualValue(uint32_t objectId, uint32_t subObjectId
 		}
 		if (!actualValue.empty())
 		{
-			subObject->SetTypedObjectActualValue(actualValue);
+			res = subObject->SetTypedObjectActualValue(actualValue);
+			if(!res.IsSuccessful())
+				return res;
+
 			//Log info actual value set
 			boost::format formatter(kMsgSetSubObjectActualValue);
 			formatter

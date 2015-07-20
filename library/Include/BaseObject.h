@@ -106,7 +106,7 @@ namespace IndustrialNetwork
 						T GetTypedDefaultValue();
 
 						std::uint8_t GetContainingNode();
-						void SetTypedObjectActualValue(const std::string& actualValueToSet);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetTypedObjectActualValue(const std::string& actualValueToSet);
 						void SetTypedObjectDefaultValue(const std::string& defaultValueToSet);
 
 						void SetComplexDataType(std::shared_ptr<Parameter>& parameter);
@@ -114,7 +114,7 @@ namespace IndustrialNetwork
 						std::uint32_t GetBitSize();
 
 					private:
-
+										
 						bool forceToCDC;
 						boost::optional<std::int64_t> highLimit;
 						boost::optional<std::int64_t> lowLimit;

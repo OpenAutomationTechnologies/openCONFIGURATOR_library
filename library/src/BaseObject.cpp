@@ -513,7 +513,7 @@ namespace IndustrialNetwork
 				template int64_t BaseObject::GetTypedDefaultValue<int64_t>();
 				template double BaseObject::GetTypedDefaultValue<double>();
 
-				void BaseObject::SetTypedObjectActualValue(const std::string& actualValue)
+				Result BaseObject::SetTypedObjectActualValue(const std::string& actualValue)
 				{
 					if (this->GetDataType().is_initialized())
 					{
@@ -536,6 +536,16 @@ namespace IndustrialNetwork
 							case PlkDataType::INTEGER16:
 								{
 									int16_t value = HexToInt<int16_t>(actualValue);
+									if (this->highLimit.is_initialized())
+									{
+										if (value > this->highLimit.get())
+											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
+									}
+									if (this->lowLimit.is_initialized())
+									{
+										if (value < this->lowLimit.get())
+											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
+									}
 									this->SetActualValue(boost::any(value));
 									if (this->GetDefaultValue().empty())
 										this->actualValueNotDefaultValue = true;
@@ -548,6 +558,16 @@ namespace IndustrialNetwork
 							case PlkDataType::INTEGER32:
 								{
 									int32_t value = HexToInt<int32_t>(actualValue);
+									if (this->highLimit.is_initialized())
+									{
+										if (value > this->highLimit.get())
+											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
+									}
+									if (this->lowLimit.is_initialized())
+									{
+										if (value < this->lowLimit.get())
+											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
+									}
 									this->SetActualValue(boost::any(value));
 									if (this->GetDefaultValue().empty())
 										this->actualValueNotDefaultValue = true;
@@ -559,6 +579,16 @@ namespace IndustrialNetwork
 							case PlkDataType::UNSIGNED16:
 								{
 									uint16_t value = HexToInt<uint16_t>(actualValue);
+									if (this->highLimit.is_initialized())
+									{
+										if (value > this->highLimit.get())
+											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
+									}
+									if (this->lowLimit.is_initialized())
+									{
+										if (value < this->lowLimit.get())
+											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
+									}
 									this->SetActualValue(boost::any(value));
 									if (this->GetDefaultValue().empty())
 										this->actualValueNotDefaultValue = true;
@@ -572,6 +602,16 @@ namespace IndustrialNetwork
 							case PlkDataType::UNSIGNED32:
 								{
 									uint32_t value = HexToInt<uint32_t>(actualValue);
+									if (this->highLimit.is_initialized())
+									{
+										if (value > this->highLimit.get())
+											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
+									}
+									if (this->lowLimit.is_initialized())
+									{
+										if (value < this->lowLimit.get())
+											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
+									}
 									this->SetActualValue(boost::any(value));
 									if (this->GetDefaultValue().empty())
 										this->actualValueNotDefaultValue = true;
@@ -587,6 +627,16 @@ namespace IndustrialNetwork
 							case PlkDataType::INTEGER24:
 								{
 									int32_t value = HexToInt<int32_t>(actualValue);
+									if (this->highLimit.is_initialized())
+									{
+										if (value > this->highLimit.get())
+											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
+									}
+									if (this->lowLimit.is_initialized())
+									{
+										if (value < this->lowLimit.get())
+											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
+									}
 									this->SetActualValue(boost::any(value));
 									if (this->GetDefaultValue().empty())
 										this->actualValueNotDefaultValue = true;
@@ -627,6 +677,16 @@ namespace IndustrialNetwork
 							case PlkDataType::INTEGER64:
 								{
 									int64_t value = HexToInt<int64_t>(actualValue);
+									if (this->highLimit.is_initialized())
+									{
+										if (value > this->highLimit.get())
+											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
+									}
+									if (this->lowLimit.is_initialized())
+									{
+										if (value < this->lowLimit.get())
+											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
+									}
 									this->SetActualValue(boost::any(value));
 									if (this->GetDefaultValue().empty())
 										this->actualValueNotDefaultValue = true;
@@ -643,6 +703,16 @@ namespace IndustrialNetwork
 							case PlkDataType::UNSIGNED64:
 								{
 									uint64_t value = HexToInt<uint64_t>(actualValue);
+									if (this->highLimit.is_initialized())
+									{
+										if (value > this->highLimit.get())
+											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
+									}
+									if (this->lowLimit.is_initialized())
+									{
+										if (value < this->lowLimit.get())
+											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
+									}
 									if (this->GetDefaultValue().empty())
 										this->actualValueNotDefaultValue = true;
 									else if (this->GetTypedDefaultValue<uint64_t>() != value)
@@ -673,6 +743,7 @@ namespace IndustrialNetwork
 								break;
 						}
 					}
+					return Result();
 				}
 
 				void BaseObject::SetTypedObjectDefaultValue(const std::string& defaultValue)

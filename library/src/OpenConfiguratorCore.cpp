@@ -401,6 +401,9 @@ Result OpenConfiguratorCore::CreateObject(const std::string& networkId, const ui
 
 Result OpenConfiguratorCore::SetObjectLimits(const std::string& networkId, const uint8_t nodeId, uint32_t objectId, int64_t highlimit, int64_t lowLimit)
 {
+	if (lowLimit > highlimit)
+		return Result(ErrorCode::OBJECT_LIMITS_INVALID);
+
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 	if (res.IsSuccessful())
@@ -479,6 +482,9 @@ Result OpenConfiguratorCore::CreateSubObject(const std::string& networkId, const
 
 Result OpenConfiguratorCore::SetSubObjectLimits(const std::string& networkId, const uint8_t nodeId, uint32_t objectId, uint32_t subObjectId, int64_t highlimit, int64_t lowLimit)
 {
+	if (lowLimit > highlimit)
+		return Result(ErrorCode::OBJECT_LIMITS_INVALID);
+
 	shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 	if (res.IsSuccessful())
