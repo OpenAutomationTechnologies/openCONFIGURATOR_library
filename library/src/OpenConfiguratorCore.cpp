@@ -954,3 +954,33 @@ Result OpenConfiguratorCore::SetSubObjectActualValue(const std::string& networkI
 	}
 	return res;
 }
+
+Result OpenConfiguratorCore::ResetOperationMode(const std::string& networkId, const std::uint8_t nodeId)
+{
+	shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (!res.IsSuccessful())
+		return res;
+
+	return network->SetOperationMode(nodeId, PlkOperationMode::NORMAL);
+}
+
+Result OpenConfiguratorCore::SetOperationModeChained(const std::string& networkId, const std::uint8_t nodeId)
+{
+	shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (!res.IsSuccessful())
+		return res;
+
+	return network->SetOperationMode(nodeId, PlkOperationMode::CHAINED);
+}
+
+Result OpenConfiguratorCore::SetOperationModeMultiplexed(const std::string& networkId, const std::uint8_t nodeId, const std::uint8_t multiplexedCycle)
+{
+	shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (!res.IsSuccessful())
+		return res;
+
+	return network->SetOperationMode(nodeId, PlkOperationMode::MULTIPLEXED, multiplexedCycle);
+}

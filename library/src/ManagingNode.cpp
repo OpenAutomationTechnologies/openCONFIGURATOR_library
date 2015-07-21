@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
+using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 
 ManagingNode::ManagingNode(bool active, std::uint8_t nodeID, const string nodeName) : BaseNode(nodeID, nodeName),
 	active(active),
@@ -257,4 +258,47 @@ uint16_t ManagingNode::GetRmnCount()
 void ManagingNode::SetRmnCount(std::uint16_t count)
 {
 	this->rmnCount = count;
+}
+
+Result ManagingNode::SetMultiplexedCycle(const std::uint8_t nodeID, const std::uint8_t multiplexedCycle)
+{
+	shared_ptr<SubObject> multplCycleCount;
+	Result res = this->GetSubObject(0x1F98, 0x7, multplCycleCount);
+	if (!res.IsSuccessful())
+		return res;
+
+	uint16_t cycle_count = 0;
+	if (multplCycleCount->WriteToConfiguration())
+		cycle_count = multplCycleCount->GetTypedActualValue<uint16_t>();
+	else
+		cycle_count = multplCycleCount->GetTypedDefaultValue<uint16_t>();
+
+	if (multiplexedCycle > cycle_count)
+		return Result(ErrorCode::MULTIPLEX_CYCLE_ASSIGN_INVALID);
+
+	shared_ptr<SubObject> multplCycleAssign;
+	res = this->GetSubObject(0x1F9B, nodeID, multplCycleAssign);
+	if (!res.IsSuccessful())
+		return res;
+
+	if(multplCycleAssign->WriteToConfiguration())
+		return(ErrorCode::MULTIPLEX_CYCLE_ASSIGN_INVALID);
+
+	stringstream nodeIdStr;
+	nodeIdStr << (uint32_t) multiplexedCycle;
+	multplCycleAssign->SetTypedObjectActualValue(nodeIdStr.str());
+
+	return res;
+}
+
+Result ManagingNode::ResetMultiplexedCycle(const std::uint8_t nodeID)
+{
+	shared_ptr<SubObject> multplCycleAssign;
+	Result res = this->GetSubObject(0x1F9B, nodeID, multplCycleAssign);
+	if (!res.IsSuccessful())
+		return res;
+
+	multplCycleAssign->SetTypedObjectActualValue("0");
+
+	return res;
 }

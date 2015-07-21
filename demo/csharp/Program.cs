@@ -106,7 +106,7 @@ namespace openconfigurator_core_net_app
 
             core.CreateObject("test", 240, 0x1F98, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
             core.CreateSubObject("test", 240, 0x1F98, 0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "3", "3");
-            core.CreateSubObject("test", 240, 0x1F98, 7, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "");
+            core.CreateSubObject("test", 240, 0x1F98, 7, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "10", "");
             core.CreateSubObject("test", 240, 0x1F98, 8, ObjectType.VAR, "testName", PlkDataType.UNSIGNED16, AccessType.RW, PDOMapping.DEFAULT, "300", "");
             core.CreateSubObject("test", 240, 0x1F98, 9, ObjectType.VAR, "testName", PlkDataType.UNSIGNED16, AccessType.RW, PDOMapping.DEFAULT, "2", "");
 
@@ -211,7 +211,7 @@ namespace openconfigurator_core_net_app
             core.CreateObject("test", 241, 0x1F98, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
             core.CreateSubObject("test", 241, 0x1F98, 0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "3", "3");
             core.CreateSubObject("test", 241, 0x1F98, 5, ObjectType.VAR, "testName", PlkDataType.UNSIGNED16, AccessType.RW, PDOMapping.DEFAULT, "0", "5000");
-            core.CreateSubObject("test", 241, 0x1F98, 7, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "");
+            core.CreateSubObject("test", 241, 0x1F98, 7, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "10", "");
             core.CreateSubObject("test", 241, 0x1F98, 8, ObjectType.VAR, "testName", PlkDataType.UNSIGNED16, AccessType.RW, PDOMapping.DEFAULT, "300", "");
             core.CreateSubObject("test", 241, 0x1F98, 9, ObjectType.VAR, "testName", PlkDataType.UNSIGNED16, AccessType.RW, PDOMapping.DEFAULT, "2", "");
 
@@ -289,6 +289,15 @@ namespace openconfigurator_core_net_app
             core.CreateSubObject("test", 10, 0x1020, 1, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
             core.CreateSubObject("test", 10, 0x1020, 2, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
 
+            core.CreateObject("test", 10, 0x1F9B, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
+            core.CreateSubObject("test", 10, 0x1F9B, 0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "3", "3");
+            core.CreateSubObject("test", 10, 0x1F9B, 1, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            core.CreateSubObject("test", 10, 0x1F9B, 2, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            core.CreateSubObject("test", 10, 0x1F9B, 5, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            core.CreateSubObject("test", 10, 0x1F9B, 10, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            core.CreateSubObject("test", 10, 0x1F9B, 20, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            core.CreateSubObject("test", 10, 0x1F9B, 241, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+
             core.CreateObject("test", 10, 0x1300, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
             core.CreateSubObject("test", 10, 0x1300, 0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
 
@@ -323,6 +332,15 @@ namespace openconfigurator_core_net_app
             core.CreateSubObject("test", 20, 0x1020, 0, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "2", "2");
             core.CreateSubObject("test", 20, 0x1020, 1, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
             core.CreateSubObject("test", 20, 0x1020, 2, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+
+            core.CreateObject("test", 20, 0x1F9B, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
+            core.CreateSubObject("test", 20, 0x1F9B, 0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "3", "3");
+            core.CreateSubObject("test", 20, 0x1F9B, 1, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            core.CreateSubObject("test", 20, 0x1F9B, 2, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            core.CreateSubObject("test", 20, 0x1F9B, 5, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            core.CreateSubObject("test", 20, 0x1F9B, 10, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            core.CreateSubObject("test", 20, 0x1F9B, 20, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            core.CreateSubObject("test", 20, 0x1F9B, 241, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
 
             core.CreateObject("test", 20, 0x1F8D, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
             core.CreateSubObject("test", 20, 0x1F8D, 0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "3", "3");
@@ -359,6 +377,15 @@ namespace openconfigurator_core_net_app
             core.CreateSubObject("test", 1, 0x1020, 0, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "2", "2");
             core.CreateSubObject("test", 1, 0x1020, 1, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
             core.CreateSubObject("test", 1, 0x1020, 2, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+
+            core.CreateObject("test", 1, 0x1F9B, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
+            core.CreateSubObject("test", 1, 0x1F9B, 0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "3", "3");
+            core.CreateSubObject("test", 1, 0x1F9B, 1, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            core.CreateSubObject("test", 1, 0x1F9B, 2, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            core.CreateSubObject("test", 1, 0x1F9B, 5, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            core.CreateSubObject("test", 1, 0x1F9B, 10, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            core.CreateSubObject("test", 1, 0x1F9B, 20, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            core.CreateSubObject("test", 1, 0x1F9B, 241, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
 
             core.CreateObject("test", 1, 0x1F8D, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
             core.CreateSubObject("test", 1, 0x1F8D, 0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "3", "3");
@@ -420,6 +447,15 @@ namespace openconfigurator_core_net_app
             core.CreateSubObject("test", 5, 0x1F98, 8, ObjectType.VAR, "testName", PlkDataType.UNSIGNED16, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
             core.CreateSubObject("test", 5, 0x1F98, 9, ObjectType.VAR, "testName", PlkDataType.UNSIGNED16, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
 
+            core.CreateObject("test", 5, 0x1F9B, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
+            core.CreateSubObject("test", 5, 0x1F9B, 0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "3", "3");
+            core.CreateSubObject("test", 5, 0x1F9B, 1, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            core.CreateSubObject("test", 5, 0x1F9B, 2, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            core.CreateSubObject("test", 5, 0x1F9B, 5, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            core.CreateSubObject("test", 5, 0x1F9B, 10, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+            core.CreateSubObject("test", 5, 0x1F9B, 20, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
+
+            core.CreateSubObject("test", 240, 0x1F9B, 241, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
             core.CreateObject("test", 5, 0x1300, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
             core.CreateSubObject("test", 5, 0x1300, 0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
 
@@ -582,6 +618,20 @@ namespace openconfigurator_core_net_app
             res = core.GetSubObjectSize("test", 1, 0x2000, 0x1, out obsize);
             Console.WriteLine(obsize);
             Console.WriteLine(res.IsSuccessful());
+
+           res = core.SetFeatureValue("test", 240, MNFeatureEnum.DLLMNFeatureMultiplex, "true");
+            res = core.SetFeatureValue("test", 240, MNFeatureEnum.DLLMNPResChaining, "true");
+            Console.WriteLine(res.GetErrorType());
+
+            res = core.SetFeatureValue("test", 5, CNFeatureEnum.DLLCNPResChaining, "true");
+            Console.WriteLine(res.GetErrorType());
+            res = core.SetOperationModeChained("test", 5);
+            Console.WriteLine(res.GetErrorType());
+
+            res = core.SetFeatureValue("test", 10, CNFeatureEnum.DLLCNFeatureMultiplex, "true");
+            Console.WriteLine(res.GetErrorType());
+            res = core.SetOperationModeMultiplexed("test", 10, 5);
+            Console.WriteLine(res.GetErrorType());
 
             string tempString;
             res = core.BuildConfiguration("test", out tempString);

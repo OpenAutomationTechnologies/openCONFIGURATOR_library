@@ -39,6 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Constants.h"
 #include "DynamicChannel.h"
 #include "PlkDataType.h"
+#include "Result.h"
 
 namespace IndustrialNetwork
 {
@@ -75,6 +76,8 @@ namespace IndustrialNetwork
 						std::uint16_t GetRmnCount();
 						void SetRmnCount(std::uint16_t count);
 
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetMultiplexedCycle(const std::uint8_t nodeID, const std::uint8_t multiplexedCycle);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ResetMultiplexedCycle(const std::uint8_t nodeID);
 
 					private:
 						bool active;

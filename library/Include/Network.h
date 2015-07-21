@@ -36,6 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
+
 #include "Result.h"
 #include "BaseNode.h"
 #include "Module.h"
@@ -48,6 +49,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "BuildConfigurationId.h"
 #include "BuildConfigurationSetting.h"
 #include "LoggingConfiguration.h"
+#include "PlkOperationMode.h"
 
 namespace IndustrialNetwork
 {
@@ -196,6 +198,8 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetBuildConfigurations(std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Configuration::PlkConfiguration>>& bcfgs);
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GenerateConfiguration();
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetOperationMode(const std::uint8_t nodeID, const IndustrialNetwork::POWERLINK::Core::Node::PlkOperationMode mode, const std::uint8_t multiplexedCycle = 0);
 
 						/**
 						* Getter & Setter

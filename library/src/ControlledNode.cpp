@@ -193,3 +193,57 @@ uint32_t ControlledNode::GetConfigurationObjectSize()
 	}
 	return size;
 }
+
+Result ControlledNode::SetOperationMode(PlkOperationMode operationMode)
+{
+	if (operationMode == this->operationMode)
+		return Result();
+
+	if (operationMode == PlkOperationMode::NORMAL)
+	{
+		this->operationMode = operationMode;
+		this->RemoveNodeAssignment(NodeAssignment::NMT_NODEASSIGN_MULTIPLEXED_CN);
+		this->RemoveNodeAssignment(NodeAssignment::NMT_NODEASSIGN_PRES_CHAINING);
+	}
+	else if (operationMode == PlkOperationMode::MULTIPLEXED)
+	{
+		bool operationModeSupported = false;
+		Result res = this->GetNetworkManagement()->GetFeatureActualValue<bool>(CNFeatureEnum::DLLCNFeatureMultiplex, operationModeSupported);
+		if (!res.IsSuccessful())
+			return res;
+
+		if (operationModeSupported)
+		{
+			this->operationMode = operationMode;
+			this->AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_MULTIPLEXED_CN);
+		}
+		else
+		{
+			return Result(ErrorCode::MULTIPLEXING_NOT_SUPPORTED);
+		}
+
+	}
+	else if (operationMode == PlkOperationMode::CHAINED)
+	{
+		bool operationModeSupported = false;
+		Result res = this->GetNetworkManagement()->GetFeatureActualValue<bool>(CNFeatureEnum::DLLCNPResChaining, operationModeSupported);
+		if (!res.IsSuccessful())
+			return res;
+
+		if (operationModeSupported)
+		{
+			this->operationMode = operationMode;
+			this->AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_PRES_CHAINING);
+		}
+		else
+		{
+			return Result(ErrorCode::CHAINING_NOT_SUPPORTED);
+		}
+	}
+	return Result();
+}
+
+PlkOperationMode ControlledNode::GetOperationMode()
+{
+	return this->operationMode;
+}

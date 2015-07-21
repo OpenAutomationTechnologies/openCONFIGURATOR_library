@@ -65,6 +65,9 @@ namespace IndustrialNetwork
 						bool RemoveNodeAssignment(NodeAssignment);
 						std::uint32_t GetNodeAssignmentValue();
 
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetOperationMode(IndustrialNetwork::POWERLINK::Core::Node::PlkOperationMode operationMode);
+						IndustrialNetwork::POWERLINK::Core::Node::PlkOperationMode GetOperationMode();
+
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapToFrame(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject& index, uint32_t position, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetAllMappableObjects(std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject>>& objects, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapAllRxObjects();

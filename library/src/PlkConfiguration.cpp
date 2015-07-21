@@ -400,7 +400,7 @@ Result PlkConfiguration::DistributeMultiplCycleAssign(const map<uint8_t, shared_
 			{
 				stringstream multiplCycleAssignValue;
 				multiplCycleAssignValue << subObj.second->GetTypedActualValue<uint16_t>();
-				Result res = node.second->SetSubObjectActualValue(0x1F9B, node.first, multiplCycleAssignValue.str());
+				Result res = node.second->SetSubObjectActualValue(0x1F9B, subObj.first, multiplCycleAssignValue.str());
 				if (!res.IsSuccessful())
 					return res;
 			}

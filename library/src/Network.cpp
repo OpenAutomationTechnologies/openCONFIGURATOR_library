@@ -577,3 +577,75 @@ Result Network::GenerateConfiguration()
 	}
 	return res;
 }
+
+Result Network::SetOperationMode(const std::uint8_t nodeID, const PlkOperationMode mode, const std::uint8_t multiplexedCycle)
+{
+	shared_ptr<BaseNode> node;
+	Result res = this->GetBaseNode(nodeID, node);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::shared_ptr<ControlledNode> cn = std::dynamic_pointer_cast<ControlledNode>(node);
+	if (cn)
+	{
+		shared_ptr<ManagingNode> mn;
+		res = this->GetManagingNode(mn);
+		if (!res.IsSuccessful())
+			return res;
+
+		bool operationModeSupported = false;
+		if (mode == PlkOperationMode::CHAINED)
+		{
+			Result res = mn->GetNetworkManagement()->GetFeatureActualValue<bool>(MNFeatureEnum::DLLMNPResChaining, operationModeSupported);
+			if (!res.IsSuccessful())
+				return res;
+			if (!operationModeSupported)
+				return Result(ErrorCode::CHAINING_NOT_SUPPORTED);
+		}
+		else if (mode == PlkOperationMode::MULTIPLEXED)
+		{
+			Result res = mn->GetNetworkManagement()->GetFeatureActualValue<bool>(MNFeatureEnum::DLLMNFeatureMultiplex, operationModeSupported);
+			if (!res.IsSuccessful())
+				return res;
+			if (!operationModeSupported)
+				return Result(ErrorCode::MULTIPLEXING_NOT_SUPPORTED);
+		}
+
+		if (cn->GetOperationMode() == mode)
+			return Result();
+
+		res = cn->SetOperationMode(mode);
+		if (!res.IsSuccessful())
+			return res;
+
+
+		switch (mode)
+		{
+			case PlkOperationMode::NORMAL:
+				{
+					res = mn->ResetMultiplexedCycle(nodeID);
+					break;
+				}
+			case PlkOperationMode::MULTIPLEXED:
+				{
+					if (multiplexedCycle != 0)
+					{
+						res = mn->SetMultiplexedCycle(nodeID, multiplexedCycle);
+					}
+					break;
+				}
+			case PlkOperationMode::CHAINED:
+				{
+					res = mn->ResetMultiplexedCycle(nodeID);
+					break;
+				}
+			default:
+				break;
+		}
+
+	}
+	else
+		return Result(ErrorCode::NODE_CONFIGURATION_ERROR);
+
+	return Result();
+}

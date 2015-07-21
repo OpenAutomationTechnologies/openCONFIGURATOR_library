@@ -106,6 +106,10 @@ namespace IndustrialNetwork
 						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ReorderModules();
 						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DeleteModule();
 
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ResetOperationMode(const std::string& networkId, const std::uint8_t nodeID);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetOperationModeChained(const std::string& networkId, const std::uint8_t nodeID);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetOperationModeMultiplexed(const std::string& networkId, const std::uint8_t nodeID, const std::uint8_t multiplexedCycle);
+
 						//Build Configuration related API
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetConfigurationSettingEnabled(const std::string& networkId, const std::string&  configID, const std::string&  settingID, bool enabled);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateConfigurationSetting(const std::string& networkId, const std::string& configID, const std::string& name, const std::string& value);

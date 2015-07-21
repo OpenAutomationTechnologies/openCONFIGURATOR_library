@@ -99,7 +99,6 @@ Result ConfigurationGenerator::WriteManagingNodeObjectCount(const shared_ptr<Net
 	{
 		configurationOutput << setfill('0') << setw(8) << hex << uppercase << mn->GetConfigurationObjectCount() << endl;
 		hexOutput << setfill('0') << setw(8) << hex  << uppercase << left << ReverseHex(mn->GetConfigurationObjectCount());
-
 	}
 	return res;
 }

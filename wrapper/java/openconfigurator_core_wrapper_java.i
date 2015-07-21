@@ -102,6 +102,7 @@
 #include "ControlledNode.h"
 #include "ManagingNode.h"
 #include "PlkFeatureEnum.h"
+#include "PlkOperationMode.h"
 #include "OpenConfiguratorCore.h"
 
 %}
@@ -142,6 +143,7 @@
 %include "ControlledNode.h"
 %include "ManagingNode.h"
 %include "PlkFeatureEnum.h"
+%include "PlkOperationMode.h"
 %include "OpenConfiguratorCore.h"
 
 namespace std {
