@@ -101,6 +101,16 @@ Result OpenConfiguratorCore::SetCycleTime(const std::string& networkId, uint32_t
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
 	if (res.IsSuccessful())
 		networkPtr->SetCycleTime(cycleTime);
+
+	shared_ptr<ManagingNode> nodePtr;
+	res = networkPtr->GetManagingNode(nodePtr);
+	if (res.IsSuccessful())
+	{
+		stringstream cycleTimeStr;
+		cycleTimeStr << cycleTime;
+		return nodePtr->SetSubObjectActualValue(0x1006, 0x0, cycleTimeStr.str());
+	}
+
 	return res;
 }
 
@@ -110,25 +120,55 @@ Result OpenConfiguratorCore::SetAsyncMtu(const std::string& networkId, uint32_t 
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
 	if (res.IsSuccessful())
 		networkPtr->SetAsyncMTU(asyncMtu);
+
+	shared_ptr<ManagingNode> nodePtr;
+	res = networkPtr->GetManagingNode(nodePtr);
+	if (res.IsSuccessful())
+	{
+		stringstream asyncMtuStr;
+		asyncMtuStr << asyncMtu;
+		return nodePtr->SetSubObjectActualValue(0x1F98, 0x8, asyncMtuStr.str());
+	}
+
 	return res;
 
 }
 
-Result OpenConfiguratorCore::SetMultiplexedCycleLength(const std::string& networkId, uint32_t multiplexedCycleLength)
+Result OpenConfiguratorCore::SetMultiplexedCycleLength(const std::string& networkId, uint16_t multiplexedCycleLength)
 {
 	shared_ptr<Network> networkPtr;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
 	if (res.IsSuccessful())
 		networkPtr->SetMultiplexedCycleLength(multiplexedCycleLength);
+
+	shared_ptr<ManagingNode> nodePtr;
+	res = networkPtr->GetManagingNode(nodePtr);
+	if (res.IsSuccessful())
+	{
+		stringstream multiplexedCycleCountStr;
+		multiplexedCycleCountStr << multiplexedCycleLength;
+		return nodePtr->SetSubObjectActualValue(0x1F98, 0x7, multiplexedCycleCountStr.str());
+	}
+
 	return res;
 }
 
-Result OpenConfiguratorCore::SetPrescaler(const std::string& networkId, uint32_t prescaler)
+Result OpenConfiguratorCore::SetPrescaler(const std::string& networkId, uint16_t prescaler)
 {
 	shared_ptr<Network> networkPtr;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
 	if (res.IsSuccessful())
 		networkPtr->SetPrescaler(prescaler);
+
+	shared_ptr<ManagingNode> nodePtr;
+	res = networkPtr->GetManagingNode(nodePtr);
+	if (res.IsSuccessful())
+	{
+		stringstream prescalerStr;
+		prescalerStr << prescaler;
+		return nodePtr->SetSubObjectActualValue(0x1F98, 0x9, prescalerStr.str());
+	}
+
 	return res;
 }
 
