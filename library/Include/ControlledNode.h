@@ -32,6 +32,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined CONTROLLED_NODE_H
 #define CONTROLLED_NODE_H
 
+#include <boost/format.hpp>
+
 #include "BaseNode.h"
 #include "PlkOperationMode.h"
 #include "Result.h"
@@ -41,6 +43,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Module.h"
 #include "Range.h"
 #include "Constants.h"
+#include "LoggingConfiguration.h"
 
 namespace IndustrialNetwork
 {

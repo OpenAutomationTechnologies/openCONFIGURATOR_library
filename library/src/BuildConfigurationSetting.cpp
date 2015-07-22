@@ -58,6 +58,7 @@ void BuildConfigurationSetting::InitConfigurationSetting(const std::string& id)
 		this->SetDescription(BuildConfigurationIdDescription[BuildConfigurationId::GENERATE_MN_MAPPING_FOR_NODES]);
 		//Add builder for setting
 	}
+	// add other supported settings here
 	else
 	{
 		this->SetEnabled(false);

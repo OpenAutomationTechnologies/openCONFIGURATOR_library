@@ -35,11 +35,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <memory>
 
+#include <boost/format.hpp>
+
 #include "BaseNode.h"
 #include "Constants.h"
 #include "DynamicChannel.h"
 #include "PlkDataType.h"
 #include "Result.h"
+#include "LoggingConfiguration.h"
 
 namespace IndustrialNetwork
 {

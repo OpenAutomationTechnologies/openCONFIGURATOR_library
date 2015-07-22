@@ -34,8 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <vector>
 #include <memory>
-#include <iostream>
-#include "boost/variant.hpp"
+
 #include "PlkFeatureEnum.h"
 #include "PlkFeature.h"
 #include "GeneralFeature.h"

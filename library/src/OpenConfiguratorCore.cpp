@@ -899,7 +899,7 @@ Result OpenConfiguratorCore::GetDatatypeSize(const std::string& networkId, const
 				}
 			}
 
-			boost::format formatter(kMsgComplexDatatypeNotFound);
+			boost::format formatter(kMsgComplexDatatypeNotFoundOnNode);
 			formatter
 			% dataTypeUniqueId
 			% (uint32_t) node->GetNodeIdentifier();

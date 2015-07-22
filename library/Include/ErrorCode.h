@@ -53,8 +53,7 @@ namespace IndustrialNetwork
 
 					SUCCESS = 0,// < Operation completed successfully.
 					FILE_WRITE_FAILED, // < Cannot write to file.
-					FILE_READ_FAILED, // < Cannot read from file.
-					LEGACY_ERROR, //< Deprecated error occured in operation.
+					FILE_READ_FAILED, // < Cannot read from file
 					SUBOBJECT_INVALID, //< Invalid subindex encountered during operation.
 					OBJECT_INVALID, //< Invalid index encountered during operation.
 					NODEID_INVALID, //< Invalid node id encountered during operation.
@@ -72,7 +71,6 @@ namespace IndustrialNetwork
 					NODE_EXISTS, //< %Node already exists in the network.
 					OBJECT_EXISTS, //< %Index already exists on a %Node.
 					SUBOBJECT_EXISTS, //< %SubIndex already exists for an %Index.
-					EXTERNAL_SYSTEM_CALL_FAILED, //< External system call failed during operation.
 					TPDO_CHANNEL_COUNT_EXCEEDED, //< Max. no. of TPDO-Channels exceeded.
 					NODE_CONFIGURATION_ERROR, //< %Node configuration error occured.
 					MAPPED_OBJECT_DOES_NOT_EXIST, // < A mapped %Index does not exist on %Node.
@@ -127,8 +125,12 @@ namespace IndustrialNetwork
 					CYCLE_TIME_NOT_SET, // < An actual value for cycle time must be configured.
 					OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT, // < An actual value exceeds its high limit.
 					OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, // < An actual value deceeds its low limit.
-					CHAINING_NOT_SUPPORTED // < Chaining not supported.
-
+					CHAINING_NOT_SUPPORTED, // < Chaining not supported.
+					OBJECT_HAS_NO_ACTUAL_VALUE, // < The object does not have a defined actual value
+					SUB_OBJECT_HAS_NO_ACTUAL_VALUE, // < The sub object does not have a defined actual value
+					OBJECT_HAS_NO_DEFAULT_VALUE, // < The object does not have a defined default value
+					SUB_OBJECT_HAS_NO_DEFAULT_VALUE, // < The sub object does not have a defined default value
+					OBJECT_HAS_NO_DATATYPE //An object has no defined data type.
 				};
 
 			}

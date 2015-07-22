@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
+using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 
 ControlledNode::ControlledNode(uint8_t nodeID, const std::string& nodeName) : BaseNode(nodeID, nodeName),
 	operationMode(PlkOperationMode::NORMAL)
@@ -146,6 +147,12 @@ uint32_t ControlledNode::GetConfigurationObjectCount()
 			}
 		}
 	}
+
+	boost::format formatter(kMsgNodeObjectCount);
+	formatter
+	% (uint32_t) this->GetNodeIdentifier()
+	% count;
+	LOG_INFO() << formatter.str();
 	return count;
 }
 
@@ -190,6 +197,12 @@ uint32_t ControlledNode::GetConfigurationObjectSize()
 			}
 		}
 	}
+
+	boost::format formatter(kMsgNodeObjectCountSize);
+	formatter
+	% (uint32_t) this->GetNodeIdentifier()
+	% size;
+	LOG_INFO() << formatter.str();
 	return size;
 }
 

@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
+using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 
 namespace IndustrialNetwork
 {
@@ -182,159 +183,164 @@ namespace IndustrialNetwork
 							//return original stored value
 							return boost::any_cast<T>(this->GetActualValue());
 						}
-
+						//Datatype does not match
+						boost::format formatter(kMsgDatatypeMismatch);
+						formatter
+						% typeid(T).name()
+						% this->GetActualValue().type().name();
+						LOG_FATAL() << formatter.str();
 						throw Result(ErrorCode::DATATYPE_MISMATCH);
 					}
-					throw Result(ErrorCode::NO_DEFAULT_OR_ACTUAL_VALUE);
+					throw Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE);
 
 				}
 
 				template<> std::string BaseObject::GetTypedActualValue<std::string>()
 				{
 					if (this->GetDataType().is_initialized() && !this->GetActualValue().empty())
-					{
-						std::stringstream convertString;
-						switch (this->GetDataType().get())
-						{
-							case PlkDataType::BOOLEAN:
-								{
-									bool res = boost::any_cast<bool>(this->GetActualValue());
-									return (res) ? "01" : "00";
-								}
-							case PlkDataType::INTEGER8:
-								{
-									convertString << std::uppercase << std::setfill('0') << std::setw(2) << std::hex << boost::any_cast<int16_t>(this->GetActualValue());
-									return convertString.str();
-								}
-							case PlkDataType::INTEGER16:
-								{
-									convertString << std::uppercase << std::setfill('0') << std::setw(4) << std::hex << boost::any_cast<int16_t>(this->GetActualValue());
-									return convertString.str();
-								}
-							case PlkDataType::INTEGER24:
-								{
-									convertString << std::uppercase << std::setfill('0') << std::setw(6) << std::hex << boost::any_cast<int32_t>(this->GetActualValue());
-									return convertString.str();
-								}
-							case PlkDataType::INTEGER32:
-								{
-									convertString << std::uppercase << std::setfill('0') << std::setw(8) << std::hex << boost::any_cast<int32_t>(this->GetActualValue());
-									return convertString.str();
-								}
-							case PlkDataType::UNSIGNED8:
-								{
-									convertString << std::uppercase << std::setfill('0') << std::setw(2) << std::hex << boost::any_cast<uint16_t>(this->GetActualValue());
-									return convertString.str();
-								}
-							case PlkDataType::UNSIGNED16:
-								{
-									convertString << std::uppercase << std::setfill('0') << std::setw(4) << std::hex << boost::any_cast<uint16_t>(this->GetActualValue());
-									return convertString.str();
-								}
-							case PlkDataType::UNSIGNED24:
-								{
-									convertString << std::uppercase << std::setfill('0') << std::setw(6) << std::hex << boost::any_cast<uint32_t>(this->GetActualValue());
-									return convertString.str();
-								}
-							case PlkDataType::UNSIGNED32:
-								{
-									convertString << std::uppercase << std::setfill('0') << std::setw(8) << std::hex << boost::any_cast<uint32_t>(this->GetActualValue());
-									return convertString.str();
-								}
-							case PlkDataType::REAL32:
-								{
-									convertString << std::hex << std::uppercase << std::setfill('0') << std::setw(8) << FloatToSinglePrecisisionHex(boost::any_cast<float>(this->GetActualValue()));
-									return convertString.str();
-								}
-							case PlkDataType::REAL64:
-								{
-									convertString << std::hex << std::uppercase << std::setfill('0') << std::setw(16) << DoubleToDoublePrecisisionHex(boost::any_cast<double>(this->GetActualValue()));
-									return convertString.str();
-								}
-							case PlkDataType::Domain:
-								break;
-							case PlkDataType::INTEGER40:
-								{
-									convertString << std::uppercase << std::setfill('0') << std::setw(10) << std::hex << boost::any_cast<int64_t>(this->GetActualValue());
-									return convertString.str();
-								}
-							case PlkDataType::INTEGER48:
-								{
-									convertString << std::uppercase << std::setfill('0') << std::setw(12) << std::hex << boost::any_cast<int64_t>(this->GetActualValue());
-									return convertString.str();
-								}
-							case PlkDataType::INTEGER56:
-								{
-									convertString << std::uppercase << std::setfill('0') << std::setw(14) << std::hex << boost::any_cast<int64_t>(this->GetActualValue());
-									return convertString.str();
-								}
-							case PlkDataType::INTEGER64:
-								{
-									convertString << std::uppercase << std::setfill('0') << std::setw(16) << std::hex << boost::any_cast<int64_t>(this->GetActualValue());
-									return convertString.str();
-								}
-							case PlkDataType::UNSIGNED40:
-								{
-									convertString << std::uppercase << std::setfill('0') << std::setw(10) << std::hex << boost::any_cast<uint64_t>(this->GetActualValue());
-									return convertString.str();
-								}
-							case PlkDataType::MAC_ADDRESS:
-							case PlkDataType::UNSIGNED48:
-								{
-									convertString << std::uppercase << std::setfill('0') << std::setw(12) << std::hex << boost::any_cast<uint64_t>(this->GetActualValue());
-									return convertString.str();
-								}
-							case PlkDataType::UNSIGNED56:
-								{
-									convertString << std::uppercase << std::setfill('0') << std::setw(14) << std::hex << boost::any_cast<uint64_t>(this->GetActualValue());
-									return convertString.str();
-								}
-							case PlkDataType::UNSIGNED64:
-								{
-									convertString << std::uppercase << std::setfill('0') << std::setw(16) << std::hex << boost::any_cast<uint64_t>(this->GetActualValue());
-									return convertString.str();
-								}
-							case PlkDataType::VISIBLE_STRING:
-							case PlkDataType::OCTET_STRING:
-							case PlkDataType::UNICODE_STRING:
-								{
-									std::string actualValue = boost::any_cast<std::string>(this->GetActualValue());
-									for (uint32_t i = 0; i < actualValue.length(); ++i)
-									{
-										convertString << std::uppercase << std::hex << unsigned(actualValue.at(i));
-									}
-									return convertString.str();
-								}
-							case PlkDataType::IP_ADDRESS:
-								{
-									std::string actualValue = boost::any_cast<std::string>(this->GetActualValue());
-									if (actualValue.substr(0, 2) == "0x")
-									{
-										convertString << std::uppercase << std::setw(8) << std::setfill('0') << std::hex << HexToInt<uint32_t>(actualValue);
-									}
-									else
-									{
-										std::vector<std::string> ipAddressParts;
-										boost::split(ipAddressParts, actualValue, boost::is_any_of("."));
+						throw Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE);
 
-										for (auto& part : ipAddressParts)
-										{
-											convertString << std::uppercase << std::setw(2) << std::setfill('0') << std::hex << HexToInt<uint32_t>(part);
-										}
-									}
-									return convertString.str();
-								}
-							case PlkDataType::TIME_OF_DAY:
-							case PlkDataType::TIME_DIFF:
-							case PlkDataType::NETTIME:
+					std::stringstream convertString;
+					switch (this->GetDataType().get())
+					{
+						case PlkDataType::BOOLEAN:
+							{
+								bool res = boost::any_cast<bool>(this->GetActualValue());
+								return (res) ? "01" : "00";
+							}
+						case PlkDataType::INTEGER8:
+							{
+								convertString << std::uppercase << std::setfill('0') << std::setw(2) << std::hex << boost::any_cast<int16_t>(this->GetActualValue());
+								return convertString.str();
+							}
+						case PlkDataType::INTEGER16:
+							{
+								convertString << std::uppercase << std::setfill('0') << std::setw(4) << std::hex << boost::any_cast<int16_t>(this->GetActualValue());
+								return convertString.str();
+							}
+						case PlkDataType::INTEGER24:
+							{
+								convertString << std::uppercase << std::setfill('0') << std::setw(6) << std::hex << boost::any_cast<int32_t>(this->GetActualValue());
+								return convertString.str();
+							}
+						case PlkDataType::INTEGER32:
+							{
+								convertString << std::uppercase << std::setfill('0') << std::setw(8) << std::hex << boost::any_cast<int32_t>(this->GetActualValue());
+								return convertString.str();
+							}
+						case PlkDataType::UNSIGNED8:
+							{
+								convertString << std::uppercase << std::setfill('0') << std::setw(2) << std::hex << boost::any_cast<uint16_t>(this->GetActualValue());
+								return convertString.str();
+							}
+						case PlkDataType::UNSIGNED16:
+							{
+								convertString << std::uppercase << std::setfill('0') << std::setw(4) << std::hex << boost::any_cast<uint16_t>(this->GetActualValue());
+								return convertString.str();
+							}
+						case PlkDataType::UNSIGNED24:
+							{
+								convertString << std::uppercase << std::setfill('0') << std::setw(6) << std::hex << boost::any_cast<uint32_t>(this->GetActualValue());
+								return convertString.str();
+							}
+						case PlkDataType::UNSIGNED32:
+							{
+								convertString << std::uppercase << std::setfill('0') << std::setw(8) << std::hex << boost::any_cast<uint32_t>(this->GetActualValue());
+								return convertString.str();
+							}
+						case PlkDataType::REAL32:
+							{
+								convertString << std::hex << std::uppercase << std::setfill('0') << std::setw(8) << FloatToSinglePrecisisionHex(boost::any_cast<float>(this->GetActualValue()));
+								return convertString.str();
+							}
+						case PlkDataType::REAL64:
+							{
+								convertString << std::hex << std::uppercase << std::setfill('0') << std::setw(16) << DoubleToDoublePrecisisionHex(boost::any_cast<double>(this->GetActualValue()));
+								return convertString.str();
+							}
+						case PlkDataType::Domain:
+							break;
+						case PlkDataType::INTEGER40:
+							{
+								convertString << std::uppercase << std::setfill('0') << std::setw(10) << std::hex << boost::any_cast<int64_t>(this->GetActualValue());
+								return convertString.str();
+							}
+						case PlkDataType::INTEGER48:
+							{
+								convertString << std::uppercase << std::setfill('0') << std::setw(12) << std::hex << boost::any_cast<int64_t>(this->GetActualValue());
+								return convertString.str();
+							}
+						case PlkDataType::INTEGER56:
+							{
+								convertString << std::uppercase << std::setfill('0') << std::setw(14) << std::hex << boost::any_cast<int64_t>(this->GetActualValue());
+								return convertString.str();
+							}
+						case PlkDataType::INTEGER64:
+							{
+								convertString << std::uppercase << std::setfill('0') << std::setw(16) << std::hex << boost::any_cast<int64_t>(this->GetActualValue());
+								return convertString.str();
+							}
+						case PlkDataType::UNSIGNED40:
+							{
+								convertString << std::uppercase << std::setfill('0') << std::setw(10) << std::hex << boost::any_cast<uint64_t>(this->GetActualValue());
+								return convertString.str();
+							}
+						case PlkDataType::MAC_ADDRESS:
+						case PlkDataType::UNSIGNED48:
+							{
+								convertString << std::uppercase << std::setfill('0') << std::setw(12) << std::hex << boost::any_cast<uint64_t>(this->GetActualValue());
+								return convertString.str();
+							}
+						case PlkDataType::UNSIGNED56:
+							{
+								convertString << std::uppercase << std::setfill('0') << std::setw(14) << std::hex << boost::any_cast<uint64_t>(this->GetActualValue());
+								return convertString.str();
+							}
+						case PlkDataType::UNSIGNED64:
+							{
+								convertString << std::uppercase << std::setfill('0') << std::setw(16) << std::hex << boost::any_cast<uint64_t>(this->GetActualValue());
+								return convertString.str();
+							}
+						case PlkDataType::VISIBLE_STRING:
+						case PlkDataType::OCTET_STRING:
+						case PlkDataType::UNICODE_STRING:
+							{
+								std::string actualValue = boost::any_cast<std::string>(this->GetActualValue());
+								for (uint32_t i = 0; i < actualValue.length(); ++i)
 								{
-									return boost::any_cast<std::string>(this->GetActualValue());
+									convertString << std::uppercase << std::hex << unsigned(actualValue.at(i));
 								}
-							default:
-								break;
-						}
+								return convertString.str();
+							}
+						case PlkDataType::IP_ADDRESS:
+							{
+								std::string actualValue = boost::any_cast<std::string>(this->GetActualValue());
+								if (actualValue.substr(0, 2) == "0x")
+								{
+									convertString << std::uppercase << std::setw(8) << std::setfill('0') << std::hex << HexToInt<uint32_t>(actualValue);
+								}
+								else
+								{
+									std::vector<std::string> ipAddressParts;
+									boost::split(ipAddressParts, actualValue, boost::is_any_of("."));
+
+									for (auto& part : ipAddressParts)
+									{
+										convertString << std::uppercase << std::setw(2) << std::setfill('0') << std::hex << HexToInt<uint32_t>(part);
+									}
+								}
+								return convertString.str();
+							}
+						case PlkDataType::TIME_OF_DAY:
+						case PlkDataType::TIME_DIFF:
+						case PlkDataType::NETTIME:
+							{
+								return boost::any_cast<std::string>(this->GetActualValue());
+							}
+						default:
+							break;
 					}
-					throw Result(ErrorCode::NO_DEFAULT_OR_ACTUAL_VALUE);
+					return "";
 				}
 				template bool BaseObject::GetTypedActualValue<bool>();
 				template uint8_t BaseObject::GetTypedActualValue<uint8_t>();
@@ -356,150 +362,156 @@ namespace IndustrialNetwork
 						{
 							return boost::any_cast<T>(this->GetDefaultValue());
 						}
-						throw Result(ErrorCode::DATATYPE_MISMATCH);
+						//Datatype does not match
+						boost::format formatter(kMsgDatatypeMismatch);
+						formatter
+						% typeid(T).name()
+						% this->GetDefaultValue().type().name();
+						LOG_FATAL() << formatter.str();
+						throw Result(ErrorCode::DATATYPE_MISMATCH, formatter.str());
 					}
-					throw Result(ErrorCode::NO_DEFAULT_OR_ACTUAL_VALUE);
+					throw Result(ErrorCode::OBJECT_HAS_NO_DEFAULT_VALUE);
 				}
 
 				template<> std::string BaseObject::GetTypedDefaultValue<std::string>()
 				{
 					if (this->GetDataType().is_initialized() && !this->GetDefaultValue().empty())
-					{
-						std::stringstream convertString;
-						switch (this->GetDataType().get())
-						{
-							case PlkDataType::BOOLEAN:
-								{
-									bool res = boost::any_cast<bool>(this->GetActualValue());
-									return (res) ? "01" : "00";
-								}
-							case PlkDataType::INTEGER8:
-								{
-									convertString << std::uppercase << std::setfill('0') << std::setw(2) << std::hex << boost::any_cast<int16_t>(this->GetDefaultValue());
-									return convertString.str();
-								}
-							case PlkDataType::INTEGER16:
-								{
-									convertString << std::uppercase << std::setfill('0') << std::setw(4) << std::hex << boost::any_cast<int16_t>(this->GetDefaultValue());
-									return convertString.str();
-								}
-							case PlkDataType::INTEGER24:
-								{
-									convertString << std::uppercase << std::setfill('0') << std::setw(6) << std::hex << boost::any_cast<int32_t>(this->GetDefaultValue());
-									return convertString.str();
-								}
-							case PlkDataType::INTEGER32:
-								{
-									convertString << std::uppercase << std::setfill('0') << std::setw(8) << std::hex << boost::any_cast<int32_t>(this->GetDefaultValue());
-									return convertString.str();
-								}
-							case PlkDataType::UNSIGNED8:
-								{
-									convertString << std::uppercase << std::setfill('0') << std::setw(2) << std::hex << boost::any_cast<uint16_t>(this->GetDefaultValue());
-									return convertString.str();
-								}
-							case PlkDataType::UNSIGNED16:
-								{
-									convertString << std::uppercase << std::setfill('0') << std::setw(4) << std::hex << boost::any_cast<uint16_t>(this->GetDefaultValue());
-									return convertString.str();
-								}
-							case PlkDataType::UNSIGNED24:
-								{
-									convertString << std::uppercase << std::setfill('0') << std::setw(6) << std::hex << boost::any_cast<uint32_t>(this->GetDefaultValue());
-									return convertString.str();
-								}
-							case PlkDataType::UNSIGNED32:
-								{
-									convertString << std::uppercase << std::setfill('0') << std::setw(8) << std::hex << boost::any_cast<uint32_t>(this->GetDefaultValue());
-									return convertString.str();
-								}
-							case PlkDataType::REAL32:
-								{
-									convertString << std::hex << std::uppercase << std::setfill('0') << std::setw(8) << FloatToSinglePrecisisionHex(boost::any_cast<float>(this->GetDefaultValue()));
-									return convertString.str();
-								}
-							case PlkDataType::REAL64:
-								{
-									convertString << std::hex << std::uppercase << std::setfill('0') << std::setw(16) << DoubleToDoublePrecisisionHex(boost::any_cast<double>(this->GetDefaultValue()));
-									return convertString.str();
-								}
-							case PlkDataType::Domain:
-								break;
-							case PlkDataType::INTEGER40:
-								{
-									convertString << std::uppercase << std::setfill('0') << std::setw(10) << std::hex << boost::any_cast<int64_t>(this->GetDefaultValue());
-									return convertString.str();
-								}
-							case PlkDataType::INTEGER48:
-								{
-									convertString << std::uppercase << std::setfill('0') << std::setw(12) << std::hex << boost::any_cast<int64_t>(this->GetDefaultValue());
-									return convertString.str();
-								}
-							case PlkDataType::INTEGER56:
-								{
-									convertString << std::uppercase << std::setfill('0') << std::setw(14) << std::hex << boost::any_cast<int64_t>(this->GetDefaultValue());
-									return convertString.str();
-								}
-							case PlkDataType::INTEGER64:
-								{
-									convertString << std::uppercase << std::setfill('0') << std::setw(16) << std::hex << boost::any_cast<int64_t>(this->GetDefaultValue());
-									return convertString.str();
-								}
-							case PlkDataType::UNSIGNED40:
-								{
-									convertString << std::uppercase << std::setfill('0') << std::setw(10) << std::hex << boost::any_cast<uint64_t>(this->GetDefaultValue());
-									return convertString.str();
-								}
-							case PlkDataType::MAC_ADDRESS:
-							case PlkDataType::UNSIGNED48:
-								{
-									convertString << std::uppercase << std::setfill('0') << std::setw(12) << std::hex << boost::any_cast<uint64_t>(this->GetDefaultValue());
-									return convertString.str();
-								}
-							case PlkDataType::UNSIGNED56:
-								{
-									convertString << std::uppercase << std::setfill('0') << std::setw(14) << std::hex << boost::any_cast<uint64_t>(this->GetDefaultValue());
-									return convertString.str();
-								}
-							case PlkDataType::UNSIGNED64:
-								{
-									convertString << std::uppercase << std::setfill('0') << std::setw(16) << std::hex << boost::any_cast<uint64_t>(this->GetDefaultValue());
-									return convertString.str();
-								}
-							case PlkDataType::VISIBLE_STRING:
-							case PlkDataType::OCTET_STRING:
-							case PlkDataType::UNICODE_STRING:
-								{
-									std::string defaultValue = boost::any_cast<std::string>(this->GetDefaultValue());
-									for (uint32_t i = 0; i < defaultValue.length(); ++i)
-									{
-										convertString << std::uppercase << std::hex << unsigned(defaultValue.at(i));
-									}
-									return convertString.str();
-								}
-							case PlkDataType::IP_ADDRESS:
-								{
-									std::string defaultValue = boost::any_cast<std::string>(this->GetDefaultValue());
-									std::vector<std::string> ipAddressParts;
-									boost::split(ipAddressParts, defaultValue, boost::is_any_of("."));
+						throw Result(ErrorCode::OBJECT_HAS_NO_DEFAULT_VALUE);
 
-									for (auto& part : ipAddressParts)
-									{
-										convertString << std::uppercase << std::setw(2) << std::setfill('0') << std::hex << HexToInt<uint32_t>(part);
-									}
-									return convertString.str();
-								}
-							case PlkDataType::TIME_OF_DAY:
-							case PlkDataType::TIME_DIFF:
-							case PlkDataType::NETTIME:
+					std::stringstream convertString;
+					switch (this->GetDataType().get())
+					{
+						case PlkDataType::BOOLEAN:
+							{
+								bool res = boost::any_cast<bool>(this->GetActualValue());
+								return (res) ? "01" : "00";
+							}
+						case PlkDataType::INTEGER8:
+							{
+								convertString << std::uppercase << std::setfill('0') << std::setw(2) << std::hex << boost::any_cast<int16_t>(this->GetDefaultValue());
+								return convertString.str();
+							}
+						case PlkDataType::INTEGER16:
+							{
+								convertString << std::uppercase << std::setfill('0') << std::setw(4) << std::hex << boost::any_cast<int16_t>(this->GetDefaultValue());
+								return convertString.str();
+							}
+						case PlkDataType::INTEGER24:
+							{
+								convertString << std::uppercase << std::setfill('0') << std::setw(6) << std::hex << boost::any_cast<int32_t>(this->GetDefaultValue());
+								return convertString.str();
+							}
+						case PlkDataType::INTEGER32:
+							{
+								convertString << std::uppercase << std::setfill('0') << std::setw(8) << std::hex << boost::any_cast<int32_t>(this->GetDefaultValue());
+								return convertString.str();
+							}
+						case PlkDataType::UNSIGNED8:
+							{
+								convertString << std::uppercase << std::setfill('0') << std::setw(2) << std::hex << boost::any_cast<uint16_t>(this->GetDefaultValue());
+								return convertString.str();
+							}
+						case PlkDataType::UNSIGNED16:
+							{
+								convertString << std::uppercase << std::setfill('0') << std::setw(4) << std::hex << boost::any_cast<uint16_t>(this->GetDefaultValue());
+								return convertString.str();
+							}
+						case PlkDataType::UNSIGNED24:
+							{
+								convertString << std::uppercase << std::setfill('0') << std::setw(6) << std::hex << boost::any_cast<uint32_t>(this->GetDefaultValue());
+								return convertString.str();
+							}
+						case PlkDataType::UNSIGNED32:
+							{
+								convertString << std::uppercase << std::setfill('0') << std::setw(8) << std::hex << boost::any_cast<uint32_t>(this->GetDefaultValue());
+								return convertString.str();
+							}
+						case PlkDataType::REAL32:
+							{
+								convertString << std::hex << std::uppercase << std::setfill('0') << std::setw(8) << FloatToSinglePrecisisionHex(boost::any_cast<float>(this->GetDefaultValue()));
+								return convertString.str();
+							}
+						case PlkDataType::REAL64:
+							{
+								convertString << std::hex << std::uppercase << std::setfill('0') << std::setw(16) << DoubleToDoublePrecisisionHex(boost::any_cast<double>(this->GetDefaultValue()));
+								return convertString.str();
+							}
+						case PlkDataType::Domain:
+							break;
+						case PlkDataType::INTEGER40:
+							{
+								convertString << std::uppercase << std::setfill('0') << std::setw(10) << std::hex << boost::any_cast<int64_t>(this->GetDefaultValue());
+								return convertString.str();
+							}
+						case PlkDataType::INTEGER48:
+							{
+								convertString << std::uppercase << std::setfill('0') << std::setw(12) << std::hex << boost::any_cast<int64_t>(this->GetDefaultValue());
+								return convertString.str();
+							}
+						case PlkDataType::INTEGER56:
+							{
+								convertString << std::uppercase << std::setfill('0') << std::setw(14) << std::hex << boost::any_cast<int64_t>(this->GetDefaultValue());
+								return convertString.str();
+							}
+						case PlkDataType::INTEGER64:
+							{
+								convertString << std::uppercase << std::setfill('0') << std::setw(16) << std::hex << boost::any_cast<int64_t>(this->GetDefaultValue());
+								return convertString.str();
+							}
+						case PlkDataType::UNSIGNED40:
+							{
+								convertString << std::uppercase << std::setfill('0') << std::setw(10) << std::hex << boost::any_cast<uint64_t>(this->GetDefaultValue());
+								return convertString.str();
+							}
+						case PlkDataType::MAC_ADDRESS:
+						case PlkDataType::UNSIGNED48:
+							{
+								convertString << std::uppercase << std::setfill('0') << std::setw(12) << std::hex << boost::any_cast<uint64_t>(this->GetDefaultValue());
+								return convertString.str();
+							}
+						case PlkDataType::UNSIGNED56:
+							{
+								convertString << std::uppercase << std::setfill('0') << std::setw(14) << std::hex << boost::any_cast<uint64_t>(this->GetDefaultValue());
+								return convertString.str();
+							}
+						case PlkDataType::UNSIGNED64:
+							{
+								convertString << std::uppercase << std::setfill('0') << std::setw(16) << std::hex << boost::any_cast<uint64_t>(this->GetDefaultValue());
+								return convertString.str();
+							}
+						case PlkDataType::VISIBLE_STRING:
+						case PlkDataType::OCTET_STRING:
+						case PlkDataType::UNICODE_STRING:
+							{
+								std::string defaultValue = boost::any_cast<std::string>(this->GetDefaultValue());
+								for (uint32_t i = 0; i < defaultValue.length(); ++i)
 								{
-									return boost::any_cast<std::string>(this->GetDefaultValue());
+									convertString << std::uppercase << std::hex << unsigned(defaultValue.at(i));
 								}
-							default:
-								break;
-						}
+								return convertString.str();
+							}
+						case PlkDataType::IP_ADDRESS:
+							{
+								std::string defaultValue = boost::any_cast<std::string>(this->GetDefaultValue());
+								std::vector<std::string> ipAddressParts;
+								boost::split(ipAddressParts, defaultValue, boost::is_any_of("."));
+
+								for (auto& part : ipAddressParts)
+								{
+									convertString << std::uppercase << std::setw(2) << std::setfill('0') << std::hex << HexToInt<uint32_t>(part);
+								}
+								return convertString.str();
+							}
+						case PlkDataType::TIME_OF_DAY:
+						case PlkDataType::TIME_DIFF:
+						case PlkDataType::NETTIME:
+							{
+								return boost::any_cast<std::string>(this->GetDefaultValue());
+							}
+						default:
+							break;
 					}
-					throw Result(ErrorCode::NO_DEFAULT_OR_ACTUAL_VALUE);
+					return "";
 				}
 				template bool BaseObject::GetTypedDefaultValue<bool>();
 				template uint8_t BaseObject::GetTypedDefaultValue<uint8_t>();
@@ -515,232 +527,232 @@ namespace IndustrialNetwork
 				Result BaseObject::SetTypedObjectActualValue(const std::string& actualValue)
 				{
 					if (this->GetDataType().is_initialized())
+						return Result(ErrorCode::OBJECT_HAS_NO_DATATYPE);
+
+					switch (this->GetDataType().get())
 					{
-						switch (this->GetDataType().get())
-						{
-							case PlkDataType::BOOLEAN:
-								{
-									bool value = StringToBool(actualValue);
-									this->SetActualValue(boost::any(value));
-									if (this->GetDefaultValue().empty())
-										this->actualValueNotDefaultValue = true;
-									else if (this->GetTypedDefaultValue<bool>() != value)
-										this->actualValueNotDefaultValue = true;
-									else
-										this->actualValueNotDefaultValue = false;
+						case PlkDataType::BOOLEAN:
+							{
+								bool value = StringToBool(actualValue);
+								this->SetActualValue(boost::any(value));
+								if (this->GetDefaultValue().empty())
+									this->actualValueNotDefaultValue = true;
+								else if (this->GetTypedDefaultValue<bool>() != value)
+									this->actualValueNotDefaultValue = true;
+								else
+									this->actualValueNotDefaultValue = false;
 
-									break;
-								}
-							case PlkDataType::INTEGER8:
-							case PlkDataType::INTEGER16:
-								{
-									int16_t value = HexToInt<int16_t>(actualValue);
-									if (this->highLimit.is_initialized())
-									{
-										if (value > this->highLimit.get())
-											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
-									}
-									if (this->lowLimit.is_initialized())
-									{
-										if (value < this->lowLimit.get())
-											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
-									}
-									this->SetActualValue(boost::any(value));
-									if (this->GetDefaultValue().empty())
-										this->actualValueNotDefaultValue = true;
-									else if (this->GetTypedDefaultValue<int16_t>() != value)
-										this->actualValueNotDefaultValue = true;
-									else
-										this->actualValueNotDefaultValue = false;
-									break;
-								}
-							case PlkDataType::INTEGER32:
-								{
-									int32_t value = HexToInt<int32_t>(actualValue);
-									if (this->highLimit.is_initialized())
-									{
-										if (value > this->highLimit.get())
-											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
-									}
-									if (this->lowLimit.is_initialized())
-									{
-										if (value < this->lowLimit.get())
-											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
-									}
-									this->SetActualValue(boost::any(value));
-									if (this->GetDefaultValue().empty())
-										this->actualValueNotDefaultValue = true;
-									else if (this->GetTypedDefaultValue<int32_t>() != value)
-										this->actualValueNotDefaultValue = true;
-									break;
-								}
-							case PlkDataType::UNSIGNED8:
-							case PlkDataType::UNSIGNED16:
-								{
-									uint16_t value = HexToInt<uint16_t>(actualValue);
-									if (this->highLimit.is_initialized())
-									{
-										if (value > this->highLimit.get())
-											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
-									}
-									if (this->lowLimit.is_initialized())
-									{
-										if (value < this->lowLimit.get())
-											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
-									}
-									this->SetActualValue(boost::any(value));
-									if (this->GetDefaultValue().empty())
-										this->actualValueNotDefaultValue = true;
-									else if (this->GetTypedDefaultValue<uint16_t>() != value)
-										this->actualValueNotDefaultValue = true;
-									else
-										this->actualValueNotDefaultValue = false;
-									break;
-								}
-							case PlkDataType::UNSIGNED24:
-							case PlkDataType::UNSIGNED32:
-								{
-									uint32_t value = HexToInt<uint32_t>(actualValue);
-									if (this->highLimit.is_initialized())
-									{
-										if (value > this->highLimit.get())
-											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
-									}
-									if (this->lowLimit.is_initialized())
-									{
-										if (value < this->lowLimit.get())
-											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
-									}
-									this->SetActualValue(boost::any(value));
-									if (this->GetDefaultValue().empty())
-										this->actualValueNotDefaultValue = true;
-									else if (this->GetTypedDefaultValue<uint32_t>() != value)
-										this->actualValueNotDefaultValue = true;
-									else
-										this->actualValueNotDefaultValue = false;
-									break;
-								}
-							case PlkDataType::Domain:
-								//Both values must be empty if Domain datatype
 								break;
-							case PlkDataType::INTEGER24:
+							}
+						case PlkDataType::INTEGER8:
+						case PlkDataType::INTEGER16:
+							{
+								int16_t value = HexToInt<int16_t>(actualValue);
+								if (this->highLimit.is_initialized())
 								{
-									int32_t value = HexToInt<int32_t>(actualValue);
-									if (this->highLimit.is_initialized())
-									{
-										if (value > this->highLimit.get())
-											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
-									}
-									if (this->lowLimit.is_initialized())
-									{
-										if (value < this->lowLimit.get())
-											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
-									}
-									this->SetActualValue(boost::any(value));
-									if (this->GetDefaultValue().empty())
-										this->actualValueNotDefaultValue = true;
-									else if (this->GetTypedDefaultValue<int32_t>() != value)
-										this->actualValueNotDefaultValue = true;
-									else
-										this->actualValueNotDefaultValue = false;
+									if (value > this->highLimit.get())
+										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
+								}
+								if (this->lowLimit.is_initialized())
+								{
+									if (value < this->lowLimit.get())
+										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
+								}
+								this->SetActualValue(boost::any(value));
+								if (this->GetDefaultValue().empty())
+									this->actualValueNotDefaultValue = true;
+								else if (this->GetTypedDefaultValue<int16_t>() != value)
+									this->actualValueNotDefaultValue = true;
+								else
+									this->actualValueNotDefaultValue = false;
+								break;
+							}
+						case PlkDataType::INTEGER32:
+							{
+								int32_t value = HexToInt<int32_t>(actualValue);
+								if (this->highLimit.is_initialized())
+								{
+									if (value > this->highLimit.get())
+										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
+								}
+								if (this->lowLimit.is_initialized())
+								{
+									if (value < this->lowLimit.get())
+										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
+								}
+								this->SetActualValue(boost::any(value));
+								if (this->GetDefaultValue().empty())
+									this->actualValueNotDefaultValue = true;
+								else if (this->GetTypedDefaultValue<int32_t>() != value)
+									this->actualValueNotDefaultValue = true;
+								break;
+							}
+						case PlkDataType::UNSIGNED8:
+						case PlkDataType::UNSIGNED16:
+							{
+								uint16_t value = HexToInt<uint16_t>(actualValue);
+								if (this->highLimit.is_initialized())
+								{
+									if (value > this->highLimit.get())
+										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
+								}
+								if (this->lowLimit.is_initialized())
+								{
+									if (value < this->lowLimit.get())
+										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
+								}
+								this->SetActualValue(boost::any(value));
+								if (this->GetDefaultValue().empty())
+									this->actualValueNotDefaultValue = true;
+								else if (this->GetTypedDefaultValue<uint16_t>() != value)
+									this->actualValueNotDefaultValue = true;
+								else
+									this->actualValueNotDefaultValue = false;
+								break;
+							}
+						case PlkDataType::UNSIGNED24:
+						case PlkDataType::UNSIGNED32:
+							{
+								uint32_t value = HexToInt<uint32_t>(actualValue);
+								if (this->highLimit.is_initialized())
+								{
+									if (value > this->highLimit.get())
+										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
+								}
+								if (this->lowLimit.is_initialized())
+								{
+									if (value < this->lowLimit.get())
+										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
+								}
+								this->SetActualValue(boost::any(value));
+								if (this->GetDefaultValue().empty())
+									this->actualValueNotDefaultValue = true;
+								else if (this->GetTypedDefaultValue<uint32_t>() != value)
+									this->actualValueNotDefaultValue = true;
+								else
+									this->actualValueNotDefaultValue = false;
+								break;
+							}
+						case PlkDataType::Domain:
+							//Both values must be empty if Domain datatype
+							break;
+						case PlkDataType::INTEGER24:
+							{
+								int32_t value = HexToInt<int32_t>(actualValue);
+								if (this->highLimit.is_initialized())
+								{
+									if (value > this->highLimit.get())
+										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
+								}
+								if (this->lowLimit.is_initialized())
+								{
+									if (value < this->lowLimit.get())
+										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
+								}
+								this->SetActualValue(boost::any(value));
+								if (this->GetDefaultValue().empty())
+									this->actualValueNotDefaultValue = true;
+								else if (this->GetTypedDefaultValue<int32_t>() != value)
+									this->actualValueNotDefaultValue = true;
+								else
+									this->actualValueNotDefaultValue = false;
 
-									break;
-								}
-							case PlkDataType::REAL32:
-								{
-									float value = boost::lexical_cast<float>(actualValue);
-									this->SetActualValue(boost::any(value));
-									if (this->GetDefaultValue().empty())
-										this->actualValueNotDefaultValue = true;
-									else if (this->GetTypedDefaultValue<float>() != value)
-										this->actualValueNotDefaultValue = true;
-									else
-										this->actualValueNotDefaultValue = false;
-									break;
-								}
-							case PlkDataType::REAL64:
-								{
-									double value = boost::lexical_cast<double>(actualValue);
-									this->SetActualValue(boost::any(value));
-									if (this->GetDefaultValue().empty())
-										this->actualValueNotDefaultValue = true;
-									else if (this->GetTypedDefaultValue<double>() != value)
-										this->actualValueNotDefaultValue = true;
-									else
-										this->actualValueNotDefaultValue = false;
-									break;
-								}
-							case PlkDataType::INTEGER40:
-							case PlkDataType::INTEGER48:
-							case PlkDataType::INTEGER56:
-							case PlkDataType::INTEGER64:
-								{
-									int64_t value = HexToInt<int64_t>(actualValue);
-									if (this->highLimit.is_initialized())
-									{
-										if (value > this->highLimit.get())
-											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
-									}
-									if (this->lowLimit.is_initialized())
-									{
-										if (value < this->lowLimit.get())
-											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
-									}
-									this->SetActualValue(boost::any(value));
-									if (this->GetDefaultValue().empty())
-										this->actualValueNotDefaultValue = true;
-									else if (this->GetTypedDefaultValue<int64_t>() != value)
-										this->actualValueNotDefaultValue = true;
-									else
-										this->actualValueNotDefaultValue = false;
-									break;
-								}
-							case PlkDataType::MAC_ADDRESS:
-							case PlkDataType::UNSIGNED40:
-							case PlkDataType::UNSIGNED48:
-							case PlkDataType::UNSIGNED56:
-							case PlkDataType::UNSIGNED64:
-								{
-									uint64_t value = HexToInt<uint64_t>(actualValue);
-									if (this->highLimit.is_initialized())
-									{
-										if (value > this->highLimit.get())
-											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
-									}
-									if (this->lowLimit.is_initialized())
-									{
-										if (value < this->lowLimit.get())
-											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
-									}
-									if (this->GetDefaultValue().empty())
-										this->actualValueNotDefaultValue = true;
-									else if (this->GetTypedDefaultValue<uint64_t>() != value)
-										this->actualValueNotDefaultValue = true;
-									else
-										this->actualValueNotDefaultValue = false;
-									this->SetActualValue(boost::any(value));
-									break;
-								}
-							case PlkDataType::IP_ADDRESS:
-							case PlkDataType::NETTIME:
-							case PlkDataType::VISIBLE_STRING:
-							case PlkDataType::OCTET_STRING:
-							case PlkDataType::UNICODE_STRING:
-							case PlkDataType::TIME_OF_DAY:
-							case PlkDataType::TIME_DIFF:
-								{
-									this->SetActualValue(boost::any(actualValue));
-									if (this->GetDefaultValue().empty())
-										this->actualValueNotDefaultValue = true;
-									else if (this->GetTypedDefaultValue<std::string>() != actualValue)
-										this->actualValueNotDefaultValue = true;
-									else
-										this->actualValueNotDefaultValue = false;
-									break;
-								}
-							default:
 								break;
-						}
+							}
+						case PlkDataType::REAL32:
+							{
+								float value = boost::lexical_cast<float>(actualValue);
+								this->SetActualValue(boost::any(value));
+								if (this->GetDefaultValue().empty())
+									this->actualValueNotDefaultValue = true;
+								else if (this->GetTypedDefaultValue<float>() != value)
+									this->actualValueNotDefaultValue = true;
+								else
+									this->actualValueNotDefaultValue = false;
+								break;
+							}
+						case PlkDataType::REAL64:
+							{
+								double value = boost::lexical_cast<double>(actualValue);
+								this->SetActualValue(boost::any(value));
+								if (this->GetDefaultValue().empty())
+									this->actualValueNotDefaultValue = true;
+								else if (this->GetTypedDefaultValue<double>() != value)
+									this->actualValueNotDefaultValue = true;
+								else
+									this->actualValueNotDefaultValue = false;
+								break;
+							}
+						case PlkDataType::INTEGER40:
+						case PlkDataType::INTEGER48:
+						case PlkDataType::INTEGER56:
+						case PlkDataType::INTEGER64:
+							{
+								int64_t value = HexToInt<int64_t>(actualValue);
+								if (this->highLimit.is_initialized())
+								{
+									if (value > this->highLimit.get())
+										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
+								}
+								if (this->lowLimit.is_initialized())
+								{
+									if (value < this->lowLimit.get())
+										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
+								}
+								this->SetActualValue(boost::any(value));
+								if (this->GetDefaultValue().empty())
+									this->actualValueNotDefaultValue = true;
+								else if (this->GetTypedDefaultValue<int64_t>() != value)
+									this->actualValueNotDefaultValue = true;
+								else
+									this->actualValueNotDefaultValue = false;
+								break;
+							}
+						case PlkDataType::MAC_ADDRESS:
+						case PlkDataType::UNSIGNED40:
+						case PlkDataType::UNSIGNED48:
+						case PlkDataType::UNSIGNED56:
+						case PlkDataType::UNSIGNED64:
+							{
+								uint64_t value = HexToInt<uint64_t>(actualValue);
+								if (this->highLimit.is_initialized())
+								{
+									if (value > this->highLimit.get())
+										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
+								}
+								if (this->lowLimit.is_initialized())
+								{
+									if (value < this->lowLimit.get())
+										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
+								}
+								if (this->GetDefaultValue().empty())
+									this->actualValueNotDefaultValue = true;
+								else if (this->GetTypedDefaultValue<uint64_t>() != value)
+									this->actualValueNotDefaultValue = true;
+								else
+									this->actualValueNotDefaultValue = false;
+								this->SetActualValue(boost::any(value));
+								break;
+							}
+						case PlkDataType::IP_ADDRESS:
+						case PlkDataType::NETTIME:
+						case PlkDataType::VISIBLE_STRING:
+						case PlkDataType::OCTET_STRING:
+						case PlkDataType::UNICODE_STRING:
+						case PlkDataType::TIME_OF_DAY:
+						case PlkDataType::TIME_DIFF:
+							{
+								this->SetActualValue(boost::any(actualValue));
+								if (this->GetDefaultValue().empty())
+									this->actualValueNotDefaultValue = true;
+								else if (this->GetTypedDefaultValue<std::string>() != actualValue)
+									this->actualValueNotDefaultValue = true;
+								else
+									this->actualValueNotDefaultValue = false;
+								break;
+							}
+						default:
+							break;
 					}
 					return Result();
 				}
@@ -748,101 +760,101 @@ namespace IndustrialNetwork
 				void BaseObject::SetTypedObjectDefaultValue(const std::string& defaultValue)
 				{
 					if (this->GetDataType().is_initialized())
+						throw  Result(ErrorCode::OBJECT_HAS_NO_DATATYPE);
+
+					switch (this->GetDataType().get())
 					{
-						switch (this->GetDataType().get())
-						{
-							case PlkDataType::BOOLEAN:
-								{
-									bool value = StringToBool(defaultValue);
-									this->SetDefaultValue(boost::any(value));
-									break;
-								}
-							case PlkDataType::INTEGER8: //Set int16_t datatype to avoid stream problems with char datatypes
-							case PlkDataType::INTEGER16:
-								{
-									int16_t value = HexToInt<int16_t>(defaultValue);
-									this->SetDefaultValue(boost::any(value));
-									break;
-								}
-							case PlkDataType::INTEGER32:
-								{
-									int32_t value = HexToInt<int32_t>(defaultValue);
-									this->SetDefaultValue(boost::any(value));
-									break;
-								}
-							case PlkDataType::UNSIGNED8: //Set uint16_t datatype to avoid stream problems with char datatypes
-							case PlkDataType::UNSIGNED16:
-								{
-									uint16_t value = HexToInt<uint16_t>(defaultValue);
-									this->SetDefaultValue(boost::any(value));
-									break;
-								}
-							case PlkDataType::UNSIGNED32:
-								{
-									uint32_t value = HexToInt<uint32_t>(defaultValue);
-									this->SetDefaultValue(boost::any(value));
-									break;
-								}
-							case PlkDataType::REAL32:
-								{
-									float value = boost::lexical_cast<float>(defaultValue);
-									this->SetDefaultValue(boost::any(value));
-									break;
-								}
-							case PlkDataType::Domain:
-								//Both values must be empty if Domain datatype
+						case PlkDataType::BOOLEAN:
+							{
+								bool value = StringToBool(defaultValue);
+								this->SetDefaultValue(boost::any(value));
 								break;
-							case PlkDataType::INTEGER24:
-								{
-									int32_t value = HexToInt<int32_t>(defaultValue);
-									this->SetDefaultValue(boost::any(value));
-									break;
-								}
-							case PlkDataType::REAL64:
-								{
-									double value = boost::lexical_cast<double>(defaultValue);
-									this->SetDefaultValue(boost::any(value));
-									break;
-								}
-							case PlkDataType::INTEGER40:
-							case PlkDataType::INTEGER48:
-							case PlkDataType::INTEGER56:
-							case PlkDataType::INTEGER64:
-								{
-									int64_t value = HexToInt<int64_t>(defaultValue);
-									this->SetDefaultValue(boost::any(value));
-									break;
-								}
-							case PlkDataType::UNSIGNED24:
-								{
-									uint32_t value = HexToInt<uint32_t>(defaultValue);
-									this->SetDefaultValue(boost::any(value));
-									break;
-								}
-							case PlkDataType::MAC_ADDRESS:
-							case PlkDataType::UNSIGNED40:
-							case PlkDataType::UNSIGNED48:
-							case PlkDataType::UNSIGNED56:
-							case PlkDataType::UNSIGNED64:
-								{
-									uint64_t value = HexToInt<uint64_t>(defaultValue);
-									this->SetDefaultValue(boost::any(value));
-									break;
-								}
-							case PlkDataType::VISIBLE_STRING:
-							case PlkDataType::OCTET_STRING:
-							case PlkDataType::UNICODE_STRING:
-							case PlkDataType::TIME_OF_DAY:
-							case PlkDataType::TIME_DIFF:
-							case PlkDataType::IP_ADDRESS:
-							case PlkDataType::NETTIME:
-								{
-									this->SetDefaultValue(boost::any(defaultValue));
-									break;
-								}
-							default:
+							}
+						case PlkDataType::INTEGER8: //Set int16_t datatype to avoid stream problems with char datatypes
+						case PlkDataType::INTEGER16:
+							{
+								int16_t value = HexToInt<int16_t>(defaultValue);
+								this->SetDefaultValue(boost::any(value));
 								break;
-						}
+							}
+						case PlkDataType::INTEGER32:
+							{
+								int32_t value = HexToInt<int32_t>(defaultValue);
+								this->SetDefaultValue(boost::any(value));
+								break;
+							}
+						case PlkDataType::UNSIGNED8: //Set uint16_t datatype to avoid stream problems with char datatypes
+						case PlkDataType::UNSIGNED16:
+							{
+								uint16_t value = HexToInt<uint16_t>(defaultValue);
+								this->SetDefaultValue(boost::any(value));
+								break;
+							}
+						case PlkDataType::UNSIGNED32:
+							{
+								uint32_t value = HexToInt<uint32_t>(defaultValue);
+								this->SetDefaultValue(boost::any(value));
+								break;
+							}
+						case PlkDataType::REAL32:
+							{
+								float value = boost::lexical_cast<float>(defaultValue);
+								this->SetDefaultValue(boost::any(value));
+								break;
+							}
+						case PlkDataType::Domain:
+							//Both values must be empty if Domain datatype
+							break;
+						case PlkDataType::INTEGER24:
+							{
+								int32_t value = HexToInt<int32_t>(defaultValue);
+								this->SetDefaultValue(boost::any(value));
+								break;
+							}
+						case PlkDataType::REAL64:
+							{
+								double value = boost::lexical_cast<double>(defaultValue);
+								this->SetDefaultValue(boost::any(value));
+								break;
+							}
+						case PlkDataType::INTEGER40:
+						case PlkDataType::INTEGER48:
+						case PlkDataType::INTEGER56:
+						case PlkDataType::INTEGER64:
+							{
+								int64_t value = HexToInt<int64_t>(defaultValue);
+								this->SetDefaultValue(boost::any(value));
+								break;
+							}
+						case PlkDataType::UNSIGNED24:
+							{
+								uint32_t value = HexToInt<uint32_t>(defaultValue);
+								this->SetDefaultValue(boost::any(value));
+								break;
+							}
+						case PlkDataType::MAC_ADDRESS:
+						case PlkDataType::UNSIGNED40:
+						case PlkDataType::UNSIGNED48:
+						case PlkDataType::UNSIGNED56:
+						case PlkDataType::UNSIGNED64:
+							{
+								uint64_t value = HexToInt<uint64_t>(defaultValue);
+								this->SetDefaultValue(boost::any(value));
+								break;
+							}
+						case PlkDataType::VISIBLE_STRING:
+						case PlkDataType::OCTET_STRING:
+						case PlkDataType::UNICODE_STRING:
+						case PlkDataType::TIME_OF_DAY:
+						case PlkDataType::TIME_DIFF:
+						case PlkDataType::IP_ADDRESS:
+						case PlkDataType::NETTIME:
+							{
+								this->SetDefaultValue(boost::any(defaultValue));
+								break;
+							}
+						default:
+							break;
 					}
 				}
 

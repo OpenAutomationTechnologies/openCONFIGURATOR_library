@@ -31,10 +31,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "ManagingNode.h"
 
-
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
+using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 
 ManagingNode::ManagingNode(std::uint8_t nodeID, const std::string& nodeName) : BaseNode(nodeID, nodeName),
 	dynamicChannelList(std::vector<std::shared_ptr<DynamicChannel>>()),
@@ -55,7 +55,6 @@ bool ManagingNode::AddNodeAssignement(NodeAssignment assign)
 {
 	switch (assign)
 	{
-
 		case NodeAssignment::NMT_NODEASSIGN_START_CN:
 		case NodeAssignment::NMT_NODEASSIGN_MANDATORY_CN:
 		case NodeAssignment::NMT_NODEASSIGN_KEEPALIVE:
@@ -179,6 +178,11 @@ uint32_t ManagingNode::GetConfigurationObjectCount()
 	//Remove reassignment count for RMNs
 	count -= this->GetRmnCount();
 
+	boost::format formatter(kMsgNodeObjectCount);
+	formatter
+	% (uint32_t) this->GetNodeIdentifier()
+	% count;
+	LOG_INFO() << formatter.str();
 	return count;
 }
 
@@ -235,6 +239,11 @@ uint32_t ManagingNode::GetConfigurationObjectSize()
 	//Remove reassignment size count for RMNs
 	size -= 32 * this->GetRmnCount();
 
+	boost::format formatter(kMsgNodeObjectCountSize);
+	formatter
+	% (uint32_t) this->GetNodeIdentifier()
+	% size;
+	LOG_INFO() << formatter.str();
 	return size;
 }
 

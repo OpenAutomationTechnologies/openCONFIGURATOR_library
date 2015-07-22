@@ -99,6 +99,7 @@ Result ConfigurationGenerator::WriteManagingNodeObjectCount(const std::shared_pt
 		configurationOutput << std::setfill('0') << std::setw(8) << std::hex << std::uppercase << mn->GetConfigurationObjectCount() << std::endl;
 		hexOutput << std::setfill('0') << std::setw(8) << std::hex  << std::uppercase << std::left << ReverseHex(mn->GetConfigurationObjectCount());
 	}
+	LOG_INFO() << kMsgWriteManagingNodeObjectCount;
 	return res;
 }
 
@@ -148,9 +149,9 @@ Result ConfigurationGenerator::WriteNodeAssignement(const std::shared_ptr<Networ
 		if (!writeNodeValid)
 			node.second->AddNodeAssignement(NodeAssignment::MNT_NODEASSIGN_VALID);
 	}
-
+	//Write newline to make txt representation more readable
 	configurationOutput << std::endl;
-
+	LOG_INFO() << kMsgWriteNodeAssignment;
 	return res;
 }
 
@@ -184,6 +185,11 @@ Result ConfigurationGenerator::WriteManagingNodeConfiguration(const std::shared_
 
 	//Write mapping number of entries
 	res = WriteMappingNrOfEntries(mn, configurationOutput, hexOutput);
+
+	boost::format formatter(kMsgWriteManagingNode);
+	formatter
+	% (uint32_t) mn->GetNodeIdentifier();
+	LOG_INFO() << formatter.str();
 	return res;
 }
 
@@ -230,6 +236,10 @@ Result ConfigurationGenerator::WriteRedundantManagingNodeConfiguration(const std
 		return res;
 
 	res = WriteNodeAssignement(net, configurationOutput, hexOutput, true, false);
+	boost::format formatter(kMsgWriteRedundantManagingNode);
+	formatter
+	% (uint32_t) rmn->GetNodeIdentifier();
+	LOG_INFO() << formatter.str();
 	return res;
 }
 
@@ -271,6 +281,10 @@ Result ConfigurationGenerator::WriteControlledNodeConfiguration(const std::share
 	res = WriteMappingNrOfEntries(node, configurationOutput, hexOutput);
 	configurationOutput << std::endl;
 
+	boost::format formatter(kMsgWriteControlledNode);
+	formatter
+	% (uint32_t) cn->GetNodeIdentifier();
+	LOG_INFO() << formatter.str();
 	return res;
 }
 
@@ -302,6 +316,11 @@ Result ConfigurationGenerator::WriteMappingNrOfEntriesZero(const std::shared_ptr
 			}
 		}
 	}
+
+	boost::format formatter(kMsgWriteMappingObjectsNrOfEntriesZero);
+	formatter
+	% (uint32_t) node->GetNodeIdentifier();
+	LOG_INFO() << formatter.str();
 	return Result();
 }
 
@@ -362,6 +381,11 @@ Result ConfigurationGenerator::WriteMappingObjects(const std::shared_ptr<BaseNod
 			}
 		}
 	}
+
+	boost::format formatter(kMsgWriteMappingObjects);
+	formatter
+	% (uint32_t) node->GetNodeIdentifier();
+	LOG_INFO() << formatter.str();
 	return Result();
 }
 
@@ -392,6 +416,11 @@ Result ConfigurationGenerator::WriteMappingNrOfEntries(const std::shared_ptr<Bas
 			}
 		}
 	}
+
+	boost::format formatter(kMsgWriteMappingObjectsNrOfEntries);
+	formatter
+	% (uint32_t) node->GetNodeIdentifier();
+	LOG_INFO() << formatter.str();
 	return Result();
 }
 
@@ -426,6 +455,11 @@ Result ConfigurationGenerator::WriteCommunicationProfileArea(const std::shared_p
 			}
 		}
 	}
+
+	boost::format formatter(kMsgWriteCommunicationRangeObjects);
+	formatter
+	% (uint32_t) node->GetNodeIdentifier();
+	LOG_INFO() << formatter.str();
 	return Result();
 }
 
@@ -455,5 +489,10 @@ Result ConfigurationGenerator::WriteManufacturerSpecificProfileArea(const std::s
 			}
 		}
 	}
+
+	boost::format formatter(kMsgWriteUserDefinedRangeObjects);
+	formatter
+	% (uint32_t) node->GetNodeIdentifier();
+	LOG_INFO() << formatter.str();
 	return Result();
 }

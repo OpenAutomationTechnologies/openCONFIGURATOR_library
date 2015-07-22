@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
+using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 
 ApplicationProcess::ApplicationProcess() :
 	parameterList(std::vector<std::shared_ptr<Parameter>>())
@@ -51,9 +52,20 @@ Result ApplicationProcess::AddParameter(std::shared_ptr<Parameter>& param)
 	for (auto& currentParam : this->parameterList)
 	{
 		if (currentParam->GetUniqueID() == param->GetUniqueID())
-			return Result(ErrorCode::PARAMETER_NOT_FOUND);
+		{
+			boost::format formatter(kMsgParameterAlreadyExist);
+			formatter
+			% param->GetUniqueID();
+			LOG_FATAL() << formatter.str();
+			return Result(ErrorCode::PARAMETER_NOT_FOUND, formatter.str());
+		}
 	}
 	this->parameterList.push_back(param);
+	//Parameter created
+	boost::format formatter(kMsgParameterCreated);
+	formatter
+	% param->GetUniqueID();
+	LOG_INFO() << formatter.str();
 	return Result();
 }
 
@@ -64,10 +76,20 @@ Result ApplicationProcess::GetParameter(const std::string& uniqueId, std::shared
 		if (param->GetUniqueID() == uniqueId)
 		{
 			returnParam = param;
+			//Parameter returned
+			boost::format formatter(kMsgParameterReturned);
+			formatter
+			% param->GetUniqueID();
+			LOG_INFO() << formatter.str();
 			return Result();
 		}
 	}
-	return Result(ErrorCode::PARAMETER_NOT_FOUND);
+
+	boost::format formatter(kMsgParameterAlreadyExist);
+	formatter
+	% uniqueId;
+	LOG_FATAL() << formatter.str();
+	return Result(ErrorCode::PARAMETER_NOT_FOUND, formatter.str());
 }
 
 Result ApplicationProcess::GetComplexDataType(const std::string& uniqueId, std::shared_ptr<ComplexDataType>& returnType)
@@ -77,10 +99,18 @@ Result ApplicationProcess::GetComplexDataType(const std::string& uniqueId, std::
 		if (param->GetUniqueID() == uniqueId)
 		{
 			returnType = param->GetComplexDataType();
+			boost::format formatter(kMsgComplexDataTypeCreated);
+			formatter
+			% uniqueId;
+			LOG_INFO() << formatter.str();
 			return Result();
 		}
 	}
-	return Result(ErrorCode::PARAMETER_NOT_FOUND);
+	boost::format formatter(kMsgComplexDatatypeNotFound);
+	formatter
+	% uniqueId;
+	LOG_FATAL() << formatter.str();
+	return Result(ErrorCode::COMPLEX_DATATYPE_NOT_FOUND, formatter.str());
 }
 
 uint32_t ApplicationProcess::GetBitSize(const std::string& uniqueId)
@@ -92,5 +122,9 @@ uint32_t ApplicationProcess::GetBitSize(const std::string& uniqueId)
 			return param->GetComplexDataType()->GetBitSize();
 		}
 	}
+	boost::format formatter(kMsgComplexDataTypeSizeInvalid);
+	formatter
+	% uniqueId;
+	LOG_FATAL() << formatter.str();
 	return 0;
 }

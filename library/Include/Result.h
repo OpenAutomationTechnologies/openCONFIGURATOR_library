@@ -48,14 +48,19 @@ namespace IndustrialNetwork
 			{
 				const std::string kMsgEmptyArgument = "Argument(s) '%s' must not be empty.";
 				const std::string kMsgLoggingInitialised = "Logging has been initialised with configuration: '%s'.";
+
 				const std::string kMsgExistingNetwork = "Network with id '%s' already exists.";
 				const std::string kMsgNonExistingNetwork = "Network with id '%s' does not exists.";
 				const std::string kMsgNetworkCreated = "Network with id '%s' created.";
 				const std::string kMsgNetworkRemoved = "Network with id '%s' removed.";
+
 				const std::string kMsgExistingNode = "Node with id %d already exists.";
 				const std::string kMsgNonExistingNode = "Node with id %d does not exist.";
 				const std::string kMsgNodeCreated = "Node with id %d created.";
 				const std::string kMsgNodeRemoved = "Node with id %d removed.";
+				const std::string kMsgNodeObjectCount = "Node with id %d has %d configuration objects.";
+				const std::string kMsgNodeObjectCountSize = "Node with id %d has %d configuration objects size.";
+
 				const std::string kMsgExistingObject = "Object 0x%X already exists on node %d.";
 				const std::string kMsgExistingSubObject = "Subobject 0x%X/0x%X already exists on node %d.";
 				const std::string kMsgObjectCreated = "Object 0x%X created on node %d.";
@@ -67,6 +72,7 @@ namespace IndustrialNetwork
 				const std::string kMsgSetObjectActualValue = "Set actual value: %s on object 0x%X on node %d.";
 				const std::string kMsgSetSubObjectActualValue = "Set actual value: %s on subobject 0x%X/0x%X on node %d.";
 				const std::string kMsgDatatypeMismatch = "Datatype '%s' does not match expected datatype '%s'.";
+				
 				const std::string kMsgConfigurationSettingNotSupported = "Configuration setting '%s' is not supported by the library.";
 				const std::string kMsgConfigurationNonExisting = "Build configuration '%s' does not exist in network '%s'.";
 				const std::string kMsgConfigurationExisting = "Build configuration '%s' does already exist in network '%s'.";
@@ -79,18 +85,44 @@ namespace IndustrialNetwork
 				const std::string kMsgConfigurationSettingAdded = "Build configuration setting '%s' added to configuration '%s' in network '%s'.";
 				const std::string kMsgConfigurationSettingRemoved = "Build configuration setting '%s' removed from configuration '%s' in network '%s'.";
 				const std::string kMsgConfigurationSettingEnabled = "Build configuration setting '%s' in configuration '%s' in network '%s' set enabled: '%s'.";
-				const std::string kMsgComplexDatatypeNotFound = "Complex datatype with uniqueID '%s' in node %d not found.";
-				const std::string kMsgStructDatatypeNotFound = "Struct with uniqueID '%s' in node %d not found.";
-				const std::string kMsgParameterNotFound = "Parameter with uniqueID '%s' not found in node %d.";
+				
+				const std::string kMsgComplexDatatypeNotFoundOnNode = "Complex datatype with uniqueID '%s' in node %d not found.";
+				const std::string kMsgComplexDatatypeNotFound = "Complex data type with uniqueID '%s' not found.";
+				const std::string kMsgComplexDataTypeAlreadyExist = "Complex data type with uniqueID '%s' already exists.";
+				const std::string kMsgComplexDataTypeSizeInvalid = "Complex data type with uniqueID '%s' size calculation failed.";
+				const std::string kMsgComplexDataTypeCreated = "Complex data type with uniqueID '%s' created.";
 
+				const std::string kMsgStructDatatypeNotFound = "Struct with uniqueID '%s' in node %d not found.";
+							
+				const std::string kMsgParameterCreated = "Parameter with uniqueID '%s' created.";
+				const std::string kMsgParameterReturned = "Parameter with uniqueID '%s' returned.";
+				const std::string kMsgParameterNotFound = "Parameter with uniqueID '%s' not found in node %d.";
+				const std::string kMsgParameterAlreadyExist = "Parameter with uniqueID '%s' already exists.";
+				
 				const std::string kMsgNodeIdInvalid = "NodeId '%d' invalid.";
 				const std::string kMsgSubIndexInvalid = "Subindex 0x%X/0x%X invalid for node %d.";
 				const std::string kMsgIndexInvalid = "Index 0x%X invalid for node %d.";
 				const std::string kMsgUnsupportedAttributeType = "Attributetype '%d' not supported for this operation.";
 				const std::string kMsgCycleTimeOnMnNotSet = "Cycle time has to be set on the managing node of the POWERLINK network.";
 
+				const std::string kMsgObjectActualValueNotSet = "Object 0x%X on node %d does not have a defined actual value.";
+				const std::string kMsgObjectDataTypeMismatch = "Object 0x%X datatype on node %d does not match the datatype to be retrieved.";
+				const std::string kMsgSubObjectActualValueNotSet = "Object 0x%X on node %d does not have a defined actual value.";
+				const std::string kMsgSubObjectDataTypeMismatch = "Object 0x%X datatype on node %d does not match the datatype to be retrieved.";
+
 				const std::string kMsgForcedValueOverwriteObject = "Overwrite actual value: %s on object 0x%X on node %d failed because value has been forced. ";
 				const std::string kMsgForcedValueOverwriteSubObject = "Overwrite actual value: %s on subobject 0x%X/0x%X on node %d failed because value has been forced.";
+
+				const std::string kMsgWriteManagingNodeObjectCount = "Managing node object count configuration write successful.";
+				const std::string kMsgWriteNodeAssignment = "Node assignment configuration write successful.";
+				const std::string kMsgWriteRedundantManagingNode = "Redundant Managing Node (%d) configuration write successful.";
+				const std::string kMsgWriteManagingNode = "Managing Node (%d) configuration write successful.";
+				const std::string kMsgWriteControlledNode = "Controlled Node (%d) configuration write successful.";
+				const std::string kMsgWriteMappingObjects = "Mapping objects for Node (%d) write successful.";
+				const std::string kMsgWriteMappingObjectsNrOfEntries = "Mapping objects NrOfEntries for Node (%d) write successful.";
+				const std::string kMsgWriteMappingObjectsNrOfEntriesZero = "Mapping objects NrOfEntries zero for Node (%d) write successful.";
+				const std::string kMsgWriteCommunicationRangeObjects = "Communication range objects for Node (%d) write successful.";
+				const std::string kMsgWriteUserDefinedRangeObjects = "User defined range objects for Node (%d) write successful.";
 
 				const std::string kMsgNoNodesConfigured = "Configuration does not contain any POWERLINK-Nodes.";
 				const std::string kMsgNoControlledNodesConfigured = "Configuration does not contain any POWERLINK-CNs.";
@@ -100,7 +132,6 @@ namespace IndustrialNetwork
 				const std::string kMsgNullArgument = "Argument(s) %s must not be NULL.";
 				const std::string kMsgAttributeValueInvalid = "Value '%s' invalid for attribute type '%d' of index 0x%X/0x%X, node %d. Expected value: '%s'.";
 				const std::string kMsgAttributeValueNotInRange = "Value '%d' invalid for attribute type '%d' of index 0x%X/0x%X, node %d. Expected value in range: [%d-%d].";
-				const std::string kMsgExternalSystemCallFailed = "External system call '%s' failed with returncode %d";
 				const std::string kMsgTPDOChannelCountExceeded = "No. of TPDO-Channels on node %d exceeded. Allowed: %d, existing: %d.";
 				const std::string kMsgNonExistingMappedIndex = "Mapping-Object 0x%X/0x%X: Mapped index 0x%X does not exist on node %d.";
 				const std::string kMsgNonExistingMappedSubIndex = "Mapping-Object 0x%X/0x%X: Mapped subIndex 0x%X/0x%X does not exist on node %d.";
