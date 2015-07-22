@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define IBUILD_CONFIGURATION_SETTING_H
 
 #include <string>
+
 #include "Constants.h"
 
 namespace IndustrialNetwork
@@ -47,7 +48,7 @@ namespace IndustrialNetwork
 		{
 
 			public:
-				IBuildConfigurationSetting(std::string name="", std::string value="", std::string description="") :
+				IBuildConfigurationSetting(const std::string& name = "", const std::string& value = "", const std::string& description = "") :
 					enabled(true),
 					name(name),
 					value(value),

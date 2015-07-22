@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "GeneralFeature.h"
 
-using namespace std;
+
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
@@ -53,7 +53,7 @@ namespace IndustrialNetwork
 				GeneralFeature::~GeneralFeature()
 				{}
 
-				const string GeneralFeature::GetName()
+				const std::string& GeneralFeature::GetName()
 				{
 					return PlkFeatureStrings[this->GetFeatureId()];
 				}
@@ -80,7 +80,7 @@ namespace IndustrialNetwork
 				template Result GeneralFeature::GetDefaultValue(uint16_t& value);
 				template Result GeneralFeature::GetDefaultValue(uint32_t& value);
 
-				Result GeneralFeature::SetTypedValues(string defaultValue, string actualValue)
+				Result GeneralFeature::SetTypedValues(const std::string& defaultValue, const std::string& actualValue)
 				{
 					switch (this->GetFeatureId())
 					{

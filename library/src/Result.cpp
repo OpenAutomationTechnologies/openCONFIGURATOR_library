@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 
-Result::Result(ErrorCode errorCode, std::string errorMessage = "") :
+Result::Result(ErrorCode errorCode, const std::string& errorMessage = "") :
 	IResult<ErrorCode>(errorCode, errorMessage)
 {}
 

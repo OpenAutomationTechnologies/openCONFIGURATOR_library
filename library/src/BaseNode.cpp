@@ -31,22 +31,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "BaseNode.h"
 
-using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 
-BaseNode::BaseNode(uint8_t nodeId, const string& name) :
+BaseNode::BaseNode(uint8_t nodeId, const std::string& name) :
 	nodeId(nodeId),
 	name(name),
-	objectDictionary(map<uint32_t, shared_ptr<Object>>()),
-	applicationProcess(make_shared<ApplicationProcess>()),
-	nodeAssignment(vector<NodeAssignment>()),
-	networkManagement(make_shared<NetworkManagement>()),
-	dynamicChannelList(vector<shared_ptr<DynamicChannel>>()),
-	transmitMapping(vector<shared_ptr<TxProcessDataMappingObject>>()),
-	receiveMapping(vector<shared_ptr<RxProcessDataMappingObject>>())
+	objectDictionary(std::map<uint32_t, std::shared_ptr<Object>>()),
+	applicationProcess(std::make_shared<ApplicationProcess>()),
+	nodeAssignment(std::vector<NodeAssignment>()),
+	networkManagement(std::make_shared<NetworkManagement>()),
+	dynamicChannelList(std::vector<std::shared_ptr<DynamicChannel>>()),
+	transmitMapping(std::vector<std::shared_ptr<TxProcessDataMappingObject>>()),
+	receiveMapping(std::vector<std::shared_ptr<RxProcessDataMappingObject>>())
 {}
 
 BaseNode::~BaseNode()
@@ -55,12 +54,12 @@ BaseNode::~BaseNode()
 	receiveMapping.clear();
 }
 
-const string& BaseNode::GetName()
+const std::string& BaseNode::GetName()
 {
 	return this->name;
 }
 
-void BaseNode::SetName(const string& name)
+void BaseNode::SetName(const std::string& name)
 {
 	this->name = name;
 }
@@ -75,32 +74,32 @@ void BaseNode::SetNodeIdentifier(uint8_t nodeId)
 	this->nodeId = nodeId;
 }
 
-const map<uint32_t, shared_ptr<Object>>& BaseNode::GetObjectDictionary()
+const std::map<uint32_t, std::shared_ptr<Object>>& BaseNode::GetObjectDictionary()
 {
 	return objectDictionary;
 }
 
-void BaseNode::SetObjectDictionary(const map<uint32_t, shared_ptr<Object>>& od)
+void BaseNode::SetObjectDictionary(const std::map<uint32_t, std::shared_ptr<Object>>& od)
 {
 	objectDictionary = od;
 }
 
-vector<NodeAssignment>& BaseNode::GetNodeAssignment()
+std::vector<NodeAssignment>& BaseNode::GetNodeAssignment()
 {
 	return this->nodeAssignment;
 }
 
-shared_ptr<NetworkManagement>& BaseNode::GetNetworkManagement()
+std::shared_ptr<NetworkManagement>& BaseNode::GetNetworkManagement()
 {
 	return this->networkManagement;
 }
 
-shared_ptr<ApplicationProcess>& BaseNode::GetApplicationProcess()
+std::shared_ptr<ApplicationProcess>& BaseNode::GetApplicationProcess()
 {
 	return this->applicationProcess;
 }
 
-Result BaseNode::AddObject(shared_ptr<Object>& objRef)
+Result BaseNode::AddObject(std::shared_ptr<Object>& objRef)
 {
 	if (this->objectDictionary.find(objRef->GetId()) != this->objectDictionary.end())
 	{
@@ -113,7 +112,7 @@ Result BaseNode::AddObject(shared_ptr<Object>& objRef)
 		return Result(ErrorCode::OBJECT_EXISTS, formatter.str());
 	}
 
-	this->objectDictionary.insert(pair<uint32_t, shared_ptr<Object>>(objRef->GetId(), objRef));
+	this->objectDictionary.insert(std::pair<uint32_t, std::shared_ptr<Object>>(objRef->GetId(), objRef));
 
 	//Log object creation
 	boost::format formatter(kMsgObjectCreated);
@@ -124,7 +123,7 @@ Result BaseNode::AddObject(shared_ptr<Object>& objRef)
 	return Result();
 }
 
-Result BaseNode::AddSubObject(uint32_t objectId, shared_ptr<SubObject>& objRef)
+Result BaseNode::AddSubObject(uint32_t objectId, std::shared_ptr<SubObject>& objRef)
 {
 	if (this->objectDictionary.find(objectId) == this->objectDictionary.end())
 	{
@@ -140,7 +139,7 @@ Result BaseNode::AddSubObject(uint32_t objectId, shared_ptr<SubObject>& objRef)
 	return this->objectDictionary.find(objectId)->second->AddSubobject(objRef);
 }
 
-Result BaseNode::ForceObject(uint32_t objectId, bool force, string actualValue)
+Result BaseNode::ForceObject(uint32_t objectId, bool force, const std::string& actualValue)
 {
 	auto iter = this->objectDictionary.find(objectId);
 	if (iter == this->objectDictionary.end())
@@ -156,16 +155,16 @@ Result BaseNode::ForceObject(uint32_t objectId, bool force, string actualValue)
 
 	iter->second->SetForceToCDC(force);
 	//Log info forced object
-	boost::format formatter(kMsgForceObject);
-	formatter
+	boost::format log_format(kMsgForceObject);
+	log_format
 	% objectId
 	% (uint32_t) nodeId;
-	LOG_INFO() << formatter.str();
+	LOG_INFO() << log_format.str();
 
 	if (!actualValue.empty())
 	{
 		Result res = iter->second->SetTypedObjectActualValue(actualValue);
-		if(!res.IsSuccessful())
+		if (!res.IsSuccessful())
 			return res;
 
 		//Log info actual value set
@@ -181,7 +180,7 @@ Result BaseNode::ForceObject(uint32_t objectId, bool force, string actualValue)
 	return Result();
 }
 
-Result BaseNode::SetObjectActualValue(uint32_t objectId, string actualValue)
+Result BaseNode::SetObjectActualValue(uint32_t objectId, const std::string& actualValue)
 {
 	auto iter = this->objectDictionary.find(objectId);
 	if (iter == this->objectDictionary.end())
@@ -208,7 +207,7 @@ Result BaseNode::SetObjectActualValue(uint32_t objectId, string actualValue)
 	if (!actualValue.empty())
 	{
 		Result res = iter->second->SetTypedObjectActualValue(actualValue);
-		if(!res.IsSuccessful())
+		if (!res.IsSuccessful())
 			return res;
 
 		//Log info actual value set
@@ -232,7 +231,7 @@ Result BaseNode::SetObjectActualValue(uint32_t objectId, string actualValue)
 
 }
 
-Result BaseNode::GetObject(uint32_t objectId, shared_ptr<Object>& objRef)
+Result BaseNode::GetObject(uint32_t objectId, std::shared_ptr<Object>& objRef)
 {
 	auto iter = this->objectDictionary.find(objectId);
 	if (iter == this->objectDictionary.end())
@@ -249,7 +248,7 @@ Result BaseNode::GetObject(uint32_t objectId, shared_ptr<Object>& objRef)
 	return Result();
 }
 
-Result BaseNode::ForceSubObject(uint32_t objectId, uint32_t subObjectId, bool force, string actualValue)
+Result BaseNode::ForceSubObject(uint32_t objectId, uint32_t subObjectId, bool force, const std::string& actualValue)
 {
 	auto iter = this->objectDictionary.find(objectId);
 	if (iter == this->objectDictionary.end())
@@ -263,24 +262,24 @@ Result BaseNode::ForceSubObject(uint32_t objectId, uint32_t subObjectId, bool fo
 		return Result(ErrorCode::OBJECT_DOES_NOT_EXIST, formatter.str());
 	}
 
-	shared_ptr<SubObject> subObject;
+	std::shared_ptr<SubObject> subObject;
 	Result res = iter->second->GetSubObject(subObjectId, subObject);
 	if (res.IsSuccessful())
 	{
 		subObject->SetForceToCDC(force);
 		//Log info forced subobject
-		boost::format formatter(kMsgForceSubObject);
-		formatter
+		boost::format log_format(kMsgForceSubObject);
+		log_format
 		% objectId
 		% subObjectId
 		% (uint32_t) nodeId
 		% force;
-		LOG_INFO() << formatter.str();
+		LOG_INFO() << log_format.str();
 
 		if (!actualValue.empty())
 		{
 			res = subObject->SetTypedObjectActualValue(actualValue);
-			if(!res.IsSuccessful())
+			if (!res.IsSuccessful())
 				return res;
 
 			//Log info actual value set
@@ -305,7 +304,7 @@ Result BaseNode::ForceSubObject(uint32_t objectId, uint32_t subObjectId, bool fo
 	return res;
 }
 
-Result BaseNode::SetSubObjectActualValue(uint32_t objectId, uint32_t subObjectId, string actualValue)
+Result BaseNode::SetSubObjectActualValue(uint32_t objectId, uint32_t subObjectId, const std::string& actualValue)
 {
 	auto iter = this->objectDictionary.find(objectId);
 	if (iter == this->objectDictionary.end())
@@ -319,7 +318,7 @@ Result BaseNode::SetSubObjectActualValue(uint32_t objectId, uint32_t subObjectId
 		return Result(ErrorCode::OBJECT_DOES_NOT_EXIST, formatter.str());
 	}
 
-	shared_ptr<SubObject> subObject;
+	std::shared_ptr<SubObject> subObject;
 	Result res = iter->second->GetSubObject(subObjectId, subObject);
 	if (res.IsSuccessful())
 	{
@@ -338,7 +337,7 @@ Result BaseNode::SetSubObjectActualValue(uint32_t objectId, uint32_t subObjectId
 		if (!actualValue.empty())
 		{
 			res = subObject->SetTypedObjectActualValue(actualValue);
-			if(!res.IsSuccessful())
+			if (!res.IsSuccessful())
 				return res;
 
 			//Log info actual value set
@@ -363,7 +362,7 @@ Result BaseNode::SetSubObjectActualValue(uint32_t objectId, uint32_t subObjectId
 	return res;
 }
 
-Result BaseNode::GetSubObject(uint32_t objectId, uint32_t subObjectId, shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::SubObject>& subObjRef)
+Result BaseNode::GetSubObject(uint32_t objectId, uint32_t subObjectId, std::shared_ptr<SubObject>& subObjRef)
 {
 	auto iter = this->objectDictionary.find(objectId);
 	if (iter == this->objectDictionary.end())

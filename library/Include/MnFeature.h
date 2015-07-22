@@ -33,8 +33,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define MN_FEATURE_H
 
 #include <string>
+
 #include <boost/any.hpp>
 #include <boost/format.hpp>
+
 #include "PlkFeature.h"
 #include "PlkFeatureEnum.h"
 #include "Result.h"
@@ -57,11 +59,11 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						MnFeature(MNFeatureEnum type);
+						explicit MnFeature(MNFeatureEnum type);
 						virtual ~MnFeature();
 
-						const std::string GetName();
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetTypedValues(std::string defaultValue, std::string actualValue);
+						const std::string& GetName();
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetTypedValues(const std::string& defaultValue, const std::string& actualValue);
 
 						template<class T>
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetDefaultValue(T& value);

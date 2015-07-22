@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define PROCESS_IMAGE_GENERATOR_H
 
 #include <sstream>
+
 namespace IndustrialNetwork
 {
 	namespace POWERLINK

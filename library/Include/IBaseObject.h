@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define IBASE_OBJECT_H
 
 #include <string>
+
 #include <boost/any.hpp>
 
 namespace IndustrialNetwork
@@ -59,7 +60,7 @@ namespace IndustrialNetwork
 
 				{}
 
-				IBaseObject(T id, D objectType, std::string name) :
+				IBaseObject(T id, D objectType, const std::string& name) :
 					id(id),
 					actualValue(boost::any()),
 					defaultValue(boost::any()),

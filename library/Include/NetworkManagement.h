@@ -90,9 +90,9 @@ namespace IndustrialNetwork
 						template<typename I >
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureActualValue(GeneralFeatureEnum feature, const I actualValue);
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureUntypedActualValue(CNFeatureEnum feature, const std::string actualValue);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureUntypedActualValue(MNFeatureEnum feature, const std::string actualValue);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureUntypedActualValue(GeneralFeatureEnum feature, const std::string actualValue);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureUntypedActualValue(CNFeatureEnum feature, const std::string& actualValue);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureUntypedActualValue(MNFeatureEnum feature, const std::string& actualValue);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureUntypedActualValue(GeneralFeatureEnum feature, const std::string& actualValue);
 
 					private:
 						std::vector<std::shared_ptr<MnFeature>> mnFeatureList;

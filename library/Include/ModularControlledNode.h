@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define MODULAR_CONTROLLED_NODE_H
 
 #include <iostream>
+
 #include "Result.h"
 #include "ControlledNode.h"
 #include "Module.h"
@@ -53,7 +54,7 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						ModularControlledNode(std::uint8_t nodeID, const std::string nodeName);
+						ModularControlledNode(std::uint8_t nodeID, const std::string& nodeName);
 						virtual ~ModularControlledNode();
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddModule(const IndustrialNetwork::POWERLINK::Core::ModularNode::Module& module);

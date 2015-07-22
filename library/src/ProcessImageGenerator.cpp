@@ -33,11 +33,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using IndustrialNetwork::POWERLINK::Core::NetworkHandling::ProcessImageGenerator;
 
-
 ProcessImageGenerator::ProcessImageGenerator()
 {}
-
-
 
 ProcessImageGenerator::~ProcessImageGenerator()
 {}

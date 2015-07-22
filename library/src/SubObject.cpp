@@ -31,7 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "SubObject.h"
 
-using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 
 namespace IndustrialNetwork
@@ -42,22 +41,14 @@ namespace IndustrialNetwork
 		{
 			namespace ObjectDictionary
 			{
-				SubObject::SubObject(uint32_t id, ObjectType objectType,  string name, uint8_t containingNode) : BaseObject(id, objectType, name, containingNode),
-					containingObject()
+				SubObject::SubObject(uint32_t id, ObjectType objectType, const std::string& name, uint8_t containingNode) : BaseObject(id, objectType, name, containingNode)
 				{}
 
-				SubObject::SubObject(uint32_t id, ObjectType objectType,  string name, uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping) : BaseObject(id, objectType, name, containingNode, dataType, accessType, pdoMapping), 
-					containingObject()
+				SubObject::SubObject(uint32_t id, ObjectType objectType, const std::string& name, uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping) : BaseObject(id, objectType, name, containingNode, dataType, accessType, pdoMapping)
 				{}
 
-				SubObject::SubObject(uint32_t id, ObjectType objectType,  string name, uint8_t containingNode, string uniqueIdRef) : BaseObject(id, objectType, name, containingNode, uniqueIdRef),
-					containingObject()
+				SubObject::SubObject(uint32_t id, ObjectType objectType, const std::string& name, uint8_t containingNode, const std::string& uniqueIdRef) : BaseObject(id, objectType, name, containingNode, uniqueIdRef)
 				{}
-
-				shared_ptr<Object>& SubObject::GetContainingObject()
-				{
-					return this->containingObject;
-				}
 
 				SubObject::~SubObject()
 				{}

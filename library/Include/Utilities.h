@@ -54,29 +54,29 @@ namespace IndustrialNetwork
 			{
 
 				/************************************************************************
-				\brief Convert a number to hexadecimal representation.
+				\brief Convert a number to std::hexadecimal representation.
 
-				\param number    Number to convert to hexadecimal representation.
-				\param padLength Pad the hex representation with leading '0's up to padLength. I.e. Converting 10 to hex with padLength == 4 -> 000A.
-				\param prefix    Prefix to prepend. I.e. "0x", empty string by default.
-				\param suffix    Suffix to append. I.e. "h", empty string by default.
+				\param number    Number to convert to std::hexadecimal representation.
+				\param padLength Pad the std::hex representation with leading '0's up to padLength. I.e. Converting 10 to std::hex with padLength == 4 -> 000A.
+				\param prefix    Prefix to prepend. I.e. "0x", empty std::string by default.
+				\param suffix    Suffix to append. I.e. "h", empty std::string by default.
 
-				\return A hexadecimal string representation of number.
+				\return A std::hexadecimal std::string representation of number.
 				************************************************************************/
 				template <typename T>
 				std::string IntToHex(const T number, const unsigned int padLength, const std::string& prefix = "", const std::string& suffix = "");
 
 				/************************************************************************
-				\brief Convert a string in hex-representation to an integral datatype
+				\brief Convert a std::string in std::hex-representation to an integral datatype
 
-				\param hexString	String representing an integral number in hexadecimal representation. Prefix "0x" is optional.
+				\param std::hexString	String representing an integral number in std::hexadecimal representation. Prefix "0x" is optional.
 
-				\return The string converted to an integral datatype.
+				\return The std::string converted to an integral datatype.
 				************************************************************************/
 				template <typename T>
 				T HexToInt(const std::string& hexString);
 
-				bool StringToBool(std::string str);
+				bool StringToBool(const std::string& str);
 
 				std::uint32_t GetIECDataTypeBitSize(const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType);
 
@@ -84,7 +84,7 @@ namespace IndustrialNetwork
 				int64_t DoubleToDoublePrecisisionHex(double value);
 
 				template <typename T>
-				std::string ReverseHex(const T number);
+				std::string ReverseHex(const T& number);
 
 			}
 		}

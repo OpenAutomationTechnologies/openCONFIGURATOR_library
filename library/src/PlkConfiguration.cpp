@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "PlkConfiguration.h"
 
-using namespace std;
+
 using namespace IndustrialNetwork::POWERLINK::Core::Configuration;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
@@ -42,7 +42,7 @@ PlkConfiguration::PlkConfiguration() :
 	configurationName("")
 {}
 
-PlkConfiguration::PlkConfiguration(const string& name) :
+PlkConfiguration::PlkConfiguration(const std::string& name) :
 	IBuildConfiguration<BuildConfigurationSetting>(),
 	configurationName(name)
 {}
@@ -50,7 +50,7 @@ PlkConfiguration::PlkConfiguration(const string& name) :
 PlkConfiguration::~PlkConfiguration()
 {}
 
-Result PlkConfiguration::GenerateConfiguration(const map<uint8_t, shared_ptr<BaseNode>>& nodeCollection)
+Result PlkConfiguration::GenerateConfiguration(const std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
 	Result res;
 	//Generate autogeneration settings
@@ -126,21 +126,21 @@ Result PlkConfiguration::GenerateConfiguration(const map<uint8_t, shared_ptr<Bas
 	return res;
 }
 
-const string& PlkConfiguration::GetConfigurationName()
+const std::string& PlkConfiguration::GetConfigurationName()
 {
 	return this->configurationName;
 }
 
-void PlkConfiguration::SetConfigurationName(const string& configName)
+void PlkConfiguration::SetConfigurationName(const std::string& configName)
 {
 	this->configurationName = configName;
 }
 
-Result PlkConfiguration::DistributeDateTimeStamps(const map<uint8_t, shared_ptr<BaseNode>>& nodeCollection)
+Result PlkConfiguration::DistributeDateTimeStamps(const std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
 	Result res;
 	// Get current locale time
-	auto now = chrono::system_clock::now();
+	auto now = std::chrono::system_clock::now();
 
 	// Create days since 01/01/1984
 	tm timeinfo = tm();
@@ -150,29 +150,29 @@ Result PlkConfiguration::DistributeDateTimeStamps(const map<uint8_t, shared_ptr<
 	time_t epoch = mktime(&timeinfo);
 
 	//Create new epoch time (01/01/1984)
-	auto epoch_time_point = chrono::system_clock::from_time_t (epoch);
+	auto epoch_time_point = std::chrono::system_clock::from_time_t (epoch);
 	//Days since that epoch
-	auto daysSinceEpoch = chrono::duration_cast<chrono::duration<int, ratio<60 * 60 * 24>>> (now - epoch_time_point);
+	auto daysSinceEpoch = std::chrono::duration_cast<std::chrono::duration<int, std::ratio<60 * 60 * 24>>> (now - epoch_time_point);
 
 	// Create milliseconds since midnight
-	time_t tnow = chrono::system_clock::to_time_t(now);
+	time_t tnow = std::chrono::system_clock::to_time_t(now);
 	tm* date = localtime(&tnow); // today
 	date->tm_hour = 0; // set to midnight
 	date->tm_min = 0;
 	date->tm_sec = 0;
-	auto midnight = chrono::system_clock::from_time_t(mktime(date));
-	auto millisecondsSinceMidnight = chrono::duration_cast<chrono::milliseconds>(now - midnight);
+	auto midnight = std::chrono::system_clock::from_time_t(mktime(date));
+	auto millisecondsSinceMidnight = std::chrono::duration_cast<std::chrono::milliseconds>(now - midnight);
 
-	stringstream dateString;
-	dateString << daysSinceEpoch.count(); //write days to string
+	std::stringstream dateString;
+	dateString << daysSinceEpoch.count(); //write days to std::string
 
-	stringstream timeString;
-	timeString << millisecondsSinceMidnight.count(); //write milliseconds to string
+	std::stringstream timeString;
+	timeString << millisecondsSinceMidnight.count(); //write milliseconds to std::string
 
 	for (auto& node :  nodeCollection)
 	{
 		//Distribute to MN and RMNs
-		if (dynamic_pointer_cast<ManagingNode>(node.second)) //Set MN date and time objects 1F26 / 1F27
+		if (std::dynamic_pointer_cast<ManagingNode>(node.second)) //Set MN date and time objects 1F26 / 1F27
 		{
 			for (auto& nodeIds :  nodeCollection)
 			{
@@ -211,9 +211,9 @@ Result PlkConfiguration::DistributeDateTimeStamps(const map<uint8_t, shared_ptr<
 	return res;
 }
 
-Result PlkConfiguration::DistributeNodeAssignment(const map<uint8_t, shared_ptr<BaseNode>>& nodeCollection)
+Result PlkConfiguration::DistributeNodeAssignment(const std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
-	stringstream nodeAssignmentStr;
+	std::stringstream nodeAssignmentStr;
 	for (auto& node : nodeCollection)
 	{
 		if (node.first == 240) //Dont distribute assignement for MN
@@ -223,25 +223,25 @@ Result PlkConfiguration::DistributeNodeAssignment(const map<uint8_t, shared_ptr<
 		for (auto& mn :  nodeCollection)
 		{
 			//Distribute to MN and RMNs
-			if (dynamic_pointer_cast<ManagingNode>(mn.second)) //Set MN or RMN node assignement objects
+			if (std::dynamic_pointer_cast<ManagingNode>(mn.second)) //Set MN or RMN node assignement objects
 			{
 				Result res = mn.second->SetSubObjectActualValue(0x1F81, node.first, nodeAssignmentStr.str()); //Set actual value with assignment
 				if (!res.IsSuccessful())
 					return res;
 			}
 		}
-		nodeAssignmentStr.str(string()); //reset stringstream
+		nodeAssignmentStr.str(std::string()); //reset std::stringstream
 	}
 	return Result();
 }
 
-Result PlkConfiguration::DistributeCycleTime(const map<uint8_t, shared_ptr<BaseNode>>& nodeCollection)
+Result PlkConfiguration::DistributeCycleTime(const std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
-	stringstream cycleTimeStr;
+	std::stringstream cycleTimeStr;
 
 	//Get managing node
 	auto& mn = nodeCollection.at(240);
-	shared_ptr<SubObject> cycleTimeObject;
+	std::shared_ptr<SubObject> cycleTimeObject;
 
 	//Get Cycle Time object
 	Result res = mn->GetSubObject(0x1006, 0x0, cycleTimeObject);
@@ -251,7 +251,7 @@ Result PlkConfiguration::DistributeCycleTime(const map<uint8_t, shared_ptr<BaseN
 	//If actual value exists
 	if (cycleTimeObject->WriteToConfiguration())
 	{
-		//Convert to cycle time to string
+		//Convert to cycle time to std::string
 		cycleTimeStr << cycleTimeObject->GetTypedActualValue<uint32_t>();
 	}
 	//0x1006 / 0x0 has to be written so return error if not
@@ -271,13 +271,13 @@ Result PlkConfiguration::DistributeCycleTime(const map<uint8_t, shared_ptr<BaseN
 	return Result();
 }
 
-Result PlkConfiguration::DistributeMultiplCycleCount(const map<uint8_t, shared_ptr<BaseNode>>& nodeCollection)
+Result PlkConfiguration::DistributeMultiplCycleCount(const std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
-	stringstream multiplCycleCountStr;
+	std::stringstream multiplCycleCountStr;
 
 	//Get managing node
 	auto& mn = nodeCollection.at(240);
-	shared_ptr<SubObject> multiplCycleCountObject;
+	std::shared_ptr<SubObject> multiplCycleCountObject;
 
 	//Get multiplexed cycle count object
 	Result res = mn->GetSubObject(0x1F98, 0x07, multiplCycleCountObject);
@@ -286,7 +286,7 @@ Result PlkConfiguration::DistributeMultiplCycleCount(const map<uint8_t, shared_p
 
 	if (multiplCycleCountObject->WriteToConfiguration())
 	{
-		//Convert multiplexed cycle count to string
+		//Convert multiplexed cycle count to std::string
 		multiplCycleCountStr << multiplCycleCountObject->GetTypedActualValue<uint16_t>();
 	}
 	else
@@ -308,13 +308,13 @@ Result PlkConfiguration::DistributeMultiplCycleCount(const map<uint8_t, shared_p
 	return Result();
 }
 
-Result PlkConfiguration::DistributeAsyncMtu(const map<uint8_t, shared_ptr<BaseNode>>& nodeCollection)
+Result PlkConfiguration::DistributeAsyncMtu(const std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
-	stringstream asyncMtuStr;
+	std::stringstream asyncMtuStr;
 
 	//Get managing node
 	auto& mn = nodeCollection.at(240);
-	shared_ptr<SubObject> asynMtuObject;
+	std::shared_ptr<SubObject> asynMtuObject;
 
 	//Get Async MTU object
 	Result res = mn->GetSubObject(0x1F98, 0x8, asynMtuObject);
@@ -323,7 +323,7 @@ Result PlkConfiguration::DistributeAsyncMtu(const map<uint8_t, shared_ptr<BaseNo
 
 	if (asynMtuObject->WriteToConfiguration())
 	{
-		//Convert Async MTU to string
+		//Convert Async MTU to std::string
 		asyncMtuStr << asynMtuObject->GetTypedActualValue<uint16_t>();
 	}
 	else
@@ -344,13 +344,13 @@ Result PlkConfiguration::DistributeAsyncMtu(const map<uint8_t, shared_ptr<BaseNo
 	return Result();
 }
 
-Result PlkConfiguration::DistributePrescaler(const map<uint8_t, shared_ptr<BaseNode>>& nodeCollection)
+Result PlkConfiguration::DistributePrescaler(const std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
-	stringstream prescalerStr;
+	std::stringstream prescalerStr;
 
 	//Get managing node
 	auto& mn = nodeCollection.at(240);
-	shared_ptr<SubObject> prescalerObject;
+	std::shared_ptr<SubObject> prescalerObject;
 
 	//Get Cycle Time object
 	Result res = mn->GetSubObject(0x1F98, 0x9, prescalerObject);
@@ -359,7 +359,7 @@ Result PlkConfiguration::DistributePrescaler(const map<uint8_t, shared_ptr<BaseN
 
 	if (prescalerObject->WriteToConfiguration())
 	{
-		//Convert prescaler to string
+		//Convert prescaler to std::string
 		prescalerStr << prescalerObject->GetTypedActualValue<uint16_t>();
 	}
 	else
@@ -380,7 +380,7 @@ Result PlkConfiguration::DistributePrescaler(const map<uint8_t, shared_ptr<BaseN
 	return Result();
 }
 
-Result PlkConfiguration::DistributeMultiplCycleAssign(const map<uint8_t, shared_ptr<BaseNode>>& nodeCollection)
+Result PlkConfiguration::DistributeMultiplCycleAssign(const std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
 	//Get managing node
 	auto& mn = nodeCollection.at(240);
@@ -389,7 +389,7 @@ Result PlkConfiguration::DistributeMultiplCycleAssign(const map<uint8_t, shared_
 		if (node.first == 240)
 			continue;
 
-		shared_ptr<Object> multiplCycleAssignObject;
+		std::shared_ptr<Object> multiplCycleAssignObject;
 		Result res = mn->GetObject(0x1F9B, multiplCycleAssignObject);
 		if (!res.IsSuccessful())
 			return res;
@@ -398,9 +398,9 @@ Result PlkConfiguration::DistributeMultiplCycleAssign(const map<uint8_t, shared_
 		{
 			if (subObj.second->WriteToConfiguration())
 			{
-				stringstream multiplCycleAssignValue;
+				std::stringstream multiplCycleAssignValue;
 				multiplCycleAssignValue << subObj.second->GetTypedActualValue<uint16_t>();
-				Result res = node.second->SetSubObjectActualValue(0x1F9B, subObj.first, multiplCycleAssignValue.str());
+				res = node.second->SetSubObjectActualValue(0x1F9B, subObj.first, multiplCycleAssignValue.str());
 				if (!res.IsSuccessful())
 					return res;
 			}
@@ -409,11 +409,11 @@ Result PlkConfiguration::DistributeMultiplCycleAssign(const map<uint8_t, shared_
 	return Result();
 }
 
-Result PlkConfiguration::DistributeSDOSeqLayerTimeout(const map<uint8_t, shared_ptr<BaseNode>>& nodeCollection)
+Result PlkConfiguration::DistributeSDOSeqLayerTimeout(const std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
 	//Get managing node
 	auto& mn = nodeCollection.at(240);
-	shared_ptr<SubObject> sdoSeqLayerTimeoutObject;
+	std::shared_ptr<SubObject> sdoSeqLayerTimeoutObject;
 
 	//Get Async MTU object
 	Result res = mn->GetSubObject(0x1300, 0x0, sdoSeqLayerTimeoutObject);
@@ -427,8 +427,8 @@ Result PlkConfiguration::DistributeSDOSeqLayerTimeout(const map<uint8_t, shared_
 
 		if (sdoSeqLayerTimeoutObject->WriteToConfiguration())
 		{
-			stringstream sdoSeqLayerTimeoutStr;
-			//Convert SDOSeqLayerTimeout to string
+			std::stringstream sdoSeqLayerTimeoutStr;
+			//Convert SDOSeqLayerTimeout to std::string
 			sdoSeqLayerTimeoutStr << sdoSeqLayerTimeoutObject->GetTypedActualValue<uint32_t>();
 			//Set every node 0x1300 / 0x0 actual value to SDOSeqLayerTimeout
 			res = node.second->SetSubObjectActualValue(0x1300, 0x0, sdoSeqLayerTimeoutStr.str());
@@ -439,11 +439,11 @@ Result PlkConfiguration::DistributeSDOSeqLayerTimeout(const map<uint8_t, shared_
 	return Result();
 }
 
-Result PlkConfiguration::DistributeSDOCmdLayerTimeout(const map<uint8_t, shared_ptr<BaseNode>>& nodeCollection)
+Result PlkConfiguration::DistributeSDOCmdLayerTimeout(const std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
 	//Get managing node
 	auto& mn = nodeCollection.at(240);
-	shared_ptr<SubObject> sdoCmdLayerTimeoutObject;
+	std::shared_ptr<SubObject> sdoCmdLayerTimeoutObject;
 
 	//Get Async MTU object
 	Result res = mn->GetSubObject(0x1301, 0x0, sdoCmdLayerTimeoutObject);
@@ -457,8 +457,8 @@ Result PlkConfiguration::DistributeSDOCmdLayerTimeout(const map<uint8_t, shared_
 
 		if (sdoCmdLayerTimeoutObject->WriteToConfiguration())
 		{
-			stringstream sdoCmdLayerTimeoutStr;
-			//Convert CmdLayerTimeout to string
+			std::stringstream sdoCmdLayerTimeoutStr;
+			//Convert CmdLayerTimeout to std::string
 			sdoCmdLayerTimeoutStr << sdoCmdLayerTimeoutObject->GetTypedActualValue<uint32_t>();
 			//Set every node 0x1300 / 0x0 actual value to CmdLayerTimeout
 			res = node.second->SetSubObjectActualValue(0x1301, 0x0, sdoCmdLayerTimeoutStr.str());
@@ -469,7 +469,7 @@ Result PlkConfiguration::DistributeSDOCmdLayerTimeout(const map<uint8_t, shared_
 	return Result();
 }
 
-Result PlkConfiguration::DistributePResTimeOut(const map<uint8_t, shared_ptr<BaseNode>>& nodeCollection)
+Result PlkConfiguration::DistributePResTimeOut(const std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
 	//Get managing node
 	auto& mn = nodeCollection.at(240);
@@ -479,12 +479,12 @@ Result PlkConfiguration::DistributePResTimeOut(const map<uint8_t, shared_ptr<Bas
 		if (node.first == 240)
 			continue;
 
-		shared_ptr<SubObject> presTimoutCNObj;
+		std::shared_ptr<SubObject> presTimoutCNObj;
 		Result res = node.second->GetSubObject(0x1F98, 0x3, presTimoutCNObj);
 		if (!res.IsSuccessful())
 			return res;
 
-		stringstream presTimoutActualValue;
+		std::stringstream presTimoutActualValue;
 		if (presTimoutCNObj->WriteToConfiguration())
 			presTimoutActualValue << (presTimoutCNObj->GetTypedActualValue<uint32_t>());
 		else
@@ -499,7 +499,7 @@ Result PlkConfiguration::DistributePResTimeOut(const map<uint8_t, shared_ptr<Bas
 			if (rmn.first == 240)
 				continue;
 
-			if (dynamic_pointer_cast<ManagingNode>(rmn.second))
+			if (std::dynamic_pointer_cast<ManagingNode>(rmn.second))
 			{
 				res = rmn.second->SetSubObjectActualValue(0x1F92, node.first, presTimoutActualValue.str());
 				if (!res.IsSuccessful())
@@ -510,7 +510,7 @@ Result PlkConfiguration::DistributePResTimeOut(const map<uint8_t, shared_ptr<Bas
 	return Result();
 }
 
-Result PlkConfiguration::DistributePReqPayloadLimit(const map<uint8_t, shared_ptr<BaseNode>>& nodeCollection)
+Result PlkConfiguration::DistributePReqPayloadLimit(const std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
 	//Get managing node
 	auto& mn = nodeCollection.at(240);
@@ -520,12 +520,12 @@ Result PlkConfiguration::DistributePReqPayloadLimit(const map<uint8_t, shared_pt
 		if (node.first == 240)
 			continue;
 
-		shared_ptr<SubObject> preqActPayloadLimitObj;
+		std::shared_ptr<SubObject> preqActPayloadLimitObj;
 		Result res = node.second->GetSubObject(0x1F98, 0x4, preqActPayloadLimitObj);
 		if (!res.IsSuccessful())
 			return res;
 
-		stringstream preqActPayloadLimitValue;
+		std::stringstream preqActPayloadLimitValue;
 		if (preqActPayloadLimitObj->WriteToConfiguration())
 			preqActPayloadLimitValue << preqActPayloadLimitObj->GetTypedActualValue<uint32_t>();
 		else
@@ -540,7 +540,7 @@ Result PlkConfiguration::DistributePReqPayloadLimit(const map<uint8_t, shared_pt
 			if (rmn.first == 240)
 				continue;
 
-			if (dynamic_pointer_cast<ManagingNode>(rmn.second))
+			if (std::dynamic_pointer_cast<ManagingNode>(rmn.second))
 			{
 				res = rmn.second->SetSubObjectActualValue(0x1F8B, node.first, preqActPayloadLimitValue.str());
 				if (!res.IsSuccessful())
@@ -551,7 +551,7 @@ Result PlkConfiguration::DistributePReqPayloadLimit(const map<uint8_t, shared_pt
 	return Result();
 }
 
-Result PlkConfiguration::DistributePResPayloadLimit(const map<uint8_t, shared_ptr<BaseNode>>& nodeCollection)
+Result PlkConfiguration::DistributePResPayloadLimit(const std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
 	//Get managing node
 	auto& mn = nodeCollection.at(240);
@@ -561,12 +561,12 @@ Result PlkConfiguration::DistributePResPayloadLimit(const map<uint8_t, shared_pt
 		if (node.first == 240)
 			continue;
 
-		shared_ptr<SubObject> presActPayloadLimitObj;
+		std::shared_ptr<SubObject> presActPayloadLimitObj;
 		Result res = node.second->GetSubObject(0x1F98, 0x5, presActPayloadLimitObj);
 		if (!res.IsSuccessful())
 			return res;
 
-		stringstream presActPayloadLimitValue;
+		std::stringstream presActPayloadLimitValue;
 		if (presActPayloadLimitObj->WriteToConfiguration())
 			presActPayloadLimitValue << presActPayloadLimitObj->GetTypedActualValue<uint16_t>();
 		else

@@ -49,12 +49,12 @@ namespace IndustrialNetwork
 				enum class AccessType : std::uint8_t
 				{
 					UNDEFINED = 0,
-				    RW = 1,
-				    WO,
-				    RO,
-				    CONST,
-				    RWS,
-				    WOS
+					RW = 1,
+					WO,
+					RO,
+					CONST,
+					RWS,
+					WOS
 				};
 
 			}

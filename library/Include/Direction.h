@@ -48,8 +48,8 @@ namespace IndustrialNetwork
 				*/
 				enum class Direction : std::uint8_t
 				{
-				    RX = 0,
-				    TX,
+					RX = 0,
+					TX,
 				};
 
 			}

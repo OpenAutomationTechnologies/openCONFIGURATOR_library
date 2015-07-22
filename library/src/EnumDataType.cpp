@@ -31,14 +31,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "EnumDataType.h"
 
-using namespace std;
+
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 
-EnumDataType::EnumDataType(string uniqueID, string name, IEC_Datatype dataType, uint32_t size) : ComplexDataType(uniqueID, name, size),
+EnumDataType::EnumDataType(const std::string& uniqueID, const std::string&  name, IEC_Datatype dataType, uint32_t size) : ComplexDataType(uniqueID, name, size),
 	dataType(dataType),
-	enumValues(std::unordered_map<string, string>())
+	enumValues(std::unordered_map<std::string, std::string>())
 {}
 
 EnumDataType::~EnumDataType()
@@ -49,12 +49,12 @@ IEC_Datatype EnumDataType::GetDataType()
 	return this->dataType;
 }
 
-Result EnumDataType::AddEnumValue(string name, string value)
+Result EnumDataType::AddEnumValue(const std::string& name, const std::string& value)
 {
 	if (this->enumValues.find(name) != this->enumValues.end())
 		return Result(ErrorCode::ENUM_VALUE_EXISTS);
 
-	this->enumValues.insert(pair<string, string>(name, value));
+	this->enumValues.insert(std::pair<std::string, std::string>(name, value));
 	return Result();
 }
 

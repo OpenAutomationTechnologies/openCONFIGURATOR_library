@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <unordered_map>
 #include <utility>
+
 #include "ComplexDataType.h"
 #include "IEC_Datatype.h"
 #include "Result.h"
@@ -55,11 +56,11 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						EnumDataType(std::string uniqueID, std::string name, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype datatType, std::uint32_t size = 0);
+						EnumDataType(const std::string& uniqueID, const std::string&  name, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype datatType, std::uint32_t size = 0);
 						virtual ~EnumDataType();
 
 						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype GetDataType();
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddEnumValue(std::string name, std::string value);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddEnumValue(const std::string&  name, const std::string&  value);
 
 						virtual std::uint32_t GetBitSize();
 

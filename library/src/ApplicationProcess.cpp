@@ -31,23 +31,22 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "ApplicationProcess.h"
 
-using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 
 ApplicationProcess::ApplicationProcess() :
-	parameterList(vector<shared_ptr<Parameter>>())
+	parameterList(std::vector<std::shared_ptr<Parameter>>())
 {}
 
 ApplicationProcess::~ApplicationProcess()
 {}
 
-const vector<shared_ptr<Parameter>>& ApplicationProcess::GetParameterList()
+const std::vector<std::shared_ptr<Parameter>>& ApplicationProcess::GetParameterList()
 {
 	return parameterList;
 }
 
-Result ApplicationProcess::AddParameter(shared_ptr<Parameter>& param)
+Result ApplicationProcess::AddParameter(std::shared_ptr<Parameter>& param)
 {
 	for (auto& currentParam : this->parameterList)
 	{
@@ -58,7 +57,7 @@ Result ApplicationProcess::AddParameter(shared_ptr<Parameter>& param)
 	return Result();
 }
 
-Result ApplicationProcess::GetParameter(string uniqueId, shared_ptr<Parameter>& returnParam)
+Result ApplicationProcess::GetParameter(const std::string& uniqueId, std::shared_ptr<Parameter>& returnParam)
 {
 	for (auto& param : this->parameterList)
 	{
@@ -71,7 +70,7 @@ Result ApplicationProcess::GetParameter(string uniqueId, shared_ptr<Parameter>& 
 	return Result(ErrorCode::PARAMETER_NOT_FOUND);
 }
 
-Result ApplicationProcess::GetComplexDataType(string uniqueId, shared_ptr<ComplexDataType>& returnType)
+Result ApplicationProcess::GetComplexDataType(const std::string& uniqueId, std::shared_ptr<ComplexDataType>& returnType)
 {
 	for (auto& param : this->parameterList)
 	{
@@ -84,7 +83,7 @@ Result ApplicationProcess::GetComplexDataType(string uniqueId, shared_ptr<Comple
 	return Result(ErrorCode::PARAMETER_NOT_FOUND);
 }
 
-uint32_t ApplicationProcess::GetBitSize(std::string uniqueId)
+uint32_t ApplicationProcess::GetBitSize(const std::string& uniqueId)
 {
 	for (auto& param : this->parameterList)
 	{

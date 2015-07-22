@@ -31,7 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "NetworkManagement.h"
 
-using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 
 namespace IndustrialNetwork
@@ -43,9 +42,9 @@ namespace IndustrialNetwork
 			namespace Node
 			{
 				NetworkManagement::NetworkManagement() :
-					mnFeatureList(vector<shared_ptr<MnFeature>>()),
-					cnFeatureList(vector<shared_ptr<CnFeature>>()),
-					generalFeatureList(vector<shared_ptr<GeneralFeature>>())
+					mnFeatureList(std::vector<std::shared_ptr<MnFeature>>()),
+					cnFeatureList(std::vector<std::shared_ptr<CnFeature>>()),
+					generalFeatureList(std::vector<std::shared_ptr<GeneralFeature>>())
 
 				{}
 
@@ -89,7 +88,7 @@ namespace IndustrialNetwork
 					}
 
 					//create new and alter actual value
-					this->cnFeatureList.push_back(make_shared<CnFeature>(featureId));
+					this->cnFeatureList.push_back(std::make_shared<CnFeature>(featureId));
 					for (auto& feature : this->cnFeatureList)
 					{
 						if (feature->GetFeatureId() == featureId)
@@ -144,7 +143,7 @@ namespace IndustrialNetwork
 					}
 
 					//create new and alter actual value
-					this->mnFeatureList.push_back(make_shared<MnFeature>(featureId));
+					this->mnFeatureList.push_back(std::make_shared<MnFeature>(featureId));
 					for (auto& feature : this->mnFeatureList)
 					{
 						if (feature->GetFeatureId() == featureId)
@@ -200,7 +199,7 @@ namespace IndustrialNetwork
 					}
 
 					//create new and alter actual value
-					this->generalFeatureList.push_back(make_shared<GeneralFeature>(featureId));
+					this->generalFeatureList.push_back(std::make_shared<GeneralFeature>(featureId));
 					for (auto& feature : this->generalFeatureList)
 					{
 						if (feature->GetFeatureId() == featureId)
@@ -215,7 +214,7 @@ namespace IndustrialNetwork
 				template Result NetworkManagement::SetFeatureActualValue<uint16_t>(GeneralFeatureEnum feature, const uint16_t actualValue);
 				template Result NetworkManagement::SetFeatureActualValue<uint32_t>(GeneralFeatureEnum feature, const uint32_t actualValue);
 
-				Result NetworkManagement::SetFeatureUntypedActualValue(CNFeatureEnum featureId, const string actualValue)
+				Result NetworkManagement::SetFeatureUntypedActualValue(CNFeatureEnum featureId, const std::string& actualValue)
 				{
 					//alter existing feature
 					for (auto& feature : this->cnFeatureList)
@@ -227,7 +226,7 @@ namespace IndustrialNetwork
 					}
 
 					//create new and alter actual value
-					this->cnFeatureList.push_back(make_shared<CnFeature>(featureId));
+					this->cnFeatureList.push_back(std::make_shared<CnFeature>(featureId));
 					for (auto& feature : this->cnFeatureList)
 					{
 						if (feature->GetFeatureId() == featureId)
@@ -237,7 +236,7 @@ namespace IndustrialNetwork
 					}
 					return Result();
 				}
-				Result NetworkManagement::SetFeatureUntypedActualValue(MNFeatureEnum featureId, const string actualValue)
+				Result NetworkManagement::SetFeatureUntypedActualValue(MNFeatureEnum featureId, const std::string& actualValue)
 				{
 					//alter existing feature
 					for (auto& feature : this->mnFeatureList)
@@ -249,7 +248,7 @@ namespace IndustrialNetwork
 					}
 
 					//create new and alter actual value
-					this->mnFeatureList.push_back(make_shared<MnFeature>(featureId));
+					this->mnFeatureList.push_back(std::make_shared<MnFeature>(featureId));
 					for (auto& feature : this->mnFeatureList)
 					{
 						if (feature->GetFeatureId() == featureId)
@@ -259,7 +258,7 @@ namespace IndustrialNetwork
 					}
 					return Result();
 				}
-				Result NetworkManagement::SetFeatureUntypedActualValue(GeneralFeatureEnum featureId, const string actualValue)
+				Result NetworkManagement::SetFeatureUntypedActualValue(GeneralFeatureEnum featureId, const std::string& actualValue)
 				{
 					//alter existing feature
 					for (auto& feature : this->generalFeatureList)
@@ -271,7 +270,7 @@ namespace IndustrialNetwork
 					}
 
 					//create new and alter actual value
-					this->generalFeatureList.push_back(make_shared<GeneralFeature>(featureId));
+					this->generalFeatureList.push_back(std::make_shared<GeneralFeature>(featureId));
 					for (auto& feature : this->generalFeatureList)
 					{
 						if (feature->GetFeatureId() == featureId)

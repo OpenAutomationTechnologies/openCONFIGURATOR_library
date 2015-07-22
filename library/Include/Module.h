@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define MODULE_H
 
 #include <iostream>
+
 #include "BaseNode.h"
 #include "BaseObject.h"
 #include "SortEnums.h"

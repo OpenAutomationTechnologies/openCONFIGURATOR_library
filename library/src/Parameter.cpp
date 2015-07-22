@@ -31,11 +31,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "Parameter.h"
 
-using namespace std;
+
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 
-Parameter::Parameter(string uniqueID, ParameterAccess parameterAccess, string uniqueIDRef) :
+Parameter::Parameter(const std::string& uniqueID, ParameterAccess parameterAccess, const std::string& uniqueIDRef) :
 	uniqueID(uniqueID),
 	uniqueIDRef(uniqueIDRef),
 	complexDataType(),
@@ -43,7 +43,7 @@ Parameter::Parameter(string uniqueID, ParameterAccess parameterAccess, string un
 	dataType(IEC_Datatype::UNDEFINED)
 {}
 
-Parameter::Parameter(string uniqueID, ParameterAccess parameterAccess, IEC_Datatype dataType) :
+Parameter::Parameter(const std::string& uniqueID, ParameterAccess parameterAccess, IEC_Datatype dataType) :
 	uniqueID(uniqueID),
 	uniqueIDRef(),
 	complexDataType(),
@@ -54,12 +54,12 @@ Parameter::Parameter(string uniqueID, ParameterAccess parameterAccess, IEC_Datat
 Parameter::~Parameter()
 {}
 
-const string& Parameter::GetUniqueID()
+const std::string& Parameter::GetUniqueID()
 {
 	return this->uniqueID;
 }
 
-const string& Parameter::GetUniqueIDRef()
+const std::string& Parameter::GetUniqueIDRef()
 {
 	return this->uniqueIDRef;
 }
@@ -69,12 +69,12 @@ void Parameter::SetUniqueIDRef(const std::string& uniqueIDRef)
 	this->uniqueIDRef = uniqueIDRef;
 }
 
-const shared_ptr<ComplexDataType>& Parameter::GetComplexDataType()
+const std::shared_ptr<ComplexDataType>& Parameter::GetComplexDataType()
 {
 	return this->complexDataType;
 }
 
-void Parameter::SetComplexDataType(shared_ptr<ComplexDataType>& complexType)
+void Parameter::SetComplexDataType(std::shared_ptr<ComplexDataType>& complexType)
 {
 	this->complexDataType = complexType;
 }

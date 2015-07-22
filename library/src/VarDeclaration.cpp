@@ -31,11 +31,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "VarDeclaration.h"
 
-using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 
-VarDeclaration::VarDeclaration(string uniqueID, string name, IEC_Datatype dataType, uint32_t size, string initialValue) : ComplexDataType(uniqueID, name, size),
+VarDeclaration::VarDeclaration(const std::string& uniqueID, const std::string& name, IEC_Datatype dataType, uint32_t size, const std::string& initialValue) : ComplexDataType(uniqueID, name, size),
 	initialValue(initialValue),
 	dataType(dataType)
 {}

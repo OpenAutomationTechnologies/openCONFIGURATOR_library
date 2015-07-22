@@ -31,7 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "XmlProcessImageGenerator.h"
 
-using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::NetworkHandling;
 
 XmlProcessImageGenerator::XmlProcessImageGenerator() :
@@ -43,7 +42,7 @@ XmlProcessImageGenerator::~XmlProcessImageGenerator()
 {}
 
 
-stringstream& XmlProcessImageGenerator::Generate()
+std::stringstream& XmlProcessImageGenerator::Generate()
 {
 	return this->processImageStream;
 }

@@ -31,12 +31,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "ArrayDataType.h"
 
-using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 
-
-ArrayDataType::ArrayDataType(string uniqueID, string name, uint32_t lowerLimit, uint32_t upperLimit, IEC_Datatype dataType) : ComplexDataType(uniqueID, name),
+ArrayDataType::ArrayDataType(const std::string& uniqueID, const std::string& name, uint32_t lowerLimit, uint32_t upperLimit, IEC_Datatype dataType) : ComplexDataType(uniqueID, name),
 	lowerLimit(lowerLimit),
 	upperLimit(upperLimit),
 	dataType(dataType)

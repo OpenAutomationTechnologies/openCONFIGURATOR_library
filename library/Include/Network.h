@@ -34,13 +34,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <memory>
 #include <iostream>
+
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 
 #include "Result.h"
 #include "BaseNode.h"
 #include "Module.h"
-#include "NodeType.h"
 #include "PlkConfiguration.h"
 #include "Constants.h"
 #include "ControlledNode.h"
@@ -68,7 +68,7 @@ namespace IndustrialNetwork
 
 					public:
 						Network();
-						Network(const std::string networkId);
+						explicit Network(const std::string& networkId);
 						virtual ~Network();
 
 						/**
@@ -109,56 +109,56 @@ namespace IndustrialNetwork
 
 						/**
 						/brief Retrieve all the nodes in the network.
-						/param[in] node vector reference.
+						/param[in] node std::vector reference.
 						/return Result
 						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetNodes(std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
 
 						/**
 						/brief Retrieve all exising node ids in the network.
-						/param[in] node id vector reference.
+						/param[in] node id std::vector reference.
 						/return Result
 						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetAvailableNodeIds(std::vector<std::uint8_t>& nodeIdCollection);
 
 						/**
 						\brief Enables/Disables a configuration setting handled by the class.
-						\param[in] configID string identifier.
+						\param[in] configID std::string identifier.
 						\param[in] name of the setting.
 						/return Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetConfigurationSettingEnabled(const std::string  configID, const std::string  settingID, bool enabled);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetConfigurationSettingEnabled(const std::string& configID, const std::string& settingID, bool enabled);
 
 						/**
 						\brief Adds a configuration setting to the handler class.
-						\param[in] configID string identifier.
+						\param[in] configID std::string identifier.
 						\param[in] setting BuildConfigurationSetting to be added.
 						/return Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddConfigurationSetting(const std::string configID, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Configuration::BuildConfigurationSetting> setting);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddConfigurationSetting(const std::string& configID, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Configuration::BuildConfigurationSetting> setting);
 
 						/**
 						\brief Remove a configuration setting handled by the class.
-						\param[in] configID string identifier.
+						\param[in] configID std::string identifier.
 						\param[in] id BuildConfigurationSettingId of the setting.
 						/return Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveConfigurationSetting(const std::string configID, const std::string name);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveConfigurationSetting(const std::string& configID, const std::string& name);
 
 						/**
 						\brief Add a configuration to the handler.
-						\param[in] configID string identifier. Must be unique.
+						\param[in] configID std::string identifier. Must be unique.
 						/return Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddConfiguration(const std::string configID);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddConfiguration(const std::string& configID);
 
 						/**
 						\brief Remove a configuration from the handler.
-						\param[in] configID string identifier.
+						\param[in] configID std::string identifier.
 						\retval true The configuration has been deleted.
 						\retval false The configuration does not exist.
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveConfiguration(const std::string configID);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveConfiguration(const std::string& configID);
 
 						/**
 						\brief Alter a configuration name.
@@ -166,16 +166,16 @@ namespace IndustrialNetwork
 						\param[in] newConfigId new name.
 						/return Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ReplaceConfigurationName(const std::string oldConfigId, const std::string newConfigId);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ReplaceConfigurationName(const std::string& oldConfigId, const std::string& newConfigId);
 
 						/**
 						\brief Get the settings from a configuration.
-						\param[in] configID string identifier.
-						\param[in] std::vector<BuildConfigurationSetting>& to return the collection.
+						\param[in] configID std::string identifier.
+						\param[in] std::std::vector<BuildConfigurationSetting>& to return the collection.
 						\retval true The configuration exists and the returned reference is valid.
 						\retval false The configuration does not exist.
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetConfigurationSettings(const std::string configID, std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Configuration::BuildConfigurationSetting>>&);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetConfigurationSettings(const std::string& configID, std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Configuration::BuildConfigurationSetting>>&);
 
 						/**
 						\brief Get the active configuration.
@@ -188,11 +188,11 @@ namespace IndustrialNetwork
 						\retval true The active configuration is set.
 						\retval false The active configuration is not set.
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetActiveConfiguration(const std::string configID);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetActiveConfiguration(const std::string& configID);
 
 						/**
 						\brief Retrieve all existing build configurations from the network.
-						\param[in] Configuration vector reference
+						\param[in] Configuration std::vector reference
 						/return Result
 						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetBuildConfigurations(std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Configuration::PlkConfiguration>>& bcfgs);
@@ -204,7 +204,7 @@ namespace IndustrialNetwork
 						/**
 						* Getter & Setter
 						*/
-						const std::string GetNetworkId();
+						const std::string& GetNetworkId();
 						std::uint32_t GetCycleTime();
 						std::uint32_t GetAsyncMTU();
 						std::uint32_t GetMultiplexedCycleLength();

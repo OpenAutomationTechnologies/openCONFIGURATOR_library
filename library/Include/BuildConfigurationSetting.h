@@ -35,7 +35,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <map>
 #include <memory>
+
 #include <boost/format.hpp>
+
 #include "IResult.h"
 #include "IBuildConfigurationSetting.h"
 #include "BuildConfigurationId.h"
@@ -67,14 +69,14 @@ namespace IndustrialNetwork
 						/**
 						\brief Constructor for the BuildConfigurationHandler class.
 						\param[in] id BuildConfigurationSettingId for the setting.
-						\param[in] value string of the setting. Default value is empty.
+						\param[in] value std::string of the setting. Default value is empty.
 						*/
-						BuildConfigurationSetting(std::string name, std::string value = "");
+						BuildConfigurationSetting(const std::string& name, const std::string& value = "");
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GenerateConfiguration(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
 
 					private:
-						void InitConfigurationSetting(std::string id);
+						void InitConfigurationSetting(const std::string& id);
 						std::shared_ptr<BuildConfigurationSettingBuilder> configurationBuilder;
 				};
 			}

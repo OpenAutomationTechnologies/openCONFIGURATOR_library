@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VAR_DECLARATION_H
 
 #include <string>
+
 #include "IEC_Datatype.h"
 #include "ComplexDataType.h"
 #include "Utilities.h"
@@ -53,7 +54,7 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						VarDeclaration(std::string uniqueID, std::string name, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType, std::uint32_t size = 1, std::string initialValue = "");
+						VarDeclaration(const std::string& uniqueID, const std::string& name, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType, std::uint32_t size = 1, const std::string& initialValue = "");
 						virtual ~VarDeclaration();
 
 						virtual std::uint32_t GetBitSize();

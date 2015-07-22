@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <map>
 #include <memory>
 #include <sstream>
+
 #include "Network.h"
 #include "PlkConfiguration.h"
 #include "LoggingConfiguration.h"
@@ -78,14 +79,14 @@ namespace IndustrialNetwork
 						\param[out] NetworkManagement reference to be retrieved.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetNetwork(const std::string networkUuid, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network>& net);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetNetwork(const std::string& networkUuid, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network>& net);
 
 						/**
 						\brief Removes a network configuration from the list.
 						\param[in] networkId to identify the configuration.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveNetwork(const std::string networkId);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveNetwork(const std::string& networkId);
 
 						/**
 						\brief Retrieve a copied list of all managed network configuration.
@@ -102,19 +103,9 @@ namespace IndustrialNetwork
 
 						/**
 						\brief Get all available auto generation setting ids.
-						\return vector containing the ids.
+						\return std::vector containing the ids.
 						*/
 						const std::vector<std::string> GetSupportedSettingIds();
-
-						/**
-						* \brief TO BE DONE
-						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildConfiguration(const std::string networkId, std::ostream& configuration);
-
-						/**
-						* \brief TO BE DONE
-						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildProcessImage(const std::string networkId, std::ostream& configuration);
 
 						/**
 						\brief Define the logging configuration for the boost log library.
@@ -124,7 +115,7 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result InitLoggingConfiguration(const std::string& configuration);
 
 						/**
-						\brief Returns a vector including all the existing network ids.
+						\brief Returns a std::vector including all the existing network ids.
 						\return Vector with the network ids. Vector is empty if no network exists.
 						*/
 						std::vector<std::string> GetNetworkIds();

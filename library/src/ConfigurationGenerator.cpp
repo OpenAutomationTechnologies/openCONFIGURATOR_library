@@ -31,7 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "ConfigurationGenerator.h"
 
-using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::NetworkHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
@@ -51,7 +50,7 @@ ConfigurationGenerator& ConfigurationGenerator::GetInstance()
 	return instance;
 }
 
-Result ConfigurationGenerator::GenerateNetworkConfiguration(const shared_ptr<Network>& net, stringstream& configurationOutput, stringstream& hexOutput)
+Result ConfigurationGenerator::GenerateNetworkConfiguration(const std::shared_ptr<Network>& net, std::stringstream& configurationOutput, std::stringstream& hexOutput)
 {
 	//Write the active managing node object count including Assignments and 1F22 objects
 	Result res = WriteManagingNodeObjectCount(net, configurationOutput, hexOutput);
@@ -68,7 +67,7 @@ Result ConfigurationGenerator::GenerateNetworkConfiguration(const shared_ptr<Net
 	if (!res.IsSuccessful())
 		return res;
 
-	map<uint8_t, shared_ptr<BaseNode>> nodes;
+	std::map<uint8_t, std::shared_ptr<BaseNode>> nodes;
 	res = net->GetNodes(nodes);
 	if (!res.IsSuccessful())
 		return res;
@@ -90,22 +89,22 @@ Result ConfigurationGenerator::GenerateNetworkConfiguration(const shared_ptr<Net
 	return res;
 }
 
-Result ConfigurationGenerator::WriteManagingNodeObjectCount(const shared_ptr<Network>& net, stringstream& configurationOutput, stringstream& hexOutput)
+Result ConfigurationGenerator::WriteManagingNodeObjectCount(const std::shared_ptr<Network>& net, std::stringstream& configurationOutput, std::stringstream& hexOutput)
 {
 	//Write Managing Node Object Count
-	shared_ptr<ManagingNode> mn;
+	std::shared_ptr<ManagingNode> mn;
 	Result res = net->GetManagingNode(mn);
 	if (res.IsSuccessful())
 	{
-		configurationOutput << setfill('0') << setw(8) << hex << uppercase << mn->GetConfigurationObjectCount() << endl;
-		hexOutput << setfill('0') << setw(8) << hex  << uppercase << left << ReverseHex(mn->GetConfigurationObjectCount());
+		configurationOutput << std::setfill('0') << std::setw(8) << std::hex << std::uppercase << mn->GetConfigurationObjectCount() << std::endl;
+		hexOutput << std::setfill('0') << std::setw(8) << std::hex  << std::uppercase << std::left << ReverseHex(mn->GetConfigurationObjectCount());
 	}
 	return res;
 }
 
-Result ConfigurationGenerator::WriteNodeAssignement(const shared_ptr<Network>& net, stringstream& configurationOutput, stringstream& hexOutput, bool writeNodeValid, bool writeComments)
+Result ConfigurationGenerator::WriteNodeAssignement(const std::shared_ptr<Network>& net, std::stringstream& configurationOutput, std::stringstream& hexOutput, bool writeNodeValid, bool writeComments)
 {
-	map<uint8_t, shared_ptr<BaseNode>> nodes;
+	std::map<uint8_t, std::shared_ptr<BaseNode>> nodes;
 	Result res = net->GetNodes(nodes);
 	if (!res.IsSuccessful())
 		return res;
@@ -113,7 +112,7 @@ Result ConfigurationGenerator::WriteNodeAssignement(const shared_ptr<Network>& n
 	for (auto& node : nodes)
 	{
 		//Determine if Node is RMN
-		if (dynamic_pointer_cast<ManagingNode>(node.second))
+		if (std::dynamic_pointer_cast<ManagingNode>(node.second))
 		{
 			//Skip if node is RMN and write Reassignment or node is AMN
 			if ((writeNodeValid && node.second->GetNodeIdentifier() != 240)
@@ -127,38 +126,38 @@ Result ConfigurationGenerator::WriteNodeAssignement(const shared_ptr<Network>& n
 
 		//Write comments according to writeComments flag
 		if (!writeNodeValid && writeComments)
-			configurationOutput << "//// NodeId Assignment" << endl;
+			configurationOutput << "//// NodeId Assignment" << std::endl;
 		else if (writeNodeValid && writeComments)
-			configurationOutput << "//// NodeId Reassignment" << endl;
+			configurationOutput << "//// NodeId Reassignment" << std::endl;
 
 
-		configurationOutput << hex << uppercase << 0x1F81;
+		configurationOutput << std::hex << std::uppercase << 0x1F81;
 		configurationOutput << "\t";
-		configurationOutput << hex << uppercase << setw(2) << setfill('0') << (uint32_t) node.first;
+		configurationOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << (uint32_t) node.first;
 		configurationOutput << "\t";
-		configurationOutput << hex << uppercase << setw(8) << setfill('0') << 0x4;
+		configurationOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << 0x4;
 		configurationOutput << "\t";
-		configurationOutput << hex << uppercase << setw(8) << setfill('0') << node.second->GetNodeAssignmentValue() << endl;
+		configurationOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << node.second->GetNodeAssignmentValue() << std::endl;
 
-		hexOutput << hex << uppercase << ReverseHex(0x1F81);
-		hexOutput << hex << uppercase << setw(2) << setfill('0') << left << ReverseHex((uint32_t) node.first);
-		hexOutput << hex << uppercase << setw(8) << setfill('0') << left << 0x4;
-		hexOutput << hex << uppercase << setw(8) << setfill('0') << left << ReverseHex(node.second->GetNodeAssignmentValue());
+		hexOutput << std::hex << std::uppercase << ReverseHex(0x1F81);
+		hexOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << std::left << ReverseHex((uint32_t) node.first);
+		hexOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << std::left << 0x4;
+		hexOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << std::left << ReverseHex(node.second->GetNodeAssignmentValue());
 
 		//If valid bit has been remove add it again
 		if (!writeNodeValid)
 			node.second->AddNodeAssignement(NodeAssignment::MNT_NODEASSIGN_VALID);
 	}
 
-	configurationOutput << endl;
+	configurationOutput << std::endl;
 
 	return res;
 }
 
-Result ConfigurationGenerator::WriteManagingNodeConfiguration(const shared_ptr<Network>& net, stringstream& configurationOutput, stringstream& hexOutput)
+Result ConfigurationGenerator::WriteManagingNodeConfiguration(const std::shared_ptr<Network>& net, std::stringstream& configurationOutput, std::stringstream& hexOutput)
 {
 	//Write Managing Node Object Count
-	shared_ptr<ManagingNode> mn;
+	std::shared_ptr<ManagingNode> mn;
 	Result res = net->GetManagingNode(mn);
 	if (!res.IsSuccessful())
 		return res;
@@ -188,23 +187,23 @@ Result ConfigurationGenerator::WriteManagingNodeConfiguration(const shared_ptr<N
 	return res;
 }
 
-Result ConfigurationGenerator::WriteRedundantManagingNodeConfiguration(const shared_ptr<Network>& net, const shared_ptr<BaseNode>& node, stringstream& configurationOutput, stringstream& hexOutput)
+Result ConfigurationGenerator::WriteRedundantManagingNodeConfiguration(const std::shared_ptr<Network>& net, const std::shared_ptr<BaseNode>& node, std::stringstream& configurationOutput, std::stringstream& hexOutput)
 {
-	auto rmn = dynamic_pointer_cast<ManagingNode>(node); //This should not fail because it can either be MN or CN
+	auto rmn = std::dynamic_pointer_cast<ManagingNode>(node); //This should not fail because it can either be MN or CN
 
 	//Write the 1F22 object for RMN
-	configurationOutput << "////Configuration Data for CN: " << node->GetName() << "(" << dec << (uint32_t) node->GetNodeIdentifier() << ")" << endl;
-	configurationOutput << hex << uppercase << 0x1F22;
+	configurationOutput << "////Configuration Data for CN: " << node->GetName() << "(" << std::dec << (uint32_t) node->GetNodeIdentifier() << ")" << std::endl;
+	configurationOutput << std::hex << std::uppercase << 0x1F22;
 	configurationOutput << "\t";
-	configurationOutput << hex << uppercase << setw(2) << setfill('0') << (uint32_t) node->GetNodeIdentifier();
+	configurationOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << (uint32_t) node->GetNodeIdentifier();
 	configurationOutput << "\t";
-	configurationOutput << hex << uppercase << setw(8) << setfill('0') << rmn->GetConfigurationObjectSize() << endl;
-	configurationOutput << hex << uppercase << setw(8) << setfill('0') << rmn->GetConfigurationObjectCount() << endl;
+	configurationOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << rmn->GetConfigurationObjectSize() << std::endl;
+	configurationOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << rmn->GetConfigurationObjectCount() << std::endl;
 
-	hexOutput << hex << uppercase << ReverseHex(0x1F22);
-	hexOutput << hex << uppercase << setw(2) << setfill('0') << left << ReverseHex((uint32_t) node->GetNodeIdentifier());
-	hexOutput << hex << uppercase << setw(8) << setfill('0') << left << ReverseHex(rmn->GetConfigurationObjectSize());
-	hexOutput << hex << uppercase << setw(8) << setfill('0') << left << ReverseHex(rmn->GetConfigurationObjectCount());
+	hexOutput << std::hex << std::uppercase << ReverseHex(0x1F22);
+	hexOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << std::left << ReverseHex((uint32_t) node->GetNodeIdentifier());
+	hexOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << std::left << ReverseHex(rmn->GetConfigurationObjectSize());
+	hexOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << std::left << ReverseHex(rmn->GetConfigurationObjectCount());
 
 	Result res = WriteNodeAssignement(net, configurationOutput, hexOutput, false, false);
 	if (!res.IsSuccessful())
@@ -234,24 +233,24 @@ Result ConfigurationGenerator::WriteRedundantManagingNodeConfiguration(const sha
 	return res;
 }
 
-Result ConfigurationGenerator::WriteControlledNodeConfiguration(const shared_ptr<Network>& net, const shared_ptr<BaseNode>& node, stringstream& configurationOutput, stringstream& hexOutput)
+Result ConfigurationGenerator::WriteControlledNodeConfiguration(const std::shared_ptr<Network>& net, const std::shared_ptr<BaseNode>& node, std::stringstream& configurationOutput, std::stringstream& hexOutput)
 {
-	auto cn = dynamic_pointer_cast<ControlledNode>(node);
+	auto cn = std::dynamic_pointer_cast<ControlledNode>(node);
 	if (!cn) //If cast fails this is an RMN
 		return WriteRedundantManagingNodeConfiguration(net, node, configurationOutput, hexOutput);
 
-	configurationOutput << "////Configuration Data for CN: " << node->GetName() << "(" << dec << (uint32_t) node->GetNodeIdentifier() << ")" << endl;
-	configurationOutput << hex << uppercase << "1F22";
+	configurationOutput << "////Configuration Data for CN: " << node->GetName() << "(" << std::dec << (uint32_t) node->GetNodeIdentifier() << ")" << std::endl;
+	configurationOutput << std::hex << std::uppercase << "1F22";
 	configurationOutput << "\t";
-	configurationOutput << hex << uppercase << setw(2) << setfill('0') << (uint32_t) node->GetNodeIdentifier();
+	configurationOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << (uint32_t) node->GetNodeIdentifier();
 	configurationOutput << "\t";
-	configurationOutput << hex << uppercase << setw(8) << setfill('0') << cn->GetConfigurationObjectSize() << endl;
-	configurationOutput << hex << uppercase << setw(8) << setfill('0') << cn->GetConfigurationObjectCount() << endl;
+	configurationOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << cn->GetConfigurationObjectSize() << std::endl;
+	configurationOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << cn->GetConfigurationObjectCount() << std::endl;
 
-	hexOutput << hex << uppercase << ReverseHex(0x1F22);
-	hexOutput << hex << uppercase << setw(2) << setfill('0') << left << ReverseHex((uint32_t) node->GetNodeIdentifier());
-	hexOutput << hex << uppercase << setw(8) << setfill('0') << left << ReverseHex(cn->GetConfigurationObjectSize());
-	hexOutput << hex << uppercase << setw(8) << setfill('0') << left << ReverseHex(cn->GetConfigurationObjectCount());
+	hexOutput << std::hex << std::uppercase << ReverseHex(0x1F22);
+	hexOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << std::left << ReverseHex((uint32_t) node->GetNodeIdentifier());
+	hexOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << std::left << ReverseHex(cn->GetConfigurationObjectSize());
+	hexOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << std::left << ReverseHex(cn->GetConfigurationObjectCount());
 
 	Result res = WriteMappingNrOfEntriesZero(node, configurationOutput, hexOutput);
 	if (!res.IsSuccessful())
@@ -270,12 +269,12 @@ Result ConfigurationGenerator::WriteControlledNodeConfiguration(const shared_ptr
 		return res;
 
 	res = WriteMappingNrOfEntries(node, configurationOutput, hexOutput);
-	configurationOutput << endl;
+	configurationOutput << std::endl;
 
 	return res;
 }
 
-Result ConfigurationGenerator::WriteMappingNrOfEntriesZero(const shared_ptr<BaseNode>& node, stringstream& configurationOutput, stringstream& hexOutput)
+Result ConfigurationGenerator::WriteMappingNrOfEntriesZero(const std::shared_ptr<BaseNode>& node, std::stringstream& configurationOutput, std::stringstream& hexOutput)
 {
 	for (auto& object : node->GetObjectDictionary())
 	{
@@ -286,18 +285,18 @@ Result ConfigurationGenerator::WriteMappingNrOfEntriesZero(const shared_ptr<Base
 			{
 				if (subobject->second->WriteToConfiguration())
 				{
-					configurationOutput << hex << uppercase << object.first;
+					configurationOutput << std::hex << std::uppercase << object.first;
 					configurationOutput << "\t";
-					configurationOutput << hex << uppercase << setw(2) << setfill('0') << subobject->first;
+					configurationOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << subobject->first;
 					configurationOutput << "\t";
-					configurationOutput << hex << uppercase << setw(8) << setfill('0') << (subobject->second->GetBitSize() / 8);
+					configurationOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << (subobject->second->GetBitSize() / 8);
 					configurationOutput << "\t";
-					configurationOutput << hex << uppercase << setw(2) << setfill('0') << 0 << endl;
+					configurationOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << 0 << std::endl;
 
-					hexOutput << hex << uppercase << ReverseHex(object.first);
-					hexOutput << hex << uppercase << setw(2) << setfill('0') << left << ReverseHex(subobject->first);
-					hexOutput << hex << uppercase << setw(8) << setfill('0') << left << ReverseHex(subobject->second->GetBitSize() / 8);
-					hexOutput << hex << uppercase << setw(2) << setfill('0') << left << 0;
+					hexOutput << std::hex << std::uppercase << ReverseHex(object.first);
+					hexOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << std::left << ReverseHex(subobject->first);
+					hexOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << std::left << ReverseHex(subobject->second->GetBitSize() / 8);
+					hexOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << std::left << 0;
 
 				}
 			}
@@ -306,7 +305,7 @@ Result ConfigurationGenerator::WriteMappingNrOfEntriesZero(const shared_ptr<Base
 	return Result();
 }
 
-Result ConfigurationGenerator::WriteMappingObjects(const shared_ptr<BaseNode>& node, stringstream& configurationOutput, stringstream& hexOutput)
+Result ConfigurationGenerator::WriteMappingObjects(const std::shared_ptr<BaseNode>& node, std::stringstream& configurationOutput, std::stringstream& hexOutput)
 {
 	for (auto& object : node->GetObjectDictionary())
 	{
@@ -317,18 +316,18 @@ Result ConfigurationGenerator::WriteMappingObjects(const shared_ptr<BaseNode>& n
 			{
 				if (subobject.second->WriteToConfiguration() && subobject.first != 0)
 				{
-					configurationOutput << hex << uppercase << object.first;
+					configurationOutput << std::hex << std::uppercase << object.first;
 					configurationOutput << "\t";
-					configurationOutput << hex << uppercase << setw(2) << setfill('0') << subobject.first;
+					configurationOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << subobject.first;
 					configurationOutput << "\t";
-					configurationOutput << hex << uppercase << setw(8) << setfill('0') << (subobject.second->GetBitSize() / 8);
+					configurationOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << (subobject.second->GetBitSize() / 8);
 					configurationOutput << "\t";
-					configurationOutput << subobject.second->GetTypedActualValue<string>() << endl;
+					configurationOutput << subobject.second->GetTypedActualValue<std::string>() << std::endl;
 
-					hexOutput << hex << uppercase << ReverseHex(object.first);
-					hexOutput << hex << uppercase << setw(2) << setfill('0') << left << ReverseHex(subobject.first);
-					hexOutput << hex << uppercase << setw(8) << setfill('0') << left << ReverseHex(subobject.second->GetBitSize() / 8);
-					hexOutput << ReverseHex(subobject.second->GetTypedActualValue<string>());
+					hexOutput << std::hex << std::uppercase << ReverseHex(object.first);
+					hexOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << std::left << ReverseHex(subobject.first);
+					hexOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << std::left << ReverseHex(subobject.second->GetBitSize() / 8);
+					hexOutput << ReverseHex(subobject.second->GetTypedActualValue<std::string>());
 				}
 			}
 		}
@@ -336,27 +335,27 @@ Result ConfigurationGenerator::WriteMappingObjects(const shared_ptr<BaseNode>& n
 		         || (object.first >= 0x1A00 && object.first < 0x1B00))
 		{
 			uint16_t numberOfIndicesToWrite = 0;
-			auto& subobject = object.second->GetSubObjectCollection().at((uint8_t) 0);
-			if (subobject->WriteToConfiguration())
-				numberOfIndicesToWrite = subobject->GetTypedActualValue<uint16_t>();
+			auto& nrOfEntriesObj = object.second->GetSubObjectCollection().at((uint8_t) 0);
+			if (nrOfEntriesObj->WriteToConfiguration())
+				numberOfIndicesToWrite = nrOfEntriesObj->GetTypedActualValue<uint16_t>();
 
 			uint16_t count = 0;
 			for (auto& subobject : object.second->GetSubObjectCollection())
 			{
 				if (subobject.second->WriteToConfiguration() && subobject.first != 0 && count < numberOfIndicesToWrite)
 				{
-					configurationOutput << hex << uppercase << object.first;
+					configurationOutput << std::hex << std::uppercase << object.first;
 					configurationOutput << "\t";
-					configurationOutput << hex << uppercase << setw(2) << setfill('0') << subobject.first;
+					configurationOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << subobject.first;
 					configurationOutput << "\t";
-					configurationOutput << hex << uppercase << setw(8) << setfill('0') << (subobject.second->GetBitSize() / 8);
+					configurationOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << (subobject.second->GetBitSize() / 8);
 					configurationOutput << "\t";
-					configurationOutput << subobject.second->GetTypedActualValue<string>() << endl;
+					configurationOutput << subobject.second->GetTypedActualValue<std::string>() << std::endl;
 
-					hexOutput << hex << uppercase << ReverseHex(object.first);
-					hexOutput << hex << uppercase << setw(2) << setfill('0') << left << ReverseHex(subobject.first);
-					hexOutput << hex << uppercase << setw(8) << setfill('0') << left << ReverseHex(subobject.second->GetBitSize() / 8);
-					hexOutput << ReverseHex(subobject.second->GetTypedActualValue<string>());
+					hexOutput << std::hex << std::uppercase << ReverseHex(object.first);
+					hexOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << std::left << ReverseHex(subobject.first);
+					hexOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << std::left << ReverseHex(subobject.second->GetBitSize() / 8);
+					hexOutput << ReverseHex(subobject.second->GetTypedActualValue<std::string>());
 
 					count++;
 				}
@@ -366,7 +365,7 @@ Result ConfigurationGenerator::WriteMappingObjects(const shared_ptr<BaseNode>& n
 	return Result();
 }
 
-Result ConfigurationGenerator::WriteMappingNrOfEntries(const shared_ptr<BaseNode>& node, stringstream& configurationOutput, stringstream& hexOutput)
+Result ConfigurationGenerator::WriteMappingNrOfEntries(const std::shared_ptr<BaseNode>& node, std::stringstream& configurationOutput, std::stringstream& hexOutput)
 {
 	for (auto& object : node->GetObjectDictionary())
 	{
@@ -377,18 +376,18 @@ Result ConfigurationGenerator::WriteMappingNrOfEntries(const shared_ptr<BaseNode
 			{
 				if (subobject->second->WriteToConfiguration())
 				{
-					configurationOutput << hex << uppercase << object.first;
+					configurationOutput << std::hex << std::uppercase << object.first;
 					configurationOutput << "\t";
-					configurationOutput << hex << uppercase << setw(2) << setfill('0') << subobject->first;
+					configurationOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << subobject->first;
 					configurationOutput << "\t";
-					configurationOutput << hex << uppercase << setw(8) << setfill('0') << (subobject->second->GetBitSize() / 8);
+					configurationOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << (subobject->second->GetBitSize() / 8);
 					configurationOutput << "\t";
-					configurationOutput << hex << uppercase << subobject->second->GetTypedActualValue<string>() << endl;
+					configurationOutput << std::hex << std::uppercase << subobject->second->GetTypedActualValue<std::string>() << std::endl;
 
-					hexOutput << hex << uppercase << ReverseHex(object.first);
-					hexOutput << hex << uppercase << setw(2) << setfill('0') << left << ReverseHex(subobject->first);
-					hexOutput << hex << uppercase << setw(8) << setfill('0') << left << ReverseHex(subobject->second->GetBitSize() / 8);
-					hexOutput << hex << uppercase << ReverseHex(subobject->second->GetTypedActualValue<string>());
+					hexOutput << std::hex << std::uppercase << ReverseHex(object.first);
+					hexOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << std::left << ReverseHex(subobject->first);
+					hexOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << std::left << ReverseHex(subobject->second->GetBitSize() / 8);
+					hexOutput << std::hex << std::uppercase << ReverseHex(subobject->second->GetTypedActualValue<std::string>());
 				}
 			}
 		}
@@ -396,7 +395,7 @@ Result ConfigurationGenerator::WriteMappingNrOfEntries(const shared_ptr<BaseNode
 	return Result();
 }
 
-Result ConfigurationGenerator::WriteCommunicationProfileArea(const shared_ptr<BaseNode>& node, stringstream& configurationOutput, stringstream& hexOutput)
+Result ConfigurationGenerator::WriteCommunicationProfileArea(const std::shared_ptr<BaseNode>& node, std::stringstream& configurationOutput, std::stringstream& hexOutput)
 {
 	for (auto& object : node->GetObjectDictionary())
 	{
@@ -411,18 +410,18 @@ Result ConfigurationGenerator::WriteCommunicationProfileArea(const shared_ptr<Ba
 			{
 				if (subobject.second->WriteToConfiguration())
 				{
-					configurationOutput << hex << uppercase << object.first;
+					configurationOutput << std::hex << std::uppercase << object.first;
 					configurationOutput << "\t";
-					configurationOutput << hex << uppercase << setw(2) << setfill('0') << subobject.first;
+					configurationOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << subobject.first;
 					configurationOutput << "\t";
-					configurationOutput << hex << uppercase << setw(8) << setfill('0') << (subobject.second->GetBitSize() / 8);
+					configurationOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << (subobject.second->GetBitSize() / 8);
 					configurationOutput << "\t";
-					configurationOutput << subobject.second->GetTypedActualValue<string>() << endl;
+					configurationOutput << subobject.second->GetTypedActualValue<std::string>() << std::endl;
 
-					hexOutput << hex << uppercase << ReverseHex(object.first);
-					hexOutput << hex << uppercase << setw(2) << setfill('0') << left << ReverseHex(subobject.first);
-					hexOutput << hex << uppercase << setw(8) << setfill('0') << left << ReverseHex(subobject.second->GetBitSize() / 8);
-					hexOutput << ReverseHex(subobject.second->GetTypedActualValue<string>());
+					hexOutput << std::hex << std::uppercase << ReverseHex(object.first);
+					hexOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << std::left << ReverseHex(subobject.first);
+					hexOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << std::left << ReverseHex(subobject.second->GetBitSize() / 8);
+					hexOutput << ReverseHex(subobject.second->GetTypedActualValue<std::string>());
 				}
 			}
 		}
@@ -430,7 +429,7 @@ Result ConfigurationGenerator::WriteCommunicationProfileArea(const shared_ptr<Ba
 	return Result();
 }
 
-Result ConfigurationGenerator::WriteManufacturerSpecificProfileArea(const shared_ptr<BaseNode>& node, stringstream& configurationOutput, stringstream& hexOutput)
+Result ConfigurationGenerator::WriteManufacturerSpecificProfileArea(const std::shared_ptr<BaseNode>& node, std::stringstream& configurationOutput, std::stringstream& hexOutput)
 {
 	for (auto& object : node->GetObjectDictionary())
 	{
@@ -440,18 +439,18 @@ Result ConfigurationGenerator::WriteManufacturerSpecificProfileArea(const shared
 			{
 				if (subobject.second->WriteToConfiguration())
 				{
-					configurationOutput << hex << uppercase << object.first;
+					configurationOutput << std::hex << std::uppercase << object.first;
 					configurationOutput << "\t";
-					configurationOutput << hex << uppercase << setw(2) << setfill('0') << subobject.first;
+					configurationOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << subobject.first;
 					configurationOutput << "\t";
-					configurationOutput << hex << uppercase << setw(8) << setfill('0') << (subobject.second->GetBitSize() / 8);
+					configurationOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << (subobject.second->GetBitSize() / 8);
 					configurationOutput << "\t";
-					configurationOutput << subobject.second->GetTypedActualValue<string>() << endl;
+					configurationOutput << subobject.second->GetTypedActualValue<std::string>() << std::endl;
 
-					hexOutput << hex << uppercase << ReverseHex(object.first);
-					hexOutput << hex << uppercase << setw(2) << setfill('0') << left << ReverseHex(subobject.first);
-					hexOutput << hex << uppercase << setw(8) << setfill('0') << left << ReverseHex(subobject.second->GetBitSize() / 8);
-					hexOutput << ReverseHex(subobject.second->GetTypedActualValue<string>());
+					hexOutput << std::hex << std::uppercase << ReverseHex(object.first);
+					hexOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << std::left << ReverseHex(subobject.first);
+					hexOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << std::left << ReverseHex(subobject.second->GetBitSize() / 8);
+					hexOutput << ReverseHex(subobject.second->GetTypedActualValue<std::string>());
 				}
 			}
 		}

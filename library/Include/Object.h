@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <map>
 #include <memory>
+
 #include <boost/format.hpp>
 
 #include "Result.h"
@@ -58,9 +59,9 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						Object(std::uint32_t id, ObjectType objectType,  std::string name, std::uint8_t containingNode);
-						Object(std::uint32_t id, ObjectType objectType,  std::string name, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping);
-						Object(std::uint32_t id, ObjectType objectType,  std::string name, std::uint8_t containingNode, std::string uniqueIdRef);
+						Object(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode);
+						Object(std::uint32_t id, ObjectType objectType, const std::string&, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping);
+						Object(std::uint32_t id, ObjectType objectType, const std::string&, std::uint8_t containingNode, const std::string& uniqueIdRef);
 
 						virtual ~Object();
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddSubobject(std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::SubObject>& ref);

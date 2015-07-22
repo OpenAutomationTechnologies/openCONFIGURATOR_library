@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define XMLPROCESS_IMAGE_GENERATOR_H
 
 #include <sstream>
+
 #include "ProcessImageGenerator.h"
 
 namespace IndustrialNetwork

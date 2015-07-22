@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define PARAMETER_H
 
 #include <memory>
+
 #include "ComplexDataType.h"
 #include "PlkDataType.h"
 #include "ParameterAccess.h"
@@ -55,8 +56,8 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						Parameter(std::string uniqueID, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess parameterAccess, std::string uniqueIDRef = "");
-						Parameter(std::string uniqueID, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess parameterAccess, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype datatype);
+						Parameter(const std::string& uniqueID, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess parameterAccess, const std::string& uniqueIDRef = "");
+						Parameter(const std::string& uniqueID, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess parameterAccess, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype datatype);
 						virtual ~Parameter();
 
 						const std::string& GetUniqueID();

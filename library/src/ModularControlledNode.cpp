@@ -31,18 +31,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "ModularControlledNode.h"
 
-using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
 using namespace IndustrialNetwork::POWERLINK::Core::ModularNode;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 
-
-ModularControlledNode::ModularControlledNode(uint8_t nodeID, const string nodeName) : ControlledNode(nodeID, nodeName),
+ModularControlledNode::ModularControlledNode(uint8_t nodeID, const std::string& nodeName) : ControlledNode(nodeID, nodeName),
 	maxChildren(),
 	unusedSlots(false),
 	multipleChildren(false),
-	rangeList(vector<shared_ptr<Range>>()),
-	moduleCollection(vector<shared_ptr<Module>>())
+	rangeList(std::vector<std::shared_ptr<Range>>()),
+	moduleCollection(std::vector<std::shared_ptr<Module>>())
 {}
 
 ModularControlledNode::~ModularControlledNode()

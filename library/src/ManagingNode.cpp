@@ -31,14 +31,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "ManagingNode.h"
 
-using namespace std;
+
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 
-ManagingNode::ManagingNode(bool active, std::uint8_t nodeID, const string nodeName) : BaseNode(nodeID, nodeName),
-	active(active),
-	dynamicChannelList(vector<shared_ptr<DynamicChannel>>()),
+ManagingNode::ManagingNode(std::uint8_t nodeID, const std::string& nodeName) : BaseNode(nodeID, nodeName),
+	dynamicChannelList(std::vector<std::shared_ptr<DynamicChannel>>()),
 	rmnCount(0)
 {
 	if (nodeID != 240) //Add assignments for RMNs only
@@ -47,7 +46,6 @@ ManagingNode::ManagingNode(bool active, std::uint8_t nodeID, const string nodeNa
 		AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_NODE_EXISTS);
 		AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_NODE_IS_CN);
 	}
-
 }
 
 ManagingNode::~ManagingNode()
@@ -107,17 +105,7 @@ uint32_t ManagingNode::GetNodeAssignmentValue()
 		assign |=  var;
 	}
 
-	return static_cast<underlying_type<NodeAssignment>::type>(assign);
-}
-
-bool ManagingNode::GetActive()
-{
-	return this->active;
-}
-
-void ManagingNode::SetActive(bool active)
-{
-	this->active = active;
+	return static_cast<std::underlying_type<NodeAssignment>::type>(assign);
 }
 
 void ManagingNode::AddDynamicChannel(std::shared_ptr<DynamicChannel>& channelRef)
@@ -262,7 +250,7 @@ void ManagingNode::SetRmnCount(std::uint16_t count)
 
 Result ManagingNode::SetMultiplexedCycle(const std::uint8_t nodeID, const std::uint8_t multiplexedCycle)
 {
-	shared_ptr<SubObject> multplCycleCount;
+	std::shared_ptr<SubObject> multplCycleCount;
 	Result res = this->GetSubObject(0x1F98, 0x7, multplCycleCount);
 	if (!res.IsSuccessful())
 		return res;
@@ -276,15 +264,15 @@ Result ManagingNode::SetMultiplexedCycle(const std::uint8_t nodeID, const std::u
 	if (multiplexedCycle > cycle_count)
 		return Result(ErrorCode::MULTIPLEX_CYCLE_ASSIGN_INVALID);
 
-	shared_ptr<SubObject> multplCycleAssign;
+	std::shared_ptr<SubObject> multplCycleAssign;
 	res = this->GetSubObject(0x1F9B, nodeID, multplCycleAssign);
 	if (!res.IsSuccessful())
 		return res;
 
-	if(multplCycleAssign->WriteToConfiguration())
-		return(ErrorCode::MULTIPLEX_CYCLE_ASSIGN_INVALID);
+	if (multplCycleAssign->WriteToConfiguration())
+		return Result(ErrorCode::MULTIPLEX_CYCLE_ASSIGN_INVALID);
 
-	stringstream nodeIdStr;
+	std::stringstream nodeIdStr;
 	nodeIdStr << (uint32_t) multiplexedCycle;
 	multplCycleAssign->SetTypedObjectActualValue(nodeIdStr.str());
 
@@ -293,7 +281,7 @@ Result ManagingNode::SetMultiplexedCycle(const std::uint8_t nodeID, const std::u
 
 Result ManagingNode::ResetMultiplexedCycle(const std::uint8_t nodeID)
 {
-	shared_ptr<SubObject> multplCycleAssign;
+	std::shared_ptr<SubObject> multplCycleAssign;
 	Result res = this->GetSubObject(0x1F9B, nodeID, multplCycleAssign);
 	if (!res.IsSuccessful())
 		return res;

@@ -48,7 +48,7 @@ namespace IndustrialNetwork
 		{
 
 			public:
-				virtual ~IFieldbusNode(){};
+				virtual ~IFieldbusNode() {};
 
 				virtual const std::string& GetName() = 0;
 

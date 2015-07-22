@@ -31,7 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "Object.h"
 
-using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
@@ -44,22 +43,22 @@ namespace IndustrialNetwork
 		{
 			namespace ObjectDictionary
 			{
-				Object::Object(uint32_t id, ObjectType objectType, string name, uint8_t containingNode) : BaseObject(id, objectType, name, containingNode),
-					subIndexCollection(map<uint32_t, shared_ptr<SubObject>>())
+				Object::Object(uint32_t id, ObjectType objectType, const std::string& name, uint8_t containingNode) : BaseObject(id, objectType, name, containingNode),
+					subIndexCollection(std::map<uint32_t, std::shared_ptr<SubObject>>())
 				{}
 
-				Object::Object(uint32_t id, ObjectType objectType, string name, uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping) : BaseObject(id, objectType, name, containingNode, dataType, accessType, pdoMapping),
-					subIndexCollection(map<uint32_t, shared_ptr<SubObject>>())
+				Object::Object(uint32_t id, ObjectType objectType, const std::string& name, uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping) : BaseObject(id, objectType, name, containingNode, dataType, accessType, pdoMapping),
+					subIndexCollection(std::map<uint32_t, std::shared_ptr<SubObject>>())
 				{}
 
-				Object::Object(uint32_t id, ObjectType objectType, string name, uint8_t containingNode, string uniqueIdRef) : BaseObject(id, objectType, name, containingNode, uniqueIdRef),
-					subIndexCollection(map<uint32_t, shared_ptr<SubObject>>())
+				Object::Object(uint32_t id, ObjectType objectType, const std::string& name, uint8_t containingNode, const std::string& uniqueIdRef) : BaseObject(id, objectType, name, containingNode, uniqueIdRef),
+					subIndexCollection(std::map<uint32_t, std::shared_ptr<SubObject>>())
 				{}
 
 				Object::~Object()
 				{}
 
-				Result Object::AddSubobject(shared_ptr<SubObject>& ref)
+				Result Object::AddSubobject(std::shared_ptr<SubObject>& ref)
 				{
 					if (this->subIndexCollection.find(ref->GetId()) != this->subIndexCollection.end())
 					{
@@ -73,7 +72,7 @@ namespace IndustrialNetwork
 						return Result(ErrorCode::SUBOBJECT_EXISTS, formatter.str());
 					}
 
-					this->subIndexCollection.insert(pair<uint32_t, shared_ptr<SubObject>>(ref->GetId(), ref));
+					this->subIndexCollection.insert(std::pair<uint32_t, std::shared_ptr<SubObject>>(ref->GetId(), ref));
 					//Log info subobject created
 					boost::format formatter(kMsgSubObjectCreated);
 					formatter
@@ -84,7 +83,7 @@ namespace IndustrialNetwork
 					return Result();
 				}
 
-				Result Object::GetSubObject(uint32_t subObjectId, shared_ptr<SubObject>& ref)
+				Result Object::GetSubObject(uint32_t subObjectId, std::shared_ptr<SubObject>& ref)
 				{
 					auto iter = this->subIndexCollection.find(subObjectId);
 					if (iter == this->subIndexCollection.end())

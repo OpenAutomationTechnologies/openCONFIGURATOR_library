@@ -31,15 +31,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "StructDataType.h"
 
-using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 
-
-StructDataType::StructDataType(string uniqueID, string name) : ComplexDataType(uniqueID, name),
-	varDeclarationList(vector<shared_ptr<VarDeclaration>>())
+StructDataType::StructDataType(const std::string& uniqueID, const std::string& name) : ComplexDataType(uniqueID, name),
+	varDeclarationList(std::vector<std::shared_ptr<VarDeclaration>>())
 {}
-
 
 StructDataType::~StructDataType()
 {}

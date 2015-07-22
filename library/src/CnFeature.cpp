@@ -31,7 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "CnFeature.h"
 
-using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
@@ -53,7 +52,7 @@ namespace IndustrialNetwork
 				CnFeature::~CnFeature()
 				{}
 
-				const string CnFeature::GetName()
+				const std::string& CnFeature::GetName()
 				{
 					return PlkFeatureStrings[this->GetFeatureId()];
 				}
@@ -79,7 +78,7 @@ namespace IndustrialNetwork
 				template Result CnFeature::GetDefaultValue(bool& value);
 				template Result CnFeature::GetDefaultValue(uint32_t& value);
 
-				Result CnFeature::SetTypedValues(string defaultValue, string actualValue)
+				Result CnFeature::SetTypedValues(const std::string& defaultValue, const std::string& actualValue)
 				{
 					switch (this->GetFeatureId())
 					{

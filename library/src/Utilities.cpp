@@ -29,7 +29,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "Utilities.h"
 
-using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 
 namespace IndustrialNetwork
@@ -41,60 +40,61 @@ namespace IndustrialNetwork
 			namespace Utilities
 			{
 				template <typename T>
-				string IntToHex(const T number, const unsigned int padLength, const string& prefix, const string& suffix)
+				std::string IntToHex(const T number, const unsigned int padLength, const std::string& prefix, const std::string& suffix)
 				{
-					ostringstream hexStream;
-					hexStream << setfill('0')
-					          << setw(padLength)
-					          << hex
-					          << uppercase
+					std::ostringstream hexStream;
+					hexStream << std::setfill('0')
+					          << std::setw(padLength)
+					          << std::hex
+					          << std::uppercase
 					          << number
 					          << suffix;
 					return (prefix + hexStream.str());
 				}
-				template string IntToHex<unsigned short>(const unsigned short number, const unsigned int padLength, const string& prefix, const string& suffix);
-				template string IntToHex<unsigned int>(const unsigned int number, const unsigned int padLength, const string& prefix, const string& suffix);
-				template string IntToHex<unsigned long long>(const unsigned long long number, const unsigned int padLength, const string& prefix, const string& suffix);
+				template std::string IntToHex<unsigned short>(const unsigned short number, const unsigned int padLength, const std::string& prefix, const std::string& suffix);
+				template std::string IntToHex<unsigned int>(const unsigned int number, const unsigned int padLength, const std::string& prefix, const std::string& suffix);
+				template std::string IntToHex<unsigned long long>(const unsigned long long number, const unsigned int padLength, const std::string& prefix, const std::string& suffix);
 
 				template <typename T>
-				T HexToInt(const string& hexString)
+				T HexToInt(const std::string& hexString)
 				{
-					stringstream stream;
+					std::stringstream stream;
 					T value = 0;
 					if (hexString.substr(0, 2) == "0x")
 					{
 						// Strip prefix if necessary
-						string valueStr = (hexString.substr(0, 2) == "0x")
-						                  ? hexString.substr(2)
-						                  : hexString;
+						std::string valueStr = (hexString.substr(0, 2) == "0x")
+						                       ? hexString.substr(2)
+						                       : hexString;
 
-						stream << hex << valueStr;
+						stream << std::hex << valueStr;
 						stream >> value;
 					}
 					else
 					{
-						stream << dec << hexString;
+						stream << std::dec << hexString;
 						stream >> value;
 					}
 					return value;
 				}
 
-				template unsigned char HexToInt<unsigned char>(const string& hexString);
-				template unsigned short HexToInt<unsigned short>(const string& hexString);
-				template unsigned int HexToInt<unsigned int>(const string& hexString);
-				template unsigned long long HexToInt<unsigned long long>(const string& hexString);
+				template unsigned char HexToInt<unsigned char>(const std::string& hexString);
+				template unsigned short HexToInt<unsigned short>(const std::string& hexString);
+				template unsigned int HexToInt<unsigned int>(const std::string& hexString);
+				template unsigned long long HexToInt<unsigned long long>(const std::string& hexString);
 
-				template signed char HexToInt<signed char>(const string& hexString);
-				template short HexToInt<short>(const string& hexString);
-				template int HexToInt<int>(const string& hexString);
-				template long long HexToInt<long long>(const string& hexString);
+				template signed char HexToInt<signed char>(const std::string& hexString);
+				template short HexToInt<short>(const std::string& hexString);
+				template int HexToInt<int>(const std::string& hexString);
+				template long long HexToInt<long long>(const std::string& hexString);
 
-				bool StringToBool(string str)
+				bool StringToBool(const std::string& str)
 				{
-					transform(str.begin(), str.end(), str.begin(), ::tolower);
-					istringstream is(str);
+					std::string boolString = str;
+					std::transform(boolString.begin(), boolString.end(), boolString.begin(), ::tolower);
+					std::istringstream is(boolString);
 					bool b;
-					is >> boolalpha >> b;
+					is >> std::boolalpha >> b;
 					return b;
 				}
 
@@ -110,7 +110,6 @@ namespace IndustrialNetwork
 						case IEC_Datatype::BOOL:
 							{
 								return 1; //Bit datatypes
-								break;
 							}
 						case IEC_Datatype::BYTE:
 						case IEC_Datatype::_CHAR:
@@ -118,21 +117,18 @@ namespace IndustrialNetwork
 						case IEC_Datatype::USINT:
 							{
 								return 8; //Byte datatypes
-								break;
 							}
 						case IEC_Datatype::DWORD:
 						case IEC_Datatype::INT:
 						case IEC_Datatype::UINT:
 							{
 								return 16; //2 Byte datatypes
-								break;
 							}
 						case IEC_Datatype::DINT:
 						case IEC_Datatype::UDINT:
 						case IEC_Datatype::REAL:
 							{
 								return 32; //4 Byte datatypes
-								break;
 							}
 						case IEC_Datatype::LINT:
 						case IEC_Datatype::LWORD:
@@ -140,7 +136,6 @@ namespace IndustrialNetwork
 						case IEC_Datatype::LREAL:
 							{
 								return 64; //8 Byte datatypes
-								break;
 							}
 						default:
 							break;
@@ -148,7 +143,7 @@ namespace IndustrialNetwork
 					return 0;
 				}
 
-				//Convert float into the 32-bit binary encoding into hexadecimal (IEEE 754)
+				//Convert float into the 32-bit binary encoding into std::hexadecimal (IEEE 754)
 				//Adapted from http://www.technical-recipes.com/2012/converting-between-binary-and-decimal-representations-of-ieee-754-floating-point-numbers-in-c/
 				int32_t FloatToSinglePrecisisionHex(float value)
 				{
@@ -169,7 +164,7 @@ namespace IndustrialNetwork
 					return hex;
 				}
 
-				//Convert double into the 64-bit binary encoding into hexadecimal (IEEE 754)
+				//Convert double into the 64-bit binary encoding into std::hexadecimal (IEEE 754)
 				//Adapted from http://www.technical-recipes.com/2012/converting-between-binary-and-decimal-representations-of-ieee-754-floating-point-numbers-in-c/
 				int64_t DoubleToDoublePrecisisionHex(double value)
 				{
@@ -192,20 +187,20 @@ namespace IndustrialNetwork
 				}
 
 				template <typename T>
-				std::string ReverseHex(const T number)
+				std::string ReverseHex(const T& number)
 				{
-					vector<string> splitString;
-					stringstream originalStr;
-					stringstream reverseStr;
-					originalStr << hex << uppercase << number;
-					string tempStr(originalStr.str());
+					std::vector<std::string> splitString;
+					std::stringstream originalStr;
+					std::stringstream reverseStr;
+					originalStr << std::hex << std::uppercase << number;
+					std::string tempStr(originalStr.str());
 
 					for (uint32_t start = 0; start < tempStr.size(); start += 2)
 					{
 						splitString.push_back(tempStr.substr(start, start + 2));
 					}
 
-					for (vector<string>::reverse_iterator i = splitString.rbegin();
+					for (std::vector<std::string>::reverse_iterator i = splitString.rbegin();
 					        i != splitString.rend(); ++i)
 					{
 						reverseStr << *i;
@@ -214,17 +209,17 @@ namespace IndustrialNetwork
 					return reverseStr.str();
 				}
 
-				template<> string ReverseHex<string>(const string number)
+				template<> std::string ReverseHex<std::string>(const std::string& number)
 				{
-					vector<string> splitString;
-					stringstream reverseStr;
+					std::vector<std::string> splitString;
+					std::stringstream reverseStr;
 
 					for (uint32_t start = 0; start < number.size(); start += 2)
 					{
 						splitString.push_back(number.substr(start, start + 2));
 					}
 
-					for (vector<string>::reverse_iterator i = splitString.rbegin();
+					for (std::vector<std::string>::reverse_iterator i = splitString.rbegin();
 					        i != splitString.rend(); ++i)
 					{
 						reverseStr << *i;
@@ -233,13 +228,13 @@ namespace IndustrialNetwork
 					return reverseStr.str();
 				}
 
-				template string ReverseHex<unsigned short>(const unsigned short number);
-				template string ReverseHex<unsigned int>(const unsigned int number);
-				template string ReverseHex<unsigned long long>(const unsigned long long number);
+				template std::string ReverseHex<unsigned short>(const unsigned short& number);
+				template std::string ReverseHex<unsigned int>(const unsigned int& number);
+				template std::string ReverseHex<unsigned long long>(const unsigned long long& number);
 
-				template string ReverseHex<short>(const short number);
-				template string ReverseHex<int>(const int number);
-				template string ReverseHex<long long>(const long long number);
+				template std::string ReverseHex<short>(const short& number);
+				template std::string ReverseHex<int>(const int& number);
+				template std::string ReverseHex<long long>(const long long& number);
 			}
 		}
 	}

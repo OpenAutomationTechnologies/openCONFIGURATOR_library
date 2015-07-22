@@ -74,7 +74,6 @@
     <Compile Include="Network.cs" />
     <Compile Include="NodeAssignment.cs" />
     <Compile Include="NodeIdCollection.cs" />
-    <Compile Include="NodeType.cs" />
     <Compile Include="Object.cs" />
     <Compile Include="ObjectType.cs" />
     <Compile Include="OpenConfiguratorCore.cs" />

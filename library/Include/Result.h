@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define RESULT_H
 
 #include <string>
+
 #include "IResult.h"
 #include "ErrorCode.h"
 #include "Constants.h"
@@ -104,7 +105,7 @@ namespace IndustrialNetwork
 				const std::string kMsgNonExistingMappedIndex = "Mapping-Object 0x%X/0x%X: Mapped index 0x%X does not exist on node %d.";
 				const std::string kMsgNonExistingMappedSubIndex = "Mapping-Object 0x%X/0x%X: Mapped subIndex 0x%X/0x%X does not exist on node %d.";
 				const std::string kMsgInsufficientMappingObjects = "Insufficient number of mapping objects within index 0x%X on node %d. Expected: %d, existing %d";
-				const std::string kMsgParameterIndexNotFound = "Parameter with uniqueID '%s' not found in node %d referenced by (Sub)Index 0x%X/0x%s.";				
+				const std::string kMsgParameterIndexNotFound = "Parameter with uniqueID '%s' not found in node %d referenced by (Sub)Index 0x%X/0x%s.";
 				const std::string kMsgSimpleDatatypeNotFound = "Simple datatype '%s' referenced by (Sub)Index 0x%X/0x%s in node %d not found in DatatypeList of node.";
 				const std::string kMsgValueNotWithinRange = "Value %d of object '%s' on node %d out of range (%d - %d).";
 				const std::string kMsgChannelPayloadLimitExceeded = "Node %d, channel 0x%X: No. of bytes mapped (%d) exceeds limit (1490, C_DLL_ISOCHR_MAX_PAYL)";
@@ -144,8 +145,9 @@ namespace IndustrialNetwork
 
 					public:
 						Result();
-						Result(ErrorCode errorCode, std::string errorMessage);
-						Result(ErrorCode errorCode);
+						explicit Result(ErrorCode errorCode);
+						Result(ErrorCode errorCode, const std::string& errorMessage);
+						
 
 						virtual ~Result();
 						/**

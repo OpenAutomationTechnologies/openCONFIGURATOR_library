@@ -34,8 +34,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <string>
 #include <fstream>
-#include "Constants.h"
-#include "Result.h"
 
 #ifdef _MSC_VER
 #pragma warning(push, 0) // Store current warning state and set global warning level 0
@@ -55,8 +53,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef _MSC_VER
 #pragma warning(pop) // Restore previous warning state
 #pragma warning (disable:4503 4714) // Boost-Headers themselves disable this warning, reinstate
-
 #endif
+
+#include "Constants.h"
+#include "Result.h"
+
 namespace IndustrialNetwork
 {
 	namespace POWERLINK

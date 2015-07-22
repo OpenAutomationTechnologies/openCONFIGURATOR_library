@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define ERROR_CODE_H
 
 #include <cstdint>
+
 #include "Constants.h"
 
 namespace IndustrialNetwork
@@ -123,7 +124,7 @@ namespace IndustrialNetwork
 					VAR_DECLARATION_EXISTS, // < A VarDeclaration with the same uniqueId already exists.
 					ENUM_VALUE_EXISTS, // < An Enum Value with the same name already exists.
 					FORCED_VALUE_OVERWRITE, // < A forced value must not be overwritten by the library.
-					CYCLE_TIME_NOT_SET, // < An actual value for cycle time must be configured. 
+					CYCLE_TIME_NOT_SET, // < An actual value for cycle time must be configured.
 					OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT, // < An actual value exceeds its high limit.
 					OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, // < An actual value deceeds its low limit.
 					CHAINING_NOT_SUPPORTED // < Chaining not supported.

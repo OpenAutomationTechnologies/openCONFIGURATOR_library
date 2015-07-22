@@ -32,8 +32,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined COMPLEX_DATATYPE_H
 #define COMPLEX_DATATYPE_H
 
-#include <cstdint>
 #include <string>
+#include <cstdint>
+
 #include "Constants.h"
 
 namespace IndustrialNetwork
@@ -52,7 +53,7 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						ComplexDataType(std::string uniqueID, std::string name, std::uint32_t size = 0);
+						ComplexDataType(const std::string& uniqueID, const std::string& name, std::uint32_t size = 0);
 						virtual ~ComplexDataType();
 
 						const std::string& GetName();

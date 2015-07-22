@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <cstdint>
 #include <string>
+
 #include <boost/any.hpp>
 
 namespace IndustrialNetwork
@@ -53,7 +54,7 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						PlkFeature(I type) :
+						explicit PlkFeature(I type) :
 							featureId(type),
 							defaultValue(),
 							actualValue()

@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "Network.h"
 
-using namespace std;
+
 using namespace IndustrialNetwork::POWERLINK::Core::NetworkHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
@@ -44,26 +44,26 @@ Network::Network() :
 	asyncMTU(300), //DS 301 V1.2.1
 	multiplexedCycleLength(0), //DS 301 V1.2.1
 	prescaler(2), //DS 301 V1.2.1
-	nodeCollection(map<uint8_t, shared_ptr<BaseNode>>()),
-	buildConfigurations(vector<shared_ptr<PlkConfiguration>>()),
+	nodeCollection(std::map<uint8_t, std::shared_ptr<BaseNode>>()),
+	buildConfigurations(std::vector<std::shared_ptr<PlkConfiguration>>()),
 	activeConfiguration("")
 {}
 
-Network::Network(const string networkId) :
+Network::Network(const std::string& networkId) :
 	networkId(networkId),
 	cycleTime(0),
 	asyncMTU(300), //DS 301 V1.2.1
 	multiplexedCycleLength(0), //DS 301 V1.2.1
 	prescaler(2), //DS 301 V1.2.1
-	nodeCollection(map<uint8_t, shared_ptr<BaseNode>>()),
-	buildConfigurations(vector<shared_ptr<PlkConfiguration>>()),
+	nodeCollection(std::map<uint8_t, std::shared_ptr<BaseNode>>()),
+	buildConfigurations(std::vector<std::shared_ptr<PlkConfiguration>>()),
 	activeConfiguration("")
 {}
 
 Network::~Network()
 {}
 
-Result Network::AddNode(shared_ptr<ControlledNode>& node)
+Result Network::AddNode(std::shared_ptr<ControlledNode>& node)
 {
 	for (auto& var : this->nodeCollection)
 	{
@@ -83,7 +83,7 @@ Result Network::AddNode(shared_ptr<ControlledNode>& node)
 	formatter
 	% (uint32_t) node->GetNodeIdentifier();
 	LOG_INFO() << formatter.str();
-	this->nodeCollection.insert(pair<uint8_t, shared_ptr<BaseNode>>(node->GetNodeIdentifier(), node));
+	this->nodeCollection.insert(std::pair<uint8_t, std::shared_ptr<BaseNode>>(node->GetNodeIdentifier(), node));
 
 	//Set Node Assignement with actual value "0"
 	this->nodeCollection.at(240)->SetSubObjectActualValue(0x1F81, node->GetNodeIdentifier(), "0");
@@ -91,7 +91,7 @@ Result Network::AddNode(shared_ptr<ControlledNode>& node)
 	return Result();
 }
 
-Result Network::AddNode(shared_ptr<ManagingNode>& node)
+Result Network::AddNode(std::shared_ptr<ManagingNode>& node)
 {
 	for (auto& var : this->nodeCollection)
 	{
@@ -111,14 +111,14 @@ Result Network::AddNode(shared_ptr<ManagingNode>& node)
 	% (uint32_t) node->GetNodeIdentifier();
 	LOG_INFO() << formatter.str();
 
-	this->nodeCollection.insert(pair<uint8_t, shared_ptr<BaseNode>>(node->GetNodeIdentifier(), node));
+	this->nodeCollection.insert(std::pair<uint8_t, std::shared_ptr<BaseNode>>(node->GetNodeIdentifier(), node));
 
 	//if not active MN
 	if (node->GetNodeIdentifier() != 240)
 	{
 		for (auto& rmn : this->nodeCollection)
 		{
-			shared_ptr<ManagingNode> rmnPtr = dynamic_pointer_cast<ManagingNode>(rmn.second);
+			std::shared_ptr<ManagingNode> rmnPtr = std::dynamic_pointer_cast<ManagingNode>(rmn.second);
 			if (rmnPtr.get())
 			{
 				//Increment RMN count
@@ -129,7 +129,7 @@ Result Network::AddNode(shared_ptr<ManagingNode>& node)
 	return Result();
 }
 
-Result Network::GetBaseNode(const uint8_t nodeID, shared_ptr<BaseNode>& node)
+Result Network::GetBaseNode(const uint8_t nodeID, std::shared_ptr<BaseNode>& node)
 {
 	for (auto& var : this->nodeCollection)
 	{
@@ -148,13 +148,13 @@ Result Network::GetBaseNode(const uint8_t nodeID, shared_ptr<BaseNode>& node)
 	return Result(ErrorCode::NODE_DOES_NOT_EXIST, formatter.str());
 }
 
-Result Network::GetManagingNode(shared_ptr<ManagingNode>& node)
+Result Network::GetManagingNode(std::shared_ptr<ManagingNode>& node)
 {
 	for (auto& var : this->nodeCollection)
 	{
 		if (var.first == 240)
 		{
-			node = dynamic_pointer_cast<ManagingNode>(var.second);
+			node = std::dynamic_pointer_cast<ManagingNode>(var.second);
 			return Result();
 		}
 	}
@@ -183,9 +183,9 @@ Result Network::RemoveNode(const uint8_t nodeID)
 		return Result(ErrorCode::NODE_DOES_NOT_EXIST, formatter.str());
 	}
 
-	if (dynamic_pointer_cast<ManagingNode>(it->second))//if RMN is removed
+	if (std::dynamic_pointer_cast<ManagingNode>(it->second))//if RMN is removed
 	{
-		shared_ptr<ManagingNode> mn;
+		std::shared_ptr<ManagingNode> mn;
 		Result res = this->GetManagingNode(mn);
 		if (!res.IsSuccessful())
 			return res;
@@ -202,7 +202,7 @@ Result Network::RemoveNode(const uint8_t nodeID)
 	//Remove CN related MN and RMN objects
 	for (auto& rmn : this->nodeCollection)
 	{
-		if (dynamic_pointer_cast<ManagingNode>(rmn.second))
+		if (std::dynamic_pointer_cast<ManagingNode>(rmn.second))
 		{
 			//Reset 0x1F26 / nodeID
 			rmn.second->ForceSubObject(0x1F26, nodeID, false, "0");
@@ -228,13 +228,13 @@ Result Network::RemoveNode(const uint8_t nodeID)
 	return Result();
 }
 
-Result Network::GetNodes(map<uint8_t, shared_ptr<BaseNode>>& nodeCollection)
+Result Network::GetNodes(std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
 	nodeCollection = this->nodeCollection;
 	return Result();
 }
 
-Result Network::GetAvailableNodeIds(vector<uint8_t>& nodeIdCollection)
+Result Network::GetAvailableNodeIds(std::vector<uint8_t>& nodeIdCollection)
 {
 	for (auto& var : this->nodeCollection)
 	{
@@ -243,7 +243,7 @@ Result Network::GetAvailableNodeIds(vector<uint8_t>& nodeIdCollection)
 	return Result();
 }
 
-const string Network::GetNetworkId()
+const std::string& Network::GetNetworkId()
 {
 	return this->networkId;
 }
@@ -270,7 +270,7 @@ uint32_t Network::GetPrescaler()
 
 void Network::SetCycleTime(const uint32_t cycleTime)
 {
-	stringstream cycleTimeStr;
+	std::stringstream cycleTimeStr;
 	this->cycleTime = cycleTime;
 	cycleTimeStr << cycleTime;
 	this->nodeCollection.at(240)->SetSubObjectActualValue(0x1006, 0x0, cycleTimeStr.str());
@@ -291,7 +291,7 @@ void Network::SetPrescaler(const uint32_t prescaler)
 	this->prescaler = prescaler;
 }
 
-Result Network::SetConfigurationSettingEnabled(const string configID, const string settingName, bool enabled)
+Result Network::SetConfigurationSettingEnabled(const std::string& configID, const std::string& settingName, bool enabled)
 {
 	for (auto& config : this->buildConfigurations)
 	{
@@ -302,8 +302,8 @@ Result Network::SetConfigurationSettingEnabled(const string configID, const stri
 				if (setting->GetName() == settingName)
 				{
 					setting->SetEnabled(enabled);
-					//Convert bool to string for boost::format
-					stringstream enabledStr;
+					//Convert bool to std::string for boost::format
+					std::stringstream enabledStr;
 					enabledStr << std::boolalpha << enabled;
 					//Long info setting enabled
 					boost::format formatter(kMsgConfigurationSettingEnabled);
@@ -336,7 +336,7 @@ Result Network::SetConfigurationSettingEnabled(const string configID, const stri
 }
 
 
-Result Network::AddConfigurationSetting(const string configID, shared_ptr<BuildConfigurationSetting> newSetting)
+Result Network::AddConfigurationSetting(const std::string& configID, std::shared_ptr<BuildConfigurationSetting> newSetting)
 {
 	for (auto& config : this->buildConfigurations)
 	{
@@ -377,13 +377,13 @@ Result Network::AddConfigurationSetting(const string configID, shared_ptr<BuildC
 	return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST, formatter.str());
 }
 
-Result Network::RemoveConfigurationSetting(string configID, const string settingName)
+Result Network::RemoveConfigurationSetting(const std::string& configID, const std::string& settingName)
 {
 	for (auto& config : this->buildConfigurations)
 	{
 		if (config->GetConfigurationName() == configID)
 		{
-			vector<shared_ptr<BuildConfigurationSetting>>::iterator it;
+			std::vector<std::shared_ptr<BuildConfigurationSetting>>::iterator it;
 			for (it = config->GetBuildConfigurationSettings().begin() ; it != config->GetBuildConfigurationSettings().end(); ++it)
 			{
 				if (it->get()->GetName() == settingName)
@@ -421,7 +421,7 @@ Result Network::RemoveConfigurationSetting(string configID, const string setting
 	return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST, formatter.str());
 }
 
-Result Network::AddConfiguration(string configID)
+Result Network::AddConfiguration(const std::string& configID)
 {
 	for (auto& config : this->buildConfigurations)
 	{
@@ -436,7 +436,7 @@ Result Network::AddConfiguration(string configID)
 			return Result(ErrorCode::BUILD_CONFIGURATION_EXISTS, formatter.str());
 		}
 	}
-	shared_ptr<PlkConfiguration> config = make_shared<PlkConfiguration>(configID);
+	std::shared_ptr<PlkConfiguration> config = std::make_shared<PlkConfiguration>(configID);
 	this->buildConfigurations.push_back(config);
 	//Log info configuration added
 	boost::format formatter(kMsgConfigurationAdded);
@@ -452,12 +452,12 @@ Result Network::AddConfiguration(string configID)
 	return Result();
 }
 
-Result Network::RemoveConfiguration(string configID)
+Result Network::RemoveConfiguration(const std::string& configID)
 {
 	if (this->activeConfiguration == configID)
 		return Result(ErrorCode::BUILD_CONFIGURATION_IS_ACTIVE);
 
-	vector<shared_ptr<PlkConfiguration>>::iterator it;
+	std::vector<std::shared_ptr<PlkConfiguration>>::iterator it;
 	for (it = this->buildConfigurations.begin() ; it != this->buildConfigurations.end(); ++it)
 	{
 		if (it->get()->GetConfigurationName() == configID)
@@ -484,7 +484,7 @@ Result Network::RemoveConfiguration(string configID)
 	return Result();
 }
 
-Result Network::ReplaceConfigurationName(const string oldConfigID, const string newConfigID)
+Result Network::ReplaceConfigurationName(const std::string& oldConfigID, const std::string& newConfigID)
 {
 	for (auto& config : this->buildConfigurations)
 	{
@@ -510,7 +510,7 @@ Result Network::ReplaceConfigurationName(const string oldConfigID, const string 
 	return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST);
 }
 
-Result Network::GetConfigurationSettings(string configID, vector<shared_ptr<BuildConfigurationSetting>>& returnRef)
+Result Network::GetConfigurationSettings(const std::string& configID, std::vector<std::shared_ptr<BuildConfigurationSetting>>& returnRef)
 {
 	for (auto& config : this->buildConfigurations)
 	{
@@ -529,18 +529,18 @@ Result Network::GetConfigurationSettings(string configID, vector<shared_ptr<Buil
 	return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST);
 }
 
-Result Network::GetBuildConfigurations(std::vector<shared_ptr<PlkConfiguration>>& bcfgs)
+Result Network::GetBuildConfigurations(std::vector<std::shared_ptr<PlkConfiguration>>& bcfgs)
 {
 	bcfgs = this->buildConfigurations;
 	return Result();
 }
 
-const string& Network::GetActiveConfiguration()
+const std::string& Network::GetActiveConfiguration()
 {
 	return this->activeConfiguration;
 }
 
-Result Network::SetActiveConfiguration(const string configID)
+Result Network::SetActiveConfiguration(const std::string& configID)
 {
 	for (auto& config : this->buildConfigurations)
 	{
@@ -580,7 +580,7 @@ Result Network::GenerateConfiguration()
 
 Result Network::SetOperationMode(const std::uint8_t nodeID, const PlkOperationMode mode, const std::uint8_t multiplexedCycle)
 {
-	shared_ptr<BaseNode> node;
+	std::shared_ptr<BaseNode> node;
 	Result res = this->GetBaseNode(nodeID, node);
 	if (!res.IsSuccessful())
 		return res;
@@ -588,7 +588,7 @@ Result Network::SetOperationMode(const std::uint8_t nodeID, const PlkOperationMo
 	std::shared_ptr<ControlledNode> cn = std::dynamic_pointer_cast<ControlledNode>(node);
 	if (cn)
 	{
-		shared_ptr<ManagingNode> mn;
+		std::shared_ptr<ManagingNode> mn;
 		res = this->GetManagingNode(mn);
 		if (!res.IsSuccessful())
 			return res;
@@ -596,7 +596,7 @@ Result Network::SetOperationMode(const std::uint8_t nodeID, const PlkOperationMo
 		bool operationModeSupported = false;
 		if (mode == PlkOperationMode::CHAINED)
 		{
-			Result res = mn->GetNetworkManagement()->GetFeatureActualValue<bool>(MNFeatureEnum::DLLMNPResChaining, operationModeSupported);
+			res = mn->GetNetworkManagement()->GetFeatureActualValue<bool>(MNFeatureEnum::DLLMNPResChaining, operationModeSupported);
 			if (!res.IsSuccessful())
 				return res;
 			if (!operationModeSupported)
@@ -604,7 +604,7 @@ Result Network::SetOperationMode(const std::uint8_t nodeID, const PlkOperationMo
 		}
 		else if (mode == PlkOperationMode::MULTIPLEXED)
 		{
-			Result res = mn->GetNetworkManagement()->GetFeatureActualValue<bool>(MNFeatureEnum::DLLMNFeatureMultiplex, operationModeSupported);
+			res = mn->GetNetworkManagement()->GetFeatureActualValue<bool>(MNFeatureEnum::DLLMNFeatureMultiplex, operationModeSupported);
 			if (!res.IsSuccessful())
 				return res;
 			if (!operationModeSupported)

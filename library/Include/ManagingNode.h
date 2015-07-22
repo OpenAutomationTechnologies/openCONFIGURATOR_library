@@ -57,19 +57,16 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						ManagingNode(bool activ, std::uint8_t nodeID = 240, const std::string nodeName = "");
+						ManagingNode(std::uint8_t nodeID = 240, const std::string& nodeName = "");
 						virtual ~ManagingNode();
 
-						bool AddNodeAssignement(NodeAssignment);
-						bool RemoveNodeAssignment(NodeAssignment);
+						bool AddNodeAssignement(NodeAssignment assign);
+						bool RemoveNodeAssignment(NodeAssignment assign);
 						std::uint32_t GetNodeAssignmentValue();
-
-						bool GetActive();
-						void SetActive(bool active);
 
 						void AddDynamicChannel(std::shared_ptr<DynamicChannel>& channelRef);
 						bool GetDynamicChannel(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType, std::shared_ptr<DynamicChannel>& retChannel);
-						
+
 						std::uint32_t GetConfigurationObjectCount();
 						std::uint32_t GetConfigurationObjectSize();
 
@@ -80,7 +77,6 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ResetMultiplexedCycle(const std::uint8_t nodeID);
 
 					private:
-						bool active;
 						std::vector<std::shared_ptr<DynamicChannel>> dynamicChannelList;
 						std::uint16_t rmnCount;
 				};

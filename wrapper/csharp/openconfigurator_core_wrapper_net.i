@@ -87,7 +87,6 @@
 #include "Result.h"
 #include "Network.h"
 #include "Direction.h"
-#include "NodeType.h"
 #include "PlkConfiguration.h"
 #include "BuildConfigurationSetting.h"
 #include "BaseNode.h"
@@ -120,7 +119,6 @@
 %include "DynamicChannel.h"
 %include "Network.h"
 %include "Direction.h"
-%include "NodeType.h"
 
 %include "IFieldbusNode.h"
 %template(intFieldBusNode) IndustrialNetwork::Fieldbus::IFieldbusNode<unsigned char, unsigned int, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>;

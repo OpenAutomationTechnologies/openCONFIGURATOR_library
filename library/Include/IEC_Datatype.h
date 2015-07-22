@@ -49,7 +49,7 @@ namespace IndustrialNetwork
 				enum class IEC_Datatype : std::int8_t
 				{
 					UNDEFINED = -1, // < Undefined
-					BITSTRING = 0, // < Bit string (1 bit)
+					BITSTRING = 0, // < Bit std::string (1 bit)
 					BOOL, // < Bool (1 bit)
 					BYTE, // < Byte (8 bit)
 					_CHAR, // < Char (8 bit)
@@ -66,7 +66,7 @@ namespace IndustrialNetwork
 					REAL, // < REAL (4 byte)
 					LREAL, // < LREAL (8 byte)
 					STRING, // < STRING
-					WSTRING // < WSTRING to hold multi byte strings
+					WSTRING // < WSTRING to hold multi byte std::strings
 				};
 
 			}

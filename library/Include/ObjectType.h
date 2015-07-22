@@ -48,12 +48,12 @@ namespace IndustrialNetwork
 				*/
 				enum class ObjectType : std::uint8_t
 				{
-				    INVALID = 0,
-				    DEFTYPE = 5,
-				    DEFSTRUCT = 6,
-				    VAR = 7,
-				    ARRAY = 8,
-				    RECORD = 9
+					INVALID = 0,
+					DEFTYPE = 5,
+					DEFSTRUCT = 6,
+					VAR = 7,
+					ARRAY = 8,
+					RECORD = 9
 				};
 
 			}

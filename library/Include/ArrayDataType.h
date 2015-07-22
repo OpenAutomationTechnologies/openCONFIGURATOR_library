@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define ARRAY_DATA_TYPE_H
 
 #include <cstdint>
+
 #include "ComplexDataType.h"
 #include "IEC_Datatype.h"
 #include "Constants.h"
@@ -54,7 +55,7 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						ArrayDataType(std::string uniqueID, std::string name, std::uint32_t lowerLimit, std::uint32_t upperLimit, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType);
+						ArrayDataType(const std::string& uniqueID, const std::string& name, std::uint32_t lowerLimit, std::uint32_t upperLimit, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType);
 						virtual ~ArrayDataType();
 
 						std::uint32_t GetLowerLimit();

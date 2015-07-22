@@ -31,14 +31,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "ProjectManager.h"
 
-using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::Configuration;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::NetworkHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 
 ProjectManager::ProjectManager() :
-	networkList(map<string, shared_ptr<Network>>())
+	networkList(std::map<std::string, std::shared_ptr<Network>>())
 {}
 
 ProjectManager::~ProjectManager()
@@ -50,7 +49,7 @@ ProjectManager& ProjectManager::GetInstance()
 	return instance;
 }
 
-Result ProjectManager::AddNetwork(const string& networkId, shared_ptr<Network>& network)
+Result ProjectManager::AddNetwork(const std::string& networkId, std::shared_ptr<Network>& network)
 {
 	if (this->networkList.find(networkId) != this->networkList.end())
 	{
@@ -70,7 +69,7 @@ Result ProjectManager::AddNetwork(const string& networkId, shared_ptr<Network>& 
 	return Result();
 }
 
-Result ProjectManager::GetNetwork(const string networkId, shared_ptr<Network>& net)
+Result ProjectManager::GetNetwork(const std::string& networkId, std::shared_ptr<Network>& net)
 {
 	auto got = this->networkList.find(networkId);
 	if (got == this->networkList.end())
@@ -89,7 +88,7 @@ Result ProjectManager::GetNetwork(const string networkId, shared_ptr<Network>& n
 	}
 }
 
-Result ProjectManager::RemoveNetwork(const string networkId)
+Result ProjectManager::RemoveNetwork(const std::string& networkId)
 {
 	auto got = this->networkList.find(networkId);
 	if (got == this->networkList.end())
@@ -113,19 +112,7 @@ Result ProjectManager::RemoveNetwork(const string networkId)
 	}
 }
 
-Result ProjectManager::BuildConfiguration(const string networkId, ostream& configuration)
-{
-	//NOT YET IMPLEMENTED
-	return Result(ErrorCode::UNHANDLED_EXCEPTION);
-}
-
-Result ProjectManager::BuildProcessImage(const string networkId, ostream& configuration)
-{
-	//NOT YET IMPLEMENTED
-	return Result(ErrorCode::UNHANDLED_EXCEPTION);
-}
-
-Result ProjectManager::GetNetworks(map<string, shared_ptr<Network>>& networkList)
+Result ProjectManager::GetNetworks(std::map<std::string, std::shared_ptr<Network>>& networkList)
 {
 	networkList = this->networkList;
 	return Result();
@@ -138,14 +125,14 @@ Result ProjectManager::ClearNetworkList()
 	return Result();
 }
 
-const vector<string> ProjectManager::GetSupportedSettingIds()
+const std::vector<std::string> ProjectManager::GetSupportedSettingIds()
 {
-	vector<string> vect(begin(BuildConfigurationIdName), end(BuildConfigurationIdName));
+	std::vector<std::string> vect(begin(BuildConfigurationIdName), end(BuildConfigurationIdName));
 	LOG_INFO() << "Returned supported configuration setting ids.";
 	return vect;
 }
 
-Result ProjectManager::InitLoggingConfiguration(const string& configuration)
+Result ProjectManager::InitLoggingConfiguration(const std::string& configuration)
 {
 	Result res = LoggingConfiguration::InitConfiguration(configuration);
 	if (res.IsSuccessful())
@@ -161,9 +148,8 @@ Result ProjectManager::InitLoggingConfiguration(const string& configuration)
 
 std::vector<std::string> ProjectManager::GetNetworkIds()
 {
-	vector<string> returnVec;
-	map<string, shared_ptr<Network>>::iterator it;
-	for (it = networkList.begin();  it != networkList.end(); ++it)
+	std::vector<std::string> returnVec;
+	for (auto it = networkList.begin();  it != networkList.end(); ++it)
 	{
 		returnVec.push_back(it->first);
 	}

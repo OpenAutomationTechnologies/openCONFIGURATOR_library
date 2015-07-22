@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "LoggingConfiguration.h"
 
-using namespace std;
+
 using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 
@@ -76,7 +76,7 @@ struct scope_list_formatter
 			else
 			{
 				logging::attributes::named_scope_list::const_reference scope_list = scopes.back();
-				string file(scope_list.file_name.str());
+				std::string file(scope_list.file_name.str());
 				size_t pos = file.find_last_of(kPathSeparator);
 
 				strm << file.substr(pos + 1)
@@ -110,7 +110,7 @@ class scope_formatter_factory : public logging::formatter_factory<char>
 		}
 };
 
-Result LoggingConfiguration::InitConfiguration(const string& configuration)
+Result LoggingConfiguration::InitConfiguration(const std::string& configuration)
 {
 	try
 	{
@@ -122,7 +122,7 @@ Result LoggingConfiguration::InitConfiguration(const string& configuration)
 
 		logging::register_formatter_factory("Scope", boost::make_shared<scope_formatter_factory>());
 
-		istringstream configStream(configuration);
+		std::istringstream configStream(configuration);
 		logging::init_from_stream(configStream);
 
 		logging::core::get()->add_global_attribute("Scope", logging::attributes::named_scope());

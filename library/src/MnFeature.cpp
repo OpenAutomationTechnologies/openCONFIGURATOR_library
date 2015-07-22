@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "MnFeature.h"
 
-using namespace std;
+
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
@@ -54,7 +54,7 @@ namespace IndustrialNetwork
 				MnFeature::~MnFeature()
 				{}
 
-				const string MnFeature::GetName()
+				const std::string& MnFeature::GetName()
 				{
 					return PlkFeatureStrings[this->GetFeatureId()];
 				}
@@ -82,7 +82,7 @@ namespace IndustrialNetwork
 				template Result MnFeature::GetDefaultValue(uint32_t& value);
 
 
-				Result MnFeature::SetTypedValues(string defaultValue, string actualValue)
+				Result MnFeature::SetTypedValues(const std::string& defaultValue, const std::string& actualValue)
 				{
 					switch (this->GetFeatureId())
 					{

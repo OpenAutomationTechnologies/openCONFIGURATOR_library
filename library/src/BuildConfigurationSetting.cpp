@@ -31,7 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "BuildConfigurationSetting.h"
 
-using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::Configuration;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
@@ -42,7 +41,7 @@ BuildConfigurationSetting::BuildConfigurationSetting()
 	   configurationBuilder(std::shared_ptr<BuildConfigurationSettingBuilder>())
 {}
 
-BuildConfigurationSetting::BuildConfigurationSetting(string id, string value)
+BuildConfigurationSetting::BuildConfigurationSetting(const std::string& id, const std::string& value)
 	:  IndustrialNetwork::Fieldbus::IBuildConfigurationSetting(id, value),
 	   configurationBuilder(std::shared_ptr<BuildConfigurationSettingBuilder>())
 {
@@ -52,7 +51,7 @@ BuildConfigurationSetting::BuildConfigurationSetting(string id, string value)
 BuildConfigurationSetting::~BuildConfigurationSetting(void)
 {}
 
-void BuildConfigurationSetting::InitConfigurationSetting(string id)
+void BuildConfigurationSetting::InitConfigurationSetting(const std::string& id)
 {
 	if (id == "GENERATE_MN_MAPPING_FOR_NODES")
 	{
@@ -69,7 +68,7 @@ void BuildConfigurationSetting::InitConfigurationSetting(string id)
 	}
 }
 
-Result BuildConfigurationSetting::GenerateConfiguration(const map<uint8_t, shared_ptr<BaseNode>>& nodeCollection)
+Result BuildConfigurationSetting::GenerateConfiguration(const std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
 	if (this->configurationBuilder) // Remove when all builder are implemented
 		return this->configurationBuilder->GenerateConfiguration(this->GetValue(), nodeCollection);

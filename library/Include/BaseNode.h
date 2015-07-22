@@ -80,12 +80,12 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddObject(std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>& objRef);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddSubObject(std::uint32_t objectId, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::SubObject>& subObjRef);
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ForceObject(std::uint32_t objectId, bool force, std::string actualValue = "");
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetObjectActualValue(std::uint32_t objectId, std::string actualValue);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ForceObject(std::uint32_t objectId, bool force, const std::string& actualValue = "");
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetObjectActualValue(std::uint32_t objectId, const std::string& actualValue);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetObject(std::uint32_t objectId, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>& objRef);
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ForceSubObject(std::uint32_t objectId, std::uint32_t subObjectId, bool force, std::string actualValue = "");
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetSubObjectActualValue(std::uint32_t objectId, std::uint32_t subObjectId, std::string actualValue);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ForceSubObject(std::uint32_t objectId, std::uint32_t subObjectId, bool force, const std::string& actualValue = "");
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetSubObjectActualValue(std::uint32_t objectId, std::uint32_t subObjectId, const std::string& actualValue);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetSubObject(std::uint32_t objectId, std::uint32_t subObjectId, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::SubObject>& subObjRef);
 
 						virtual bool AddNodeAssignement(NodeAssignment) = 0;

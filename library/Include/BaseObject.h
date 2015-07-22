@@ -69,9 +69,9 @@ namespace IndustrialNetwork
 
 					public:
 						BaseObject();
-						BaseObject(std::uint32_t id, ObjectType objectType, std::string name, std::uint8_t containingNode);
-						BaseObject(std::uint32_t id, ObjectType objectType, std::string name, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping);
-						BaseObject(std::uint32_t id, ObjectType objectType, std::string name, std::uint8_t containingNode, std::string uniqueIdRef);
+						BaseObject(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode);
+						BaseObject(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping);
+						BaseObject(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode, const std::string& uniqueIdRef);
 
 						bool operator== (const BaseObject& BaseObject) const;
 						virtual ~BaseObject();
@@ -114,7 +114,7 @@ namespace IndustrialNetwork
 						std::uint32_t GetBitSize();
 
 					private:
-										
+
 						bool forceToCDC;
 						boost::optional<std::int64_t> highLimit;
 						boost::optional<std::int64_t> lowLimit;

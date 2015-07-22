@@ -32,9 +32,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined CN_FEATURE_H
 #define CN_FEATURE_H
 
-#include <string>
 #include <boost/any.hpp>
 #include <boost/format.hpp>
+
 #include "PlkFeature.h"
 #include "PlkFeatureEnum.h"
 #include "Utilities.h"
@@ -58,11 +58,11 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						CnFeature(CNFeatureEnum type);
+						explicit CnFeature(CNFeatureEnum type);
 						virtual ~CnFeature();
 
-						const std::string GetName();
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetTypedValues(std::string defaultValue, std::string actualValue);
+						const std::string& GetName();
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetTypedValues(const std::string& defaultValue, const std::string& actualValue);
 
 						template<class T>
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetDefaultValue(T& value);

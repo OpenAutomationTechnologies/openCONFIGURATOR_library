@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <vector>
 #include <memory>
+
 #include "ComplexDataType.h"
 #include "VarDeclaration.h"
 #include "Result.h"
@@ -55,7 +56,7 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						StructDataType(std::string name, std::string uniqueID);
+						StructDataType(const std::string& name, const std::string& uniqueID);
 						virtual ~StructDataType();
 
 						virtual std::uint32_t GetBitSize();

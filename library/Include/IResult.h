@@ -47,14 +47,14 @@ namespace IndustrialNetwork
 		{
 
 			public:
-				IResult(T errorType, std::string errorMessage = "") :
+				IResult(T errorType, const std::string& errorMessage = "") :
 					errorType(errorType),
 					errorMessage(errorMessage)
 				{}
 
 				virtual ~IResult() {};
 
-				const std::string GetErrorMessage()
+				const std::string& GetErrorMessage()
 				{
 					return this->errorMessage;
 				}

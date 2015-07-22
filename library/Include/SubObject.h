@@ -67,16 +67,13 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						SubObject(std::uint32_t id, ObjectType objectType,  std::string name, std::uint8_t containingNode);
-						SubObject(std::uint32_t id, ObjectType objectType,  std::string name, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping);
-						SubObject(std::uint32_t id, ObjectType objectType,  std::string name, std::uint8_t containingNode, std::string uniqueIdRef);
+						SubObject(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode);
+						SubObject(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping);
+						SubObject(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode, const std::string& uniqueIdRef);
 
 						virtual ~SubObject();
 
-						std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>& GetContainingObject();
-
 					private:
-						std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object> containingObject;
 
 				};
 

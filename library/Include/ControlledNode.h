@@ -58,7 +58,7 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						ControlledNode(std::uint8_t nodeID, const std::string nodeName = "");
+						ControlledNode(std::uint8_t nodeID, const std::string& nodeName = "");
 						virtual ~ControlledNode();
 
 						bool AddNodeAssignement(NodeAssignment);

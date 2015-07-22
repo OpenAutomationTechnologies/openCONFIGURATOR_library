@@ -31,12 +31,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "ControlledNode.h"
 
-using namespace std;
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 
-ControlledNode::ControlledNode(uint8_t nodeID, const string nodeName) : BaseNode(nodeID, nodeName),
+ControlledNode::ControlledNode(uint8_t nodeID, const std::string& nodeName) : BaseNode(nodeID, nodeName),
 	operationMode(PlkOperationMode::NORMAL)
 {
 	this->AddNodeAssignement(NodeAssignment::MNT_NODEASSIGN_VALID);
@@ -84,7 +83,7 @@ uint32_t ControlledNode::GetNodeAssignmentValue()
 		assign |=  var;
 	}
 
-	return static_cast<underlying_type<NodeAssignment>::type>(assign);
+	return static_cast<std::underlying_type<NodeAssignment>::type>(assign);
 }
 
 Result ControlledNode::MapToFrame(BaseObject& index, uint32_t position, Direction dir)
@@ -92,7 +91,7 @@ Result ControlledNode::MapToFrame(BaseObject& index, uint32_t position, Directio
 	return Result();
 }
 
-Result ControlledNode::GetAllMappableObjects(vector<shared_ptr<BaseObject>>& objects, Direction dir)
+Result ControlledNode::GetAllMappableObjects(std::vector<std::shared_ptr<BaseObject>>& objects, Direction dir)
 {
 	return Result();
 }
