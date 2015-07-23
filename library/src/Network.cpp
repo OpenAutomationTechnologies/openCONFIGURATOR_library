@@ -42,7 +42,7 @@ Network::Network() :
 	networkId(""),
 	cycleTime(0),
 	asyncMTU(300), //DS 301 V1.2.1
-	multiplexedCycleLength(0), //DS 301 V1.2.1
+	multiplexedCycleCount(0), //DS 301 V1.2.1
 	prescaler(2), //DS 301 V1.2.1
 	nodeCollection(std::map<uint8_t, std::shared_ptr<BaseNode>>()),
 	buildConfigurations(std::vector<std::shared_ptr<PlkConfiguration>>()),
@@ -53,7 +53,7 @@ Network::Network(const std::string& networkId) :
 	networkId(networkId),
 	cycleTime(0),
 	asyncMTU(300), //DS 301 V1.2.1
-	multiplexedCycleLength(0), //DS 301 V1.2.1
+	multiplexedCycleCount(0), //DS 301 V1.2.1
 	prescaler(2), //DS 301 V1.2.1
 	nodeCollection(std::map<uint8_t, std::shared_ptr<BaseNode>>()),
 	buildConfigurations(std::vector<std::shared_ptr<PlkConfiguration>>()),
@@ -253,40 +253,37 @@ uint32_t Network::GetCycleTime()
 	return this->cycleTime;
 }
 
-uint32_t Network::GetAsyncMTU()
+uint16_t Network::GetAsyncMTU()
 {
 	return this->asyncMTU;
 }
 
-uint32_t Network::GetMultiplexedCycleLength()
+uint16_t Network::GetMultiplexedCycleCount()
 {
-	return this->multiplexedCycleLength;
+	return this->multiplexedCycleCount;
 }
 
-uint32_t Network::GetPrescaler()
+uint16_t Network::GetPrescaler()
 {
 	return this->prescaler;
 }
 
 void Network::SetCycleTime(const uint32_t cycleTime)
 {
-	std::stringstream cycleTimeStr;
 	this->cycleTime = cycleTime;
-	cycleTimeStr << cycleTime;
-	this->nodeCollection.at(240)->SetSubObjectActualValue(0x1006, 0x0, cycleTimeStr.str());
 }
 
-void Network::SetAsyncMTU(const uint32_t asyncMTU)
+void Network::SetAsyncMTU(const uint16_t asyncMTU)
 {
 	this->asyncMTU = asyncMTU;
 }
 
-void Network::SetMultiplexedCycleLength(const uint32_t multiCycleLength)
+void Network::SetMultiplexedCycleCount(const uint16_t multiCycleCount)
 {
-	this->multiplexedCycleLength = multiCycleLength;
+	this->multiplexedCycleCount  = multiCycleCount;
 }
 
-void Network::SetPrescaler(const uint32_t prescaler)
+void Network::SetPrescaler(const uint16_t prescaler)
 {
 	this->prescaler = prescaler;
 }

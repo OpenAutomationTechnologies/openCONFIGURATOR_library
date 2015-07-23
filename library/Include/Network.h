@@ -206,21 +206,21 @@ namespace IndustrialNetwork
 						*/
 						const std::string& GetNetworkId();
 						std::uint32_t GetCycleTime();
-						std::uint32_t GetAsyncMTU();
-						std::uint32_t GetMultiplexedCycleLength();
-						std::uint32_t GetPrescaler();
+						std::uint16_t GetAsyncMTU();
+						std::uint16_t GetMultiplexedCycleCount();
+						std::uint16_t GetPrescaler();
 
 						void SetCycleTime(const std::uint32_t cycleTime);
-						void SetAsyncMTU(const std::uint32_t asyncMTU);
-						void SetMultiplexedCycleLength(const std::uint32_t multiCycleLength);
-						void SetPrescaler(const std::uint32_t prescaler);
+						void SetAsyncMTU(const std::uint16_t asyncMTU);
+						void SetMultiplexedCycleCount(const std::uint16_t multiCycleLength);
+						void SetPrescaler(const std::uint16_t prescaler);
 
 					private:
 						std::string networkId;
 						std::uint32_t cycleTime;
-						std::uint32_t asyncMTU;
-						std::uint32_t multiplexedCycleLength;
-						std::uint32_t prescaler;
+						std::uint16_t asyncMTU;
+						std::uint16_t multiplexedCycleCount;
+						std::uint16_t prescaler;
 						std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>> nodeCollection;
 						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Configuration::PlkConfiguration>> buildConfigurations;
 						std::string activeConfiguration;

@@ -81,8 +81,8 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ClearNetworks();
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetCycleTime(const std::string& networkId, std::uint32_t cycleTime);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetAsyncMtu(const std::string& networkId, std::uint32_t asyncMtu);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetMultiplexedCycleLength(const std::string& networkId, std::uint16_t multiplexedCycleLength);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetAsyncMtu(const std::string& networkId, std::uint16_t asyncMtu);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetMultiplexedCycleCount(const std::string& networkId, std::uint16_t multiplexedCycleLength);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetPrescaler(const std::string& networkId, std::uint16_t prescaler);
 
 						//Build related API

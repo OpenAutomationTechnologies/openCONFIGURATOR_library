@@ -114,7 +114,7 @@ Result OpenConfiguratorCore::SetCycleTime(const std::string& networkId, uint32_t
 	return res;
 }
 
-Result OpenConfiguratorCore::SetAsyncMtu(const std::string& networkId, uint32_t asyncMtu)
+Result OpenConfiguratorCore::SetAsyncMtu(const std::string& networkId, uint16_t asyncMtu)
 {
 	std::shared_ptr<Network> networkPtr;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
@@ -134,19 +134,19 @@ Result OpenConfiguratorCore::SetAsyncMtu(const std::string& networkId, uint32_t 
 
 }
 
-Result OpenConfiguratorCore::SetMultiplexedCycleLength(const std::string& networkId, uint16_t multiplexedCycleLength)
+Result OpenConfiguratorCore::SetMultiplexedCycleCount(const std::string& networkId, uint16_t multiplexedCycleCount)
 {
 	std::shared_ptr<Network> networkPtr;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
 	if (res.IsSuccessful())
-		networkPtr->SetMultiplexedCycleLength(multiplexedCycleLength);
+		networkPtr->SetMultiplexedCycleCount(multiplexedCycleCount);
 
 	std::shared_ptr<ManagingNode> nodePtr;
 	res = networkPtr->GetManagingNode(nodePtr);
 	if (res.IsSuccessful())
 	{
 		std::stringstream multiplexedCycleCountStr;
-		multiplexedCycleCountStr << multiplexedCycleLength;
+		multiplexedCycleCountStr << multiplexedCycleCount;
 		return nodePtr->SetSubObjectActualValue(0x1F98, 0x7, multiplexedCycleCountStr.str());
 	}
 
