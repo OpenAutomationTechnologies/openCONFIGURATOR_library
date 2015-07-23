@@ -41,6 +41,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/format.hpp>
+#include <boost/any.hpp>
 
 #include "Constants.h"
 #include "IBaseObject.h"
@@ -82,11 +83,17 @@ namespace IndustrialNetwork
 
 						bool WriteToConfiguration() const;
 
-						const boost::optional<std::int64_t>& GetHighLimit() const;
-						void SetHighLimit(std::int64_t highLimit);
+						template<typename T>
+						T GetTypedHighLimit();
 
-						const boost::optional<std::int64_t>& GetLowLimit() const;
-						void SetLowLimit(std::int64_t lowLimit);
+						const boost::optional<boost::any>& GetHighLimit() const;
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetHighLimit(const std::string& highLimit);
+
+						template<typename T>
+						T GetTypedLowLimit();
+
+						const boost::optional<boost::any>& GetLowLimit() const;
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetLowLimit(const std::string& lowLimit);
 
 						const boost::optional<std::string>& GetUniqueIdRef() const;
 						void SetUniqueIdRef(const std::string& uniqueIdRef);
@@ -117,8 +124,8 @@ namespace IndustrialNetwork
 					private:
 
 						bool forceToCDC;
-						boost::optional<std::int64_t> highLimit;
-						boost::optional<std::int64_t> lowLimit;
+						boost::optional<boost::any> highLimit;
+						boost::optional<boost::any> lowLimit;
 						boost::optional<std::string> uniqueIdRef;
 						std::shared_ptr<Parameter> complexDataType;
 						boost::optional<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType> accessType;

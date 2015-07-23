@@ -442,11 +442,8 @@ Result OpenConfiguratorCore::CreateObject(const std::string& networkId, const ui
 	return res;
 }
 
-Result OpenConfiguratorCore::SetObjectLimits(const std::string& networkId, const uint8_t nodeId, uint32_t objectId, int64_t highlimit, int64_t lowLimit)
+Result OpenConfiguratorCore::SetObjectLimits(const std::string& networkId, const uint8_t nodeId, uint32_t objectId,  const std::string& lowLimit, const std::string& highLimit)
 {
-	if (lowLimit > highlimit)
-		return Result(ErrorCode::OBJECT_LIMITS_INVALID);
-
 	std::shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 	if (res.IsSuccessful())
@@ -459,8 +456,10 @@ Result OpenConfiguratorCore::SetObjectLimits(const std::string& networkId, const
 			res = node->GetObject(objectId, obj);
 			if (res.IsSuccessful())
 			{
-				obj->SetHighLimit(highlimit);
-				obj->SetLowLimit(lowLimit);
+				res = obj->SetLowLimit(lowLimit);
+				if (!res.IsSuccessful())
+					return res;
+				res = obj->SetHighLimit(highLimit);
 			}
 		}
 	}
@@ -523,11 +522,8 @@ Result OpenConfiguratorCore::CreateSubObject(const std::string& networkId, const
 	return res;
 }
 
-Result OpenConfiguratorCore::SetSubObjectLimits(const std::string& networkId, const uint8_t nodeId, uint32_t objectId, uint32_t subObjectId, int64_t highlimit, int64_t lowLimit)
+Result OpenConfiguratorCore::SetSubObjectLimits(const std::string& networkId, const uint8_t nodeId, uint32_t objectId, uint32_t subObjectId, const std::string& lowLimit, const std::string& highLimit)
 {
-	if (lowLimit > highlimit)
-		return Result(ErrorCode::OBJECT_LIMITS_INVALID);
-
 	std::shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 	if (res.IsSuccessful())
@@ -540,8 +536,10 @@ Result OpenConfiguratorCore::SetSubObjectLimits(const std::string& networkId, co
 			res = node->GetSubObject(objectId, subObjectId, subObj);
 			if (res.IsSuccessful())
 			{
-				subObj->SetHighLimit(highlimit);
-				subObj->SetLowLimit(lowLimit);
+				res = subObj->SetLowLimit(lowLimit);
+				if (!res.IsSuccessful())
+					return res;
+				res = subObj->SetHighLimit(highLimit);
 			}
 		}
 	}

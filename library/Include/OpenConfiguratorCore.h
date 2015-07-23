@@ -124,12 +124,12 @@ namespace IndustrialNetwork
 
 						//Object related API
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateObject(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ObjectType objectType, const std::string& name, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType accessType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping pdoMapping, const std::string& defaultValueToSet, const std::string& actualValueToSet);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetObjectLimits(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::int64_t highlimit, std::int64_t lowLimit);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetObjectLimits(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, const std::string& lowLimit, const std::string& highLimit);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateDomainObject(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ObjectType objectType, const std::string& name, const std::string& uniqueIdRef);
 
 						//SubObject related API
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateSubObject(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::uint32_t subObjectId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ObjectType objectType, const std::string& name, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType accessType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping pdoMapping, const std::string& defaultValueToSet, const std::string& actualValueToSet);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetSubObjectLimits(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::uint32_t subObjectId, std::int64_t highlimit, std::int64_t lowLimit);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetSubObjectLimits(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::uint32_t subObjectId, const std::string& lowLimit, const std::string& highlimit);
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateDomainSubObject(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::uint32_t subObjectId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ObjectType objectType, const std::string& name, const std::string& uniqueIdRef);
 

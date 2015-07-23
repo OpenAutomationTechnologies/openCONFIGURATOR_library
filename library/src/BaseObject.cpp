@@ -58,8 +58,8 @@ namespace IndustrialNetwork
 
 				BaseObject::BaseObject(uint32_t id, ObjectType objectType, const std::string& name, uint8_t containingNode) : IBaseObject(id, objectType, name),
 					forceToCDC(false),
-					highLimit(boost::optional<uint32_t>()),
-					lowLimit(boost::optional<uint32_t>()),
+					highLimit(boost::optional<boost::any>()),
+					lowLimit(boost::optional<boost::any>()),
 					uniqueIdRef(boost::optional<std::string>()),
 					complexDataType(),
 					accessType(boost::optional<AccessType>()),
@@ -71,8 +71,8 @@ namespace IndustrialNetwork
 
 				BaseObject::BaseObject(uint32_t id, ObjectType objectType, const std::string& name, uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping) : IBaseObject(id, objectType, name),
 					forceToCDC(false),
-					highLimit(boost::optional<uint32_t>()),
-					lowLimit(boost::optional<uint32_t>()),
+					highLimit(boost::optional<boost::any>()),
+					lowLimit(boost::optional<boost::any>()),
 					uniqueIdRef(boost::optional<std::string>()),
 					complexDataType(),
 					accessType(accessType),
@@ -84,8 +84,8 @@ namespace IndustrialNetwork
 
 				BaseObject::BaseObject(uint32_t id, ObjectType objectType, const std::string& name, uint8_t containingNode, const std::string& uniqueIdRef) : IBaseObject(id, objectType, name),
 					forceToCDC(false),
-					highLimit(boost::optional<uint32_t>()),
-					lowLimit(boost::optional<uint32_t>()),
+					highLimit(boost::optional<boost::any>()),
+					lowLimit(boost::optional<boost::any>()),
 					uniqueIdRef(uniqueIdRef),
 					complexDataType(),
 					accessType(boost::optional<AccessType>()),
@@ -113,24 +113,325 @@ namespace IndustrialNetwork
 					this->forceToCDC = force;
 				}
 
-				const boost::optional<int64_t>& BaseObject::GetHighLimit() const
+				const boost::optional<boost::any>& BaseObject::GetHighLimit() const
 				{
-					return highLimit;
+					return this->highLimit;
 				}
 
-				void BaseObject::SetHighLimit(int64_t highLimit)
+				template<typename T>
+				T BaseObject::GetTypedHighLimit()
 				{
-					this->highLimit = highLimit;
+					if (this->GetDataType().is_initialized() && this->GetHighLimit().is_initialized())
+					{
+						if (this->GetActualValue().type() == typeid(T))
+						{
+							return boost::any_cast<T>(this->GetLowLimit().get());
+						}
+						throw Result(ErrorCode::DATATYPE_MISMATCH);
+					}
+					throw Result(ErrorCode::OBJECT_HAS_NO_DATATYPE);
+				}
+				template uint16_t BaseObject::GetTypedHighLimit<uint16_t>();
+				template uint32_t BaseObject::GetTypedHighLimit<uint32_t>();
+				template uint64_t BaseObject::GetTypedHighLimit<uint64_t>();
+				template int16_t BaseObject::GetTypedHighLimit<int16_t>();
+				template int32_t BaseObject::GetTypedHighLimit<int32_t>();
+				template int64_t BaseObject::GetTypedHighLimit<int64_t>();
+				template float BaseObject::GetTypedHighLimit<float>();
+				template double BaseObject::GetTypedHighLimit<double>();
+
+				Result BaseObject::SetHighLimit(const std::string& highLimit)
+				{
+					if (!this->GetDataType().is_initialized())
+						return Result(ErrorCode::OBJECT_HAS_NO_DATATYPE);
+
+					switch (this->GetDataType().get())
+					{
+						case PlkDataType::INTEGER8:
+							{
+								if (highLimit.empty())
+									this->highLimit = (int16_t) INT8_MAX;
+								else
+								{
+									int16_t value = HexToInt<int16_t>(highLimit);
+									this->highLimit = value;
+								}
+								break;
+							}
+
+						case PlkDataType::INTEGER16:
+							{
+								if (highLimit.empty())
+									this->highLimit = INT16_MAX;
+								else
+								{
+									int16_t value = HexToInt<int16_t>(highLimit);
+									this->highLimit = value;
+								}
+								break;
+							}
+						case PlkDataType::INTEGER24:
+						case PlkDataType::INTEGER32:
+							{
+								if (highLimit.empty())
+									this->highLimit = INT32_MAX;
+								else
+								{
+									int32_t value = HexToInt<int32_t>(highLimit);
+									this->highLimit = value;
+								}
+								break;
+							}
+						case PlkDataType::UNSIGNED8:
+							if (highLimit.empty())
+								this->highLimit = (uint16_t) UINT8_MAX;
+							else
+							{
+								uint16_t value = HexToInt<uint16_t>(highLimit);
+								this->highLimit = value;
+							}
+							break;
+						case PlkDataType::UNSIGNED16:
+							{
+								if (highLimit.empty())
+									this->highLimit = UINT16_MAX;
+								else
+								{
+									uint16_t value = HexToInt<uint16_t>(highLimit);
+									this->highLimit = value;
+								}
+								break;
+							}
+						case PlkDataType::UNSIGNED24:
+						case PlkDataType::UNSIGNED32:
+							{
+								if (highLimit.empty())
+									this->highLimit = UINT32_MAX;
+								else
+								{
+									uint32_t value = HexToInt<uint32_t>(highLimit);
+									this->highLimit = value;
+								}
+								break;
+							}
+						case PlkDataType::REAL32:
+							{
+								float value = boost::lexical_cast<float>(highLimit);
+								this->highLimit = value;
+								break;
+							}
+						case PlkDataType::REAL64:
+							{
+								double value = boost::lexical_cast<double>(highLimit);
+								this->highLimit = value;
+								break;
+							}
+						case PlkDataType::INTEGER40:
+						case PlkDataType::INTEGER48:
+						case PlkDataType::INTEGER56:
+						case PlkDataType::INTEGER64:
+							{
+								if (highLimit.empty())
+									this->highLimit = INT64_MAX;
+								else
+								{
+									int64_t value = HexToInt<int64_t>(highLimit);
+									this->highLimit = value;
+								}
+								break;
+							}
+						case PlkDataType::UNSIGNED40:
+						case PlkDataType::UNSIGNED48:
+						case PlkDataType::UNSIGNED56:
+						case PlkDataType::UNSIGNED64:
+							{
+								if (highLimit.empty())
+									this->highLimit = UINT64_MAX;
+								else
+								{
+									uint64_t value = HexToInt<uint64_t>(highLimit);
+									this->highLimit = value;
+								}
+								break;
+							}
+						case PlkDataType::BOOLEAN:
+						case PlkDataType::Domain:
+						case PlkDataType::MAC_ADDRESS:
+						case PlkDataType::IP_ADDRESS:
+						case PlkDataType::NETTIME:
+						case PlkDataType::VISIBLE_STRING:
+						case PlkDataType::OCTET_STRING:
+						case PlkDataType::UNICODE_STRING:
+						case PlkDataType::TIME_OF_DAY:
+						case PlkDataType::TIME_DIFF:
+							{
+								return Result(ErrorCode::DATATYPE_DOES_NOT_SUPPORT_LIMITS);
+							}
+						default:
+							break;
+					}
+					return Result();
 				}
 
-				const boost::optional<int64_t>& BaseObject::GetLowLimit() const
+				const boost::optional<boost::any>& BaseObject::GetLowLimit() const
 				{
-					return lowLimit;
+					return this->lowLimit;
 				}
 
-				void BaseObject::SetLowLimit(int64_t lowLimit)
+				template<typename T>
+				T BaseObject::GetTypedLowLimit()
 				{
-					this->lowLimit = lowLimit;
+					if (this->GetDataType().is_initialized() && this->GetLowLimit().is_initialized())
+					{
+						if (this->GetActualValue().type() == typeid(T))
+						{
+							return boost::any_cast<T>(this->GetLowLimit().get());
+						}
+						throw Result(ErrorCode::DATATYPE_MISMATCH);
+					}
+					throw Result(ErrorCode::OBJECT_HAS_NO_DATATYPE);
+				}
+				template uint16_t BaseObject::GetTypedLowLimit<uint16_t>();
+				template uint32_t BaseObject::GetTypedLowLimit<uint32_t>();
+				template uint64_t BaseObject::GetTypedLowLimit<uint64_t>();
+				template int16_t BaseObject::GetTypedLowLimit<int16_t>();
+				template int32_t BaseObject::GetTypedLowLimit<int32_t>();
+				template int64_t BaseObject::GetTypedLowLimit<int64_t>();
+				template float BaseObject::GetTypedLowLimit<float>();
+				template double BaseObject::GetTypedLowLimit<double>();
+
+				Result BaseObject::SetLowLimit(const std::string& lowLimit)
+				{
+					if (!this->GetDataType().is_initialized())
+						return Result(ErrorCode::OBJECT_HAS_NO_DATATYPE);
+
+					switch (this->GetDataType().get())
+					{
+						case PlkDataType::INTEGER8:
+							{
+								if (lowLimit.empty())
+									this->lowLimit = (int16_t) INT8_MIN;
+								else
+								{
+									int16_t value = HexToInt<int16_t>(lowLimit);
+									this->lowLimit = value;
+								}
+								break;
+							}
+						case PlkDataType::INTEGER16:
+							{
+								if (lowLimit.empty())
+									this->lowLimit = INT16_MIN;
+								else
+								{
+									int16_t value = HexToInt<int16_t>(lowLimit);
+									this->lowLimit = value;
+								}
+								break;
+							}
+						case PlkDataType::INTEGER24:
+						case PlkDataType::INTEGER32:
+							{
+								if (lowLimit.empty())
+									this->lowLimit = INT32_MIN;
+								else
+								{
+									int32_t value = HexToInt<int32_t>(lowLimit);
+									this->lowLimit = value;
+								}
+								break;
+							}
+						case PlkDataType::UNSIGNED8:
+							{
+								if (lowLimit.empty())
+									this->lowLimit = (uint16_t) 0;
+								else
+								{
+									uint16_t value = HexToInt<uint16_t>(lowLimit);
+									this->lowLimit = value;
+								}
+								break;
+							}
+						case PlkDataType::UNSIGNED16:
+							{
+								if (lowLimit.empty())
+									this->lowLimit = (uint16_t) 0;
+								else
+								{
+									uint16_t value = HexToInt<uint16_t>(lowLimit);
+									this->lowLimit = value;
+								}
+								break;
+							}
+						case PlkDataType::UNSIGNED24:
+						case PlkDataType::UNSIGNED32:
+							{
+								if (lowLimit.empty())
+									this->lowLimit = (uint32_t) 0;
+								else
+								{
+									uint32_t value = HexToInt<uint32_t>(lowLimit);
+									this->lowLimit = value;
+								}
+								break;
+							}
+						case PlkDataType::REAL32:
+							{
+								float value = boost::lexical_cast<float>(lowLimit);
+								this->lowLimit = value;
+								break;
+							}
+						case PlkDataType::REAL64:
+							{
+								double value = boost::lexical_cast<double>(lowLimit);
+								this->lowLimit = value;
+								break;
+							}
+						case PlkDataType::INTEGER40:
+						case PlkDataType::INTEGER48:
+						case PlkDataType::INTEGER56:
+						case PlkDataType::INTEGER64:
+							{
+								if (lowLimit.empty())
+									this->lowLimit = INT64_MIN;
+								else
+								{
+									int64_t value = HexToInt<int64_t>(lowLimit);
+									this->lowLimit = value;
+								}
+								break;
+							}
+						case PlkDataType::UNSIGNED40:
+						case PlkDataType::UNSIGNED48:
+						case PlkDataType::UNSIGNED56:
+						case PlkDataType::UNSIGNED64:
+							{
+								if (lowLimit.empty())
+									this->lowLimit = (uint64_t) 0;
+								else
+								{
+									uint64_t value = HexToInt<uint64_t>(lowLimit);
+									this->lowLimit = value;
+								}
+								break;
+							}
+						case PlkDataType::BOOLEAN:
+						case PlkDataType::Domain:
+						case PlkDataType::MAC_ADDRESS:
+						case PlkDataType::IP_ADDRESS:
+						case PlkDataType::NETTIME:
+						case PlkDataType::VISIBLE_STRING:
+						case PlkDataType::OCTET_STRING:
+						case PlkDataType::UNICODE_STRING:
+						case PlkDataType::TIME_OF_DAY:
+						case PlkDataType::TIME_DIFF:
+							{
+								return Result(ErrorCode::DATATYPE_DOES_NOT_SUPPORT_LIMITS);
+							}
+						default:
+							break;
+					}
+					return Result();
 				}
 
 				const boost::optional<std::string>& BaseObject::GetUniqueIdRef() const
@@ -197,7 +498,7 @@ namespace IndustrialNetwork
 
 				template<> std::string BaseObject::GetTypedActualValue<std::string>()
 				{
-					if (this->GetDataType().is_initialized() && !this->GetActualValue().empty())
+					if (!this->GetDataType().is_initialized() && !this->GetActualValue().empty())
 						throw Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE);
 
 					std::stringstream convertString;
@@ -343,11 +644,9 @@ namespace IndustrialNetwork
 					return "";
 				}
 				template bool BaseObject::GetTypedActualValue<bool>();
-				template uint8_t BaseObject::GetTypedActualValue<uint8_t>();
 				template uint16_t BaseObject::GetTypedActualValue<uint16_t>();
 				template uint32_t BaseObject::GetTypedActualValue<uint32_t>();
 				template uint64_t BaseObject::GetTypedActualValue<uint64_t>();
-				template int8_t BaseObject::GetTypedActualValue<int8_t>();
 				template int16_t BaseObject::GetTypedActualValue<int16_t>();
 				template int32_t BaseObject::GetTypedActualValue<int32_t>();
 				template int64_t BaseObject::GetTypedActualValue<int64_t>();
@@ -375,7 +674,7 @@ namespace IndustrialNetwork
 
 				template<> std::string BaseObject::GetTypedDefaultValue<std::string>()
 				{
-					if (this->GetDataType().is_initialized() && !this->GetDefaultValue().empty())
+					if (!this->GetDataType().is_initialized() && !this->GetDefaultValue().empty())
 						throw Result(ErrorCode::OBJECT_HAS_NO_DEFAULT_VALUE);
 
 					std::stringstream convertString;
@@ -514,19 +813,18 @@ namespace IndustrialNetwork
 					return "";
 				}
 				template bool BaseObject::GetTypedDefaultValue<bool>();
-				template uint8_t BaseObject::GetTypedDefaultValue<uint8_t>();
 				template uint16_t BaseObject::GetTypedDefaultValue<uint16_t>();
 				template uint32_t BaseObject::GetTypedDefaultValue<uint32_t>();
 				template uint64_t BaseObject::GetTypedDefaultValue<uint64_t>();
-				template int8_t BaseObject::GetTypedDefaultValue<int8_t>();
 				template int16_t BaseObject::GetTypedDefaultValue<int16_t>();
 				template int32_t BaseObject::GetTypedDefaultValue<int32_t>();
 				template int64_t BaseObject::GetTypedDefaultValue<int64_t>();
+				template float BaseObject::GetTypedDefaultValue<float>();
 				template double BaseObject::GetTypedDefaultValue<double>();
 
 				Result BaseObject::SetTypedObjectActualValue(const std::string& actualValue)
 				{
-					if (this->GetDataType().is_initialized())
+					if (!this->GetDataType().is_initialized())
 						return Result(ErrorCode::OBJECT_HAS_NO_DATATYPE);
 
 					switch (this->GetDataType().get())
@@ -550,12 +848,12 @@ namespace IndustrialNetwork
 								int16_t value = HexToInt<int16_t>(actualValue);
 								if (this->highLimit.is_initialized())
 								{
-									if (value > this->highLimit.get())
+									if (value > this->GetTypedHighLimit<uint16_t>())
 										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
 								}
 								if (this->lowLimit.is_initialized())
 								{
-									if (value < this->lowLimit.get())
+									if (value < this->GetTypedLowLimit<uint16_t>())
 										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
 								}
 								this->SetActualValue(boost::any(value));
@@ -572,12 +870,12 @@ namespace IndustrialNetwork
 								int32_t value = HexToInt<int32_t>(actualValue);
 								if (this->highLimit.is_initialized())
 								{
-									if (value > this->highLimit.get())
+									if (value > this->GetTypedHighLimit<int32_t>())
 										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
 								}
 								if (this->lowLimit.is_initialized())
 								{
-									if (value < this->lowLimit.get())
+									if (value < this->GetTypedLowLimit<int32_t>())
 										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
 								}
 								this->SetActualValue(boost::any(value));
@@ -593,12 +891,12 @@ namespace IndustrialNetwork
 								uint16_t value = HexToInt<uint16_t>(actualValue);
 								if (this->highLimit.is_initialized())
 								{
-									if (value > this->highLimit.get())
+									if (value > this->GetTypedHighLimit<uint16_t>())
 										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
 								}
 								if (this->lowLimit.is_initialized())
 								{
-									if (value < this->lowLimit.get())
+									if (value < this->GetTypedLowLimit<uint16_t>())
 										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
 								}
 								this->SetActualValue(boost::any(value));
@@ -616,12 +914,12 @@ namespace IndustrialNetwork
 								uint32_t value = HexToInt<uint32_t>(actualValue);
 								if (this->highLimit.is_initialized())
 								{
-									if (value > this->highLimit.get())
+									if (value > this->GetTypedHighLimit<uint32_t>())
 										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
 								}
 								if (this->lowLimit.is_initialized())
 								{
-									if (value < this->lowLimit.get())
+									if (value < this->GetTypedLowLimit<uint32_t>())
 										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
 								}
 								this->SetActualValue(boost::any(value));
@@ -641,12 +939,12 @@ namespace IndustrialNetwork
 								int32_t value = HexToInt<int32_t>(actualValue);
 								if (this->highLimit.is_initialized())
 								{
-									if (value > this->highLimit.get())
+									if (value > this->GetTypedHighLimit<int32_t>())
 										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
 								}
 								if (this->lowLimit.is_initialized())
 								{
-									if (value < this->lowLimit.get())
+									if (value < this->GetTypedLowLimit<int32_t>())
 										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
 								}
 								this->SetActualValue(boost::any(value));
@@ -691,12 +989,12 @@ namespace IndustrialNetwork
 								int64_t value = HexToInt<int64_t>(actualValue);
 								if (this->highLimit.is_initialized())
 								{
-									if (value > this->highLimit.get())
+									if (value > this->GetTypedHighLimit<int64_t>())
 										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
 								}
 								if (this->lowLimit.is_initialized())
 								{
-									if (value < this->lowLimit.get())
+									if (value < this->GetTypedHighLimit<int64_t>())
 										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
 								}
 								this->SetActualValue(boost::any(value));
@@ -717,12 +1015,12 @@ namespace IndustrialNetwork
 								uint64_t value = HexToInt<uint64_t>(actualValue);
 								if (this->highLimit.is_initialized())
 								{
-									if (value > this->highLimit.get())
+									if (value > this->GetTypedHighLimit<uint64_t>())
 										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
 								}
 								if (this->lowLimit.is_initialized())
 								{
-									if (value < this->lowLimit.get())
+									if (value < this->GetTypedLowLimit<uint64_t>())
 										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
 								}
 								if (this->GetDefaultValue().empty())
@@ -759,7 +1057,7 @@ namespace IndustrialNetwork
 
 				void BaseObject::SetTypedObjectDefaultValue(const std::string& defaultValue)
 				{
-					if (this->GetDataType().is_initialized())
+					if (!this->GetDataType().is_initialized())
 						throw  Result(ErrorCode::OBJECT_HAS_NO_DATATYPE);
 
 					switch (this->GetDataType().get())

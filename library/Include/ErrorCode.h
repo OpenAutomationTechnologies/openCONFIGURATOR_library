@@ -130,7 +130,8 @@ namespace IndustrialNetwork
 					SUB_OBJECT_HAS_NO_ACTUAL_VALUE, // < The sub object does not have a defined actual value
 					OBJECT_HAS_NO_DEFAULT_VALUE, // < The object does not have a defined default value
 					SUB_OBJECT_HAS_NO_DEFAULT_VALUE, // < The sub object does not have a defined default value
-					OBJECT_HAS_NO_DATATYPE //An object has no defined data type.
+					OBJECT_HAS_NO_DATATYPE, //An object has no defined data type.
+					DATATYPE_DOES_NOT_SUPPORT_LIMITS // A data type that does not support the definition of high and low limit.
 				};
 
 			}
