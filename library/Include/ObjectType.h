@@ -55,12 +55,8 @@ namespace IndustrialNetwork
 					ARRAY = 8,
 					RECORD = 9
 				};
-
 			}
-
 		}
-
 	}
-
 }
 #endif

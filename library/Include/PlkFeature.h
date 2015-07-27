@@ -94,12 +94,8 @@ namespace IndustrialNetwork
 						boost::any actualValue;
 
 				};
-
 			}
-
 		}
-
 	}
-
 }
 #endif

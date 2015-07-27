@@ -228,12 +228,8 @@ namespace IndustrialNetwork
 						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Configuration::PlkConfiguration>> buildConfigurations;
 						std::string activeConfiguration;
 				};
-
 			}
-
 		}
-
 	}
-
 }
 #endif

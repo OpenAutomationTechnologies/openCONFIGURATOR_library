@@ -35,6 +35,8 @@ using namespace IndustrialNetwork::POWERLINK::Core::Node;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
+using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
+
 
 BaseNode::BaseNode(uint8_t nodeId, const std::string& name) :
 	nodeId(nodeId),
@@ -45,8 +47,10 @@ BaseNode::BaseNode(uint8_t nodeId, const std::string& name) :
 	nodeAssignment(std::vector<NodeAssignment>()),
 	networkManagement(std::make_shared<NetworkManagement>()),
 	dynamicChannelList(std::vector<std::shared_ptr<DynamicChannel>>()),
-	transmitMapping(std::vector<std::shared_ptr<TxProcessDataMappingObject>>()),
-	receiveMapping(std::vector<std::shared_ptr<RxProcessDataMappingObject>>())
+	transmitMapping(std::vector<std::shared_ptr<BaseProcessDataMapping>>()),
+	receiveMapping(std::vector<std::shared_ptr<BaseProcessDataMapping>>()),
+	transmitProcessImage(std::vector<std::shared_ptr<BaseProcessImageObject>>()),
+	receiveProcessImage(std::vector<std::shared_ptr<BaseProcessImageObject>>())
 {}
 
 BaseNode::~BaseNode()
@@ -101,6 +105,16 @@ std::shared_ptr<NetworkManagement>& BaseNode::GetNetworkManagement()
 std::shared_ptr<ApplicationProcess>& BaseNode::GetApplicationProcess()
 {
 	return this->applicationProcess;
+}
+
+std::vector<std::shared_ptr<BaseProcessDataMapping>>& BaseNode::GetTransmitMapping()
+{
+	return this->transmitMapping;
+}
+
+std::vector<std::shared_ptr<BaseProcessDataMapping>>& BaseNode::GetReceiveMapping()
+{
+	return this->receiveMapping;
 }
 
 Result BaseNode::AddObject(std::shared_ptr<Object>& objRef)
@@ -189,7 +203,10 @@ Result BaseNode::ForceObject(uint32_t objectId, bool force, const std::string& a
 		% (uint32_t) nodeId;
 		LOG_INFO() << formatter.str();
 	}
-
+	else
+	{
+		iter->second->ClearActualValue(); //Clear the actual value
+	}
 	return Result();
 }
 
@@ -234,14 +251,9 @@ Result BaseNode::SetObjectActualValue(uint32_t objectId, const std::string& actu
 	}
 	else
 	{
-		//Actual value must not be set to empty
-		boost::format formatter(kMsgEmptyArgument);
-		formatter
-		% "actual value";
-		LOG_FATAL() << formatter.str();
-		return Result(ErrorCode::ARGUMENT_INVALID_EMPTY, formatter.str());
+		iter->second->ClearActualValue(); //Clear the actual value
 	}
-
+	return Result();
 }
 
 Result BaseNode::GetObject(uint32_t objectId, std::shared_ptr<Object>& objRef)
@@ -306,12 +318,7 @@ Result BaseNode::ForceSubObject(uint32_t objectId, uint32_t subObjectId, bool fo
 		}
 		else
 		{
-			//Actual value must not be set to empty
-			boost::format formatter(kMsgEmptyArgument);
-			formatter
-			% "actual value";
-			LOG_FATAL() << formatter.str();
-			res = Result(ErrorCode::ARGUMENT_INVALID_EMPTY, formatter.str());
+			subObject->ClearActualValue(); //Clear the actual value
 		}
 	}
 	return res;
@@ -364,12 +371,7 @@ Result BaseNode::SetSubObjectActualValue(uint32_t objectId, uint32_t subObjectId
 		}
 		else
 		{
-			//Actual value must not be set to empty
-			boost::format formatter(kMsgEmptyArgument);
-			formatter
-			% "actual value";
-			LOG_FATAL() << formatter.str();
-			res = Result(ErrorCode::ARGUMENT_INVALID_EMPTY, formatter.str());
+			subObject->ClearActualValue(); //Clear the actual value
 		}
 	}
 	return res;
@@ -404,4 +406,34 @@ void BaseNode::SetEnabled(bool enabled)
 	% enabled;
 	LOG_INFO() << formatter.str();
 	this->enabled = enabled;
+}
+
+std::vector<std::shared_ptr<BaseProcessImageObject>>& BaseNode::GetTransmitProcessImage()
+{
+	return this->transmitProcessImage;
+}
+
+std::vector<std::shared_ptr<BaseProcessImageObject>>& BaseNode::GetReceiveProcessImage()
+{
+	return this->receiveProcessImage;
+}
+
+std::uint32_t BaseNode::GetTransmitProcessImageSize()
+{
+	std::uint32_t size = 0;
+	for (auto& transPI : this->transmitProcessImage)
+	{
+		size = size + transPI->GetSize();
+	}
+	return size;
+}
+
+std::uint32_t BaseNode::GetReceiveProcessImageSize()
+{
+	std::uint32_t size = 0;
+	for (auto& recPI : this->receiveProcessImage)
+	{
+		size = size + recPI->GetSize();
+	}
+	return size;
 }

@@ -35,6 +35,7 @@ using namespace IndustrialNetwork::POWERLINK::Core::Node;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
+using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 
 ControlledNode::ControlledNode(uint8_t nodeID, const std::string& nodeName) : BaseNode(nodeID, nodeName),
 	operationMode(PlkOperationMode::NORMAL)
@@ -89,28 +90,435 @@ uint32_t ControlledNode::GetNodeAssignmentValue()
 	NodeAssignment assign = this->GetNodeAssignment()[0];
 	for (auto var : this->GetNodeAssignment())
 	{
-		assign |=  var;
+		assign |= var;
 	}
 
 	return static_cast<std::underlying_type<NodeAssignment>::type>(assign);
 }
 
-Result ControlledNode::MapToFrame(BaseObject& index, uint32_t position, Direction dir)
+Result ControlledNode::MapObject(std::uint32_t index, const Direction dir, std::uint32_t position, std::uint16_t fromNode)
 {
+	//Retrieve object to be mapped
+	std::shared_ptr<Object> objToMap;
+	Result res = this->GetObject(index, objToMap);
+	if (!res.IsSuccessful())
+		return res;
+
+	//Map object
+	return this->MapBaseObject(objToMap, index, 0, dir, false, position, fromNode);
+}
+
+Result ControlledNode::MapSubObject(std::uint32_t index, std::uint16_t subindex, const Direction dir, std::uint32_t position, std::uint16_t fromNode)
+{
+	//retrieve sub object to be mapped
+	std::shared_ptr<SubObject> objToMap;
+	Result res = this->GetSubObject(index, subindex, objToMap);
+	if (!res.IsSuccessful())
+		return res;
+
+	//Map subobject
+	return this->MapBaseObject(objToMap, index, subindex, dir, false, position, fromNode);
+}
+
+Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap, std::uint32_t index, std::uint16_t subindex, const Direction dir, bool updateNrOfEntries, std::uint32_t position, std::uint16_t fromNode)
+{
+	//Object has domain datatype
+	if (objToMap->GetUniqueIdRef().is_initialized() &&
+	        objToMap->GetDataType().get() == PlkDataType::Domain)
+	{
+		//Retrieve domain parameter
+		std::shared_ptr<Parameter> param;
+		Result res = this->GetApplicationProcess()->GetParameter(objToMap->GetUniqueIdRef().get(), param);
+		if (!res.IsSuccessful())
+			return res;
+
+		//Check Parameter access depeding on direction
+		if (dir == Direction::RX)
+		{
+			//Check complex data type access
+			if (param->GetParameterAccess() == ParameterAccess::readWriteInput
+			        || param->GetParameterAccess() == ParameterAccess::read)
+			{
+				//Parameter access does not match mapping direction
+				boost::format formatter(kMsgAccessTypeForParameterInvalid);
+				formatter
+				% param->GetUniqueID()
+				% index
+				% subindex
+				% (std::uint32_t) this->GetNodeIdentifier()
+				% ParameterAccessValues[(std::uint8_t) param->GetParameterAccess()];
+				LOG_FATAL() << formatter.str();
+				return Result(ErrorCode::PARAMETER_ACCESS_INVALID, formatter.str());
+			}
+		}
+		else if (dir == Direction::TX)
+		{
+			if (param->GetParameterAccess() == ParameterAccess::readWriteOutput
+			        || param->GetParameterAccess() == ParameterAccess::write)
+			{
+				//Parameter access does not match mapping direction
+				boost::format formatter(kMsgAccessTypeForParameterInvalid);
+				formatter
+				% param->GetUniqueID()
+				% index
+				% subindex
+				% (std::uint32_t) this->GetNodeIdentifier()
+				% ParameterAccessValues[(std::uint8_t) param->GetParameterAccess()];
+				LOG_FATAL() << formatter.str();
+				return Result(ErrorCode::PARAMETER_ACCESS_INVALID, formatter.str());
+			}
+		}
+	}
+
+	//Check PDOMapping
+	if (objToMap->GetPDOMapping().is_initialized())
+	{
+		if (dir == Direction::RX)
+		{
+			if (objToMap->GetPDOMapping().get() != PDOMapping::RPDO)
+			{
+				boost::format formatter(kMsgMappingTypeForPdoInvalid);
+				formatter
+				% index
+				% subindex
+				% (std::uint32_t) this->GetNodeIdentifier()
+				% PDOMappingValues[(std::uint8_t) objToMap->GetPDOMapping().get()];
+				LOG_FATAL() << formatter.str();
+				return Result(ErrorCode::MAPPING_TYPE_FOR_PDO_INVALID, formatter.str());
+			}
+		}
+		else if (dir == Direction::TX)
+		{
+			if (objToMap->GetPDOMapping().get() != PDOMapping::TPDO)
+			{
+				boost::format formatter(kMsgMappingTypeForPdoInvalid);
+				formatter
+				% index
+				% subindex
+				% (std::uint32_t) this->GetNodeIdentifier()
+				% PDOMappingValues[(std::uint8_t) objToMap->GetPDOMapping().get()];
+				LOG_FATAL() << formatter.str();
+				return Result(ErrorCode::MAPPING_TYPE_FOR_PDO_INVALID, formatter.str());
+			}
+		}
+	}
+	//Every object to be mapped needs a PDOMapping attribute
+	else
+	{
+		boost::format formatter(kMsgMappingTypeForPdoInvalid);
+		formatter
+		% index
+		% subindex
+		% (std::uint32_t) this->GetNodeIdentifier()
+		% "Not defined";
+		LOG_FATAL() << formatter.str();
+		return Result(ErrorCode::MAPPING_TYPE_FOR_PDO_INVALID, formatter.str());
+	}
+
+	//Check AccessType
+	if (objToMap->GetAccessType().is_initialized())
+	{
+		if (dir == Direction::RX)
+		{
+			if (objToMap->GetAccessType().get() != AccessType::WO
+			        && objToMap->GetAccessType().get() != AccessType::WOS
+			        && objToMap->GetAccessType().get() != AccessType::RW)
+			{
+				boost::format formatter(kMsgAccessTypeForPdoInvalid);
+				formatter
+				% index
+				% subindex
+				% (std::uint32_t) this->GetNodeIdentifier()
+				% AccessTypeValues[(std::uint8_t) objToMap->GetAccessType().get()];
+				LOG_FATAL() << formatter.str();
+				return Result(ErrorCode::ACCESS_TYPE_FOR_PDO_INVALID, formatter.str());
+			}
+		}
+		else if (dir == Direction::TX)
+		{
+			if (objToMap->GetAccessType().get() != AccessType::RO
+			        && objToMap->GetAccessType().get() != AccessType::RW
+			        && objToMap->GetAccessType().get() != AccessType::RWS)
+			{
+				boost::format formatter(kMsgAccessTypeForPdoInvalid);
+				formatter
+				% index
+				% subindex
+				% (std::uint32_t) this->GetNodeIdentifier()
+				% AccessTypeValues[(std::uint8_t) objToMap->GetAccessType().get()];
+				LOG_FATAL() << formatter.str();
+				return Result(ErrorCode::ACCESS_TYPE_FOR_PDO_INVALID, formatter.str());
+			}
+		}
+	}
+	//Domain object must not have an access type all the other must have an access type attribute
+	else if (!objToMap->GetUniqueIdRef().is_initialized())
+	{
+		boost::format formatter(kMsgAccessTypeForParameterInvalid);
+		formatter
+		% index
+		% subindex
+		% (std::uint32_t) this->GetNodeIdentifier()
+		% PDOMappingValues[(std::uint8_t) objToMap->GetPDOMapping().get()];
+		LOG_FATAL() << formatter.str();
+		return Result(ErrorCode::MAPPING_TYPE_FOR_PDO_INVALID, formatter.str());
+	}
+
+	//Calculate mapping parameter
+	std::uint32_t mappingObjectIndex = 0;
+	std::uint32_t mappingParameterIndex = 0x1400;
+
+	if (dir == Direction::RX)
+	{
+		bool mappingParameterFound = false;
+		//Find appropriate index for the node
+		//default mapping from managing node
+		bool writeNewMappingParameterObject = false;
+		std::shared_ptr<SubObject> mappingParameter;
+		//Traverse 0x1400 - 0x14FF
+		for (; mappingParameterIndex < 0x1500; mappingParameterIndex++)
+		{
+			//Get SubObject 0x1 "NodeID"
+			std::shared_ptr<SubObject> subObj;
+			Result res = this->GetSubObject(mappingParameterIndex, 0x1, subObj);
+			if (!res.IsSuccessful())
+				return res;
+
+			//Has actual node id value
+			if (subObj->WriteToConfiguration())
+			{
+				//Get node is value
+				std::uint16_t nodeId = subObj->GetTypedActualValue<uint16_t>();
+				//If node ids match calculate mapping object index
+				if (fromNode == nodeId)
+				{
+					mappingObjectIndex = (mappingParameterIndex - 0x1400) + 0x1600;
+					writeNewMappingParameterObject = false; //Correct
+					mappingParameterFound = true;
+					break;
+				}
+			}
+			//Take the first available mapping index usually 0x1600 for default TPDO mapping
+			else if (subObj->WriteToConfiguration() == false && fromNode == 0)
+			{
+				mappingObjectIndex = (mappingParameterIndex - 0x1400) + 0x1600;
+				writeNewMappingParameterObject = false;
+				mappingParameterFound = true;
+				break;
+			}
+			//Find and store the first available if no appropriate mapping parameter object found
+			else if (subObj->WriteToConfiguration() == false
+			         && fromNode != 0
+			         && writeNewMappingParameterObject == false) //Take the first available mapping index for a node
+			{
+				mappingObjectIndex = (mappingParameterIndex - 0x1400) + 0x1600; //Store this index if no appropriate one is found
+				writeNewMappingParameterObject = true;
+				mappingParameterFound = true;
+				mappingParameter = subObj;
+			}
+		}
+
+		//Set node id for new mapping parameter
+		if (writeNewMappingParameterObject)
+		{
+			mappingParameter->SetActualValue(boost::any(fromNode));
+			mappingParameterFound = true;
+		}
+
+		//No mapping parameter has been found or is available
+		if (!mappingParameterFound)
+		{
+			return Result(ErrorCode::INSUFFICIENT_MAPPING_OBJECTS);
+		}
+	}
+	else if (dir == Direction::TX)
+	{
+		mappingObjectIndex = 0x1A00; //usually a node only has one Tx PDO
+	}
+
+	//Get mapping object
+	std::shared_ptr<Object> mappingObj;
+	Result res = this->GetObject(mappingObjectIndex, mappingObj);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::uint16_t nrOfEntries = 0; //mapping object NrOfEntries
+	std::uint32_t offset = 0; // Mapping offset
+	std::uint32_t expectedOffset = 0; //calculated mapping offset with object + datasize
+
+	if (mappingObj->GetSubObjectCollection().size() < position)
+	{
+		return Result(ErrorCode::INSUFFICIENT_MAPPING_OBJECTS);
+	}
+
+	for (auto& tMapping : mappingObj->GetSubObjectCollection())
+	{
+		//Skip the first subobject
+		if (nrOfEntries == 0)
+		{
+			nrOfEntries++;
+			continue;
+		}
+
+		//Get mapping object on destined position
+		std::shared_ptr<SubObject> currentMappingObj;
+		res = this->GetSubObject(mappingObjectIndex, position, currentMappingObj);
+		if (!res.IsSuccessful())
+			return res;
+
+		//if traversal has reached the position
+		if (nrOfEntries == position)
+		{
+			//there is an existing mapping retrieve the offset
+			if (tMapping.second->WriteToConfiguration())
+			{
+				BaseProcessDataMapping object = BaseProcessDataMapping(tMapping.second->GetTypedActualValue<std::string>(), this->GetNodeIdentifier(), false);
+				offset = object.GetMappingOffset();
+			}
+
+			if (offset < expectedOffset)
+				offset = expectedOffset;
+
+			//Build mapping string
+			std::stringstream mappingObjStr;
+			mappingObjStr << "0x";
+
+			//Write mapping length
+			mappingObjStr << std::uppercase << std::hex << std::setw(4) << std::setfill('0') << std::right << objToMap->GetBitSize();
+			//Write mapping offset
+			mappingObjStr << std::uppercase << std::hex << std::setw(4) << std::setfill('0') << std::right << offset;
+			//Write alignment
+			mappingObjStr << std::uppercase << std::hex << std::setw(2) << std::setfill('0') << "";
+			//Write mapping subindex
+			mappingObjStr << std::uppercase << std::hex << std::setw(2) << std::setfill('0') << std::right << subindex;
+			//Write mapping index
+			mappingObjStr << std::uppercase << std::hex << std::setw(4) << std::setfill('0') << std::right << index;
+
+			//Set new actual value
+			tMapping.second->SetTypedObjectActualValue(mappingObjStr.str());
+
+			expectedOffset = offset + objToMap->GetBitSize();
+			nrOfEntries++;
+			continue;
+
+		}
+
+		// position not reached calculate the offsets
+		// skip empty mapping objects
+		if (tMapping.second->WriteToConfiguration())
+		{
+			BaseProcessDataMapping object = BaseProcessDataMapping(tMapping.second->GetTypedActualValue<std::string>(), this->GetNodeIdentifier(), false);
+
+			//offset is ok go on
+			if (expectedOffset >= object.GetMappingOffset())
+			{
+				//offset is ok write current mapping offset
+				offset = object.GetMappingOffset();
+				//expected offset equals current + length
+				expectedOffset = offset + object.GetMappingLength();
+				//nr of mapping entries increased
+				nrOfEntries++;
+			}
+			else
+			{
+				//offset wrong use expected offset
+				object.SetMappingOffset(expectedOffset);
+				//set offset as expected
+				offset = expectedOffset;
+				//calculate new expected offset
+				expectedOffset = offset + object.GetMappingLength();
+
+				//write mapping object
+				tMapping.second->SetTypedObjectActualValue(object.ToString(true));
+				//nr of mapping entries increased
+				nrOfEntries++;
+			}
+		}
+	}
+
+	//update nr of entries of the mapping object
+	if (updateNrOfEntries)
+	{
+		std::shared_ptr<SubObject> nrOfEntriesObj;
+		res = mappingObj->GetSubObject(0, nrOfEntriesObj); //Get Subobject NrOfEntries
+		if (!res.IsSuccessful())
+			return res;
+
+		std::stringstream convert;
+		convert << nrOfEntries - 1;
+		nrOfEntriesObj->SetTypedObjectActualValue(convert.str()); //reduce because of sub index 0
+	}
+
+	return res;
+}
+
+Result ControlledNode::MapAllRxObjects(bool updateNrOfEntries)
+{
+	//start on position 1
+	std::uint32_t position = 1;
+
+	for (auto& obj : this->GetObjectDictionary())
+	{
+		if (obj.second->GetPDOMapping().is_initialized())
+		{
+			if (obj.second->GetPDOMapping() == PDOMapping::RPDO)
+			{
+				Result res = this->MapBaseObject(obj.second, obj.first, 0, Direction::RX, updateNrOfEntries, position, 0);
+				if (!res.IsSuccessful())
+					return res;
+				position++;
+			}
+		}
+
+		for (auto& subobj : obj.second->GetSubObjectCollection())
+		{
+			if (!subobj.second->GetPDOMapping().is_initialized())
+				continue;
+
+			if (subobj.second->GetPDOMapping() == PDOMapping::RPDO)
+			{
+				Result res = this->MapBaseObject(subobj.second, obj.first, (uint16_t) subobj.first, Direction::RX, updateNrOfEntries, position, 0);
+				if (!res.IsSuccessful())
+					return res;
+				position++;
+			}
+		}
+	}
 	return Result();
 }
 
-Result ControlledNode::GetAllMappableObjects(std::vector<std::shared_ptr<BaseObject>>& objects, Direction dir)
+Result ControlledNode::MapAllTxObjects(bool updateNrOfEntries)
 {
-	return Result();
-}
+	//start on position 1
+	std::uint32_t position = 1;
 
-Result ControlledNode::MapAllRxObjects()
-{
-	return Result();
-}
-Result ControlledNode::MapAllTxObjects()
-{
+	for (auto& obj : this->GetObjectDictionary())
+	{
+		if (obj.second->GetPDOMapping().is_initialized())
+		{
+			if (obj.second->GetPDOMapping() == PDOMapping::TPDO)
+			{
+				Result res = this->MapBaseObject(obj.second, obj.first, 0, Direction::TX, updateNrOfEntries, position, 0);
+				if (!res.IsSuccessful())
+					return res;
+				position++;
+			}
+		}
+
+		for (auto& subobj : obj.second->GetSubObjectCollection())
+		{
+			if (!subobj.second->GetPDOMapping().is_initialized())
+				continue;
+
+			if (subobj.second->GetPDOMapping() == PDOMapping::TPDO)
+			{
+				Result res = this->MapBaseObject(subobj.second, obj.first, (uint16_t) subobj.first, Direction::TX, updateNrOfEntries, position, 0);
+				if (!res.IsSuccessful())
+					return res;
+				position ++;
+			}
+		}
+	}
 	return Result();
 }
 
@@ -143,7 +551,7 @@ uint32_t ControlledNode::GetConfigurationObjectCount()
 			}
 			else if (object.first >= 0x1A00 && object.first < 0x1B00) //Count for reset and actual NrOfEntries
 			{
-				if (subobject.second->WriteToConfiguration()  && subobject.first == 0x0)
+				if (subobject.second->WriteToConfiguration() && subobject.first == 0x0)
 				{
 					count += 2; //Add count for mapping set and reset
 					mappingObjNrOfEntries = subobject.second->GetTypedActualValue<uint16_t>(); //Set actual nr of mapping objects
@@ -288,6 +696,7 @@ PlkOperationMode ControlledNode::GetOperationMode()
 
 IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::CalculatePReqPayloadLimit()
 {
+	uint32_t preqPayloadLimit = 0;
 	for (auto& object : this->GetObjectDictionary())
 	{
 		if (object.first >= 0x1600 && object.first < 0x1700)
@@ -308,27 +717,34 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Calcul
 				numberOfIndicesToWrite = nrOfEntriesObj->GetTypedActualValue<uint16_t>();
 
 			uint16_t count = 0;
-			uint16_t preqPayloadLimit = 0;
+
 			for (auto& subobject : object.second->GetSubObjectCollection())
 			{
 				if (subobject.second->WriteToConfiguration() && subobject.first != 0 && count < numberOfIndicesToWrite)
 				{
-					//Calculate all the mapping object sizes
+					BaseProcessDataMapping mapping = BaseProcessDataMapping(subobject.second->GetTypedActualValue<std::string>(), this->GetNodeIdentifier());
+					preqPayloadLimit += mapping.GetMappingLength() / 8; //Byte Size
 					count++;
 				}
 			}
-
-			if (preqPayloadLimit <= 36)
-			{
-				return this->SetSubObjectActualValue(0x1F98, 0x4, "36"); //Set to default value
-			}
 		}
 	}
-	return Result();
+
+	if (preqPayloadLimit <= 36)
+	{
+		return this->SetSubObjectActualValue(0x1F98, 0x4, "36"); //Set to default value
+	}
+	else
+	{
+		std::stringstream convert;
+		convert << preqPayloadLimit;
+		return this->SetSubObjectActualValue(0x1F98, 0x4, convert.str());
+	}
 }
 
 IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::CalculatePResPayloadLimit()
 {
+	uint32_t presPayloadLimit = 0;
 	for (auto& object : this->GetObjectDictionary())
 	{
 		if (object.first >= 0x1A00 && object.first < 0x1B00)
@@ -339,21 +755,565 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Calcul
 				numberOfIndicesToWrite = nrOfEntriesObj->GetTypedActualValue<uint16_t>(); //GetNrOfEntries and only count the valid ones
 
 			uint16_t count = 0;
-			uint16_t presPayloadLimit = 0;
 			for (auto& subobject : object.second->GetSubObjectCollection())
 			{
 				if (subobject.second->WriteToConfiguration() && subobject.first != 0 && count < numberOfIndicesToWrite)
 				{
-					//Calculate all the mapping object sizes
+					BaseProcessDataMapping mapping = BaseProcessDataMapping(subobject.second->GetTypedActualValue<std::string>(), this->GetNodeIdentifier());
+					presPayloadLimit += mapping.GetMappingLength() / 8; //Byte Size
 					count++;
 				}
 			}
+		}
+	}
 
-			if (presPayloadLimit <= 36)
+	if (presPayloadLimit <= 36)
+	{
+		return this->SetSubObjectActualValue(0x1F98, 0x5, "36"); //Set to default value
+	}
+	else
+	{
+		std::stringstream convert;
+		convert << presPayloadLimit;
+		return this->SetSubObjectActualValue(0x1F98, 0x5, convert.str());
+	}
+}
+
+Result ControlledNode::GetDataObjectFromMapping(const std::shared_ptr<BaseProcessDataMapping>& mapping, std::shared_ptr<BaseObject>& returnObject)
+{
+	std::uint32_t dataIndex = mapping->GetMappingIndex();
+	std::uint16_t dataSubindex = mapping->GetMappingSubIndex();
+
+	std::shared_ptr<Object> dataObject;
+	std::shared_ptr<SubObject> dataSubObject;
+	if (dataSubindex == 0)
+	{
+		Result res = this->GetSubObject(dataIndex, dataSubindex, dataSubObject);
+		if (!res.IsSuccessful())
+		{
+			res = this->GetObject(dataIndex, dataObject);
+			if (!res.IsSuccessful())
 			{
-				return this->SetSubObjectActualValue(0x1F98, 0x5, "36"); //Set to default value
+				boost::format formatter(kMsgNonExistingMappedObject);
+				formatter
+				% dataIndex
+				% (uint32_t) this->GetNodeIdentifier();
+				LOG_FATAL() << formatter.str();
+				return Result(ErrorCode::MAPPED_OBJECT_DOES_NOT_EXIST, formatter.str());
+			}
+			else
+				returnObject = dataObject;
+		}
+		else
+			returnObject = dataSubObject;
+	}
+	else
+	{
+		Result res = this->GetSubObject(dataIndex, dataSubindex, dataSubObject);
+		if (!res.IsSuccessful())
+		{
+			boost::format formatter(kMsgNonExistingMappedSubObject);
+			formatter
+			% dataIndex
+			% dataSubindex
+			% (uint32_t) this->GetNodeIdentifier();
+			LOG_FATAL() << formatter.str();
+			return Result(ErrorCode::MAPPED_SUBOBJECT_DOES_NOT_EXIST, formatter.str());
+		}
+		returnObject = dataSubObject;
+	}
+	return Result();
+}
+
+Result ControlledNode::UpdateProcessImage(Direction dir)
+{
+	this->UpdateProcessDataMapping(dir);
+
+	if (dir == Direction::RX)
+		this->GetReceiveProcessImage().clear();
+	else if (dir == Direction::TX)
+		this->GetTransmitProcessImage().clear();
+
+	std::uint32_t piOffset = 0;
+	std::uint32_t domainCount = 1;
+
+	std::vector<std::shared_ptr<BaseProcessDataMapping>> mappingVector;
+	if (dir == Direction::RX)
+		mappingVector = this->GetReceiveMapping();
+	else if (dir == Direction::TX)
+		mappingVector = this->GetTransmitMapping();
+
+	for (auto& mapObj : mappingVector)
+	{
+		std::shared_ptr<BaseObject> dataObject;
+		Result res = GetDataObjectFromMapping(mapObj, dataObject);
+		if (!res.IsSuccessful())
+			return res;
+
+		//Domain object
+		if (dataObject->GetUniqueIdRef().is_initialized())
+		{
+			std::shared_ptr<Parameter> param;
+			this->GetApplicationProcess()->GetParameter(dataObject->GetUniqueIdRef().get(), param);
+			//Check parameter access
+
+			std::shared_ptr<StructDataType> structDt = std::dynamic_pointer_cast<StructDataType>(param->GetComplexDataType());
+			std::shared_ptr<ArrayDataType> arrayDt = std::dynamic_pointer_cast<ArrayDataType>(param->GetComplexDataType());
+			std::shared_ptr<EnumDataType> enumDt = std::dynamic_pointer_cast<EnumDataType>(param->GetComplexDataType());
+			if (structDt.get())
+			{
+				std::uint32_t bitOffset = 0;
+				std::uint32_t varCount = 0;
+				for (auto& varDecl : structDt->GetVarDeclarations())
+				{
+					std::stringstream nameBuilder;
+					nameBuilder << "CN" << IntToHex<uint32_t>((uint32_t) this->GetNodeIdentifier(), 2);
+					nameBuilder << ".";
+					nameBuilder << "DOM";
+					nameBuilder << IntToHex<uint32_t>(domainCount, 2);
+					nameBuilder	<< ".";
+					nameBuilder << "VAR";
+					nameBuilder << IntToHex<uint32_t>(varCount, 2);
+					nameBuilder	<< ".";
+					nameBuilder << structDt->GetName();
+					nameBuilder << ".";
+					nameBuilder << varDecl->GetName();
+
+					if (varDecl->GetDataType() == BITSTRING)
+					{
+						std::shared_ptr<BaseProcessImageObject> piObj = std::make_shared<BaseProcessImageObject>(
+						            nameBuilder.str(),
+						            varDecl->GetDataType(),
+						            piOffset, bitOffset,
+						            varDecl->GetBitSize());
+
+						if (dir == Direction::RX)
+							this->GetReceiveProcessImage().push_back(piObj);
+						else if (dir == Direction::TX)
+							this->GetTransmitProcessImage().push_back(piObj);
+						bitOffset += varDecl->GetSize();
+					}
+					else
+					{
+						std::shared_ptr<BaseProcessImageObject> piObj = std::make_shared<BaseProcessImageObject>(
+						            nameBuilder.str(),
+						            varDecl->GetDataType(),
+						            piOffset,
+						            varDecl->GetBitSize());
+						if (dir == Direction::RX)
+							this->GetReceiveProcessImage().push_back(piObj);
+						else if (dir == Direction::TX)
+							this->GetTransmitProcessImage().push_back(piObj);
+						piOffset += varDecl->GetBitSize() / 8 ;
+					}
+
+					if (bitOffset == 8)
+					{
+						piOffset++;
+						bitOffset = 0;
+					}
+					varCount++;
+				}
+			}
+			else if (arrayDt.get())
+			{
+				std::uint32_t bitOffset = 0;
+				for (std::uint32_t i = arrayDt->GetLowerLimit(); i < arrayDt->GetUpperLimit(); i++)
+				{
+					std::stringstream nameBuilder;
+					nameBuilder << "CN" << IntToHex<uint32_t>((uint32_t) this->GetNodeIdentifier(), 2);
+					nameBuilder << ".";
+					nameBuilder << "DOM";
+					nameBuilder << IntToHex<uint32_t>(domainCount, 2);
+					nameBuilder	<< ".";
+					nameBuilder << "VAR";
+					nameBuilder << IntToHex<uint32_t>(i, 2);
+					nameBuilder	<< ".";
+					nameBuilder << arrayDt->GetName();
+
+					if (arrayDt->GetDataType() == BITSTRING)
+					{
+						std::shared_ptr<BaseProcessImageObject> piObj = std::make_shared<BaseProcessImageObject>(
+						            nameBuilder.str(),
+						            arrayDt->GetDataType(),
+						            piOffset,
+						            bitOffset,
+						            arrayDt->GetBitSize());
+						if (dir == Direction::RX)
+							this->GetReceiveProcessImage().push_back(piObj);
+						else if (dir == Direction::TX)
+							this->GetTransmitProcessImage().push_back(piObj);
+						bitOffset += arrayDt->GetBitSize();
+
+						if (bitOffset == 8)
+						{
+							piOffset++;
+							bitOffset = 0;
+						}
+					}
+					else
+					{
+						std::shared_ptr<BaseProcessImageObject> piObj = std::make_shared<BaseProcessImageObject>(
+						            nameBuilder.str(),
+						            arrayDt->GetDataType(),
+						            piOffset,
+						            arrayDt->GetBitSize());
+						this->GetTransmitProcessImage().push_back(piObj);
+						piOffset += arrayDt->GetBitSize() / 8 ;
+					}
+				}
+			}
+			else if (enumDt.get())
+			{
+				//Not supported at the moment
+			}
+			else
+			{
+				//return unsupported complex datatype
+			}
+			domainCount++;
+
+		}
+		else
+		{
+			std::shared_ptr<BaseProcessImageObject> piObj = std::make_shared<BaseProcessImageObject>(
+			            dataObject->GetName(),
+			            GetIECDataType(dataObject->GetDataType().get()),
+			            piOffset,
+			            GetIECDataTypeBitSize(GetIECDataType(dataObject->GetDataType().get())));
+
+			if (dir == Direction::RX)
+				this->GetReceiveProcessImage().push_back(piObj);
+			else if (dir == Direction::TX)
+				this->GetTransmitProcessImage().push_back(piObj);
+			piOffset += GetIECDataTypeBitSize(GetIECDataType(dataObject->GetDataType().get())) / 8 ;
+		}
+	}
+	return Result();
+}
+
+IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::UpdateProcessDataMapping(Direction dir)
+{
+	std::uint32_t mappingParameterIndex = 0;
+	std::uint32_t mappingObjectIndex = 0;
+	std::uint16_t mappedFromNode = 0;
+	std::uint16_t nrOfEntries = 0;
+	std::uint32_t expectedOffset = 0;
+	bool defaultMapping = false;
+
+	if (dir == Direction::RX)
+	{
+		this->GetReceiveMapping().clear();
+		mappingParameterIndex = 0x1400;
+		mappingObjectIndex = 0x1600;
+	}
+
+	else if (dir == Direction::TX)
+	{
+		this->GetTransmitMapping().clear();
+		mappingParameterIndex = 0x1800;
+		mappingObjectIndex = 0x1A00;
+	}
+
+	for (auto& obj : this->GetObjectDictionary())
+	{
+		if (obj.first >= mappingParameterIndex && obj.first < (mappingParameterIndex + 0x100))
+		{
+			//Get mapping parameter object
+			std::shared_ptr<SubObject> nodeID;
+			Result res = obj.second->GetSubObject(0x1, nodeID);
+			if (!res.IsSuccessful())
+				return res;
+
+			if (nodeID->WriteToConfiguration())
+				mappedFromNode = nodeID->GetTypedActualValue<uint16_t>();
+
+			//Get according mapping object
+			std::shared_ptr<Object> mappingObject;
+			res = this->GetObject(((obj.first - mappingParameterIndex) + mappingObjectIndex), mappingObject);
+			if (!res.IsSuccessful())
+				return res;
+
+			//Get mapping nrOfEntries
+			std::shared_ptr<SubObject> nrOfEntriesObj;
+			res = mappingObject->GetSubObject(0x0, nrOfEntriesObj);
+			if (!res.IsSuccessful())
+				return res;
+
+			if (nrOfEntriesObj->WriteToConfiguration())
+			{
+				nrOfEntries = nrOfEntriesObj->GetTypedActualValue<uint16_t>();
+			}
+			else if (nrOfEntriesObj->HasDefaultValue())
+			{
+				nrOfEntries = nrOfEntriesObj->GetTypedDefaultValue<uint16_t>();
+				defaultMapping = true;
+			}
+
+			for (auto& mapping : mappingObject->GetSubObjectCollection())
+			{
+				if (mapping.first == 0)
+					continue;
+
+				if (nrOfEntries == 0)
+					break;
+
+				if (defaultMapping && mapping.second->HasDefaultValue())
+				{
+					std::shared_ptr<BaseProcessDataMapping> mappingPtr = std::shared_ptr<BaseProcessDataMapping>(new BaseProcessDataMapping(mappingObject->GetId(),
+					        mapping.second->GetId(), mapping.second, mapping.second->GetTypedDefaultValue<std::string>(), mappedFromNode, true));
+
+					res = CheckProcessDataMapping(mappingPtr, expectedOffset, dir);
+					if (!res.IsSuccessful())
+						return res;
+
+					if (dir == Direction::RX)
+						this->GetReceiveMapping().push_back(mappingPtr);
+					else if (dir == Direction::TX)
+						this->GetTransmitMapping().push_back(mappingPtr);
+
+					nrOfEntries--;
+					expectedOffset += mappingPtr->GetMappingLength();
+				}
+				else if (mapping.second->WriteToConfiguration())
+				{
+					std::shared_ptr<BaseProcessDataMapping> mappingPtr = std::shared_ptr<BaseProcessDataMapping>(new BaseProcessDataMapping(mappingObject->GetId(),
+					        mapping.second->GetId(), mapping.second, mapping.second->GetTypedActualValue<std::string>(), mappedFromNode, false));
+
+					res = CheckProcessDataMapping(mappingPtr, expectedOffset, dir);
+					if (!res.IsSuccessful())
+						return res;
+
+					if (dir == Direction::RX)
+						this->GetReceiveMapping().push_back(mappingPtr);
+					else if (dir == Direction::TX)
+						this->GetTransmitMapping().push_back(mappingPtr);
+
+					nrOfEntries--;
+					expectedOffset += mappingPtr->GetMappingLength();
+				}
+				else
+				{
+					return Result(ErrorCode::MAPPING_INVALID);
+				}
 			}
 		}
+	}
+	return Result();
+}
+
+Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcessDataMapping>& mapping, std::uint32_t expectedOffset, Direction dir)
+{
+	std::uint32_t dataIndex = mapping->GetMappingIndex();
+	std::uint16_t dataSubindex = mapping->GetMappingSubIndex();
+	std::uint32_t size = mapping->GetMappingLength();
+
+	std::shared_ptr<Object> dataObject;
+	std::shared_ptr<SubObject> dataSubObject;
+
+	std::shared_ptr<BaseObject> foundObject;
+
+	//Check that mapped object exist
+	if (dataSubindex == 0)
+	{
+		Result res = this->GetSubObject(dataIndex, dataSubindex, dataSubObject);
+		if (!res.IsSuccessful())
+		{
+			res = this->GetObject(dataIndex, dataObject);
+			if (!res.IsSuccessful())
+			{
+				boost::format formatter(kMsgNonExistingMappedObject);
+				formatter
+				% dataIndex
+				% (uint32_t) this->GetNodeIdentifier();
+				LOG_FATAL() << formatter.str();
+				return Result(ErrorCode::MAPPED_OBJECT_DOES_NOT_EXIST, formatter.str());
+			}
+			else
+				foundObject = dataObject;
+		}
+		else
+			foundObject = dataSubObject;
+	}
+	else
+	{
+		Result res = this->GetSubObject(dataIndex, dataSubindex, dataSubObject);
+		if (!res.IsSuccessful())
+		{
+			boost::format formatter(kMsgNonExistingMappedSubObject);
+			formatter
+			% dataIndex
+			% dataSubindex
+			% (uint32_t) this->GetNodeIdentifier();
+			LOG_FATAL() << formatter.str();
+			return Result(ErrorCode::MAPPED_SUBOBJECT_DOES_NOT_EXIST, formatter.str());
+		}
+		foundObject = dataSubObject;
+	}
+
+	//Check data size
+	//Check normal data type size
+	if (!foundObject->GetUniqueIdRef().is_initialized())
+	{
+		if (foundObject->GetBitSize() != size)
+		{
+			return Result(ErrorCode::OBJECT_SIZE_MAPPED_INVALID);
+		}
+	}
+	//Check complex data type size
+	else
+	{
+		std::shared_ptr<Parameter> param;
+		Result res = this->GetApplicationProcess()->GetParameter(foundObject->GetUniqueIdRef().get(), param);
+		if (!res.IsSuccessful())
+			return res;
+
+		if (foundObject->GetBitSize() != param->GetBitSize())
+		{
+			return Result(ErrorCode::OBJECT_SIZE_MAPPED_INVALID);
+		}
+
+		if (dir == Direction::RX)
+		{
+			//Check complex data type access
+			if (param->GetParameterAccess() == ParameterAccess::readWriteInput
+			        || param->GetParameterAccess() == ParameterAccess::read)
+			{
+				//Parameter access does not match mapping direction
+				boost::format formatter(kMsgAccessTypeForParameterInvalid);
+				formatter
+				% param->GetUniqueID()
+				% dataIndex
+				% dataSubindex
+				% (std::uint32_t) this->GetNodeIdentifier()
+				% ParameterAccessValues[(std::uint8_t) param->GetParameterAccess()];
+				LOG_FATAL() << formatter.str();
+				return Result(ErrorCode::PARAMETER_ACCESS_INVALID, formatter.str());
+			}
+		}
+		else if (dir == Direction::TX)
+		{
+			if (param->GetParameterAccess() == ParameterAccess::readWriteOutput
+			        || param->GetParameterAccess() == ParameterAccess::write)
+			{
+				//Parameter access does not match mapping direction
+				boost::format formatter(kMsgAccessTypeForParameterInvalid);
+				formatter
+				% param->GetUniqueID()
+				% dataIndex
+				% dataSubindex
+				% (std::uint32_t) this->GetNodeIdentifier()
+				% ParameterAccessValues[(std::uint8_t) param->GetParameterAccess()];
+				LOG_FATAL() << formatter.str();
+				return Result(ErrorCode::PARAMETER_ACCESS_INVALID, formatter.str());
+			}
+		}
+	}
+
+	//Check mapping offset
+	if (mapping->GetMappingOffset() < expectedOffset) //Allow offset gaps
+	{
+		boost::format formatter(kMsgPdoOffsetInvalid);
+		formatter
+		% dataIndex
+		% dataSubindex
+		% (std::uint32_t) this->GetNodeIdentifier()
+		% mapping->GetMappingOffset()
+		% expectedOffset;
+		LOG_FATAL() << formatter.str();
+		return Result(ErrorCode::PDO_OFFSET_INVALID, formatter.str());
+	}
+
+	//Check PDOMapping
+	if (foundObject->GetPDOMapping().is_initialized())
+	{
+		if (dir == Direction::RX)
+		{
+			if (foundObject->GetPDOMapping().get() != PDOMapping::RPDO)
+			{
+				boost::format formatter(kMsgMappingTypeForPdoInvalid);
+				formatter
+				% dataIndex
+				% dataSubindex
+				% (std::uint32_t) this->GetNodeIdentifier()
+				% PDOMappingValues[(std::uint8_t) foundObject->GetPDOMapping().get()];
+				LOG_FATAL() << formatter.str();
+				return Result(ErrorCode::MAPPING_TYPE_FOR_PDO_INVALID, formatter.str());
+			}
+		}
+		else if (dir == Direction::TX)
+		{
+			if (foundObject->GetPDOMapping().get() != PDOMapping::TPDO)
+			{
+				boost::format formatter(kMsgMappingTypeForPdoInvalid);
+				formatter
+				% dataIndex
+				% dataSubindex
+				% (std::uint32_t) this->GetNodeIdentifier()
+				% PDOMappingValues[(std::uint8_t) foundObject->GetPDOMapping().get()];
+				LOG_FATAL() << formatter.str();
+				return Result(ErrorCode::MAPPING_TYPE_FOR_PDO_INVALID, formatter.str());
+			}
+		}
+	}
+	else
+	{
+		boost::format formatter(kMsgMappingTypeForPdoInvalid);
+		formatter
+		% dataIndex
+		% dataSubindex
+		% (std::uint32_t) this->GetNodeIdentifier()
+		% "Not defined";
+		LOG_FATAL() << formatter.str();
+		return Result(ErrorCode::MAPPING_TYPE_FOR_PDO_INVALID, formatter.str());
+	}
+
+	//Check AccessType
+	if (foundObject->GetAccessType().is_initialized())
+	{
+		if (dir == Direction::RX)
+		{
+			if (foundObject->GetAccessType().get() != AccessType::WO
+			        && foundObject->GetAccessType().get() != AccessType::WOS
+			        && foundObject->GetAccessType().get() != AccessType::RW)
+			{
+				boost::format formatter(kMsgAccessTypeForPdoInvalid);
+				formatter
+				% dataIndex
+				% dataSubindex
+				% (std::uint32_t) this->GetNodeIdentifier()
+				% AccessTypeValues[(std::uint8_t) foundObject->GetAccessType().get()];
+				LOG_FATAL() << formatter.str();
+				return Result(ErrorCode::ACCESS_TYPE_FOR_PDO_INVALID, formatter.str());
+			}
+		}
+		else if (dir == Direction::TX)
+		{
+			if (foundObject->GetAccessType().get() != AccessType::RO
+			        && foundObject->GetAccessType().get() != AccessType::RW
+			        && foundObject->GetAccessType().get() != AccessType::RWS)
+			{
+				boost::format formatter(kMsgAccessTypeForPdoInvalid);
+				formatter
+				% dataIndex
+				% dataSubindex
+				% (std::uint32_t) this->GetNodeIdentifier()
+				% AccessTypeValues[(std::uint8_t) foundObject->GetAccessType().get()];
+				LOG_FATAL() << formatter.str();
+				return Result(ErrorCode::ACCESS_TYPE_FOR_PDO_INVALID, formatter.str());
+			}
+		}
+	}
+	else if (!foundObject->GetUniqueIdRef().is_initialized()) //Domain object may not have an access type
+	{
+		boost::format formatter(kMsgAccessTypeForPdoInvalid);
+		formatter
+		% dataIndex
+		% dataSubindex
+		% (std::uint32_t) this->GetNodeIdentifier()
+		% AccessTypeValues[(std::uint8_t) foundObject->GetAccessType().get()];
+		LOG_FATAL() << formatter.str();
+		return Result(ErrorCode::ACCESS_TYPE_FOR_PDO_INVALID, formatter.str());
 	}
 	return Result();
 }

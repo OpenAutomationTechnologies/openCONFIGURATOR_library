@@ -65,3 +65,9 @@ Result StructDataType::AddVarDeclaration(std::shared_ptr<VarDeclaration>& varDec
 	this->varDeclarationList.push_back(varDecl);
 	return Result();
 }
+
+std::vector<std::shared_ptr<VarDeclaration>>& StructDataType::GetVarDeclarations()
+{
+	return this->varDeclarationList;
+}
+

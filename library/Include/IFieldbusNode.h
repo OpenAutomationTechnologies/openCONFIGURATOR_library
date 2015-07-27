@@ -61,10 +61,7 @@ namespace IndustrialNetwork
 				virtual const std::map<K, std::shared_ptr<V>>& GetObjectDictionary() = 0;
 
 				virtual void SetObjectDictionary(const std::map<K, std::shared_ptr<V>>& od) = 0;
-
 		};
-
 	}
-
 }
 #endif

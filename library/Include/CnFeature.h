@@ -72,16 +72,9 @@ namespace IndustrialNetwork
 
 						template<class T>
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetActualValue(const T actualValue);
-
-					private:
-
 				};
-
 			}
-
 		}
-
 	}
-
 }
 #endif

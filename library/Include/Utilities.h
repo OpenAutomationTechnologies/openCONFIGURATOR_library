@@ -43,6 +43,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 
 #include "IEC_Datatype.h"
+#include "PlkDataType.h"
 
 namespace IndustrialNetwork
 {
@@ -80,6 +81,9 @@ namespace IndustrialNetwork
 
 				std::uint32_t GetIECDataTypeBitSize(const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType);
 
+				IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype GetIECDataType(const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType);
+				IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType GetPlkDataType(const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType);
+
 				int32_t FloatToSinglePrecisisionHex(float value);
 				int64_t DoubleToDoublePrecisisionHex(double value);
 
@@ -88,6 +92,7 @@ namespace IndustrialNetwork
 
 				std::uint8_t AsciiToHex(std::uint8_t input);
 				void ConfigurationToAscii(const std::stringstream& inputConfig, std::vector<std::uint8_t>& output);
+				const std::string GetNetDatatypeFromIEC(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype iecDataType);
 			}
 		}
 	}

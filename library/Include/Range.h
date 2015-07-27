@@ -62,14 +62,9 @@ namespace IndustrialNetwork
 						std::uint32_t maxSubIndex;
 						SortMode sortMode;
 						SortNumber sortNumber;
-
 				};
-
 			}
-
 		}
-
 	}
-
 }
 #endif

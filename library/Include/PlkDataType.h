@@ -80,11 +80,74 @@ namespace IndustrialNetwork
 					NETTIME = 0x0403
 				};
 
+				inline const std::string GetPlkDataTypeName(PlkDataType dt)
+				{
+					switch (dt)
+					{
+						case PlkDataType::UNDEFINED:
+							return "UNDEFINED";
+						case PlkDataType::BOOLEAN:
+							return "BOOLEAN";
+						case PlkDataType::INTEGER8:
+							return "INTEGER8";
+						case PlkDataType::INTEGER16:
+							return "INTEGER16";
+						case PlkDataType::INTEGER32:
+							return "INTEGER32";
+						case PlkDataType::UNSIGNED8:
+							return "UNSIGNED8";
+						case PlkDataType::UNSIGNED16:
+							return "UNSIGNED16";
+						case PlkDataType::UNSIGNED32:
+							return "UNSIGNED32";
+						case PlkDataType::REAL32:
+							return "REAL32";
+						case PlkDataType::VISIBLE_STRING:
+							return "VISIBLE_STRING";
+						case PlkDataType::OCTET_STRING:
+							return "OCTET_STRING";
+						case PlkDataType::UNICODE_STRING:
+							return "UNICODE_STRING";
+						case PlkDataType::TIME_OF_DAY:
+							return "TIME_OF_DAY";
+						case PlkDataType::TIME_DIFF:
+							return "TIME_DIFF";
+						case PlkDataType::Domain:
+							return "Domain";
+						case PlkDataType::INTEGER24:
+							return "INTEGER24";
+						case PlkDataType::REAL64:
+							return "REAL64";
+						case PlkDataType::INTEGER40:
+							return "INTEGER40";
+						case PlkDataType::INTEGER48:
+							return "INTEGER48";
+						case PlkDataType::INTEGER56:
+							return "INTEGER56";
+						case PlkDataType::INTEGER64:
+							return "INTEGER64";
+						case PlkDataType::UNSIGNED24:
+							return "UNSIGNED24";
+						case PlkDataType::UNSIGNED40:
+							return "UNSIGNED40";
+						case PlkDataType::UNSIGNED48:
+							return "UNSIGNED48";
+						case PlkDataType::UNSIGNED56:
+							return "UNSIGNED56";
+						case PlkDataType::UNSIGNED64:
+							return "UNSIGNED64";
+						case PlkDataType::MAC_ADDRESS:
+							return "MAC_ADDRESS";
+						case PlkDataType::IP_ADDRESS:
+							return "IP_ADDRESS";
+						case PlkDataType::NETTIME:
+							return "NETTIME";
+						default:
+							return "";
+					}
+				}
 			}
-
 		}
-
 	}
-
 }
 #endif

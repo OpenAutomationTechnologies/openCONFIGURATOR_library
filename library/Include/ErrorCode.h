@@ -145,15 +145,12 @@ namespace IndustrialNetwork
 					MANAGING_NODE_DISABLE_INVALID, // The managing node cannot be disabled.
 					NODE_IS_NOT_MANAGING_NODE, // The node is not a managing node
 					NODE_IS_NOT_CONTROLLED_NODE, // The node is not a controlled node
-					NODE_IS_NOT_REDUNDANT_MANAGING_NODE // The node is not a redundant managing node
-
+					NODE_IS_NOT_REDUNDANT_MANAGING_NODE, // The node is not a redundant managing node
+					DYNAMIC_CHANNEL_NOT_FOUND, // Dynamic Channel not found.
+					PARAMETER_ACCESS_INVALID //Parameter access invalid
 				};
-
 			}
-
 		}
-
 	}
-
 }
 #endif

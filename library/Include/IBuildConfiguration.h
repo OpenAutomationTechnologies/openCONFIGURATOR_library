@@ -72,10 +72,7 @@ namespace IndustrialNetwork
 				}
 			private:
 				std::vector<std::shared_ptr<T>> buildConfigurationSettings;
-
 		};
-
 	}
-
 }
 #endif

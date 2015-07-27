@@ -52,11 +52,13 @@ namespace IndustrialNetwork
 					TX,
 				};
 
+				static const std::string DirectionTypeValues[] =
+				{
+					"Rx",
+					"Tx"
+				};
 			}
-
 		}
-
 	}
-
 }
 #endif

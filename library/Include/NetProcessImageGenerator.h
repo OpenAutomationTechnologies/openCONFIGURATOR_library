@@ -32,7 +32,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined NET_PROCESS_IMAGE_GENERATOR_H
 #define NET_PROCESS_IMAGE_GENERATOR_H
 
-#include <sstream>
+#include <memory>
+#include <string>
+
+#include <boost/date_time.hpp>
+
+#include "ProcessImageGenerator.h"
+#include "ManagingNode.h"
+#include "Result.h"
+#include "IEC_Datatype.h"
+#include "Utilities.h"
+#include "Constants.h"
 
 namespace IndustrialNetwork
 {
@@ -46,24 +56,27 @@ namespace IndustrialNetwork
 				\brief
 				\author rueckerc
 				*/
-				class NetProcessImageGenerator
+				class NetProcessImageGenerator : public ProcessImageGenerator
 				{
 
 					public:
-						NetProcessImageGenerator();
+						static NetProcessImageGenerator& GetInstance();
 						virtual ~NetProcessImageGenerator();
 
-						std::stringstream& Generate();
+						const std::string Generate(std::uint8_t nodeid, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network> network);
 
 					private:
+						NetProcessImageGenerator();
 						std::stringstream processImageStream;
+
+						std::string PrintChannel(const std::string& name, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype datatype, const std::uint32_t size, const std::uint32_t piOffset, const boost::optional<std::uint32_t>& bitOffset);
+						void WriteNETHeader(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node);
+						void WriteNETOutputSizeHeader(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node);
+						void WriteNETInputSizeHeader(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node);
+						void WriteNETProcessImage(const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node);
 				};
-
 			}
-
 		}
-
 	}
-
 }
 #endif

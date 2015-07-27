@@ -76,14 +76,9 @@ namespace IndustrialNetwork
 						std::uint32_t maxNumber;
 						std::uint32_t addressOffset;
 						boost::optional<std::uint32_t> bitAlignment;
-
 				};
-
 			}
-
 		}
-
 	}
-
 }
 #endif

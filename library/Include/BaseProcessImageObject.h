@@ -1,6 +1,6 @@
 /************************************************************************
-\file IRxProcessDataMapping.h
-\brief Implementation of the Class IRxProcessDataMapping
+\file BaseProcessImageObject.h
+\brief Implementation of the Class BaseProcessImageObject
 \author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 \date 01-May-2015 12:00:00
 ************************************************************************/
@@ -29,50 +29,54 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
-#if !defined IRXPROCESS_DATA_MAPPING_H
-#define IRXPROCESS_DATA_MAPPING_H
+#if !defined BASE_PROCESS_IMAGE_OBJECT_H
+#define BASE_PROCESS_IMAGE_OBJECT_H
+
+#include <cstdint>
+#include <string>
+#include <vector>
+
+#include <boost/optional.hpp>
+
+#include "Constants.h"
+#include "Utilities.h"
+#include "IEC_Datatype.h"
 
 namespace IndustrialNetwork
 {
-	namespace Fieldbus
+	namespace POWERLINK
 	{
-		/**
-		\brief
-		\author rueckerc
-		*/
-		template<typename N, typename I>
-		class IRxProcessDataMapping
+		namespace Core
 		{
-			public:
-				virtual ~IRxProcessDataMapping() {};
+			namespace ObjectDictionary
+			{
+				/**
+				\brief
+				\author rueckerc
+				*/
+				class DLLEXPORT BaseProcessImageObject
+				{
+					public:
+						BaseProcessImageObject(const std::string& name, IEC_Datatype dataType, std::uint32_t piOffset, std::uint32_t size);
+						BaseProcessImageObject(const std::string& name, IEC_Datatype dataType, std::uint32_t piOffset, std::uint32_t bitOffset, std::uint32_t size);
+						virtual ~BaseProcessImageObject();
 
-				const N& GetSourceNode()
-				{
-					return this->sourceNode;
-				}
-				void SetSourceNode(N& node)
-				{
-					this->sourceNode = node;
-				}
-				const I& GetSourceObject()
-				{
-					return this->sourceObject;
-				}
-				void SetSourceObject(I& srcObj)
-				{
-					this->sourceObject = srcObj;
-				}
-				const I& GetDestinationObject()
-				{
-					return this->destinationObject;
-				}
-				void SetDestinationObject(I& destObj)
-				{
-					this->destinationObject = destObj;
-				}
-		};
+						const std::string& GetName();
+						IEC_Datatype GetDataType();
+						std::uint32_t GetSize();
+						std::uint32_t GetPiOffset();
+						void SetPIOffset(std::uint32_t piOffset);
+						const boost::optional<std::uint32_t>& GetBitOffset();
 
+					private:
+						std::string name;
+						IEC_Datatype dataType;
+						std::uint32_t size;
+						std::uint32_t piOffset;
+						boost::optional<std::uint32_t> bitOffset;
+				};
+			}
+		}
 	}
-
 }
 #endif

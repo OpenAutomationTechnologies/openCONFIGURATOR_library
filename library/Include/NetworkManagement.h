@@ -97,14 +97,9 @@ namespace IndustrialNetwork
 						std::vector<std::shared_ptr<MnFeature>> mnFeatureList;
 						std::vector<std::shared_ptr<CnFeature>> cnFeatureList;
 						std::vector<std::shared_ptr<GeneralFeature>> generalFeatureList;
-
 				};
-
 			}
-
 		}
-
 	}
-
 }
 #endif

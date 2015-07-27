@@ -56,11 +56,17 @@ namespace IndustrialNetwork
 					RPDO
 				};
 
+				static const std::string PDOMappingValues[] =
+				{
+					"UNDEFINED",
+					"NO",
+					"DEFAULT",
+					"OPTIONAL",
+					"TPDO",
+					"RPDO"
+				};
 			}
-
 		}
-
 	}
-
 }
 #endif

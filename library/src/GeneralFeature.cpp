@@ -64,7 +64,7 @@ namespace IndustrialNetwork
 					if (this->GetUntypedDefaultValue().type() == typeid(T))
 					{
 						//return original stored value
-						value =  boost::any_cast<T>(this->GetUntypedDefaultValue());
+						value = boost::any_cast<T>(this->GetUntypedDefaultValue());
 						return Result();
 					}
 					//Datatype does not match
@@ -156,7 +156,6 @@ namespace IndustrialNetwork
 							case GeneralFeatureEnum::NMTRevisionNo:
 							case GeneralFeatureEnum::PDOMaxDescrMem:
 							case GeneralFeatureEnum::PDORPDOCycleDataLim:
-							case GeneralFeatureEnum::PDORPDOChannelObjects:
 							case GeneralFeatureEnum::PDOTPDOCycleDataLim:
 							case GeneralFeatureEnum::PHYHubDelay:
 							case GeneralFeatureEnum::PHYHubJitter:
@@ -182,6 +181,7 @@ namespace IndustrialNetwork
 							case GeneralFeatureEnum::NMTMaxHeartbeats:
 							case GeneralFeatureEnum::PDOGranularity:
 							case GeneralFeatureEnum::PDOTPDOChannelObjects:
+							case GeneralFeatureEnum::PDORPDOChannelObjects:
 							case GeneralFeatureEnum::PHYExtEPLPorts:
 								{
 									if (!defaultValue.empty())
@@ -236,7 +236,7 @@ namespace IndustrialNetwork
 					if (this->GetUntypedActualValue().type() == typeid(T))
 					{
 						//return original stored value
-						value =  boost::any_cast<T>(this->GetUntypedActualValue());
+						value = boost::any_cast<T>(this->GetUntypedActualValue());
 						return Result();
 					}
 					//Datatype does not match

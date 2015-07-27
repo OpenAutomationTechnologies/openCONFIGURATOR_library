@@ -54,7 +54,7 @@
 #define __attribute__(x)
 #if defined(_WIN32) && defined(_MSC_VER)
 	 #undef DllExport
-	 #define DllExport  __declspec(dllexport)
+	 #define DllExport __declspec(dllexport)
 #endif
 
 %include typemaps.i
@@ -73,6 +73,9 @@
 %apply std::string &INOUT { std::string & defaultValue };
 %apply std::string &INOUT { std::string & configurationOutput };
 %apply std::string &INOUT { std::string & actualValueReturn };
+%apply std::string &INOUT { std::string & processImageCOutput };
+%apply std::string &INOUT { std::string & processImageXMLOutput };
+%apply std::string &INOUT { std::string & processImageNETOutput };
 
 %apply unsigned int& OUTPUT { unsigned int& size };
 %apply unsigned int& OUTPUT { unsigned int& size };
@@ -89,8 +92,15 @@
 
 %ignore GetNetworkManagement();
 %ignore PlkFeatureDefaultValues;
+%ignore DirectionTypeValues;
+%ignore GetPlkDataTypeName();
 %ignore PlkFeatureStrings;
 %ignore SetComplexDataType(std::shared_ptr<Parameter>& parameter);
+%ignore GetRmnIds();
+%ignore IECDatatypeValues;
+%ignore ParameterAccessValues;
+%ignore PDOMappingValues;
+%ignore AccessTypeValues;
 
 %{
 

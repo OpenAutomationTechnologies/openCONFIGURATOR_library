@@ -130,14 +130,9 @@ namespace IndustrialNetwork
 						List of managed networks.
 						*/
 						std::map<std::string, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network>> networkList;
-
 				};
-
 			}
-
 		}
-
 	}
-
 }
 #endif

@@ -81,7 +81,7 @@ namespace IndustrialNetwork
 				}
 
 				template std::uint8_t HexToInt<std::uint8_t >(const std::string& hexString);
-				template std::uint16_t  HexToInt<uint16_t>(const std::string& hexString);
+				template std::uint16_t HexToInt<uint16_t>(const std::string& hexString);
 				template std::uint32_t HexToInt<std::uint32_t>(const std::string& hexString);
 				template unsigned long HexToInt<unsigned long>(const std::string& hexString);
 				template unsigned long long HexToInt<unsigned long long>(const std::string& hexString);
@@ -111,7 +111,6 @@ namespace IndustrialNetwork
 						case IEC_Datatype::WSTRING:
 							break;
 						case IEC_Datatype::BITSTRING:
-						case IEC_Datatype::BOOL:
 							{
 								return 1; //Bit datatypes
 							}
@@ -119,6 +118,7 @@ namespace IndustrialNetwork
 						case IEC_Datatype::_CHAR:
 						case IEC_Datatype::SINT:
 						case IEC_Datatype::USINT:
+						case IEC_Datatype::BOOL:
 							{
 								return 8; //Byte datatypes
 							}
@@ -155,12 +155,12 @@ namespace IndustrialNetwork
 					union
 					{
 						float input;
-						int   output;
+						int output;
 					} data;
 
 					data.input = value;
 
-					std::bitset<sizeof(float) * CHAR_BIT>   bits(data.output);
+					std::bitset<sizeof(float) * CHAR_BIT> bits(data.output);
 					std::string outputString = bits.to_string<char, std::char_traits<char>, std::allocator<char>>();
 
 					std::bitset<32> set(outputString);
@@ -181,7 +181,7 @@ namespace IndustrialNetwork
 
 					data.input = value;
 
-					std::bitset<sizeof(double) * CHAR_BIT>   bits(data.output);
+					std::bitset<sizeof(double) * CHAR_BIT> bits(data.output);
 
 					std::string outputString = bits.to_string<char, std::char_traits<char>, std::allocator<char>>();
 
@@ -250,7 +250,7 @@ namespace IndustrialNetwork
 				void ConfigurationToAscii(const std::stringstream& inputConfig, std::vector<std::uint8_t>& output)
 				{
 					//Lowercase
-					std::string hexOutputStr =  inputConfig.str();
+					std::string hexOutputStr = inputConfig.str();
 					std::transform(hexOutputStr.begin(), hexOutputStr.end(), hexOutputStr.begin(), ::tolower);
 					//Write ascii character
 					for (std::uint32_t i = 0; i < hexOutputStr.size(); i += 2)
@@ -275,6 +275,132 @@ namespace IndustrialNetwork
 						input = input - 48;
 					}
 					return input;
+				}
+
+				IEC_Datatype GetIECDataType(const PlkDataType dataType)
+				{
+					switch (dataType)
+					{
+						case PlkDataType::BOOLEAN:
+							return IEC_Datatype::BOOL;
+						case PlkDataType::INTEGER8:
+							return IEC_Datatype::SINT;
+						case PlkDataType::INTEGER16:
+							return IEC_Datatype::UINT;
+						case PlkDataType::INTEGER24:
+						case PlkDataType::INTEGER32:
+							return IEC_Datatype::UDINT;
+						case PlkDataType::UNSIGNED8:
+							return IEC_Datatype::USINT;
+						case PlkDataType::UNSIGNED16:
+							return IEC_Datatype::UINT;
+						case PlkDataType::UNSIGNED32:
+							return IEC_Datatype::UDINT;
+						case PlkDataType::REAL32:
+							return IEC_Datatype::REAL;
+						case PlkDataType::REAL64:
+							return IEC_Datatype::LREAL;
+						case PlkDataType::INTEGER40:
+						case PlkDataType::INTEGER48:
+						case PlkDataType::INTEGER56:
+						case PlkDataType::INTEGER64:
+							return IEC_Datatype::LINT;
+						case PlkDataType::UNSIGNED24:
+						case PlkDataType::UNSIGNED40:
+						case PlkDataType::UNSIGNED48:
+						case PlkDataType::UNSIGNED56:
+						case PlkDataType::UNSIGNED64:
+							return IEC_Datatype::ULINT;
+						case PlkDataType::UNDEFINED:
+						case PlkDataType::VISIBLE_STRING:
+						case PlkDataType::OCTET_STRING:
+						case PlkDataType::UNICODE_STRING:
+						case PlkDataType::TIME_OF_DAY:
+						case PlkDataType::TIME_DIFF:
+						case PlkDataType::MAC_ADDRESS:
+						case PlkDataType::IP_ADDRESS:
+						case PlkDataType::NETTIME:
+						case PlkDataType::Domain:
+						default:
+							return IEC_Datatype::UNDEFINED; //error
+					}
+				}
+
+				PlkDataType GetPlkDataType(const IEC_Datatype dataType)
+				{
+					switch (dataType)
+					{
+						case UNDEFINED:
+							return PlkDataType::UNDEFINED;
+						case BITSTRING:
+						case BOOL:
+						case BYTE:
+						case _CHAR:
+						case USINT:
+							return PlkDataType::UNSIGNED8;
+						case WORD:
+						case UINT:
+							return PlkDataType::UNSIGNED16;
+						case DWORD:
+						case UDINT:
+							return PlkDataType::UNSIGNED32;
+						case LWORD:
+						case ULINT:
+							return PlkDataType::UNSIGNED64;
+						case SINT:
+							return PlkDataType::INTEGER8;
+						case INT:
+							return PlkDataType::INTEGER16;
+						case DINT:
+							return PlkDataType::INTEGER32;
+						case LINT:
+							return PlkDataType::INTEGER64;
+						case REAL:
+							return PlkDataType::REAL32;
+						case LREAL:
+							return PlkDataType::REAL64;
+						case STRING:
+						case WSTRING:
+							return PlkDataType::UNDEFINED;
+						default:
+							break;
+					}
+					return PlkDataType::UNDEFINED;
+				}
+
+				const std::string GetNetDatatypeFromIEC(IEC_Datatype iecDataType)
+				{
+					switch (iecDataType)
+					{
+						case IEC_Datatype::BITSTRING:
+						case IEC_Datatype::BOOL:
+						case IEC_Datatype::BYTE:
+						case IEC_Datatype::_CHAR:
+						case IEC_Datatype::USINT:
+							return std::string("byte");
+						case IEC_Datatype::DWORD:
+						case IEC_Datatype::UDINT:
+							return std::string("UInt32");
+						case IEC_Datatype::LWORD:
+						case IEC_Datatype::ULINT:
+							return std::string("UInt64");
+						case IEC_Datatype::SINT:
+							return std::string("sbyte");
+						case IEC_Datatype::INT:
+							return std::string("Int16");
+						case IEC_Datatype::DINT:
+							return std::string("Int32");
+						case IEC_Datatype::LINT:
+							return std::string("Int64");
+						case IEC_Datatype::UINT:
+							return std::string("UInt16");
+						case IEC_Datatype::REAL:
+						case IEC_Datatype::LREAL:
+						case IEC_Datatype::STRING:
+						case IEC_Datatype::WSTRING:
+						default:
+							return "";
+					}
 				}
 			}
 		}

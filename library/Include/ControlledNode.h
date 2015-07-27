@@ -35,7 +35,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <boost/format.hpp>
 
 #include "BaseNode.h"
+#include "BaseObject.h"
 #include "PlkOperationMode.h"
+#include "BaseProcessDataMapping.h"
 #include "Result.h"
 #include "BaseObject.h"
 #include "Constants.h"
@@ -44,6 +46,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Range.h"
 #include "Constants.h"
 #include "LoggingConfiguration.h"
+#include "Utilities.h"
+#include "Parameter.h"
+#include "ArrayDataType.h"
+#include "StructDataType.h"
+#include "EnumDataType.h"
+#include "Direction.h"
 
 namespace IndustrialNetwork
 {
@@ -71,10 +79,10 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetOperationMode(IndustrialNetwork::POWERLINK::Core::Node::PlkOperationMode operationMode);
 						IndustrialNetwork::POWERLINK::Core::Node::PlkOperationMode GetOperationMode();
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapToFrame(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject& index, uint32_t position, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetAllMappableObjects(std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject>>& objects, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapAllRxObjects();
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapAllTxObjects();
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapObject(uint32_t index, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, uint32_t position = 0, uint16_t fromNode = 0);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapSubObject(uint32_t index, uint16_t subindex, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, uint32_t position = 0, std::uint16_t fromNode = 0);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapAllRxObjects(bool updateNrOfEntries);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapAllTxObjects(bool updateNrOfEntries);
 
 						std::uint32_t GetConfigurationObjectCount();
 						std::uint32_t GetConfigurationObjectSize();
@@ -82,15 +90,18 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CalculatePReqPayloadLimit();
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CalculatePResPayloadLimit();
 
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result UpdateProcessImage(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir);
 					private:
 						IndustrialNetwork::POWERLINK::Core::Node::PlkOperationMode operationMode;
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetDataObjectFromMapping(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseProcessDataMapping>& mapping, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject>& returnObject);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result UpdateProcessDataMapping(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CheckProcessDataMapping(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseProcessDataMapping>& mapping, std::uint32_t expectedOffset, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapBaseObject(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject>& obj, uint32_t index, uint16_t subindex, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, bool updateNrOfEntries, uint32_t position = 0, uint16_t fromNode = 0);
+
 				};
-
 			}
-
 		}
-
 	}
-
 }
 #endif

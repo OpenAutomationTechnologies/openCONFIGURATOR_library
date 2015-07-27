@@ -67,14 +67,9 @@ namespace IndustrialNetwork
 						\return boolean
 						*/
 						bool UpdateModuleOd(std::uint32_t baseIndex, SortMode sortMode, SortNumber sortNumber);
-
 				};
-
 			}
-
 		}
-
 	}
-
 }
 #endif

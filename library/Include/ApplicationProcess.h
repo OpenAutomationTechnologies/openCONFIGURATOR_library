@@ -72,12 +72,8 @@ namespace IndustrialNetwork
 						std::vector<std::shared_ptr<Parameter>> parameterList;
 
 				};
-
 			}
-
 		}
-
 	}
-
 }
 #endif

@@ -44,4 +44,8 @@ const char kPathSeparator =
     '/';
 #endif
 
+const char kVersionMajor = '2';
+const char kVersionMinor = '0';
+const char kVersionFix = '0';
+
 #endif // CONSTANTS_H_

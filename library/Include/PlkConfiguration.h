@@ -32,7 +32,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined PLK_CONFIGURATION_H
 #define PLK_CONFIGURATION_H
 
-#include <iostream>
 #include <memory>
 #include <chrono>
 #include <algorithm>
@@ -95,12 +94,8 @@ namespace IndustrialNetwork
 
 
 				};
-
 			}
-
 		}
-
 	}
-
 }
 #endif

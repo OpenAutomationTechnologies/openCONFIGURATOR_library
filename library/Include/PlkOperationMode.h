@@ -52,12 +52,8 @@ namespace IndustrialNetwork
 					MULTIPLEXED, //< Multiplexed station
 					CHAINED //< Chained station
 				};
-
 			}
-
 		}
-
 	}
-
 }
 #endif

@@ -149,9 +149,9 @@ Result PlkConfiguration::DistributeDateTimeStamps(const std::map<uint8_t, std::s
 
 	// Create days since 01/01/1984
 	tm timeinfo = tm();
-	timeinfo.tm_year = 84;   // year: 1984
-	timeinfo.tm_mon = 0;      // month: january
-	timeinfo.tm_mday = 1;     // day: 1st
+	timeinfo.tm_year = 84; // year: 1984
+	timeinfo.tm_mon = 0; // month: january
+	timeinfo.tm_mday = 1; // day: 1st
 	time_t epoch = mktime(&timeinfo);
 
 	//Create new epoch time (01/01/1984)
@@ -174,7 +174,7 @@ Result PlkConfiguration::DistributeDateTimeStamps(const std::map<uint8_t, std::s
 	std::stringstream timeString;
 	timeString << millisecondsSinceMidnight.count(); //write milliseconds to std::string
 
-	for (auto& node :  nodeCollection)
+	for (auto& node : nodeCollection)
 	{
 		if (node.second->IsEnabled() == false)
 			continue;
@@ -182,7 +182,7 @@ Result PlkConfiguration::DistributeDateTimeStamps(const std::map<uint8_t, std::s
 		//Distribute to MN and RMNs
 		if (std::dynamic_pointer_cast<ManagingNode>(node.second)) //Set MN date and time objects 1F26 / 1F27
 		{
-			for (auto& nodeIds :  nodeCollection)
+			for (auto& nodeIds : nodeCollection)
 			{
 				if (nodeIds.first == 240) //Avoid distributing values for MN nodeID
 					continue;
@@ -234,7 +234,7 @@ Result PlkConfiguration::DistributeNodeAssignment(const std::map<uint8_t, std::s
 			continue;
 
 		nodeAssignmentStr << node.second->GetNodeAssignmentValue(); //Retrieve assignment from CN or RMN
-		for (auto& mn :  nodeCollection)
+		for (auto& mn : nodeCollection)
 		{
 			//Distribute to MN and RMNs
 			if (std::dynamic_pointer_cast<ManagingNode>(mn.second)) //Set MN or RMN node assignement objects
@@ -268,7 +268,7 @@ Result PlkConfiguration::DistributeCycleTime(const std::map<uint8_t, std::shared
 		//Convert to cycle time to std::string
 		cycleTimeStr << cycleTimeObject->GetTypedActualValue<uint32_t>();
 	}
-	//0x1006 / 0x0 has to be written so return error if not
+	//0x1006 has to be written so return error if not
 	else
 		return Result(ErrorCode::CYCLE_TIME_NOT_SET, kMsgCycleTimeOnMnNotSet);
 
@@ -612,9 +612,6 @@ Result PlkConfiguration::DistributePResPayloadLimit(const std::map<uint8_t, std:
 
 	for (auto& node : nodeCollection)
 	{
-		if (node.first == 240)
-			continue;
-
 		if (node.second->IsEnabled() == false)
 			continue;
 
@@ -633,14 +630,17 @@ Result PlkConfiguration::DistributePResPayloadLimit(const std::map<uint8_t, std:
 		else
 			continue;
 
-		res = mn->SetSubObjectActualValue(0x1F8D, node.first, presActPayloadLimitValue.str()); //Write to MN
-		if (!res.IsSuccessful())
-			return res;
+		if (node.first != 240) //Skip writing 1F8D / 240 to MN
+		{
+			res = mn->SetSubObjectActualValue(0x1F8D, node.first, presActPayloadLimitValue.str()); //Write to MN
+			if (!res.IsSuccessful())
+				return res;
+		}
 
 		for (auto& cn : nodeCollection)
 		{
 			//Skip the MN and the current node itself
-			if (cn.first == 240 || node.first == cn.first)
+			if (node.first == cn.first)
 				continue;
 
 			//Always distribute for RMNs

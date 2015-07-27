@@ -75,12 +75,8 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess parameterAccess;
 						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType;
 				};
-
 			}
-
 		}
-
 	}
-
 }
 #endif

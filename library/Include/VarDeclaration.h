@@ -58,19 +58,14 @@ namespace IndustrialNetwork
 						virtual ~VarDeclaration();
 
 						virtual std::uint32_t GetBitSize();
+						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype GetDataType();
 
 					private:
 						std::string initialValue;
 						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType;
-
-
 				};
-
 			}
-
 		}
-
 	}
-
 }
 #endif

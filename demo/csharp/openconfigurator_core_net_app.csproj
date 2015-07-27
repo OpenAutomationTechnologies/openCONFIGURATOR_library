@@ -56,6 +56,8 @@
     <Compile Include="AssignmentCollection.cs" />
     <Compile Include="BaseNode.cs" />
     <Compile Include="BaseObject.cs" />
+    <Compile Include="BaseProcessDataMapping.cs" />
+    <Compile Include="BaseProcessImageObject.cs" />
     <Compile Include="BuildConfigurationSetting.cs" />
     <Compile Include="ByteCollection.cs" />
     <Compile Include="CNFeatureEnum.cs" />
@@ -110,12 +112,15 @@
     <Compile Include="SWIGTYPE_p_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__Node__DynamicChannel_t.cs" />
     <Compile Include="SWIGTYPE_p_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__Node__ManagingNode_t.cs" />
     <Compile Include="SWIGTYPE_p_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__ObjectDictionary__ApplicationProcess_t.cs" />
+    <Compile Include="SWIGTYPE_p_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__ObjectDictionary__BaseObject_t.cs" />
     <Compile Include="SWIGTYPE_p_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__ObjectDictionary__Object_t.cs" />
     <Compile Include="SWIGTYPE_p_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__ObjectDictionary__SubObject_t.cs" />
     <Compile Include="SWIGTYPE_p_std__vectorT_IndustrialNetwork__POWERLINK__Core__Node__NodeAssignment_t.cs" />
     <Compile Include="SWIGTYPE_p_std__vectorT_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__Configuration__BuildConfigurationSetting_t_t.cs" />
     <Compile Include="SWIGTYPE_p_std__vectorT_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__Configuration__PlkConfiguration_t_t.cs" />
-    <Compile Include="SWIGTYPE_p_std__vectorT_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__ObjectDictionary__BaseObject_t_t.cs" />
+    <Compile Include="SWIGTYPE_p_std__vectorT_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__Node__DynamicChannel_t_t.cs" />
+    <Compile Include="SWIGTYPE_p_std__vectorT_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__ObjectDictionary__BaseProcessImageObject_t_t.cs" />
+    <Compile Include="SWIGTYPE_p_std__vectorT_unsigned_short_t.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -124,7 +129,7 @@
    <PropertyGroup>
     <PreBuildEvent>xcopy /y "$(SolutionDir)\wrapper\csharp\csharp\src\*.cs" "$(ProjectDir)"</PreBuildEvent>
   </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

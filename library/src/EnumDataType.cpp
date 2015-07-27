@@ -36,7 +36,7 @@ using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 
-EnumDataType::EnumDataType(const std::string& uniqueID, const std::string&  name, IEC_Datatype dataType, uint32_t size) : ComplexDataType(uniqueID, name, size),
+EnumDataType::EnumDataType(const std::string& uniqueID, const std::string& name, IEC_Datatype dataType, uint32_t size) : ComplexDataType(uniqueID, name, size),
 	dataType(dataType),
 	enumValues(std::unordered_map<std::string, std::string>())
 {}

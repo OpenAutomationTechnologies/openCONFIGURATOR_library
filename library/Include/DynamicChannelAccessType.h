@@ -53,12 +53,8 @@ namespace IndustrialNetwork
 					writeOnly,
 					readWriteOutput
 				};
-
 			}
-
 		}
-
 	}
-
 }
 #endif

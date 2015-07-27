@@ -63,7 +63,7 @@ namespace IndustrialNetwork
 						virtual ~GeneralFeature();
 
 						const std::string& GetName();
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetTypedValues(const std::string&  defaultValue, const std::string& actualValue);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetTypedValues(const std::string& defaultValue, const std::string& actualValue);
 
 						template<class T>
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetDefaultValue(T& value);
@@ -74,12 +74,8 @@ namespace IndustrialNetwork
 						template<class T>
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetActualValue(const T actualValue);
 				};
-
 			}
-
 		}
-
 	}
-
 }
 #endif

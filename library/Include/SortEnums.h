@@ -48,21 +48,17 @@ namespace IndustrialNetwork
 				*/
 				enum class SortNumber : std::uint8_t
 				{
-					CONTINOUS  = 0,
+					CONTINUOUS = 0,
 					ADDRESS
 				};
 
 				enum class SortMode : std::uint8_t
 				{
-					INDEX  = 0,
+					INDEX = 0,
 					SUBINDEX
 				};
-
 			}
-
 		}
-
 	}
-
 }
 #endif

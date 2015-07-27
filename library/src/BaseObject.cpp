@@ -1449,13 +1449,31 @@ namespace IndustrialNetwork
 				{
 					if ((this->forceToCDC == true //Object forced
 					        || this->actualValueNotDefaultValue == true) //Actual value != default value
-					        && (this->GetAccessType() == AccessType::RW //correct AccessType
-					            || this->GetAccessType() == AccessType::RWS
-					            || this->GetAccessType() == AccessType::WO
-					            || this->GetAccessType() == AccessType::WOS))
+					        && (this->GetAccessType() != AccessType::COND //correct AccessType
+					            && this->GetAccessType() != AccessType::CONST))
 						return true;
 					else
 						return false;
+				}
+
+				bool BaseObject::HasActualValue()
+				{
+					if (this->GetActualValue().empty())
+						return false;
+					return true;
+				}
+
+				bool BaseObject::HasDefaultValue()
+				{
+					if (this->GetDefaultValue().empty())
+						return false;
+					return true;
+				}
+
+				void BaseObject::ClearActualValue()
+				{
+					this->SetActualValue(boost::any());
+					this->actualValueNotDefaultValue = false;
 				}
 			}
 		}

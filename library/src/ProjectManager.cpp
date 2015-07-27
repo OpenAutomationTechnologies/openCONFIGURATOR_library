@@ -149,7 +149,7 @@ Result ProjectManager::InitLoggingConfiguration(const std::string& configuration
 std::vector<std::string> ProjectManager::GetNetworkIds()
 {
 	std::vector<std::string> returnVec;
-	for (auto it = networkList.begin();  it != networkList.end(); ++it)
+	for (auto it = networkList.begin(); it != networkList.end(); ++it)
 	{
 		returnVec.push_back(it->first);
 	}

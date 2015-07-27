@@ -106,9 +106,7 @@ namespace IndustrialNetwork
 				BOOST_LOG_FUNCTION(); \
 				BOOST_LOG_SEV(sev_logger::get(), boost::log::trivial::fatal)
 			}
-
 		}
-
 	}
 }
 #endif

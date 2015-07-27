@@ -105,8 +105,6 @@ namespace IndustrialNetwork
 				std::string value;
 				std::string description;
 		};
-
 	}
-
 }
 #endif

@@ -187,9 +187,41 @@ Result OpenConfiguratorCore::BuildConfiguration(const std::string& networkId, st
 	return res;
 }
 
-Result OpenConfiguratorCore::BuildProcessImage(const std::string& networkId, std::string& configurationOutput)
+Result OpenConfiguratorCore::BuildXMLProcessImage(const std::string& networkId, const std::uint8_t nodeid, std::string& processImageOutput)
 {
-	return Result(ErrorCode::UNHANDLED_EXCEPTION);
+
+	std::shared_ptr<Network> networkPtr;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
+	if (res.IsSuccessful())
+		res = networkPtr->GenerateConfiguration();
+	if (res.IsSuccessful())
+		processImageOutput = XmlProcessImageGenerator::GetInstance().Generate(nodeid, networkPtr);
+
+	return res;
+}
+
+IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result OpenConfiguratorCore::BuildNETProcessImage(const std::string& networkId, const std::uint8_t nodeid, std::string& processImageOutput)
+{
+	std::shared_ptr<Network> networkPtr;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
+	if (res.IsSuccessful())
+		res = networkPtr->GenerateConfiguration();
+	if (res.IsSuccessful())
+		processImageOutput = NetProcessImageGenerator::GetInstance().Generate(nodeid, networkPtr);
+
+	return res;
+}
+
+IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result OpenConfiguratorCore::BuildCProcessImage(const std::string& networkId, const std::uint8_t nodeid, std::string& processImageOutput)
+{
+	std::shared_ptr<Network> networkPtr;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
+	if (res.IsSuccessful())
+		res = networkPtr->GenerateConfiguration();
+	if (res.IsSuccessful())
+		processImageOutput = CProcessImageGenerator::GetInstance().Generate(nodeid, networkPtr);
+
+	return res;
 }
 
 Result OpenConfiguratorCore::CreateNode(const std::string& networkId, const uint8_t nodeID, const std::string& nodeName, const bool isRmn)
@@ -448,7 +480,7 @@ Result OpenConfiguratorCore::CreateObject(const std::string& networkId, const ui
 	return res;
 }
 
-Result OpenConfiguratorCore::SetObjectLimits(const std::string& networkId, const uint8_t nodeId, uint32_t objectId,  const std::string& lowLimit, const std::string& highLimit)
+Result OpenConfiguratorCore::SetObjectLimits(const std::string& networkId, const uint8_t nodeId, uint32_t objectId, const std::string& lowLimit, const std::string& highLimit)
 {
 	std::shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -1577,7 +1609,7 @@ Result OpenConfiguratorCore::GetPResTimeOut(const std::string& networkId, const 
 	return res;
 }
 
-Result OpenConfiguratorCore::GetRedundantManagingNodeWaitNotActive(const std::string& networkId, const std::uint8_t nodeId,  std::uint32_t& waitNotActive)
+Result OpenConfiguratorCore::GetRedundantManagingNodeWaitNotActive(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t& waitNotActive)
 {
 	std::shared_ptr<Network> networkPtr;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
@@ -1753,5 +1785,98 @@ Result OpenConfiguratorCore::GetLossOfSocTolerance(const std::string& networkId,
 		LOG_FATAL() << formatter.str();
 		return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE, formatter.str());
 	}
+	return res;
+}
+
+Result OpenConfiguratorCore::MapObject(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, const Direction dir, std::uint32_t position, std::uint16_t fromNode)
+{
+	std::shared_ptr<Network> networkPtr;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::shared_ptr<BaseNode> nodePtr;
+	res = networkPtr->GetBaseNode(nodeId, nodePtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	auto cn = std::dynamic_pointer_cast<ControlledNode>(nodePtr);
+	auto mn = std::dynamic_pointer_cast<ManagingNode>(nodePtr);
+	if (cn)
+	{
+		return cn->MapObject(objectId, dir, position, fromNode);
+	}
+	else if (mn)
+	{
+		return mn->MapObject(objectId, dir, position, fromNode);
+	}
+
+	return res;
+}
+
+Result OpenConfiguratorCore::MapSubObject(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::uint8_t subObjectId, const Direction dir, std::uint32_t position, std::uint16_t fromNode)
+{
+	std::shared_ptr<Network> networkPtr;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::shared_ptr<BaseNode> nodePtr;
+	res = networkPtr->GetBaseNode(nodeId, nodePtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	auto cn = std::dynamic_pointer_cast<ControlledNode>(nodePtr);
+	auto mn = std::dynamic_pointer_cast<ManagingNode>(nodePtr);
+	if (cn)
+	{
+		return cn->MapSubObject(objectId, subObjectId, dir, position, fromNode);
+	}
+	else if (mn)
+	{
+		return mn->MapSubObject(objectId, subObjectId, dir, position, fromNode);
+	}
+
+	return res;
+}
+
+Result OpenConfiguratorCore::MapAllObjects(const std::string& networkId, const std::uint8_t nodeId, const Direction dir, bool updateNrOfEntries)
+{
+	std::shared_ptr<Network> networkPtr;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::shared_ptr<BaseNode> nodePtr;
+	res = networkPtr->GetBaseNode(nodeId, nodePtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	auto cn = std::dynamic_pointer_cast<ControlledNode>(nodePtr);
+	auto mn = std::dynamic_pointer_cast<ManagingNode>(nodePtr);
+	if (cn)
+	{
+		if (dir == Direction::RX)
+		{
+			return cn->MapAllRxObjects(updateNrOfEntries);
+		}
+		else if (dir == Direction::TX)
+		{
+			return cn->MapAllTxObjects(updateNrOfEntries);
+		}
+
+	}
+	else if (mn)
+	{
+		if (dir == Direction::RX)
+		{
+			return mn->MapAllRxObjects(updateNrOfEntries);
+		}
+		else if (dir == Direction::TX)
+		{
+			return mn->MapAllTxObjects(updateNrOfEntries);
+		}
+	}
+
 	return res;
 }

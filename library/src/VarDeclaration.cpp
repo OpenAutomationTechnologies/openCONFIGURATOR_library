@@ -46,3 +46,8 @@ uint32_t VarDeclaration::GetBitSize()
 {
 	return this->GetSize() * GetIECDataTypeBitSize(this->dataType);
 }
+
+IEC_Datatype VarDeclaration::GetDataType()
+{
+	return this->dataType;
+}

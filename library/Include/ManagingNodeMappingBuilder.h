@@ -1,6 +1,6 @@
 /************************************************************************
-\file PLKBuildConfigurationSetting.h
-\brief Implementation of the Class PLKBuildConfigurationSetting
+\file ManagingNodeMappingBuilder.h
+\brief Implementation of the Class ManagingNodeMappingBuilder
 \author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 \date 28-Apr-2015 14:40:00
 ************************************************************************/
@@ -29,25 +29,24 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
-#if !defined PLK_BUILD_CONFIGURATION_SETTING_H
-#define PLK_BUILD_CONFIGURATION_SETTING_H
+#if !defined MANAGING_NODE_MAPPING_BUILDER_H
+#define MANAGING_NODE_MAPPING_BUILDER_H
 
-#include <vector>
 #include <map>
+#include <cstdint>
 #include <memory>
+#include <sstream>
 
-#include <boost/format.hpp>
-
-#include "IResult.h"
-#include "IBuildConfigurationSetting.h"
-#include "BuildConfigurationId.h"
 #include "BuildConfigurationSettingBuilder.h"
-#include "ManagingNodeMappingBuilder.h"
 #include "Result.h"
 #include "ErrorCode.h"
 #include "Constants.h"
 #include "LoggingConfiguration.h"
 #include "BaseNode.h"
+#include "ManagingNode.h"
+#include "ControlledNode.h"
+#include "Direction.h"
+#include "Utilities.h"
 
 namespace IndustrialNetwork
 {
@@ -57,28 +56,20 @@ namespace IndustrialNetwork
 		{
 			namespace Configuration
 			{
-				/**
-				\brief Represents one build configuration setting in the POWERLINK network.
-				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
-				*/
-				class DLLEXPORT BuildConfigurationSetting : public IndustrialNetwork::Fieldbus::IBuildConfigurationSetting
+				class ManagingNodeMappingBuilder : public IndustrialNetwork::POWERLINK::Core::Configuration::BuildConfigurationSettingBuilder
 				{
 					public:
-						BuildConfigurationSetting();
-						~BuildConfigurationSetting();
+						ManagingNodeMappingBuilder();
+						~ManagingNodeMappingBuilder();
 
-						/**
-						\brief Constructor for the BuildConfigurationHandler class.
-						\param[in] id BuildConfigurationSettingId for the setting.
-						\param[in] value std::string of the setting. Default value is empty.
-						*/
-						BuildConfigurationSetting(const std::string& name, const std::string& value = "");
-
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GenerateConfiguration(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GenerateConfiguration(const std::string& value, const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
 
 					private:
-						void InitConfigurationSetting(const std::string& id);
-						std::shared_ptr<BuildConfigurationSettingBuilder> configurationBuilder;
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GenerateMnMapping(const std::string& value, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
+						const std::string GetMappingString(std::uint32_t size, std::uint32_t offset, std::uint32_t subindex, std::uint32_t index);
+						bool GenerateForNode(const std::string& value, std::uint16_t nodeId);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result FindMappedObject(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node, std::uint32_t dataIndex, std::uint16_t dataSubindex, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject>& foundObject);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteMappingToForNode(std::uint16_t nodeId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, const std::string& actualMappingValue, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::ManagingNode>& mn);
 				};
 			}
 		}

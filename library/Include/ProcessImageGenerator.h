@@ -34,19 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <sstream>
 
-namespace IndustrialNetwork
-{
-	namespace POWERLINK
-	{
-		namespace Core
-		{
-			namespace NetworkHandling
-			{
-				class XmlProcessImageGenerator;
-			}
-		}
-	}
-}
+#include "Network.h"
 
 namespace IndustrialNetwork
 {
@@ -64,21 +52,16 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						ProcessImageGenerator();
-						virtual ~ProcessImageGenerator();
+						ProcessImageGenerator()
+						{}
 
-						virtual std::stringstream& Generate() = 0;
+						virtual ~ProcessImageGenerator()
+						{}
 
-						static const ProcessImageGenerator& GetXMLProcessImageGenerator();
-					private:
-						static XmlProcessImageGenerator xmlGen;
+						virtual const std::string Generate(std::uint8_t nodeid, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network> network) = 0;
 				};
-
 			}
-
 		}
-
 	}
-
 }
 #endif

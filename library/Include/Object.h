@@ -73,12 +73,8 @@ namespace IndustrialNetwork
 						std::map<std::uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::SubObject>> subIndexCollection;
 
 				};
-
 			}
-
 		}
-
 	}
-
 }
 #endif

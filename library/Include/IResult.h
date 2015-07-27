@@ -66,12 +66,7 @@ namespace IndustrialNetwork
 			private:
 				T errorType;
 				std::string errorMessage;
-
-
-
 		};
-
 	}
-
 }
 #endif

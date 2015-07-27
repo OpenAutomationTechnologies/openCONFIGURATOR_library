@@ -39,6 +39,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstdio>
 #include <algorithm>
 
+#include <boost/date_time.hpp>
+
 #include "BaseNode.h"
 #include "Result.h"
 #include "Network.h"
@@ -70,6 +72,7 @@ namespace IndustrialNetwork
 						ConfigurationGenerator(ConfigurationGenerator const&);
 						void operator=(ConfigurationGenerator const&);
 
+						void WriteHeader(const std::shared_ptr<Network>& net, std::stringstream& configurationOutput);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteManagingNodeObjectCount(const std::shared_ptr<Network>& net, std::stringstream& configurationOutput, std::stringstream& hexOutput);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteNodeAssignement(const std::shared_ptr<Network>& net, std::stringstream& configurationOutput, std::stringstream& hexOutput, bool writeNodeValid, bool writeComments);
 
@@ -82,8 +85,6 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteMappingNrOfEntries(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node, std::stringstream& configurationOutput, std::stringstream& hexOutput);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteCommunicationProfileArea(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node, std::stringstream& configurationOutput, std::stringstream& hexOutput);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteManufacturerSpecificProfileArea(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node, std::stringstream& configurationOutput, std::stringstream& hexOutput);
-
-
 				};
 			}
 		}

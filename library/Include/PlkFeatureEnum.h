@@ -320,10 +320,7 @@ namespace IndustrialNetwork
 					""
 				};
 			}
-
 		}
-
 	}
-
 }
 #endif

@@ -82,12 +82,8 @@ namespace IndustrialNetwork
 					lhs = (FeatureFlags)(static_cast<std::underlying_type<FeatureFlags>::type>(lhs) | static_cast<std::underlying_type<FeatureFlags>::type>(rhs));
 					return lhs;
 				}
-
 			}
-
 		}
-
 	}
-
 }
 #endif

@@ -10,14 +10,14 @@ Copyright (c) 2015, Bernecker+Rainer Industrie-Elektronik Ges.m.b.H. (B&R)
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name of the copyright holders nor the
-      names of its contributors may be used to endorse or promote products
-      derived from this software without specific prior written permission.
+* Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in the
+documentation and/or other materials provided with the distribution.
+* Neither the name of the copyright holders nor the
+names of its contributors may be used to endorse or promote products
+derived from this software without specific prior written permission.
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -39,7 +39,7 @@ using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 
 ManagingNode::ManagingNode(std::uint8_t nodeID, const std::string& nodeName) : BaseNode(nodeID, nodeName),
 	dynamicChannelList(std::vector<std::shared_ptr<DynamicChannel>>()),
-	rmnCount(0)
+	rmnList(std::vector<std::uint16_t>())
 {
 	this->AddNodeAssignement(NodeAssignment::MNT_NODEASSIGN_VALID);
 	this->AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_NODE_EXISTS);
@@ -114,7 +114,7 @@ Result ManagingNode::RemoveNodeAssignment(NodeAssignment assign)
 	this->GetNodeAssignment().erase(remove(this->GetNodeAssignment().begin(), this->GetNodeAssignment().end(), assign), this->GetNodeAssignment().end());
 	if (assign == NodeAssignment::NMT_NODEASSIGN_MN_PRES) //Reset the node assignement on the managing node
 	{
-		this->SetSubObjectActualValue(0x1F81, 240, "0");
+		this->SetSubObjectActualValue(0x1F81, 240, "");
 	}
 	return Result();
 }
@@ -138,17 +138,40 @@ void ManagingNode::AddDynamicChannel(std::shared_ptr<DynamicChannel>& channelRef
 	this->dynamicChannelList.push_back(channelRef);
 }
 
-bool ManagingNode::GetDynamicChannel(PlkDataType dataType, std::shared_ptr<DynamicChannel>& retChannel)
+Result ManagingNode::GetDynamicChannel(PlkDataType dataType, Direction dir, std::shared_ptr<DynamicChannel>& returnChannel)
 {
-	for (auto& channel : this->dynamicChannelList)
+	for (auto& dynamicChannel : this->dynamicChannelList)
 	{
-		if (channel->GetDataType() == dataType)
+		if (dynamicChannel->GetDataType() == dataType)
 		{
-			retChannel = channel;
-			return true;
+			if (dir == Direction::RX &&
+			        (dynamicChannel->GetAccessType() == DynamicChannelAccessType::readWriteOutput
+			         || dynamicChannel->GetAccessType() == DynamicChannelAccessType::writeOnly))
+			{
+				returnChannel = dynamicChannel;
+				return Result();
+			}
+			else if (dir == Direction::TX &&
+			         (dynamicChannel->GetAccessType() == DynamicChannelAccessType::readOnly
+			          || dynamicChannel->GetAccessType() == DynamicChannelAccessType::readWriteOutput))
+			{
+				returnChannel = dynamicChannel;
+				return Result();
+			}
 		}
 	}
-	return false;
+
+	boost::format formatter(kMsgDynamicChannelNotFound);
+	formatter
+	% GetPlkDataTypeName(dataType)
+	% DirectionTypeValues[(std::uint32_t) dir];
+	LOG_FATAL() << formatter.str();
+	return Result(ErrorCode::DYNAMIC_CHANNEL_NOT_FOUND, formatter.str());
+}
+
+const std::vector<std::shared_ptr<DynamicChannel>>& ManagingNode::GetDynamicChannels()
+{
+	return this->dynamicChannelList;
 }
 
 uint32_t ManagingNode::GetConfigurationObjectCount()
@@ -180,7 +203,7 @@ uint32_t ManagingNode::GetConfigurationObjectCount()
 			}
 			else if (object.first >= 0x1A00 && object.first < 0x1B00) //Count for reset and actual NrOfEntries
 			{
-				if (subobject.second->WriteToConfiguration()  && subobject.first == 0x0)
+				if (subobject.second->WriteToConfiguration() && subobject.first == 0x0)
 				{
 					count += 2; //Add count for mapping set and reset
 					mappingObjNrOfEntries = subobject.second->GetTypedActualValue<uint16_t>(); //Set actual nr of mapping objects
@@ -297,14 +320,27 @@ uint32_t ManagingNode::GetConfigurationObjectSize()
 	return size;
 }
 
-uint16_t ManagingNode::GetRmnCount()
+std::uint16_t ManagingNode::GetRmnCount()
 {
-	return this->rmnCount;
+	return (std::uint16_t) this->rmnList.size();
 }
 
-void ManagingNode::SetRmnCount(std::uint16_t count)
+void ManagingNode::AddRmnId(std::uint16_t count)
 {
-	this->rmnCount = count;
+	this->rmnList.push_back(count);
+	//Sort and remove duplicates
+	std::sort(rmnList.begin(), rmnList.end());
+	rmnList.erase(std::unique(rmnList.begin(), rmnList.end()), rmnList.end());
+}
+
+void ManagingNode::RemoveRmnId(std::uint16_t nodeId)
+{
+	this->rmnList.erase(std::remove(this->rmnList.begin(), this->rmnList.end(), nodeId), this->rmnList.end());
+}
+
+const std::vector<std::uint16_t>& ManagingNode::GetRmnIds()
+{
+	return this->rmnList;
 }
 
 Result ManagingNode::SetMultiplexedCycle(const std::uint8_t nodeID, const std::uint8_t multiplexedCycle)
@@ -357,7 +393,8 @@ Result ManagingNode::ResetMultiplexedCycle(const std::uint8_t nodeID)
 	if (!res.IsSuccessful())
 		return res;
 
-	return multplCycleAssign->SetTypedObjectActualValue("0");
+	multplCycleAssign->ClearActualValue();
+	return Result();
 }
 
 bool ManagingNode::MultiplexedCycleAlreadyAssigned(std::uint8_t multiplexedCycle)
@@ -380,12 +417,12 @@ bool ManagingNode::MultiplexedCycleAlreadyAssigned(std::uint8_t multiplexedCycle
 	return false;
 }
 
-
 IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::CalculatePReqPayloadLimit()
 {
 	if (this->GetNodeIdentifier() != 240) //Only calculate for RMN
 		return Result();
 
+	uint32_t preqPayloadLimit = 0;
 	for (auto& object : this->GetObjectDictionary())
 	{
 		if (object.first >= 0x1600 && object.first < 0x1700)
@@ -406,23 +443,29 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::Calculat
 				numberOfIndicesToWrite = nrOfEntriesObj->GetTypedActualValue<uint16_t>();
 
 			uint16_t count = 0;
-			uint16_t preqPayloadLimit = 0;
+
 			for (auto& subobject : object.second->GetSubObjectCollection())
 			{
 				if (subobject.second->WriteToConfiguration() && subobject.first != 0 && count < numberOfIndicesToWrite)
 				{
-					//Calculate all the mapping object sizes
+					BaseProcessDataMapping mapping = BaseProcessDataMapping(subobject.second->GetTypedActualValue<std::string>(), this->GetNodeIdentifier());
+					preqPayloadLimit += mapping.GetMappingLength() / 8;
 					count++;
 				}
 			}
-
-			if (preqPayloadLimit <= 36)
-			{
-				return this->SetSubObjectActualValue(0x1F98, 0x4, "36"); //Set to default value
-			}
 		}
 	}
-	return Result();
+
+	if (preqPayloadLimit <= 36)
+	{
+		return this->SetSubObjectActualValue(0x1F98, 0x4, "36"); //Set to default value
+	}
+	else
+	{
+		std::stringstream convert;
+		convert << preqPayloadLimit;
+		return this->SetSubObjectActualValue(0x1F98, 0x4, convert.str());
+	}
 }
 
 IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::CalculatePResPayloadLimit()
@@ -430,8 +473,10 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::Calculat
 	//Calculate only if managing node transmits PRes
 	if (std::find(this->GetNodeAssignment().begin(), this->GetNodeAssignment().end(), NodeAssignment::NMT_NODEASSIGN_MN_PRES) != this->GetNodeAssignment().end())
 	{
+		uint32_t presPayloadLimit = 0;
 		for (auto& object : this->GetObjectDictionary())
 		{
+
 			if (object.first >= 0x1A00 && object.first < 0x1B00)
 			{
 				uint16_t numberOfIndicesToWrite = 0;
@@ -440,22 +485,283 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::Calculat
 					numberOfIndicesToWrite = nrOfEntriesObj->GetTypedActualValue<uint16_t>();
 
 				uint16_t count = 0;
-				uint16_t presPayloadLimit = 0;
+
 				for (auto& subobject : object.second->GetSubObjectCollection())
 				{
 					if (subobject.second->WriteToConfiguration() && subobject.first != 0 && count < numberOfIndicesToWrite)
 					{
-						//Calculate all the mapping object sizes
+						BaseProcessDataMapping mapping = BaseProcessDataMapping(subobject.second->GetTypedActualValue<std::string>(), this->GetNodeIdentifier());
+						presPayloadLimit += mapping.GetMappingLength() / 8;
 						count++;
 					}
 				}
-
-				if (presPayloadLimit <= 36)
-				{
-					return this->SetSubObjectActualValue(0x1F98, 0x5, "36");
-				}
 			}
+		}
+
+		if (presPayloadLimit <= 36)
+		{
+			return this->SetSubObjectActualValue(0x1F98, 0x5, "36");
+		}
+		else
+		{
+			std::stringstream convert;
+			convert << presPayloadLimit;
+			return this->SetSubObjectActualValue(0x1F98, 0x5, convert.str());
 		}
 	}
 	return Result();
 }
+
+Result ManagingNode::MapObject(std::uint32_t, Direction, std::uint32_t, std::uint16_t)
+{
+	return Result();
+}
+
+Result ManagingNode::MapSubObject(std::uint32_t, std::uint16_t, Direction, std::uint32_t, std::uint16_t)
+{
+	return Result();
+}
+
+Result ManagingNode::MapAllRxObjects(bool)
+{
+	return Result();
+}
+
+Result ManagingNode::MapAllTxObjects(bool)
+{
+	return Result();
+}
+
+Result ManagingNode::UpdateProcessImage(const std::map<std::uint8_t, std::shared_ptr<BaseNode>>& nodeCollection, Direction dir)
+{
+	if (dir == Direction::RX)
+		this->GetReceiveProcessImage().clear();
+	else if (dir == Direction::TX)
+		this->GetTransmitProcessImage().clear();
+
+	return this->UpdateProcessDataMapping(nodeCollection, dir);
+}
+
+IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::UpdateProcessDataMapping(const std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection, Direction dir)
+{
+	std::uint32_t mappingParameterIndex = 0;
+	std::uint32_t mappingObjectIndex = 0;
+	std::uint16_t mappedFromNode = 0;
+	std::uint16_t nrOfEntries = 0;
+	bool defaultMapping = false;
+
+	if (dir == Direction::RX)
+	{
+		this->GetReceiveMapping().clear();
+		mappingParameterIndex = 0x1400;
+		mappingObjectIndex = 0x1600;
+	}
+
+	else if (dir == Direction::TX)
+	{
+		this->GetTransmitMapping().clear();
+		mappingParameterIndex = 0x1800;
+		mappingObjectIndex = 0x1A00;
+	}
+
+	for (auto& obj : this->GetObjectDictionary())
+	{
+		if (obj.first >= mappingParameterIndex && obj.first < (mappingParameterIndex + 0x100))
+		{
+			//Get mapping parameter object
+			std::shared_ptr<SubObject> nodeID;
+			Result res = obj.second->GetSubObject(0x1, nodeID);
+			if (!res.IsSuccessful())
+				return res;
+
+			if (nodeID->WriteToConfiguration())
+			{
+				mappedFromNode = nodeID->GetTypedActualValue<uint16_t>();
+			}
+
+			//Get according mapping object
+			std::shared_ptr<Object> mappingObject;
+			res = this->GetObject(((obj.first - mappingParameterIndex) + mappingObjectIndex), mappingObject);
+			if (!res.IsSuccessful())
+				return res;
+
+			//Get mapping nrOfEntries
+			std::shared_ptr<SubObject> nrOfEntriesObj;
+			res = mappingObject->GetSubObject(0x0, nrOfEntriesObj);
+			if (!res.IsSuccessful())
+				return res;
+
+			if (nrOfEntriesObj->WriteToConfiguration())
+			{
+				nrOfEntries = nrOfEntriesObj->GetTypedActualValue<uint16_t>();
+			}
+			else if (nrOfEntriesObj->HasDefaultValue())
+			{
+				nrOfEntries = nrOfEntriesObj->GetTypedDefaultValue<uint16_t>();
+				defaultMapping = true;
+			}
+
+			for (auto& mapping : mappingObject->GetSubObjectCollection())
+			{
+				if (mapping.first == 0)
+					continue;
+
+				if (nrOfEntries == 0)
+					break;
+
+				if (defaultMapping && mapping.second->HasDefaultValue())
+				{
+					std::shared_ptr<BaseProcessDataMapping> mappingPtr = std::shared_ptr<BaseProcessDataMapping>(new BaseProcessDataMapping(mappedFromNode,
+					        mapping.second->GetId(), mapping.second, mapping.second->GetTypedDefaultValue<std::string>(), this->GetNodeIdentifier(), true));
+
+					res = CheckProcessDataMapping(nodeCollection.at((uint8_t)mappedFromNode), mappingPtr, dir);
+					if (!res.IsSuccessful())
+						return res;
+
+					if (dir == Direction::RX)
+						this->GetReceiveMapping().push_back(mappingPtr);
+					else if (dir == Direction::TX)
+						this->GetTransmitMapping().push_back(mappingPtr);
+
+					nrOfEntries--;
+				}
+				else if (mapping.second->WriteToConfiguration())
+				{
+					std::shared_ptr<BaseProcessDataMapping> mappingPtr = std::shared_ptr<BaseProcessDataMapping>(new BaseProcessDataMapping(mappedFromNode,
+					        mapping.second->GetId(), mapping.second, mapping.second->GetTypedActualValue<std::string>(), this->GetNodeIdentifier(), false));
+
+					Direction nodeDir = Direction::RX;
+					if (dir == Direction::RX)
+						nodeDir = Direction::TX;
+
+					res = CheckProcessDataMapping(nodeCollection.at((uint8_t)mappedFromNode), mappingPtr, nodeDir);
+					if (!res.IsSuccessful())
+						return res;
+
+					if (dir == Direction::RX)
+						this->GetReceiveMapping().push_back(mappingPtr);
+					else if (dir == Direction::TX)
+						this->GetTransmitMapping().push_back(mappingPtr);
+
+					nrOfEntries--;
+				}
+				else
+				{
+					return Result(ErrorCode::MAPPING_INVALID);
+				}
+			}
+		}
+	}
+
+	std::uint32_t piOffset = 0;
+	std::uint32_t bitCount = 0;
+	if (dir == Direction::RX)
+	{
+		for (auto& receivePI : this->GetReceiveProcessImage())
+		{
+			receivePI->SetPIOffset(piOffset);
+			if (receivePI->GetDataType() == IEC_Datatype::BITSTRING)
+			{
+				bitCount += receivePI->GetSize();
+				if (bitCount == 8)
+					piOffset++;
+			}
+			else
+				piOffset += receivePI->GetSize() / 8;
+		}
+	}
+	else if (dir == Direction::TX)
+	{
+		for (auto& transmitPI : this->GetTransmitProcessImage())
+		{
+			transmitPI->SetPIOffset(piOffset);
+			if (transmitPI->GetDataType() == IEC_Datatype::BITSTRING)
+			{
+				bitCount += transmitPI->GetSize();
+				if (bitCount == 8)
+					piOffset++;
+			}
+			else
+				piOffset += transmitPI->GetSize() / 8;
+		}
+	}
+	return Result();
+}
+
+Result ManagingNode::CheckProcessDataMapping(const std::shared_ptr<BaseNode>& node, const std::shared_ptr<BaseProcessDataMapping>& mnMappingObject, Direction dir)
+{
+	const std::shared_ptr<ControlledNode>& cn = std::dynamic_pointer_cast<ControlledNode>(node);
+	if (cn.get())
+	{
+		cn->UpdateProcessImage(dir);
+	}
+	std::uint32_t size = mnMappingObject->GetMappingLength();
+
+	std::vector<std::shared_ptr<BaseProcessImageObject>> piCollection;
+	if (dir == Direction::RX)
+		piCollection = node->GetReceiveProcessImage();
+	else if (dir == Direction::TX)
+		piCollection = node->GetTransmitProcessImage();
+
+	//Check DynamicChannel To Be Done
+	std::shared_ptr<DynamicChannel> dynChannel;
+
+	bool foundMapping = false;
+	std::uint32_t fillSize = 0;
+	for (auto& cnPIObject : piCollection)
+	{
+		if (cnPIObject->GetPiOffset() >= mnMappingObject->GetMappingOffset() / 8
+		        || foundMapping) //allow Gaps
+		{
+			foundMapping = true;
+			if (fillSize < size) // as long as size is not reached
+			{
+				if (dir == Direction::RX)
+					this->GetTransmitProcessImage().push_back(cnPIObject);
+				else if (dir == Direction::TX)
+					this->GetReceiveProcessImage().push_back(cnPIObject);
+
+				fillSize += cnPIObject->GetSize();
+			}
+			else
+			{
+				break;
+			}
+		}
+	}
+
+	if (foundMapping)
+		return Result();
+	return Result(ErrorCode::MAPPING_INVALID);
+}
+
+void ManagingNode::ClearMappingObjects()
+{
+	for (auto& object : this->GetObjectDictionary())
+	{
+		if ((object.first >= 0x1800 && object.first < 0x1900)
+		        || (object.first >= 0x1400 && object.first < 0x1500))
+		{
+			for (auto& subobject : object.second->GetSubObjectCollection())
+			{
+				if (subobject.second->WriteToConfiguration() && subobject.first == 1)
+				{
+					subobject.second->ClearActualValue(); //Clear Mapping Parameter Node Ids
+				}
+			}
+		}
+		else if ((object.first >= 0x1600 && object.first < 0x1700)
+		         || (object.first >= 0x1A00 && object.first < 0x1B00))
+		{
+			for (auto& subobject : object.second->GetSubObjectCollection())
+			{
+				if (subobject.second->WriteToConfiguration())
+				{
+					subobject.second->ClearActualValue(); //Clear Mapping Objects
+				}
+			}
+		}
+	}
+
+}
+

@@ -122,6 +122,11 @@ namespace IndustrialNetwork
 
 						std::uint32_t GetBitSize();
 
+						bool HasActualValue();
+						bool HasDefaultValue();
+
+						void ClearActualValue();
+
 					private:
 
 						bool forceToCDC;
@@ -135,12 +140,8 @@ namespace IndustrialNetwork
 						std::uint8_t containingNode;
 						bool actualValueNotDefaultValue;
 				};
-
 			}
-
 		}
-
 	}
-
 }
 #endif

@@ -69,14 +69,9 @@ namespace IndustrialNetwork
 						bool multipleChildren;
 						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ModularNode::Range>> rangeList;
 						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ModularNode::Module>> moduleCollection;
-
 				};
-
 			}
-
 		}
-
 	}
-
 }
 #endif

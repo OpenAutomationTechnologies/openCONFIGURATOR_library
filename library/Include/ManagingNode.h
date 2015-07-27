@@ -45,6 +45,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Result.h"
 #include "LoggingConfiguration.h"
 #include "Utilities.h"
+#include "Parameter.h"
+#include "ArrayDataType.h"
+#include "StructDataType.h"
+#include "EnumDataType.h"
+#include "Direction.h"
+#include "ControlledNode.h"
 
 namespace IndustrialNetwork
 {
@@ -70,32 +76,44 @@ namespace IndustrialNetwork
 						std::uint32_t GetNodeAssignmentValue();
 
 						void AddDynamicChannel(std::shared_ptr<DynamicChannel>& channelRef);
-						bool GetDynamicChannel(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType, std::shared_ptr<DynamicChannel>& retChannel);
+						const std::vector<std::shared_ptr<DynamicChannel>>& GetDynamicChannels();
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetDynamicChannel(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::shared_ptr<DynamicChannel>& returnChannel);
 
 						std::uint32_t GetConfigurationObjectCount();
 						std::uint32_t GetConfigurationObjectSize();
 
 						std::uint16_t GetRmnCount();
-						void SetRmnCount(std::uint16_t count);
+						void AddRmnId(std::uint16_t nodeId);
+						void RemoveRmnId(std::uint16_t nodeId);
+						const std::vector<std::uint16_t>& GetRmnIds();
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapObject(uint32_t index, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, uint32_t position = 0, uint16_t fromNode = 0);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapSubObject(uint32_t index, uint16_t subindex, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, uint32_t position = 0, std::uint16_t fromNode = 0);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapAllRxObjects(bool updateNrOfEntries);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapAllTxObjects(bool updateNrOfEntries);
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetMultiplexedCycle(const std::uint8_t nodeID, const std::uint8_t multiplexedCycle);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ResetMultiplexedCycle(const std::uint8_t nodeID);
-												
+
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CalculatePReqPayloadLimit();
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CalculatePResPayloadLimit();
 
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result UpdateProcessImage(const std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir);
+
+						void ClearMappingObjects();
+
 					private:
 						std::vector<std::shared_ptr<DynamicChannel>> dynamicChannelList;
-						std::uint16_t rmnCount;
+						std::vector<std::uint16_t> rmnList;
 
 						bool MultiplexedCycleAlreadyAssigned(std::uint8_t multiplexedCycle);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CheckProcessDataMapping(const std::shared_ptr<BaseNode>& node, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseProcessDataMapping>& mapping, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result UpdateProcessDataMapping(const std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir);
+
+
 				};
-
 			}
-
 		}
-
 	}
-
 }
 #endif

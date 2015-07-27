@@ -73,15 +73,9 @@ namespace IndustrialNetwork
 
 						virtual ~SubObject();
 
-					private:
-
 				};
-
 			}
-
 		}
-
 	}
-
 }
 #endif

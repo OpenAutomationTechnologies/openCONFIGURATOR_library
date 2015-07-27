@@ -78,7 +78,6 @@ namespace IndustrialNetwork
 
 				void SetId(const T id)
 				{
-
 					this->id = id;
 				}
 
@@ -120,7 +119,6 @@ namespace IndustrialNetwork
 
 				void SetObjectType(const D& dataType)
 				{
-
 					this->objectType = dataType;
 				}
 
@@ -130,11 +128,7 @@ namespace IndustrialNetwork
 				boost::any defaultValue;
 				D objectType;
 				std::string name;
-
-
 		};
-
 	}
-
 }
 #endif

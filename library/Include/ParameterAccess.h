@@ -48,7 +48,7 @@ namespace IndustrialNetwork
 				*/
 				enum class ParameterAccess : std::uint8_t
 				{
-					constant,
+					constant = 0,
 					read,
 					write,
 					readWrite,
@@ -57,11 +57,18 @@ namespace IndustrialNetwork
 					noAccess
 				};
 
+				static const std::string ParameterAccessValues[] =
+				{
+					"constant",
+					"read",
+					"write",
+					"readWrite",
+					"readWriteInput",
+					"readWriteOutput",
+					"noAccess"
+				};
 			}
-
 		}
-
 	}
-
 }
 #endif

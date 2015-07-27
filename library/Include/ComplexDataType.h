@@ -66,12 +66,8 @@ namespace IndustrialNetwork
 						std::string uniqueID;
 						std::uint32_t size;
 				};
-
 			}
-
 		}
-
 	}
-
 }
 #endif

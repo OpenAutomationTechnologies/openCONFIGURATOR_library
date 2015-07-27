@@ -70,12 +70,8 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType;
 
 				};
-
 			}
-
 		}
-
 	}
-
 }
 #endif

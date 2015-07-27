@@ -37,13 +37,13 @@ using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
 
 BuildConfigurationSetting::BuildConfigurationSetting()
-	:  IndustrialNetwork::Fieldbus::IBuildConfigurationSetting(),
-	   configurationBuilder(std::shared_ptr<BuildConfigurationSettingBuilder>())
+	: IndustrialNetwork::Fieldbus::IBuildConfigurationSetting(),
+	  configurationBuilder(std::shared_ptr<BuildConfigurationSettingBuilder>())
 {}
 
 BuildConfigurationSetting::BuildConfigurationSetting(const std::string& id, const std::string& value)
-	:  IndustrialNetwork::Fieldbus::IBuildConfigurationSetting(id, value),
-	   configurationBuilder(std::shared_ptr<BuildConfigurationSettingBuilder>())
+	: IndustrialNetwork::Fieldbus::IBuildConfigurationSetting(id, value),
+	  configurationBuilder(std::shared_ptr<BuildConfigurationSettingBuilder>())
 {
 	InitConfigurationSetting(id);
 }
@@ -56,7 +56,7 @@ void BuildConfigurationSetting::InitConfigurationSetting(const std::string& id)
 	if (id == "GENERATE_MN_MAPPING_FOR_NODES")
 	{
 		this->SetDescription(BuildConfigurationIdDescription[BuildConfigurationId::GENERATE_MN_MAPPING_FOR_NODES]);
-		//Add builder for setting
+		this->configurationBuilder = std::shared_ptr<BuildConfigurationSettingBuilder>(new ManagingNodeMappingBuilder());
 	}
 	// add other supported settings here
 	else
@@ -71,9 +71,6 @@ void BuildConfigurationSetting::InitConfigurationSetting(const std::string& id)
 
 Result BuildConfigurationSetting::GenerateConfiguration(const std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
-	if (this->configurationBuilder) // Remove when all builder are implemented
-		return this->configurationBuilder->GenerateConfiguration(this->GetValue(), nodeCollection);
-	else
-		return Result();
+	return this->configurationBuilder->GenerateConfiguration(this->GetValue(), nodeCollection);
 }
 

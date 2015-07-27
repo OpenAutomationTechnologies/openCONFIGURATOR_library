@@ -45,11 +45,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "DynamicChannel.h"
 #include "Object.h"
 #include "IFieldbusNode.h"
-#include "TxProcessDataMappingObject.h"
-#include "RxProcessDataMappingObject.h"
+#include "BaseProcessImageObject.h"
+#include "BaseProcessDataMapping.h"
 #include "NodeAssignment.h"
 #include "Result.h"
 #include "LoggingConfiguration.h"
+#include "Utilities.h"
+#include "Direction.h"
 
 namespace IndustrialNetwork
 {
@@ -106,6 +108,15 @@ namespace IndustrialNetwork
 						virtual IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CalculatePReqPayloadLimit() = 0;
 						virtual IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CalculatePResPayloadLimit() = 0;
 
+						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseProcessDataMapping>>& GetTransmitMapping();
+						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseProcessDataMapping>>& GetReceiveMapping();
+
+						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseProcessImageObject>>& GetTransmitProcessImage();
+						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseProcessImageObject>>& GetReceiveProcessImage();
+
+						std::uint32_t GetTransmitProcessImageSize();
+						std::uint32_t GetReceiveProcessImageSize();
+
 					private:
 						std::uint8_t nodeId;
 						std::string name;
@@ -116,16 +127,15 @@ namespace IndustrialNetwork
 						std::vector<IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment> nodeAssignment;
 						std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::NetworkManagement> networkManagement;
 						std::vector<std::shared_ptr<DynamicChannel>> dynamicChannelList;
-						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::TxProcessDataMappingObject>> transmitMapping;
-						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::RxProcessDataMappingObject>> receiveMapping;
+						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseProcessDataMapping>> transmitMapping;
+						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseProcessDataMapping>> receiveMapping;
+
+						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseProcessImageObject>> transmitProcessImage;
+						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseProcessImageObject>> receiveProcessImage;
 
 				};
-
 			}
-
 		}
-
 	}
-
 }
 #endif

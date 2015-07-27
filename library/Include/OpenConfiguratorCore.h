@@ -54,6 +54,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "DynamicChannel.h"
 #include "ConfigurationGenerator.h"
 #include "Utilities.h"
+#include "XmlProcessImageGenerator.h"
+#include "NetProcessImageGenerator.h"
+#include "CProcessImageGenerator.h"
+#include "Direction.h"
 
 namespace IndustrialNetwork
 {
@@ -103,12 +107,14 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetAsndMaxNr(const std::string& networkId, const std::uint8_t nodeId, std::uint16_t& asndMaxNr);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetPResTimeOut(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t& presTimeout);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetLossOfSocTolerance(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t& lossOfSocTolerance);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetRedundantManagingNodeWaitNotActive(const std::string& networkId, const std::uint8_t nodeId,  std::uint32_t& waitNotActive);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetRedundantManagingNodeWaitNotActive(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t& waitNotActive);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetRedundantManagingNodePriority(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t& priority);
 
 						//Build related API
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildConfiguration(const std::string& networkId, std::string& configurationOutput,  std::vector<std::uint8_t>& binOutput);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildProcessImage(const std::string& networkId, std::string& configurationOutput);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildConfiguration(const std::string& networkId, std::string& configurationOutput, std::vector<std::uint8_t>& binOutput);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildXMLProcessImage(const std::string& networkId, const std::uint8_t nodeid, std::string& processImageXMLOutput);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildNETProcessImage(const std::string& networkId, const std::uint8_t nodeid, std::string& processImageNETOutput);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildCProcessImage(const std::string& networkId, const std::uint8_t nodeid, std::string& processImageCOutput);
 
 						//Node related API
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateNode(const std::string& networkId, const std::uint8_t nodeId, const std::string& nodeName, const bool isRmn = false);
@@ -136,7 +142,7 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetOperationModeMultiplexed(const std::string& networkId, const std::uint8_t nodeId, const std::uint8_t multiplexedCycle);
 
 						//Build Configuration related API
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetConfigurationSettingEnabled(const std::string& networkId, const std::string&  configID, const std::string&  settingID, bool enabled);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetConfigurationSettingEnabled(const std::string& networkId, const std::string& configID, const std::string& settingID, bool enabled);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateConfigurationSetting(const std::string& networkId, const std::string& configID, const std::string& name, const std::string& value);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveConfigurationSetting(const std::string& networkId, const std::string& configID, const std::string& name);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateConfiguration(const std::string& networkId, const std::string& configID);
@@ -172,7 +178,9 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetSubObjectActualValue(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::uint8_t subObjectId, const std::string& actualValue, bool force = false);
 
 						//Mapping API
-
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapObject(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint32_t position = 0, std::uint16_t fromNode = 0);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapSubObject(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::uint8_t subObjectId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint32_t position = 0, std::uint16_t fromNode = 0);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapAllObjects(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, bool updateNrOfEntries);
 						//Feature API
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetFeatureDefaultValue(IndustrialNetwork::POWERLINK::Core::Node::CNFeatureEnum feature, std::string& defaultValue);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetFeatureDefaultValue(IndustrialNetwork::POWERLINK::Core::Node::MNFeatureEnum feature, std::string& defaultValue);

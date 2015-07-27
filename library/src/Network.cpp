@@ -132,7 +132,7 @@ Result Network::AddNode(std::shared_ptr<ManagingNode>& node)
 			if (rmnPtr.get())
 			{
 				//Increment RMN count
-				rmnPtr->SetRmnCount(rmnPtr->GetRmnCount() + 1);
+				rmnPtr->AddRmnId(rmnPtr->GetNodeIdentifier());
 			}
 		}
 	}
@@ -199,7 +199,7 @@ Result Network::RemoveNode(const uint8_t nodeID)
 		Result res = this->GetManagingNode(mn);
 		if (!res.IsSuccessful())
 			return res;
-		mn->SetRmnCount(mn->GetRmnCount() - 1); //Decrement the RMN count in MN
+		mn->RemoveRmnId(it->second->GetNodeIdentifier()); //Decrement the RMN count in MN
 
 	}
 	this->nodeCollection.erase(it);
@@ -215,28 +215,28 @@ Result Network::RemoveNode(const uint8_t nodeID)
 		if (std::dynamic_pointer_cast<ManagingNode>(node.second))
 		{
 			//Reset 0x1F26 / nodeID
-			node.second->ForceSubObject(0x1F26, nodeID, false, "0");
+			node.second->ForceSubObject(0x1F26, nodeID, false, "");
 			//Reset 0x1F27 / nodeID
-			node.second->ForceSubObject(0x1F27, nodeID, false, "0");
+			node.second->ForceSubObject(0x1F27, nodeID, false, "");
 			//Reset 0x1F82 / nodeID
-			node.second->ForceSubObject(0x1F81, nodeID, false, "0");
+			node.second->ForceSubObject(0x1F81, nodeID, false, "");
 			//Reset 0x1F9B / nodeID
-			node.second->ForceSubObject(0x1F9B, nodeID, false, "0");
+			node.second->ForceSubObject(0x1F9B, nodeID, false, "");
 			//Reset 0x1F92 / nodeID
-			node.second->ForceSubObject(0x1F92, nodeID, false, "25000");
+			node.second->ForceSubObject(0x1F92, nodeID, false, "");
 			//Reset 0x1F8B / nodeID
-			node.second->ForceSubObject(0x1F8B, nodeID, false, "36");
+			node.second->ForceSubObject(0x1F8B, nodeID, false, "");
 			//Reset 0x1C09 / nodeID
-			node.second->ForceSubObject(0x1C09, nodeID, false, "15");
+			node.second->ForceSubObject(0x1C09, nodeID, false, "");
 			//Reset 0x1F8D / nodeID from all CNs
-			node.second->ForceSubObject(0x1F8D, nodeID, false, "36");
+			node.second->ForceSubObject(0x1F8D, nodeID, false, "");
 		}
 		else
 		{
 			//Reset 0x1F8D / nodeID from all CNs
-			node.second->ForceSubObject(0x1F8D, nodeID, false, "36");
+			node.second->ForceSubObject(0x1F8D, nodeID, false, "");
 			//Reset 0x1F9B / nodeID from all CNs
-			node.second->ForceSubObject(0x1F9B, nodeID, false, "0");
+			node.second->ForceSubObject(0x1F9B, nodeID, false, "");
 		}
 	}
 	return Result();
@@ -294,7 +294,7 @@ void Network::SetAsyncMTU(const uint16_t asyncMTU)
 
 void Network::SetMultiplexedCycleCount(const uint16_t multiCycleCount)
 {
-	this->multiplexedCycleCount  = multiCycleCount;
+	this->multiplexedCycleCount = multiCycleCount;
 }
 
 void Network::SetPrescaler(const uint16_t prescaler)
@@ -721,7 +721,7 @@ Result Network::EnableNode(const std::uint8_t nodeID, bool enable)
 			Result res = this->GetManagingNode(mn);
 			if (!res.IsSuccessful())
 				return res;
-			mn->SetRmnCount(mn->GetRmnCount() + 1); //Decrement the RMN count in MN
+			mn->RemoveRmnId(it->second->GetNodeIdentifier()); //Remove the RMN Id in MN
 
 		}
 	}
@@ -734,7 +734,7 @@ Result Network::EnableNode(const std::uint8_t nodeID, bool enable)
 			Result res = this->GetManagingNode(mn);
 			if (!res.IsSuccessful())
 				return res;
-			mn->SetRmnCount(mn->GetRmnCount() - 1); //Decrement the RMN count in MN
+			mn->RemoveRmnId(it->second->GetNodeIdentifier()); //Remove the RMN Id in MN
 
 		}
 
@@ -744,28 +744,30 @@ Result Network::EnableNode(const std::uint8_t nodeID, bool enable)
 			if (std::dynamic_pointer_cast<ManagingNode>(node.second))
 			{
 				//Reset 0x1F26 / nodeID
-				node.second->ForceSubObject(0x1F26, nodeID, false, "0");
+				node.second->ForceSubObject(0x1F26, nodeID, false, "");
 				//Reset 0x1F27 / nodeID
-				node.second->ForceSubObject(0x1F27, nodeID, false, "0");
+				node.second->ForceSubObject(0x1F27, nodeID, false, "");
 				//Reset 0x1F82 / nodeID
-				node.second->ForceSubObject(0x1F81, nodeID, false, "0");
+				node.second->ForceSubObject(0x1F81, nodeID, false, "");
 				//Reset 0x1F9B / nodeID
-				node.second->ForceSubObject(0x1F9B, nodeID, false, "0");
+				node.second->ForceSubObject(0x1F9B, nodeID, false, "");
 				//Reset 0x1F92 / nodeID
-				node.second->ForceSubObject(0x1F92, nodeID, false, "25000");
+				node.second->ForceSubObject(0x1F92, nodeID, false, "");
 				//Reset 0x1F8B / nodeID
-				node.second->ForceSubObject(0x1F8B, nodeID, false, "36");
+				node.second->ForceSubObject(0x1F8B, nodeID, false, "");
 				//Reset 0x1C09 / nodeID
-				node.second->ForceSubObject(0x1C09, nodeID, false, "15");
+				node.second->ForceSubObject(0x1C09, nodeID, false, "");
 				//Reset 0x1F8D / nodeID from all CNs
-				node.second->ForceSubObject(0x1F8D, nodeID, false, "36");
+				node.second->ForceSubObject(0x1F8D, nodeID, false, "");
 			}
 			else
 			{
 				//Reset 0x1F8D / nodeID from all CNs
-				node.second->ForceSubObject(0x1F8D, nodeID, false, "36");
+				node.second->ForceSubObject(0x1F8D, nodeID, false, "");
+				//Reset 0x1F8B / nodeID
+				node.second->ForceSubObject(0x1F8B, nodeID, false, "");
 				//Reset 0x1F9B / nodeID from all CNs
-				node.second->ForceSubObject(0x1F9B, nodeID, false, "0");
+				node.second->ForceSubObject(0x1F9B, nodeID, false, "");
 			}
 		}
 	}

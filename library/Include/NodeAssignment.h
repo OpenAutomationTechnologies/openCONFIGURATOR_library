@@ -75,12 +75,8 @@ namespace IndustrialNetwork
 					lhs = (NodeAssignment)(static_cast<std::underlying_type<NodeAssignment>::type>(lhs) | static_cast<std::underlying_type<NodeAssignment>::type>(rhs));
 					return lhs;
 				}
-
 			}
-
 		}
-
 	}
-
 }
 #endif

@@ -65,7 +65,7 @@ namespace IndustrialNetwork
 					if (this->GetUntypedDefaultValue().type() == typeid(T))
 					{
 						//return original stored value
-						value =  boost::any_cast<T>(this->GetUntypedDefaultValue());
+						value = boost::any_cast<T>(this->GetUntypedDefaultValue());
 						return Result();
 					}
 					//Datatype does not match
@@ -177,7 +177,7 @@ namespace IndustrialNetwork
 					if (this->GetUntypedActualValue().type() == typeid(T))
 					{
 						//return original stored value
-						value =  boost::any_cast<T>(this->GetUntypedActualValue());
+						value = boost::any_cast<T>(this->GetUntypedActualValue());
 						return Result();
 					}
 					//Datatype does not match

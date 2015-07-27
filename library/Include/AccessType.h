@@ -59,11 +59,19 @@ namespace IndustrialNetwork
 					
 				};
 
+				static const std::string AccessTypeValues[] =
+				{
+					"UNDEFINED",
+					"RW",
+					"RWS",
+					"WO",
+					"WOS",
+					"RO",
+					"CONST",
+					"COND"
+				};
 			}
-
 		}
-
 	}
-
 }
 #endif

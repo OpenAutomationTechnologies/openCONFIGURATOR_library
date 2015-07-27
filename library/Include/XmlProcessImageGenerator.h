@@ -33,8 +33,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define XMLPROCESS_IMAGE_GENERATOR_H
 
 #include <sstream>
+#include <string>
+
+#include <boost/date_time.hpp>
 
 #include "ProcessImageGenerator.h"
+#include "ManagingNode.h"
+#include "Result.h"
+#include "IEC_Datatype.h"
+#include "Utilities.h"
+#include "Constants.h"
 
 namespace IndustrialNetwork
 {
@@ -52,21 +60,22 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						XmlProcessImageGenerator();
+						static XmlProcessImageGenerator& GetInstance();
 						virtual ~XmlProcessImageGenerator();
 
-						std::stringstream& Generate();
+						const std::string Generate(std::uint8_t nodeid, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network> network);
 
 					private:
+						XmlProcessImageGenerator();
+						const std::string PrintChannel(const std::string& name, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype datatype, const std::uint32_t size, const std::uint32_t piOffset, const boost::optional<std::uint32_t>& bitOffset);
+						void WriteXMLHeader();
+						void WriteXMLOutputSizeHeader(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& mn);
+						void WriteXMLInputSizeHeader(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& mn);
+
 						std::stringstream processImageStream;
-
 				};
-
 			}
-
 		}
-
 	}
-
 }
 #endif

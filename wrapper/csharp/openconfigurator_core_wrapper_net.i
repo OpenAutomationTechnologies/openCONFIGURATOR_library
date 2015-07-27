@@ -54,7 +54,7 @@
 #define __attribute__(x)
 #if defined(_WIN32) && defined(_MSC_VER)
 	 #undef DllExport
-	 #define DllExport  __declspec(dllexport)
+	 #define DllExport __declspec(dllexport)
 #endif
 
 %include typemaps.i
@@ -67,10 +67,20 @@
 %include std_string_ref.i
 %include stdint.i
 
+%ignore GetReceiveMapping();
+%ignore GetTransmitMapping();
+%ignore GetMappingObject();
+%ignore SetMappingObject(const std::shared_ptr<BaseProcessDataMapping>& mappingObject);
 %ignore GetNetworkManagement();
 %ignore PlkFeatureDefaultValues;
+%ignore DirectionTypeValues;
+%ignore GetPlkDataTypeName();
+%ignore IECDatatypeValues;
 %ignore PlkFeatureStrings;
 %ignore SetComplexDataType(std::shared_ptr<Parameter>& parameter);
+%ignore ParameterAccessValues;
+%ignore PDOMappingValues;
+%ignore AccessTypeValues;
 
 %apply unsigned int& OUTPUT { unsigned int& size };
 %apply unsigned int& OUTPUT { unsigned int& size };
@@ -85,14 +95,13 @@
 %apply unsigned int& OUTPUT { unsigned int& waitNotActive };
 %apply unsigned int& OUTPUT { unsigned int& priority };
 
-
 %{
 
+#include "BaseProcessDataMapping.h"
+#include "DynamicChannelAccessType.h"
 #include "ErrorCode.h"
 #include "IEC_Datatype.h"
 #include "ParameterAccess.h"
-#include "AccessType.h"
-#include "DynamicChannelAccessType.h"
 #include "ObjectType.h"
 #include "PDOMapping.h"
 #include "PlkDataType.h"
@@ -155,6 +164,10 @@
 %include "ManagingNode.h"
 %include "PlkFeatureEnum.h"
 %include "PlkOperationMode.h"
+
+%include "BaseProcessDataMapping.h"
+%include "BaseProcessImageObject.h"
+
 %include "OpenConfiguratorCore.h"
 
 

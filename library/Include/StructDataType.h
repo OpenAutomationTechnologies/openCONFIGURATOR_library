@@ -61,17 +61,14 @@ namespace IndustrialNetwork
 
 						virtual std::uint32_t GetBitSize();
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddVarDeclaration(std::shared_ptr<VarDeclaration>& varDecl);
+						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::VarDeclaration>>& GetVarDeclarations();
 
 					private:
 						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::VarDeclaration>> varDeclarationList;
 
 				};
-
 			}
-
 		}
-
 	}
-
 }
 #endif
