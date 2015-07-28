@@ -70,7 +70,7 @@ Result PlkConfiguration::GenerateConfiguration(const std::map<uint8_t, std::shar
 	if (!res.IsSuccessful())
 		return res;
 
-	//Distribute the 0x1006/0x0 to all nodes
+	//Distribute the 0x1006 to all nodes
 	res = DistributeCycleTime(nodeCollection);
 	if (!res.IsSuccessful())
 		return res;
@@ -240,10 +240,10 @@ Result PlkConfiguration::DistributeCycleTime(const std::map<uint8_t, std::shared
 
 	//Get managing node
 	auto& mn = nodeCollection.at(240);
-	std::shared_ptr<SubObject> cycleTimeObject;
+	std::shared_ptr<Object> cycleTimeObject;
 
 	//Get Cycle Time object
-	Result res = mn->GetSubObject(0x1006, 0x0, cycleTimeObject);
+	Result res = mn->GetObject(0x1006, cycleTimeObject);
 	if (!res.IsSuccessful())
 		return res;
 
@@ -261,8 +261,8 @@ Result PlkConfiguration::DistributeCycleTime(const std::map<uint8_t, std::shared
 	{
 		if (node.first != 240)
 		{
-			//Set every node 0x1006 / 0x0 actual value to cycle time
-			res = node.second->SetSubObjectActualValue(0x1006, 0x0, cycleTimeStr.str());
+			//Set every node 0x1006 actual value to cycle time
+			res = node.second->SetObjectActualValue(0x1006, cycleTimeStr.str());
 			if (!res.IsSuccessful())
 				return res; //If error occurs during set of cycle time return
 		}

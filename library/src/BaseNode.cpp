@@ -130,12 +130,11 @@ Result BaseNode::AddSubObject(uint32_t objectId, std::shared_ptr<SubObject>& obj
 		//Object does not exist
 		boost::format formatter(kMsgNonExistingObject);
 		formatter
-		% objRef->GetId()
+		% objectId
 		% (uint32_t) nodeId;
 		LOG_FATAL() << formatter.str();
 		return Result(ErrorCode::OBJECT_DOES_NOT_EXIST, formatter.str());
 	}
-
 	return this->objectDictionary.find(objectId)->second->AddSubobject(objRef);
 }
 
@@ -153,12 +152,16 @@ Result BaseNode::ForceObject(uint32_t objectId, bool force, const std::string& a
 		return Result(ErrorCode::OBJECT_DOES_NOT_EXIST, formatter.str());
 	}
 
+	if (iter->second->GetObjectType() != ObjectType::VAR)
+		return Result(ErrorCode::OBJECT_TYPE_DOES_NOT_SUPPORT_VALUES);
+
 	iter->second->SetForceToCDC(force);
 	//Log info forced object
 	boost::format log_format(kMsgForceObject);
 	log_format
 	% objectId
-	% (uint32_t) nodeId;
+	% (uint32_t) nodeId
+	% force;
 	LOG_INFO() << log_format.str();
 
 	if (!actualValue.empty())
@@ -172,8 +175,7 @@ Result BaseNode::ForceObject(uint32_t objectId, bool force, const std::string& a
 		formatter
 		% actualValue
 		% objectId
-		% nodeId
-		% force;
+		% (uint32_t) nodeId;
 		LOG_INFO() << formatter.str();
 	}
 
@@ -201,8 +203,8 @@ Result BaseNode::SetObjectActualValue(uint32_t objectId, const std::string& actu
 		% actualValue
 		% iter->first
 		% (uint32_t) this->GetNodeIdentifier();
-		LOG_FATAL() << formatter.str();
-		return Result(ErrorCode::FORCED_VALUE_OVERWRITE, formatter.str());
+		LOG_WARN() << formatter.str();
+		return Result();
 	}
 	if (!actualValue.empty())
 	{

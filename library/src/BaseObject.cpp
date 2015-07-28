@@ -123,9 +123,9 @@ namespace IndustrialNetwork
 				{
 					if (this->GetDataType().is_initialized() && this->GetHighLimit().is_initialized())
 					{
-						if (this->GetActualValue().type() == typeid(T))
+						if (this->GetHighLimit().get().type() == typeid(T))
 						{
-							return boost::any_cast<T>(this->GetLowLimit().get());
+							return boost::any_cast<T>(this->GetHighLimit().get());
 						}
 						throw Result(ErrorCode::DATATYPE_MISMATCH);
 					}
@@ -265,6 +265,8 @@ namespace IndustrialNetwork
 						case PlkDataType::TIME_OF_DAY:
 						case PlkDataType::TIME_DIFF:
 							{
+								if (highLimit.empty())
+									return Result();
 								return Result(ErrorCode::DATATYPE_DOES_NOT_SUPPORT_LIMITS);
 							}
 						default:
@@ -283,7 +285,7 @@ namespace IndustrialNetwork
 				{
 					if (this->GetDataType().is_initialized() && this->GetLowLimit().is_initialized())
 					{
-						if (this->GetActualValue().type() == typeid(T))
+						if (this->GetLowLimit().get().type() == typeid(T))
 						{
 							return boost::any_cast<T>(this->GetLowLimit().get());
 						}
@@ -302,6 +304,9 @@ namespace IndustrialNetwork
 
 				Result BaseObject::SetLowLimit(const std::string& lowLimit)
 				{
+					if (lowLimit.empty())
+						return Result();
+
 					if (!this->GetDataType().is_initialized())
 						return Result(ErrorCode::OBJECT_HAS_NO_DATATYPE);
 
@@ -426,6 +431,8 @@ namespace IndustrialNetwork
 						case PlkDataType::TIME_OF_DAY:
 						case PlkDataType::TIME_DIFF:
 							{
+								if (lowLimit.empty())
+									return Result();
 								return Result(ErrorCode::DATATYPE_DOES_NOT_SUPPORT_LIMITS);
 							}
 						default:
@@ -459,17 +466,94 @@ namespace IndustrialNetwork
 					return pdoMapping;
 				}
 
-				void BaseObject::SetAccessType(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType accessType)
+				void BaseObject::SetAccessType(AccessType accessType)
 				{
 					this->accessType = accessType;
 				}
 
-				void BaseObject::SetDataType(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType)
+				void BaseObject::SetDataType(PlkDataType dataType)
 				{
 					this->dataType = dataType;
+
+					switch (this->dataType.get())
+					{
+						case PlkDataType::INTEGER8:
+							{
+								this->lowLimit = (int16_t) INT8_MIN;
+								this->highLimit = (int16_t) INT8_MAX;
+								break;
+							}
+						case PlkDataType::INTEGER16:
+							{
+								this->lowLimit = (int16_t) INT16_MIN;
+								this->highLimit = (int16_t) INT16_MAX;
+								break;
+							}
+						case PlkDataType::INTEGER24:
+						case PlkDataType::INTEGER32:
+							{
+								this->lowLimit = (int32_t) INT32_MIN;
+								this->highLimit = (int32_t) INT32_MAX;
+								break;
+							}
+						case PlkDataType::UNSIGNED8:
+							{
+								this->lowLimit = (uint16_t) 0;
+								this->highLimit = (uint16_t) UINT8_MAX;
+								break;
+							}
+						case PlkDataType::UNSIGNED16:
+							{
+								this->lowLimit = (uint16_t) 0;
+								this->highLimit = (uint16_t) UINT16_MAX;
+								break;
+							}
+						case PlkDataType::UNSIGNED24:
+						case PlkDataType::UNSIGNED32:
+							{
+								this->lowLimit = (uint32_t) 0;
+								this->highLimit = (uint32_t) UINT32_MAX;
+								break;
+							}
+						case PlkDataType::INTEGER40:
+						case PlkDataType::INTEGER48:
+						case PlkDataType::INTEGER56:
+						case PlkDataType::INTEGER64:
+							{
+								this->lowLimit = (int64_t) INT64_MIN;
+								this->highLimit = (int64_t) INT64_MAX;
+								break;
+							}
+						case PlkDataType::UNSIGNED40:
+						case PlkDataType::UNSIGNED48:
+						case PlkDataType::UNSIGNED56:
+						case PlkDataType::UNSIGNED64:
+							{
+								this->lowLimit = (uint64_t) 0;
+								this->highLimit = (uint64_t) UINT64_MAX;
+								break;
+							}
+						case PlkDataType::REAL32:
+						case PlkDataType::REAL64:
+						case PlkDataType::BOOLEAN:
+						case PlkDataType::Domain:
+						case PlkDataType::MAC_ADDRESS:
+						case PlkDataType::IP_ADDRESS:
+						case PlkDataType::NETTIME:
+						case PlkDataType::VISIBLE_STRING:
+						case PlkDataType::OCTET_STRING:
+						case PlkDataType::UNICODE_STRING:
+						case PlkDataType::TIME_OF_DAY:
+						case PlkDataType::TIME_DIFF:
+						case PlkDataType::UNDEFINED:
+							break;
+						default:
+							break;
+					}
+
 				}
 
-				void BaseObject::SetPDOMapping(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping pdoMapping)
+				void BaseObject::SetPDOMapping(PDOMapping pdoMapping)
 				{
 					this->pdoMapping = pdoMapping;
 				}
@@ -682,7 +766,7 @@ namespace IndustrialNetwork
 					{
 						case PlkDataType::BOOLEAN:
 							{
-								bool res = boost::any_cast<bool>(this->GetActualValue());
+								bool res = boost::any_cast<bool>(this->GetDefaultValue());
 								return (res) ? "01" : "00";
 							}
 						case PlkDataType::INTEGER8:
@@ -848,12 +932,12 @@ namespace IndustrialNetwork
 								int16_t value = HexToInt<int16_t>(actualValue);
 								if (this->highLimit.is_initialized())
 								{
-									if (value > this->GetTypedHighLimit<uint16_t>())
+									if (value > this->GetTypedHighLimit<int16_t>())
 										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
 								}
 								if (this->lowLimit.is_initialized())
 								{
-									if (value < this->GetTypedLowLimit<uint16_t>())
+									if (value < this->GetTypedLowLimit<int16_t>())
 										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
 								}
 								this->SetActualValue(boost::any(value));

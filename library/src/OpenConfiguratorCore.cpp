@@ -99,77 +99,76 @@ Result OpenConfiguratorCore::SetCycleTime(const std::string& networkId, uint32_t
 {
 	std::shared_ptr<Network> networkPtr;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
-	if (res.IsSuccessful())
-		networkPtr->SetCycleTime(cycleTime);
+	if (!res.IsSuccessful())
+		return res;
+
+	networkPtr->SetCycleTime(cycleTime);
 
 	std::shared_ptr<ManagingNode> nodePtr;
 	res = networkPtr->GetManagingNode(nodePtr);
-	if (res.IsSuccessful())
-	{
-		std::stringstream cycleTimeStr;
-		cycleTimeStr << cycleTime;
-		return nodePtr->SetSubObjectActualValue(0x1006, 0x0, cycleTimeStr.str());
-	}
+	if (!res.IsSuccessful())
+		return res;
 
-	return res;
+	std::stringstream cycleTimeStr;
+	cycleTimeStr << cycleTime;
+	return nodePtr->SetObjectActualValue(0x1006, cycleTimeStr.str());
 }
 
 Result OpenConfiguratorCore::SetAsyncMtu(const std::string& networkId, uint16_t asyncMtu)
 {
 	std::shared_ptr<Network> networkPtr;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
-	if (res.IsSuccessful())
-		networkPtr->SetAsyncMTU(asyncMtu);
+	if (!res.IsSuccessful())
+		return res;
+
+	networkPtr->SetAsyncMTU(asyncMtu);
 
 	std::shared_ptr<ManagingNode> nodePtr;
 	res = networkPtr->GetManagingNode(nodePtr);
-	if (res.IsSuccessful())
-	{
-		std::stringstream asyncMtuStr;
-		asyncMtuStr << asyncMtu;
-		return nodePtr->SetSubObjectActualValue(0x1F98, 0x8, asyncMtuStr.str());
-	}
+	if (!res.IsSuccessful())
+		return res;
 
-	return res;
-
+	std::stringstream asyncMtuStr;
+	asyncMtuStr << asyncMtu;
+	return nodePtr->SetSubObjectActualValue(0x1F98, 0x8, asyncMtuStr.str());
 }
 
 Result OpenConfiguratorCore::SetMultiplexedCycleCount(const std::string& networkId, uint16_t multiplexedCycleCount)
 {
 	std::shared_ptr<Network> networkPtr;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
-	if (res.IsSuccessful())
-		networkPtr->SetMultiplexedCycleCount(multiplexedCycleCount);
+	if (!res.IsSuccessful())
+		return res;
+
+	networkPtr->SetMultiplexedCycleCount(multiplexedCycleCount);
 
 	std::shared_ptr<ManagingNode> nodePtr;
 	res = networkPtr->GetManagingNode(nodePtr);
-	if (res.IsSuccessful())
-	{
-		std::stringstream multiplexedCycleCountStr;
-		multiplexedCycleCountStr << multiplexedCycleCount;
-		return nodePtr->SetSubObjectActualValue(0x1F98, 0x7, multiplexedCycleCountStr.str());
-	}
+	if (!res.IsSuccessful())
+		return res;
 
-	return res;
+	std::stringstream multiplexedCycleCountStr;
+	multiplexedCycleCountStr << multiplexedCycleCount;
+	return nodePtr->SetSubObjectActualValue(0x1F98, 0x7, multiplexedCycleCountStr.str());
 }
 
 Result OpenConfiguratorCore::SetPrescaler(const std::string& networkId, uint16_t prescaler)
 {
 	std::shared_ptr<Network> networkPtr;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
-	if (res.IsSuccessful())
-		networkPtr->SetPrescaler(prescaler);
+	if (!res.IsSuccessful())
+		return res;
+
+	networkPtr->SetPrescaler(prescaler);
 
 	std::shared_ptr<ManagingNode> nodePtr;
 	res = networkPtr->GetManagingNode(nodePtr);
-	if (res.IsSuccessful())
-	{
-		std::stringstream prescalerStr;
-		prescalerStr << prescaler;
-		return nodePtr->SetSubObjectActualValue(0x1F98, 0x9, prescalerStr.str());
-	}
+	if (!res.IsSuccessful())
+		return res;
 
-	return res;
+	std::stringstream prescalerStr;
+	prescalerStr << prescaler;
+	return nodePtr->SetSubObjectActualValue(0x1F98, 0x9, prescalerStr.str());
 }
 
 Result OpenConfiguratorCore::BuildConfiguration(const std::string& networkId, std::string& configurationOutput)
@@ -184,7 +183,7 @@ Result OpenConfiguratorCore::BuildConfiguration(const std::string& networkId, st
 		res = ConfigurationGenerator::GetInstance().GenerateNetworkConfiguration(networkPtr, config, hexOutput);
 
 	configurationOutput = config.str();
-	std::cout << hexOutput.str() << std::endl << std::endl;
+	//std::cout << hexOutput.str() << std::endl << std::endl;
 
 	return res;
 }
@@ -699,7 +698,7 @@ Result OpenConfiguratorCore::CreateParameter(const std::string& networkId, const
 	return res;
 }
 
-Result OpenConfiguratorCore::CreateParameter(const std::string& networkId, const uint8_t nodeId, const std::string& uniqueID, ParameterAccess access)
+Result OpenConfiguratorCore::CreateParameter(const std::string& networkId, const uint8_t nodeId, const std::string& uniqueID, const std::string& uniqueIDRef, ParameterAccess access)
 {
 	std::shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -709,14 +708,14 @@ Result OpenConfiguratorCore::CreateParameter(const std::string& networkId, const
 		res = network->GetBaseNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
-			auto ptr = std::make_shared<Parameter>(uniqueID, access);
+			auto ptr = std::make_shared<Parameter>(uniqueID, access, uniqueIDRef);
 			return node->GetApplicationProcess()->AddParameter(ptr);
 		}
 	}
 	return res;
 }
 
-Result OpenConfiguratorCore::CreateStructDatatype(const std::string& networkId, const uint8_t nodeId, const std::string& parameterUniqueId, const std::string& uniqueId, const std::string& name)
+Result OpenConfiguratorCore::CreateStructDatatype(const std::string& networkId, const uint8_t nodeId, const std::string& uniqueId, const std::string& name)
 {
 	std::shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -729,18 +728,17 @@ Result OpenConfiguratorCore::CreateStructDatatype(const std::string& networkId, 
 			auto& parameterList = node->GetApplicationProcess()->GetParameterList();
 			for (auto& param : parameterList)
 			{
-				if (param->GetUniqueID() == parameterUniqueId)
+				if (param->GetUniqueIDRef() == uniqueId)
 				{
 					auto ptr = std::shared_ptr<ComplexDataType>(new StructDataType(uniqueId, name));
 					param->SetComplexDataType(ptr);
-					param->SetUniqueIDRef(uniqueId);
 					return Result();
 				}
 			}
 
 			boost::format formatter(kMsgParameterNotFound);
 			formatter
-			% parameterUniqueId
+			% uniqueId
 			% (uint32_t) node->GetNodeIdentifier();
 			LOG_FATAL() << formatter.str();
 			return Result(ErrorCode::PARAMETER_NOT_FOUND, formatter.str());
@@ -781,7 +779,7 @@ Result OpenConfiguratorCore::CreateVarDeclaration(const std::string& networkId, 
 	return res;
 }
 
-Result OpenConfiguratorCore::CreateArrayDatatype(const std::string& networkId, const uint8_t nodeId, const std::string& parameterUniqueId, const std::string& uniqueId, const std::string& name, uint32_t lowerLimit, uint32_t upperLimit, IEC_Datatype dataType)
+Result OpenConfiguratorCore::CreateArrayDatatype(const std::string& networkId, const uint8_t nodeId, const std::string& uniqueId, const std::string& name, uint32_t lowerLimit, uint32_t upperLimit, IEC_Datatype dataType)
 {
 	std::shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -794,7 +792,7 @@ Result OpenConfiguratorCore::CreateArrayDatatype(const std::string& networkId, c
 			auto& parameterList = node->GetApplicationProcess()->GetParameterList();
 			for (auto& param : parameterList)
 			{
-				if (param->GetUniqueID() == parameterUniqueId)
+				if (param->GetUniqueIDRef() == uniqueId)
 				{
 					auto ptr = std::shared_ptr<ComplexDataType>(new ArrayDataType(uniqueId, name, lowerLimit, upperLimit, dataType));
 					param->SetComplexDataType(ptr);
@@ -805,7 +803,7 @@ Result OpenConfiguratorCore::CreateArrayDatatype(const std::string& networkId, c
 
 			boost::format formatter(kMsgParameterNotFound);
 			formatter
-			% parameterUniqueId
+			% uniqueId
 			% (uint32_t) node->GetNodeIdentifier();
 			LOG_FATAL() << formatter.str();
 			return Result(ErrorCode::PARAMETER_NOT_FOUND, formatter.str());
@@ -814,7 +812,7 @@ Result OpenConfiguratorCore::CreateArrayDatatype(const std::string& networkId, c
 	return res;
 }
 
-Result OpenConfiguratorCore::CreateEnumDatatype(const std::string& networkId, const uint8_t nodeId, const std::string& parameterUniqueId, const std::string& uniqueId, const std::string& name, IEC_Datatype dataType, uint32_t size)
+Result OpenConfiguratorCore::CreateEnumDatatype(const std::string& networkId, const uint8_t nodeId, const std::string& uniqueId, const std::string& name, IEC_Datatype dataType, uint32_t size)
 {
 	std::shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -837,7 +835,7 @@ Result OpenConfiguratorCore::CreateEnumDatatype(const std::string& networkId, co
 
 			boost::format formatter(kMsgParameterNotFound);
 			formatter
-			% parameterUniqueId
+			% uniqueId
 			% (uint32_t) node->GetNodeIdentifier();
 			LOG_FATAL() << formatter.str();
 			return Result(ErrorCode::PARAMETER_NOT_FOUND, formatter.str());

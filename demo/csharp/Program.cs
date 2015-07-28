@@ -60,7 +60,7 @@ namespace openconfigurator_core_net_app
 
             // Add two nodes to the network
             core.CreateNode("test", 240, "MN");
-          
+
 
             // Create settings configuration
             /*
@@ -95,8 +95,7 @@ namespace openconfigurator_core_net_app
 
             core.CreateConfiguration("test", "none");
 
-            core.CreateObject("test", 240, 0x1006, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
-            core.CreateSubObject("test", 240, 0x1006, 0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "400", "400");
+            core.CreateObject("test", 240, 0x1006, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "400", "10000");
 
             core.CreateObject("test", 240, 0x1300, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
             core.CreateSubObject("test", 240, 0x1300, 0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "400", "5000");
@@ -155,7 +154,7 @@ namespace openconfigurator_core_net_app
             core.CreateSubObject("test", 240, 0x1F92, 10, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
             core.CreateSubObject("test", 240, 0x1F92, 20, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
             core.CreateSubObject("test", 240, 0x1F92, 241, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
-            
+
             core.CreateObject("test", 240, 0x1600, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
             core.CreateSubObject("test", 240, 0x1600, 0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "10");
             core.CreateSubObject("test", 240, 0x1600, 1, ObjectType.VAR, "testName", PlkDataType.UNSIGNED16, AccessType.RW, PDOMapping.DEFAULT, "0", "100");
@@ -179,8 +178,7 @@ namespace openconfigurator_core_net_app
             core.CreateSubObject("test", 240, 0x1F27, 241, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
 
             core.CreateNode("test", 241, "RMN");
-            core.CreateObject("test", 241, 0x01006, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
-            core.CreateSubObject("test", 241, 0x01006, 0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "400", "400");
+            core.CreateObject("test", 241, 0x1006, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "400", "10000");
 
             core.CreateObject("test", 241, 0x1300, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
             core.CreateSubObject("test", 241, 0x1300, 0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
@@ -272,7 +270,7 @@ namespace openconfigurator_core_net_app
             core.CreateSubObject("test", 241, 0x1F98, 4, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "10000");
 
             core.SetCycleTime("test", 10000); // Set Cycle time
-            
+
             core.CreateNode("test", 10, "SuperControlledNode");
             core.CreateObject("test", 10, 0x1020, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
             core.CreateSubObject("test", 10, 0x1020, 0, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "2", "2");
@@ -294,8 +292,7 @@ namespace openconfigurator_core_net_app
             core.CreateObject("test", 10, 0x1301, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
             core.CreateSubObject("test", 10, 0x1301, 0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
 
-            core.CreateObject("test", 10, 0x01006, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
-            core.CreateSubObject("test", 10, 0x01006, 0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "400", "400");
+            core.CreateObject("test", 10, 0x1006, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "400", "10000");
 
             core.CreateObject("test", 10, 0x1F98, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
             core.CreateSubObject("test", 10, 0x1F98, 0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "3", "3");
@@ -347,8 +344,7 @@ namespace openconfigurator_core_net_app
             core.CreateObject("test", 20, 0x1301, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
             core.CreateSubObject("test", 20, 0x1301, 0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
 
-            core.CreateObject("test", 20, 0x01006, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
-            core.CreateSubObject("test", 20, 0x01006, 0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "400", "400");
+            core.CreateObject("test", 20, 0x1006, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "400", "10000");
 
             core.CreateObject("test", 20, 0x1F98, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
             core.CreateSubObject("test", 20, 0x1F98, 0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "3", "3");
@@ -358,10 +354,10 @@ namespace openconfigurator_core_net_app
             core.CreateSubObject("test", 20, 0x1F98, 9, ObjectType.VAR, "testName", PlkDataType.UNSIGNED16, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
             core.CreateSubObject("test", 20, 0x1F98, 5, ObjectType.VAR, "testName", PlkDataType.UNSIGNED16, AccessType.RW, PDOMapping.DEFAULT, "0", "5000");
 
- 
+
             core.CreateSubObject("test", 20, 0x1F98, 3, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "3", "3");
 
-            
+
             core.CreateNode("test", 1, "FieldbusGirl");
             core.CreateObject("test", 1, 0x1020, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
             core.CreateSubObject("test", 1, 0x1020, 0, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "2", "2");
@@ -386,8 +382,7 @@ namespace openconfigurator_core_net_app
             core.CreateSubObject("test", 1, 0x1F8D, 20, ObjectType.VAR, "testName", PlkDataType.UNSIGNED16, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
             core.CreateSubObject("test", 1, 0x1F8D, 0xF1, ObjectType.VAR, "testName", PlkDataType.UNSIGNED16, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
 
-            core.CreateObject("test", 1, 0x01006, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
-            core.CreateSubObject("test", 1, 0x01006, 0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "400", "400");
+            core.CreateObject("test", 1, 0x1006, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "400", "10000");
 
             core.CreateObject("test", 1, 0x1300, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
             core.CreateSubObject("test", 1, 0x1300, 0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
@@ -395,7 +390,7 @@ namespace openconfigurator_core_net_app
             core.CreateObject("test", 1, 0x1301, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
             core.CreateSubObject("test", 1, 0x1301, 0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
 
-            core.SetSubObjectActualValue("test", 1, 0x1006, 0x0, "100000", true);
+            core.SetObjectActualValue("test", 1, 0x1006, "100000", true);
             Console.ReadLine();
 
             core.CreateObject("test", 1, 0x1F98, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
@@ -460,8 +455,7 @@ namespace openconfigurator_core_net_app
             core.CreateSubObject("test", 5, 0x1F8D, 20, ObjectType.VAR, "testName", PlkDataType.UNSIGNED16, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
             core.CreateSubObject("test", 5, 0x1F8D, 0xF1, ObjectType.VAR, "testName", PlkDataType.UNSIGNED16, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
 
-            core.CreateObject("test", 5, 0x01006, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
-            core.CreateSubObject("test", 5, 0x01006, 0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "400", "400");
+            core.CreateObject("test", 5, 0x1006, ObjectType.VAR, "testName", PlkDataType.UNSIGNED32, AccessType.RW, PDOMapping.DEFAULT, "400", "10000");
 
             core.CreateObject("test", 5, 0x1020, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
             core.CreateSubObject("test", 5, 0x1020, 0, ObjectType.DEFTYPE, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "2", "2");
@@ -543,10 +537,10 @@ namespace openconfigurator_core_net_app
             Console.WriteLine(res.IsSuccessful());
 
             Console.ReadLine();
-            Result test = core.CreateParameter("test", 1, "UID_DOM_Index2100_Sub1E", ParameterAccess.read);
+            Result test = core.CreateParameter("test", 1, "UID_DOM_Index2100_Sub1E", "UID_DT_Index2100_Sub1E", ParameterAccess.read);
             Console.WriteLine(test.IsSuccessful());
-            test = core.CreateStructDatatype("test", 1, "notFound", "UID_DT_Index2100_Sub1E", "Index2100_Sub1E");
-            test = core.CreateStructDatatype("test", 1, "UID_DOM_Index2100_Sub1E", "UID_DT_Index2100_Sub1E", "Index2100_Sub1E");
+            test = core.CreateStructDatatype("test", 1, "notFound", "Index2100_Sub1E");
+            test = core.CreateStructDatatype("test", 1, "UID_DT_Index2100_Sub1E", "Index2100_Sub1E");
             Console.WriteLine(test.IsSuccessful());
             test = core.CreateVarDeclaration("test", 1, "notFound", "Index2100_Sub1E_OK", "NetworkStatus", IEC_Datatype.USINT);
             test = core.CreateVarDeclaration("test", 1, "UID_DT_Index2100_Sub1E", "Index2100_Sub1E_OK", "NetworkStatus", IEC_Datatype.USINT);
@@ -556,9 +550,9 @@ namespace openconfigurator_core_net_app
             test = core.CreateVarDeclaration("test", 1, "UID_DT_Index2100_Sub1E", "UID_Index2100_Sub1E_Bit_Unused_02", "StatusInput01", IEC_Datatype.BITSTRING, 5);
             Console.WriteLine(test.IsSuccessful());
 
-            test = core.CreateParameter("test", 1, "UID_DOM_Index2101_Sub1E", ParameterAccess.read);
+            test = core.CreateParameter("test", 1, "UID_DOM_Index2101_Sub1E", "UID_DT_Index2101_Sub1E", ParameterAccess.read);
             Console.WriteLine(test.IsSuccessful());
-            test = core.CreateStructDatatype("test", 1, "UID_DOM_Index2101_Sub1E", "UID_DT_Index2101_Sub1E", "Index2101_Sub1E");
+            test = core.CreateStructDatatype("test", 1, "UID_DT_Index2101_Sub1E", "Index2101_Sub1E");
             Console.WriteLine(test.IsSuccessful());
             test = core.CreateVarDeclaration("test", 1, "UID_DT_Index2101_Sub1E", "Index2101_Sub1E_OK", "NetworkStatus", IEC_Datatype.USINT);
             test = core.CreateVarDeclaration("test", 1, "UID_DT_Index2101_Sub1E", "UID_Index2101_Sub1E_DigitalInput01", "DigitalInput01", IEC_Datatype.BITSTRING, 1);
@@ -573,57 +567,72 @@ namespace openconfigurator_core_net_app
             test = core.CreateVarDeclaration("test", 1, "UID_DT_Index2101_Sub1E", "UID_Index2101_Sub1E_DigitalInput10", "DigitalInput10", IEC_Datatype.BITSTRING, 1);
             test = core.CreateVarDeclaration("test", 1, "UID_DT_Index2101_Sub1E", "UID_Index2101_Sub1E_DigitalInput11", "DigitalInput11", IEC_Datatype.BITSTRING, 1);
             test = core.CreateVarDeclaration("test", 1, "UID_DT_Index2101_Sub1E", "UID_Index2101_Sub1E_DigitalInput12", "DigitalInput12", IEC_Datatype.BITSTRING, 1);
-            test = core.CreateVarDeclaration("test", 1, "UID_DT_Index2101_Sub1E", "UID_Index2101_Sub1E_Bit_Unused_01", "Bit_Unused_01", IEC_Datatype.BITSTRING, 4);
+            res = core.CreateVarDeclaration("test", 1, "UID_DT_Index2101_Sub1E", "UID_Index2101_Sub1E_Bit_Unused_01", "Bit_Unused_01", IEC_Datatype.BITSTRING, 4);
             Console.WriteLine(test.IsSuccessful());
             test = core.CreateParameter("test", 1, "UID_100", ParameterAccess.read, IEC_Datatype.UDINT);
 
             uint size;
-            test = core.GetDatatypeSize("test", 1, "UID_DT_Index2100_Sub1E", out size);
-            Console.WriteLine(test.IsSuccessful());
+            res = core.GetDatatypeSize("test", 1, "UID_DT_Index2100_Sub1E", out size);
+            Console.WriteLine(res.GetErrorType());
+            Console.WriteLine(res.GetErrorMessage());
             Console.WriteLine(size);
 
-            test = core.GetDatatypeSize("test", 1, "UID_DT_Index2101_Sub1E", out size);
-            Console.WriteLine(test.IsSuccessful());
+            res = core.GetDatatypeSize("test", 1, "UID_DT_Index2101_Sub1E", out size);
+            Console.WriteLine(res.GetErrorType());
+            Console.WriteLine(res.GetErrorMessage());
             Console.WriteLine(size);
 
-            test = core.GetDatatypeSize("test", 1, "UID_100", out size);
-            Console.WriteLine(test.IsSuccessful());
+            res = core.GetDatatypeSize("test", 1, "UID_100", out size);
+            Console.WriteLine(res.GetErrorType());
+            Console.WriteLine(res.GetErrorMessage());
             Console.WriteLine(size);
 
-            test = core.GetDatatypeSize("test", 1, "notFound", out size);
+            res = core.GetDatatypeSize("test", 1, "notFound", out size);
             Console.WriteLine(test.IsSuccessful());
             Console.WriteLine(size);
 
             res = core.CreateDomainObject("test", 1, 0x2000, ObjectType.DEFSTRUCT, "domain", "UID_DOM_Index2101_Sub1E");
             Console.WriteLine(res.GetErrorType());
+            Console.WriteLine(res.GetErrorMessage());
 
             res = core.GetObjectSize("test", 1, 0x2000, out obsize);
             Console.WriteLine(obsize);
-            Console.WriteLine(res.IsSuccessful());
+            Console.WriteLine(res.GetErrorType());
+            Console.WriteLine(res.GetErrorMessage());
 
             res = core.CreateDomainSubObject("test", 1, 0x2000, 0x1, ObjectType.DEFSTRUCT, "domain", "UID_DOM_Index2101_Sub1E");
             Console.WriteLine(res.GetErrorType());
+            Console.WriteLine(res.GetErrorMessage());
 
             res = core.GetSubObjectSize("test", 1, 0x2000, 0x1, out obsize);
             Console.WriteLine(obsize);
             Console.WriteLine(res.IsSuccessful());
 
-           res = core.SetFeatureValue("test", 240, MNFeatureEnum.DLLMNFeatureMultiplex, "true");
+            res = core.SetFeatureValue("test", 240, MNFeatureEnum.DLLMNFeatureMultiplex, "true");
+            Console.WriteLine(res.GetErrorType());
+            Console.WriteLine(res.GetErrorMessage());
             res = core.SetFeatureValue("test", 240, MNFeatureEnum.DLLMNPResChaining, "true");
             Console.WriteLine(res.GetErrorType());
+            Console.WriteLine(res.GetErrorMessage());
 
             res = core.SetFeatureValue("test", 5, CNFeatureEnum.DLLCNPResChaining, "true");
             Console.WriteLine(res.GetErrorType());
+            Console.WriteLine(res.GetErrorMessage());
             res = core.SetOperationModeChained("test", 5);
             Console.WriteLine(res.GetErrorType());
+            Console.WriteLine(res.GetErrorMessage());
 
             res = core.SetFeatureValue("test", 10, CNFeatureEnum.DLLCNFeatureMultiplex, "true");
             Console.WriteLine(res.GetErrorType());
+            Console.WriteLine(res.GetErrorMessage());
             res = core.SetOperationModeMultiplexed("test", 10, 5);
             Console.WriteLine(res.GetErrorType());
+            Console.WriteLine(res.GetErrorMessage());
 
             string tempString;
             res = core.BuildConfiguration("test", out tempString);
+            Console.WriteLine(res.GetErrorType());
+            Console.WriteLine(res.GetErrorMessage());
             Console.WriteLine(tempString);
             Console.ReadLine();
 

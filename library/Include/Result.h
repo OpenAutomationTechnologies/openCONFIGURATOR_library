@@ -72,7 +72,7 @@ namespace IndustrialNetwork
 				const std::string kMsgSetObjectActualValue = "Set actual value: %s on object 0x%X on node %d.";
 				const std::string kMsgSetSubObjectActualValue = "Set actual value: %s on subobject 0x%X/0x%X on node %d.";
 				const std::string kMsgDatatypeMismatch = "Datatype '%s' does not match expected datatype '%s'.";
-				
+
 				const std::string kMsgConfigurationSettingNotSupported = "Configuration setting '%s' is not supported by the library.";
 				const std::string kMsgConfigurationNonExisting = "Build configuration '%s' does not exist in network '%s'.";
 				const std::string kMsgConfigurationExisting = "Build configuration '%s' does already exist in network '%s'.";
@@ -85,7 +85,7 @@ namespace IndustrialNetwork
 				const std::string kMsgConfigurationSettingAdded = "Build configuration setting '%s' added to configuration '%s' in network '%s'.";
 				const std::string kMsgConfigurationSettingRemoved = "Build configuration setting '%s' removed from configuration '%s' in network '%s'.";
 				const std::string kMsgConfigurationSettingEnabled = "Build configuration setting '%s' in configuration '%s' in network '%s' set enabled: '%s'.";
-				
+
 				const std::string kMsgComplexDatatypeNotFoundOnNode = "Complex datatype with uniqueID '%s' in node %d not found.";
 				const std::string kMsgComplexDatatypeNotFound = "Complex data type with uniqueID '%s' not found.";
 				const std::string kMsgComplexDataTypeAlreadyExist = "Complex data type with uniqueID '%s' already exists.";
@@ -93,12 +93,12 @@ namespace IndustrialNetwork
 				const std::string kMsgComplexDataTypeCreated = "Complex data type with uniqueID '%s' created.";
 
 				const std::string kMsgStructDatatypeNotFound = "Struct with uniqueID '%s' in node %d not found.";
-							
+
 				const std::string kMsgParameterCreated = "Parameter with uniqueID '%s' created.";
 				const std::string kMsgParameterReturned = "Parameter with uniqueID '%s' returned.";
-				const std::string kMsgParameterNotFound = "Parameter with uniqueID '%s' not found in node %d.";
+				const std::string kMsgParameterNotFound = "Parameter with uniqueIDRef '%s' not found in node %d.";
 				const std::string kMsgParameterAlreadyExist = "Parameter with uniqueID '%s' already exists.";
-				
+
 				const std::string kMsgNodeIdInvalid = "NodeId '%d' invalid.";
 				const std::string kMsgSubIndexInvalid = "Subindex 0x%X/0x%X invalid for node %d.";
 				const std::string kMsgIndexInvalid = "Index 0x%X invalid for node %d.";
@@ -178,7 +178,7 @@ namespace IndustrialNetwork
 						Result();
 						explicit Result(ErrorCode errorCode);
 						Result(ErrorCode errorCode, const std::string& errorMessage);
-						
+
 
 						virtual ~Result();
 						/**

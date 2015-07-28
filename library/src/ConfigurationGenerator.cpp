@@ -435,6 +435,17 @@ Result ConfigurationGenerator::WriteCommunicationProfileArea(const std::shared_p
 		        && object.first < 0x2000
 		        && object.first != 0x1F81)
 		{
+			if (object.second->WriteToConfiguration())
+			{
+				configurationOutput << std::hex << std::uppercase << object.first;
+				configurationOutput << "\t";
+				configurationOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << 0;
+				configurationOutput << "\t";
+				configurationOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << (object.second->GetBitSize() / 8);
+				configurationOutput << "\t";
+				configurationOutput << object.second->GetTypedActualValue<std::string>() << std::endl;
+			}
+
 			for (auto& subobject : object.second->GetSubObjectCollection())
 			{
 				if (subobject.second->WriteToConfiguration())
@@ -469,6 +480,17 @@ Result ConfigurationGenerator::WriteManufacturerSpecificProfileArea(const std::s
 	{
 		if (object.first >= 0x2000 && object.first <= 0x5FFF)
 		{
+			if (object.second->WriteToConfiguration())
+			{
+				configurationOutput << std::hex << std::uppercase << object.first;
+				configurationOutput << "\t";
+				configurationOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << 0;
+				configurationOutput << "\t";
+				configurationOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << (object.second->GetBitSize() / 8);
+				configurationOutput << "\t";
+				configurationOutput << object.second->GetTypedActualValue<std::string>() << std::endl;
+			}
+
 			for (auto& subobject : object.second->GetSubObjectCollection())
 			{
 				if (subobject.second->WriteToConfiguration())

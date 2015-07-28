@@ -65,6 +65,12 @@ Network::~Network()
 
 Result Network::AddNode(std::shared_ptr<ControlledNode>& node)
 {
+	//Managing Node has to be added first
+	std::shared_ptr<ManagingNode> mn;
+	Result res = this->GetManagingNode(mn);
+	if (!res.IsSuccessful())
+		return res;
+
 	for (auto& var : this->nodeCollection)
 	{
 		if (var.first == node->GetNodeIdentifier())
@@ -86,7 +92,7 @@ Result Network::AddNode(std::shared_ptr<ControlledNode>& node)
 	this->nodeCollection.insert(std::pair<uint8_t, std::shared_ptr<BaseNode>>(node->GetNodeIdentifier(), node));
 
 	//Set Node Assignement with actual value "0"
-	this->nodeCollection.at(240)->SetSubObjectActualValue(0x1F81, node->GetNodeIdentifier(), "0");
+	mn->SetSubObjectActualValue(0x1F81, node->GetNodeIdentifier(), "0");
 
 	return Result();
 }

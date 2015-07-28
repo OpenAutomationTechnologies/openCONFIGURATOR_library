@@ -111,6 +111,11 @@ uint32_t ControlledNode::GetConfigurationObjectCount()
 	uint32_t count = 0;
 	for (auto& object : this->GetObjectDictionary())
 	{
+		if (object.second->GetObjectType() == ObjectType::VAR && object.second->WriteToConfiguration())
+		{
+			count++;
+		}
+
 		uint32_t mappingObjNrOfEntries = 0;
 		uint32_t mappingObjCount = 0;
 		for (auto& subobject : object.second->GetSubObjectCollection())
@@ -161,6 +166,11 @@ uint32_t ControlledNode::GetConfigurationObjectSize()
 	uint32_t size = 0;
 	for (auto& object : this->GetObjectDictionary())
 	{
+		if (object.second->GetObjectType() == ObjectType::VAR && object.second->WriteToConfiguration())
+		{
+			size += object.second->GetBitSize();
+		}
+
 		uint32_t mappingObjNrOfEntries = 0;
 		uint32_t mappingObjCount = 0;
 		for (auto& subobject : object.second->GetSubObjectCollection())
