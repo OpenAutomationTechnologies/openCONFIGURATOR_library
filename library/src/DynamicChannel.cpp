@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 
-DynamicChannel::DynamicChannel(PlkDataType dataType, AccessType accessType, uint32_t startIndex, uint32_t endIndex, uint32_t maxNumber, uint32_t addressOffset, uint8_t bitAlignment) :
+DynamicChannel::DynamicChannel(PlkDataType dataType, DynamicChannelAccessType accessType, uint32_t startIndex, uint32_t endIndex, uint32_t maxNumber, uint32_t addressOffset, uint8_t bitAlignment) :
 	dataType(dataType),
 	accessType(accessType),
 	startIndex(startIndex),
@@ -54,7 +54,7 @@ PlkDataType DynamicChannel::GetDataType()
 	return this->dataType;
 }
 
-AccessType DynamicChannel::GetAccessType()
+DynamicChannelAccessType DynamicChannel::GetAccessType()
 {
 	return this->accessType;
 }

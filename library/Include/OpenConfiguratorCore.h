@@ -44,6 +44,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Network.h"
 #include "PlkDataType.h"
 #include "AccessType.h"
+#include "DynamicChannelAccessType.h"
 #include "LoggingConfiguration.h"
 #include "IEC_Datatype.h"
 #include "ObjectType.h"
@@ -162,7 +163,7 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateEnumValue(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterUniqueId, const std::string& name, const std::string& value);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetDatatypeSize(const std::string& networkId, const std::uint8_t nodeId, const std::string& dataTypeUniqueId, std::uint32_t& size);
 						//Dynamic Channel API
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateDynamicChannel(const std::string& networkId, const std::uint8_t nodeId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType accessType, std::uint32_t startIndex, std::uint32_t endIndex, std::uint32_t maxNumber, std::uint32_t addressOffset, std::uint8_t bitAlignment = 0);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateDynamicChannel(const std::string& networkId, const std::uint8_t nodeId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::DynamicChannelAccessType accessType, std::uint32_t startIndex, std::uint32_t endIndex, std::uint32_t maxNumber, std::uint32_t addressOffset, std::uint8_t bitAlignment = 0);
 
 					private:
 						//singleton

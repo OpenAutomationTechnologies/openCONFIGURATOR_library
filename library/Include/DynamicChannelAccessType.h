@@ -1,6 +1,6 @@
 /************************************************************************
-\file AccessType.h
-\brief Implementation of the Class AccessType
+\file DynamicChannelAccessType.h
+\brief Implementation of the Class DynamicChannelAccessType
 \author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 \date 01-May-2015 12:00:00
 ************************************************************************/
@@ -29,8 +29,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
-#if !defined ACCESS_TYPE_H
-#define ACCESS_TYPE_H
+#if !defined DYNAMIC_CHANNEL_ACCESS_TYPE_H
+#define DYNAMIC_CHANNEL_ACCESS_TYPE_H
 
 #include <cstdint>
 
@@ -46,17 +46,12 @@ namespace IndustrialNetwork
 				\brief
 				\author rueckerc
 				*/
-				enum class AccessType : std::uint8_t
+				enum class DynamicChannelAccessType : std::uint8_t
 				{
 					UNDEFINED = 0,
-					RW = 1,
-					RWS,
-					WO,
-					WOS,
-					RO,
-					CONST,
-					COND
-					
+					readOnly = 1,
+					writeOnly,
+					readWriteOutput
 				};
 
 			}

@@ -906,7 +906,7 @@ Result OpenConfiguratorCore::GetDatatypeSize(const std::string& networkId, const
 	return res;
 }
 
-Result OpenConfiguratorCore::CreateDynamicChannel(const std::string& networkId, const uint8_t nodeId, PlkDataType dataType, AccessType accessType, uint32_t startIndex, uint32_t endIndex, uint32_t maxNumber, uint32_t addressOffset, uint8_t bitAlignment)
+Result OpenConfiguratorCore::CreateDynamicChannel(const std::string& networkId, const uint8_t nodeId, PlkDataType dataType, DynamicChannelAccessType accessType, uint32_t startIndex, uint32_t endIndex, uint32_t maxNumber, uint32_t addressOffset, uint8_t bitAlignment)
 {
 	std::shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);

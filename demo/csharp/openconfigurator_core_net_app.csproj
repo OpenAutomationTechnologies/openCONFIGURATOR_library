@@ -61,6 +61,7 @@
     <Compile Include="ControlledNode.cs" />
     <Compile Include="Direction.cs" />
     <Compile Include="DynamicChannel.cs" />
+    <Compile Include="DynamicChannelAccessType.cs" />
     <Compile Include="ErrorCode.cs" />
     <Compile Include="GeneralFeatureEnum.cs" />
     <Compile Include="IBuildConfigurationSetting.cs" />

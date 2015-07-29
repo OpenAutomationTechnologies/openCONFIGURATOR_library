@@ -52,8 +52,8 @@ namespace IndustrialNetwork
 					NO,
 					DEFAULT,
 					OPTIONAL,
-					RPDO,
-					TPDO
+					TPDO,
+					RPDO
 				};
 
 			}

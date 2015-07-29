@@ -49,12 +49,12 @@ namespace IndustrialNetwork
 				enum class ParameterAccess : std::uint8_t
 				{
 					constant,
-					noAccess,
 					read,
+					write,
 					readWrite,
 					readWriteInput,
 					readWriteOutput,
-					write
+					noAccess
 				};
 
 			}

@@ -80,6 +80,8 @@
 %ignore SetComplexDataType(std::shared_ptr<Parameter>& parameter);
 
 %{
+
+#include "DynamicChannelAccessType.h"
 #include "ErrorCode.h"
 #include "IEC_Datatype.h"
 #include "ParameterAccess.h"
@@ -114,6 +116,7 @@
 %include "IEC_Datatype.h"
 %include "ParameterAccess.h"
 %include "AccessType.h"
+%include "DynamicChannelAccessType.h"
 %include "ObjectType.h"
 %include "PDOMapping.h"
 %include "PlkDataType.h"
