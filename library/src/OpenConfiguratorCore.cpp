@@ -430,10 +430,18 @@ Result OpenConfiguratorCore::CreateObject(const std::string& networkId, const ui
 				ptr->SetPDOMapping(pdoMapping);
 
 			if (!defaultValueToSet.empty())
-				ptr->SetTypedObjectDefaultValue(defaultValueToSet);
+			{
+				res = ptr->SetTypedObjectDefaultValue(defaultValueToSet);
+				if (!res.IsSuccessful())
+					return res;
+			}
 
 			if (!actualValueToSet.empty())
-				ptr->SetTypedObjectActualValue(actualValueToSet);
+			{
+				res = ptr->SetTypedObjectActualValue(actualValueToSet);
+				if (!res.IsSuccessful())
+					return res;
+			}
 
 			res = node->AddObject(ptr);
 		}
@@ -488,7 +496,7 @@ Result OpenConfiguratorCore::CreateDomainObject(const std::string& networkId, co
 	return res;
 }
 
-Result OpenConfiguratorCore::CreateSubObject(const std::string& networkId, const uint8_t nodeId, uint32_t objectId, uint32_t subObjectId, ObjectType objectType, const std::string& name, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping, const std::string& defaultValueToSet, const std::string& actualValueToSet)
+Result OpenConfiguratorCore::CreateSubObject(const std::string& networkId, const uint8_t nodeId, uint32_t objectId, uint8_t subObjectId, ObjectType objectType, const std::string& name, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping, const std::string& defaultValueToSet, const std::string& actualValueToSet)
 {
 	std::shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -510,10 +518,18 @@ Result OpenConfiguratorCore::CreateSubObject(const std::string& networkId, const
 				ptr->SetPDOMapping(pdoMapping);
 
 			if (!defaultValueToSet.empty())
-				ptr->SetTypedObjectDefaultValue(defaultValueToSet);
+			{
+				res = ptr->SetTypedObjectDefaultValue(defaultValueToSet);
+				if (!res.IsSuccessful())
+					return res;
+			}
 
 			if (!actualValueToSet.empty())
-				ptr->SetTypedObjectActualValue(actualValueToSet);
+			{
+				res = ptr->SetTypedObjectActualValue(actualValueToSet);
+				if (!res.IsSuccessful())
+					return res;
+			}
 
 			res = node->AddSubObject(objectId, ptr);
 		}
@@ -521,7 +537,7 @@ Result OpenConfiguratorCore::CreateSubObject(const std::string& networkId, const
 	return res;
 }
 
-Result OpenConfiguratorCore::SetSubObjectLimits(const std::string& networkId, const uint8_t nodeId, uint32_t objectId, uint32_t subObjectId, const std::string& lowLimit, const std::string& highLimit)
+Result OpenConfiguratorCore::SetSubObjectLimits(const std::string& networkId, const uint8_t nodeId, uint32_t objectId, uint8_t subObjectId, const std::string& lowLimit, const std::string& highLimit)
 {
 	std::shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -545,7 +561,7 @@ Result OpenConfiguratorCore::SetSubObjectLimits(const std::string& networkId, co
 	return res;
 }
 
-Result OpenConfiguratorCore::CreateDomainSubObject(const std::string& networkId, const uint8_t nodeId, uint32_t objectId, uint32_t subObjectId, ObjectType objectType, const std::string& name, const std::string& uniqueIdRef)
+Result OpenConfiguratorCore::CreateDomainSubObject(const std::string& networkId, const uint8_t nodeId, uint32_t objectId, uint8_t subObjectId, ObjectType objectType, const std::string& name, const std::string& uniqueIdRef)
 {
 	std::shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -589,7 +605,7 @@ Result OpenConfiguratorCore::GetObjectSize(const std::string& networkId, const u
 	return res;
 }
 
-Result OpenConfiguratorCore::GetSubObjectSize(const std::string& networkId, const uint8_t nodeId, uint32_t objectId, uint32_t subObjectId, uint32_t& size)
+Result OpenConfiguratorCore::GetSubObjectSize(const std::string& networkId, const uint8_t nodeId, uint32_t objectId, uint8_t subObjectId, uint32_t& size)
 {
 	std::shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -642,7 +658,7 @@ Result OpenConfiguratorCore::SetFeatureValue(const std::string& networkId, const
 		res = network->GetBaseNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
-			node->GetNetworkManagement()->SetFeatureUntypedActualValue(feature, value);
+			return node->GetNetworkManagement()->SetFeatureUntypedActualValue(feature, value);
 		}
 
 	}
@@ -659,7 +675,7 @@ Result OpenConfiguratorCore::SetFeatureValue(const std::string& networkId, const
 		res = network->GetBaseNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
-			node->GetNetworkManagement()->SetFeatureUntypedActualValue(feature, value);
+			return node->GetNetworkManagement()->SetFeatureUntypedActualValue(feature, value);
 		}
 	}
 	return res;
@@ -675,7 +691,7 @@ Result OpenConfiguratorCore::SetFeatureValue(const std::string& networkId, const
 		res = network->GetBaseNode(nodeId, node);
 		if (res.IsSuccessful())
 		{
-			node->GetNetworkManagement()->SetFeatureUntypedActualValue(feature, value);
+			return node->GetNetworkManagement()->SetFeatureUntypedActualValue(feature, value);
 		}
 	}
 	return res;
@@ -942,7 +958,7 @@ Result OpenConfiguratorCore::SetObjectActualValue(const std::string& networkId, 
 	return res;
 }
 
-Result OpenConfiguratorCore::SetSubObjectActualValue(const std::string& networkId, const uint8_t nodeId, uint32_t objectId, uint32_t subObjectId, const std::string& actualValue, bool force)
+Result OpenConfiguratorCore::SetSubObjectActualValue(const std::string& networkId, const uint8_t nodeId, uint32_t objectId, uint8_t subObjectId, const std::string& actualValue, bool force)
 {
 	std::shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);

@@ -84,78 +84,89 @@ namespace IndustrialNetwork
 
 				Result MnFeature::SetTypedValues(const std::string& defaultValue, const std::string& actualValue)
 				{
-					switch (this->GetFeatureId())
+					try
 					{
-						case MNFeatureEnum::DLLErrMNMultipleMN:
-						case MNFeatureEnum::DLLMNFeatureMultiplex:
-						case MNFeatureEnum::DLLMNPResChaining:
-						case MNFeatureEnum::DLLMNFeaturePResTx:
-						case MNFeatureEnum::NMTMNBasicEthernet:
-						case MNFeatureEnum::NMTNetTime:
-						case MNFeatureEnum::NMTNetTimeIsRealTime:
-						case MNFeatureEnum::NMTRelativeTime:
-						case MNFeatureEnum::NMTSimpleBoot:
-							{
-								if (!defaultValue.empty())
+						switch (this->GetFeatureId())
+						{
+							case MNFeatureEnum::DLLErrMNMultipleMN:
+							case MNFeatureEnum::DLLMNFeatureMultiplex:
+							case MNFeatureEnum::DLLMNPResChaining:
+							case MNFeatureEnum::DLLMNFeaturePResTx:
+							case MNFeatureEnum::NMTMNBasicEthernet:
+							case MNFeatureEnum::NMTNetTime:
+							case MNFeatureEnum::NMTNetTimeIsRealTime:
+							case MNFeatureEnum::NMTRelativeTime:
+							case MNFeatureEnum::NMTSimpleBoot:
 								{
-									bool value = StringToBool(defaultValue);
-									this->SetUntypedDefaultValue(boost::any(value));
-									break;
+									if (!defaultValue.empty())
+									{
+										bool value = StringToBool(defaultValue);
+										this->SetUntypedDefaultValue(boost::any(value));
+										break;
+									}
+									if (!actualValue.empty())
+									{
+										bool value = StringToBool(actualValue);
+										this->SetUntypedActualValue(boost::any(value));
+										break;
+									}
 								}
-								if (!actualValue.empty())
+							case MNFeatureEnum::NMTMNMultiplCycMax:
 								{
-									bool value = StringToBool(actualValue);
-									this->SetUntypedActualValue(boost::any(value));
-									break;
+									if (!defaultValue.empty())
+									{
+										uint8_t value = HexToInt<uint8_t>(defaultValue);
+										this->SetUntypedDefaultValue(boost::any(value));
+										break;
+									}
+									if (!actualValue.empty())
+									{
+										uint8_t value = HexToInt<uint8_t>(actualValue);
+										this->SetUntypedActualValue(boost::any(value));
+										break;
+									}
 								}
-							}
-						case MNFeatureEnum::NMTMNMultiplCycMax:
-							{
-								if (!defaultValue.empty())
+							case MNFeatureEnum::NMTMNASnd2SoC:
+							case MNFeatureEnum::NMTMNPRes2PReq:
+							case MNFeatureEnum::NMTMNPRes2PRes:
+							case MNFeatureEnum::NMTMNPResRx2SoA:
+							case MNFeatureEnum::NMTMNPResTx2SoA:
+							case MNFeatureEnum::NMTMNSoA2ASndTx:
+							case MNFeatureEnum::NMTMNSoC2PReq:
 								{
-									uint8_t value = HexToInt<uint8_t>(defaultValue);
-									this->SetUntypedDefaultValue(boost::any(value));
-									break;
+									if (!actualValue.empty())
+									{
+										uint32_t value = HexToInt<uint32_t>(actualValue);
+										this->SetUntypedActualValue(boost::any(value));
+										break;
+									}
 								}
-								if (!actualValue.empty())
+							case MNFeatureEnum::PDOTPDOChannels:
 								{
-									uint8_t value = HexToInt<uint8_t>(actualValue);
-									this->SetUntypedActualValue(boost::any(value));
-									break;
+									if (!defaultValue.empty())
+									{
+										uint16_t value = HexToInt<uint16_t>(defaultValue);
+										this->SetUntypedDefaultValue(boost::any(value));
+										break;
+									}
+									if (!actualValue.empty())
+									{
+										uint16_t value = HexToInt<uint16_t>(actualValue);
+										this->SetUntypedActualValue(boost::any(value));
+										break;
+									}
 								}
-							}
-						case MNFeatureEnum::NMTMNASnd2SoC:
-						case MNFeatureEnum::NMTMNPRes2PReq:
-						case MNFeatureEnum::NMTMNPRes2PRes:
-						case MNFeatureEnum::NMTMNPResRx2SoA:
-						case MNFeatureEnum::NMTMNPResTx2SoA:
-						case MNFeatureEnum::NMTMNSoA2ASndTx:
-						case MNFeatureEnum::NMTMNSoC2PReq:
-							{
-								if (!actualValue.empty())
-								{
-									uint32_t value = HexToInt<uint32_t>(actualValue);
-									this->SetUntypedActualValue(boost::any(value));
-									break;
-								}
-							}
-						case MNFeatureEnum::PDOTPDOChannels:
-							{
-								if (!defaultValue.empty())
-								{
-									uint16_t value = HexToInt<uint16_t>(defaultValue);
-									this->SetUntypedDefaultValue(boost::any(value));
-									break;
-								}
-								if (!actualValue.empty())
-								{
-									uint16_t value = HexToInt<uint16_t>(actualValue);
-									this->SetUntypedActualValue(boost::any(value));
-									break;
-								}
-							}
-						default:
-							break;
+							default:
+								break;
+						}
+					}
+					catch (const std::exception& e)
+					{
+						boost::format formatter(kMsgMnFeatureDatatypeError);
+						formatter
+						% this->GetName();
+						LOG_FATAL() << formatter.str() << e.what();
+						return Result(ErrorCode::MN_FEATURE_VALUE_INVALID, formatter.str());
 					}
 					return Result();
 				}

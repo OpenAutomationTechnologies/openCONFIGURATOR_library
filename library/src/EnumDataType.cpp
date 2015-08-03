@@ -42,7 +42,9 @@ EnumDataType::EnumDataType(const std::string& uniqueID, const std::string&  name
 {}
 
 EnumDataType::~EnumDataType()
-{}
+{
+	this->enumValues.clear();
+}
 
 IEC_Datatype EnumDataType::GetDataType()
 {

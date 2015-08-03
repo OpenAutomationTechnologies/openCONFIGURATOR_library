@@ -50,8 +50,11 @@ BaseNode::BaseNode(uint8_t nodeId, const std::string& name) :
 
 BaseNode::~BaseNode()
 {
-	transmitMapping.clear();
-	receiveMapping.clear();
+	this->objectDictionary.clear();
+	this->nodeAssignment.clear();
+	this->dynamicChannelList.clear();
+	this->transmitMapping.clear();
+	this->receiveMapping.clear();
 }
 
 const std::string& BaseNode::GetName()
@@ -153,7 +156,14 @@ Result BaseNode::ForceObject(uint32_t objectId, bool force, const std::string& a
 	}
 
 	if (iter->second->GetObjectType() != ObjectType::VAR)
+	{
+		boost::format formatter(kMsgBaseObjectValueSupport);
+		formatter
+		% objectId
+		% (uint32_t) nodeId;
+		LOG_FATAL() << formatter.str();
 		return Result(ErrorCode::OBJECT_TYPE_DOES_NOT_SUPPORT_VALUES);
+	}
 
 	iter->second->SetForceToCDC(force);
 	//Log info forced object

@@ -105,7 +105,7 @@ Result PlkConfiguration::GenerateConfiguration(const std::map<uint8_t, std::shar
 	if (!res.IsSuccessful())
 		return res;
 
-	//Distribute SDOCmdLayerTimeout 1300 / 00 to all nodes
+	//Distribute SDOCmdLayerTimeout 1301 / 00 to all nodes
 	res = DistributeSDOCmdLayerTimeout(nodeCollection);
 	if (!res.IsSuccessful())
 		return res;
@@ -354,7 +354,7 @@ Result PlkConfiguration::DistributePrescaler(const std::map<uint8_t, std::shared
 	//Get Cycle Time object
 	Result res = mn->GetSubObject(0x1F98, 0x9, prescalerObject);
 	if (!res.IsSuccessful())
-		return res;
+		return Result();
 
 	if (prescalerObject->WriteToConfiguration())
 	{
@@ -370,9 +370,9 @@ Result PlkConfiguration::DistributePrescaler(const std::map<uint8_t, std::shared
 	{
 		if (node.first != 240)
 		{
-			//Set every node 0x1F98 / 0x9 actual value to prescaler
+			//Set every node 0x1F98 / 0x9 actual value to prescaler if existing
 			res = node.second->SetSubObjectActualValue(0x1F98, 0x9, prescalerStr.str());
-			if (!res.IsSuccessful())
+			if (!res.IsSuccessful() && res.GetErrorType() != ErrorCode::SUBOBJECT_DOES_NOT_EXIST)
 				return res; //If error occurs during set of prescaler return
 		}
 	}
@@ -412,10 +412,10 @@ Result PlkConfiguration::DistributeSDOSeqLayerTimeout(const std::map<uint8_t, st
 {
 	//Get managing node
 	auto& mn = nodeCollection.at(240);
-	std::shared_ptr<SubObject> sdoSeqLayerTimeoutObject;
+	std::shared_ptr<Object> sdoSeqLayerTimeoutObject;
 
-	//Get Async MTU object
-	Result res = mn->GetSubObject(0x1300, 0x0, sdoSeqLayerTimeoutObject);
+	//Get SDOSeqLayerTimeout object
+	Result res = mn->GetObject(0x1300, sdoSeqLayerTimeoutObject);
 	if (!res.IsSuccessful())
 		return res;
 
@@ -429,8 +429,8 @@ Result PlkConfiguration::DistributeSDOSeqLayerTimeout(const std::map<uint8_t, st
 			std::stringstream sdoSeqLayerTimeoutStr;
 			//Convert SDOSeqLayerTimeout to std::string
 			sdoSeqLayerTimeoutStr << sdoSeqLayerTimeoutObject->GetTypedActualValue<uint32_t>();
-			//Set every node 0x1300 / 0x0 actual value to SDOSeqLayerTimeout
-			res = node.second->SetSubObjectActualValue(0x1300, 0x0, sdoSeqLayerTimeoutStr.str());
+			//Set every node 0x1300 actual value to SDOSeqLayerTimeout
+			res = node.second->SetObjectActualValue(0x1300, sdoSeqLayerTimeoutStr.str());
 			if (!res.IsSuccessful())
 				return res; //If error occurs during set of SDOSeqLayerTimeout return
 		}
@@ -442,12 +442,12 @@ Result PlkConfiguration::DistributeSDOCmdLayerTimeout(const std::map<uint8_t, st
 {
 	//Get managing node
 	auto& mn = nodeCollection.at(240);
-	std::shared_ptr<SubObject> sdoCmdLayerTimeoutObject;
+	std::shared_ptr<Object> sdoCmdLayerTimeoutObject;
 
-	//Get Async MTU object
-	Result res = mn->GetSubObject(0x1301, 0x0, sdoCmdLayerTimeoutObject);
+	//Get CmdLayerTimeout object
+	Result res = mn->GetObject(0x1301, sdoCmdLayerTimeoutObject);
 	if (!res.IsSuccessful())
-		return res;
+		return Result();
 
 	for (auto& node : nodeCollection)
 	{
@@ -459,9 +459,9 @@ Result PlkConfiguration::DistributeSDOCmdLayerTimeout(const std::map<uint8_t, st
 			std::stringstream sdoCmdLayerTimeoutStr;
 			//Convert CmdLayerTimeout to std::string
 			sdoCmdLayerTimeoutStr << sdoCmdLayerTimeoutObject->GetTypedActualValue<uint32_t>();
-			//Set every node 0x1300 / 0x0 actual value to CmdLayerTimeout
-			res = node.second->SetSubObjectActualValue(0x1301, 0x0, sdoCmdLayerTimeoutStr.str());
-			if (!res.IsSuccessful())
+			//Set every node 0x1301 actual value to CmdLayerTimeout
+			res = node.second->SetObjectActualValue(0x1301, sdoCmdLayerTimeoutStr.str());
+			if (!res.IsSuccessful() && res.GetErrorType() != ErrorCode::OBJECT_DOES_NOT_EXIST)
 				return res; //If error occurs during set of CmdLayerTimeout return
 		}
 	}
@@ -526,7 +526,7 @@ Result PlkConfiguration::DistributePReqPayloadLimit(const std::map<uint8_t, std:
 
 		std::stringstream preqActPayloadLimitValue;
 		if (preqActPayloadLimitObj->WriteToConfiguration())
-			preqActPayloadLimitValue << preqActPayloadLimitObj->GetTypedActualValue<uint32_t>();
+			preqActPayloadLimitValue << preqActPayloadLimitObj->GetTypedActualValue<uint16_t>();
 		else
 			continue;
 
@@ -581,8 +581,8 @@ Result PlkConfiguration::DistributePResPayloadLimit(const std::map<uint8_t, std:
 				continue;
 
 			res = cn.second->SetSubObjectActualValue(0x1F8D, node.first, presActPayloadLimitValue.str());
-			if (!res.IsSuccessful())
-				return res;
+			if (!res.IsSuccessful() && res.GetErrorType() != ErrorCode::OBJECT_DOES_NOT_EXIST)
+				return res; // this is optional return success
 
 		}
 	}

@@ -72,6 +72,17 @@ namespace IndustrialNetwork
 				const std::string kMsgSetObjectActualValue = "Set actual value: %s on object 0x%X on node %d.";
 				const std::string kMsgSetSubObjectActualValue = "Set actual value: %s on subobject 0x%X/0x%X on node %d.";
 				const std::string kMsgDatatypeMismatch = "Datatype '%s' does not match expected datatype '%s'.";
+				const std::string kMsgObjectDatatypeMismatch = "BaseObject '%s' datatype '%s' does not match expected datatype '%s'.";
+				const std::string kMsgActualValueDatatypeError = "Actual value '%s' with datatype '%d' does exceed the datatype limits.";
+				const std::string kMsgDefaultValueDatatypeError = "Default value '%s' with datatype '%d' does exceed the datatype limits.";
+				const std::string kMsgHighLimitDatatypeError = "Highlimit '%s' with datatype '%d' does exceed the datatype limits.";
+				const std::string kMsgLowLimitDatatypeError = "Lowlimit '%s' with datatype '%d' does exceed the datatype limits.";
+				const std::string kMsgBaseObjectLowLimitError = "BaseObject '%s' with id '0x%X' on node '%d' deceeds lowlimit '%d'.";
+				const std::string kMsgBaseObjectHighLimitError = "BaseObject '%s' with id '0x%X' on node '%d' exceeds highlimit '%d'.";
+				const std::string kMsgBaseObjectDataTypeError = "BaseObject '%s' with id '0x%X' on node '%d' does not have a specified datatype.";
+				const std::string kMsgBaseObjectDefaultValue = "BaseObject '%s' with id '0x%X' on node '%d' does not have a default value datatype.";
+				const std::string kMsgBaseObjectActualValue = "BaseObject '%s' with id '0x%X' on node '%d'  does not have an actual value datatype.";
+				const std::string kMsgBaseObjectValueSupport = "Object '%d' on node %d does not support for actual / default values.";
 
 				const std::string kMsgConfigurationSettingNotSupported = "Configuration setting '%s' is not supported by the library.";
 				const std::string kMsgConfigurationNonExisting = "Build configuration '%s' does not exist in network '%s'.";
@@ -96,7 +107,7 @@ namespace IndustrialNetwork
 
 				const std::string kMsgParameterCreated = "Parameter with uniqueID '%s' created.";
 				const std::string kMsgParameterReturned = "Parameter with uniqueID '%s' returned.";
-				const std::string kMsgParameterNotFound = "Parameter with uniqueIDRef '%s' not found in node %d.";
+				const std::string kMsgParameterNotFound = "Parameter which references datatype with uniqueIDRef '%s' not found on node %d.";
 				const std::string kMsgParameterAlreadyExist = "Parameter with uniqueID '%s' already exists.";
 
 				const std::string kMsgNodeIdInvalid = "NodeId '%d' invalid.";
@@ -123,6 +134,10 @@ namespace IndustrialNetwork
 				const std::string kMsgWriteMappingObjectsNrOfEntriesZero = "Mapping objects NrOfEntries zero for Node (%d) write successful.";
 				const std::string kMsgWriteCommunicationRangeObjects = "Communication range objects for Node (%d) write successful.";
 				const std::string kMsgWriteUserDefinedRangeObjects = "User defined range objects for Node (%d) write successful.";
+
+				const std::string kMsgGeneralFeatureDatatypeError = "General feature '%s' actual / default value does not match datatype.";
+				const std::string kMsgCnFeatureDatatypeError = "CN feature '%s' actual / default value does not match datatype.";
+				const std::string kMsgMnFeatureDatatypeError = "MN feature '%s' actual / default value does not match datatype.";
 
 				const std::string kMsgNoNodesConfigured = "Configuration does not contain any POWERLINK-Nodes.";
 				const std::string kMsgNoControlledNodesConfigured = "Configuration does not contain any POWERLINK-CNs.";

@@ -80,35 +80,46 @@ namespace IndustrialNetwork
 
 				Result CnFeature::SetTypedValues(const std::string& defaultValue, const std::string& actualValue)
 				{
-					switch (this->GetFeatureId())
+					try
 					{
-						case CNFeatureEnum::DLLCNFeatureMultiplex:
-						case CNFeatureEnum::DLLCNPResChaining:
-							{
-								if (!defaultValue.empty())
+						switch (this->GetFeatureId())
+						{
+							case CNFeatureEnum::DLLCNFeatureMultiplex:
+							case CNFeatureEnum::DLLCNPResChaining:
 								{
-									bool value = StringToBool(defaultValue);
-									this->SetUntypedDefaultValue(boost::any(value));
-									break;
+									if (!defaultValue.empty())
+									{
+										bool value = StringToBool(defaultValue);
+										this->SetUntypedDefaultValue(boost::any(value));
+										break;
+									}
+									if (!actualValue.empty())
+									{
+										bool value = StringToBool(actualValue);
+										this->SetUntypedActualValue(boost::any(value));
+										break;
+									}
 								}
-								if (!actualValue.empty())
+							case CNFeatureEnum::NMTCNSoC2PReq:
 								{
-									bool value = StringToBool(actualValue);
-									this->SetUntypedActualValue(boost::any(value));
-									break;
+									if (!actualValue.empty())
+									{
+										uint32_t value = HexToInt<uint32_t>(actualValue);
+										this->SetUntypedActualValue(boost::any(value));
+										break;
+									}
 								}
-							}
-						case CNFeatureEnum::NMTCNSoC2PReq:
-							{
-								if (!actualValue.empty())
-								{
-									uint32_t value = HexToInt<uint32_t>(actualValue);
-									this->SetUntypedActualValue(boost::any(value));
-									break;
-								}
-							}
-						default:
-							break;
+							default:
+								break;
+						}
+					}
+					catch (const std::exception& e)
+					{
+						boost::format formatter(kMsgCnFeatureDatatypeError);
+						formatter
+						% this->GetName();
+						LOG_FATAL() << formatter.str() << e.what();
+						return Result(ErrorCode::CN_FEATURE_VALUE_INVALID, formatter.str());
 					}
 					return Result();
 				}

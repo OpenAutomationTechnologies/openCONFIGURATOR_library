@@ -82,141 +82,151 @@ namespace IndustrialNetwork
 
 				Result GeneralFeature::SetTypedValues(const std::string& defaultValue, const std::string& actualValue)
 				{
-					switch (this->GetFeatureId())
+					try
 					{
-						case GeneralFeatureEnum::CFMConfigManager:
-						case GeneralFeatureEnum::DLLErrBadPhysMode:
-						case GeneralFeatureEnum::DLLErrMacBuffer:
-						case GeneralFeatureEnum::DLLFeatureCN:
-						case GeneralFeatureEnum::NMTFlushArpEntry:
-						case GeneralFeatureEnum::NMTNetHostNameSet:
-						case GeneralFeatureEnum::NMTNodeIDByHW:
-						case GeneralFeatureEnum::NMTPublishActiveNodes:
-						case GeneralFeatureEnum::NMTPublishConfigNodes:
-						case GeneralFeatureEnum::NMTPublishEmergencyNew:
-						case GeneralFeatureEnum::NMTPublishNodeState:
-						case GeneralFeatureEnum::NMTPublishOperational:
-						case GeneralFeatureEnum::NMTPublishPreOp1:
-						case GeneralFeatureEnum::NMTPublishPreOp2:
-						case GeneralFeatureEnum::NMTPublishReadyToOp:
-						case GeneralFeatureEnum::NMTPublishStopped:
-						case GeneralFeatureEnum::NMTPublishTime:
-						case GeneralFeatureEnum::NWLForward:
-						case GeneralFeatureEnum::NWLICMPSupport:
-						case GeneralFeatureEnum::NWLIPSupport:
-						case GeneralFeatureEnum::PDOSelfReceipt:
-						case GeneralFeatureEnum::PHYHubIntegrated:
-						case GeneralFeatureEnum::RT1RT1SecuritySupport:
-						case GeneralFeatureEnum::RT1RT1Support:
-						case GeneralFeatureEnum::RT2RT2Support:
-						case GeneralFeatureEnum::SDOClient:
-						case GeneralFeatureEnum::SDOCmdFileRead:
-						case GeneralFeatureEnum::SDOCmdFileWrite:
-						case GeneralFeatureEnum::SDOCmdLinkName:
-						case GeneralFeatureEnum::SDOCmdReadAllByIndex:
-						case GeneralFeatureEnum::SDOCmdReadByName:
-						case GeneralFeatureEnum::SDOCmdReadMultParam:
-						case GeneralFeatureEnum::SDOCmdWriteAllByIndex:
-						case GeneralFeatureEnum::SDOCmdWriteByName:
-						case GeneralFeatureEnum::SDOCmdWriteMultParam:
-						case GeneralFeatureEnum::SDOServer:
-							{
-								if (!defaultValue.empty())
+						switch (this->GetFeatureId())
+						{
+							case GeneralFeatureEnum::CFMConfigManager:
+							case GeneralFeatureEnum::DLLErrBadPhysMode:
+							case GeneralFeatureEnum::DLLErrMacBuffer:
+							case GeneralFeatureEnum::DLLFeatureCN:
+							case GeneralFeatureEnum::DLLFeatureMN:
+							case GeneralFeatureEnum::NMTFlushArpEntry:
+							case GeneralFeatureEnum::NMTNetHostNameSet:
+							case GeneralFeatureEnum::NMTNodeIDByHW:
+							case GeneralFeatureEnum::NMTPublishActiveNodes:
+							case GeneralFeatureEnum::NMTPublishConfigNodes:
+							case GeneralFeatureEnum::NMTPublishEmergencyNew:
+							case GeneralFeatureEnum::NMTPublishNodeState:
+							case GeneralFeatureEnum::NMTPublishOperational:
+							case GeneralFeatureEnum::NMTPublishPreOp1:
+							case GeneralFeatureEnum::NMTPublishPreOp2:
+							case GeneralFeatureEnum::NMTPublishReadyToOp:
+							case GeneralFeatureEnum::NMTPublishStopped:
+							case GeneralFeatureEnum::NMTPublishTime:
+							case GeneralFeatureEnum::NWLForward:
+							case GeneralFeatureEnum::NWLICMPSupport:
+							case GeneralFeatureEnum::NWLIPSupport:
+							case GeneralFeatureEnum::PDOSelfReceipt:
+							case GeneralFeatureEnum::PHYHubIntegrated:
+							case GeneralFeatureEnum::RT1RT1SecuritySupport:
+							case GeneralFeatureEnum::RT1RT1Support:
+							case GeneralFeatureEnum::RT2RT2Support:
+							case GeneralFeatureEnum::SDOClient:
+							case GeneralFeatureEnum::SDOCmdFileRead:
+							case GeneralFeatureEnum::SDOCmdFileWrite:
+							case GeneralFeatureEnum::SDOCmdLinkName:
+							case GeneralFeatureEnum::SDOCmdReadAllByIndex:
+							case GeneralFeatureEnum::SDOCmdReadByName:
+							case GeneralFeatureEnum::SDOCmdReadMultParam:
+							case GeneralFeatureEnum::SDOCmdWriteAllByIndex:
+							case GeneralFeatureEnum::SDOCmdWriteByName:
+							case GeneralFeatureEnum::SDOCmdWriteMultParam:
+							case GeneralFeatureEnum::SDOServer:
 								{
-									bool value = StringToBool(defaultValue);
-									this->SetUntypedDefaultValue(boost::any(value));
-									break;
+									if (!defaultValue.empty())
+									{
+										bool value = StringToBool(defaultValue);
+										this->SetUntypedDefaultValue(boost::any(value));
+										break;
+									}
+									if (!actualValue.empty())
+									{
+										bool value = StringToBool(actualValue);
+										this->SetUntypedActualValue(boost::any(value));
+										break;
+									}
 								}
-								if (!actualValue.empty())
+							case GeneralFeatureEnum::NMTCycleTimeMax:
+							case GeneralFeatureEnum::NMTCycleTimeMin:
+							case GeneralFeatureEnum::NMTBootTimeNotActive:
+							case GeneralFeatureEnum::NMTErrorEntries:
 								{
-									bool value = StringToBool(actualValue);
-									this->SetUntypedActualValue(boost::any(value));
-									break;
+									if (!actualValue.empty())
+									{
+										uint32_t value = HexToInt<uint32_t>(actualValue);
+										this->SetUntypedActualValue(boost::any(value));
+										break;
+									}
 								}
-							}
-						case GeneralFeatureEnum::NMTCycleTimeMax:
-						case GeneralFeatureEnum::NMTCycleTimeMin:
-						case GeneralFeatureEnum::DLLFeatureMN:
-						case GeneralFeatureEnum::NMTBootTimeNotActive:
-						case GeneralFeatureEnum::NMTErrorEntries:
-							{
-								if (!actualValue.empty())
+							case GeneralFeatureEnum::NMTCycleTimeGranularity:
+							case GeneralFeatureEnum::NMTMinRedCycleTime:
+							case GeneralFeatureEnum::NMTEmergencyQueueSize:
+							case GeneralFeatureEnum::NMTProductCode:
+							case GeneralFeatureEnum::NMTRevisionNo:
+							case GeneralFeatureEnum::PDOMaxDescrMem:
+							case GeneralFeatureEnum::PDORPDOCycleDataLim:
+							case GeneralFeatureEnum::PDORPDOChannelObjects:
+							case GeneralFeatureEnum::PDOTPDOCycleDataLim:
+							case GeneralFeatureEnum::PHYHubDelay:
+							case GeneralFeatureEnum::PHYHubJitter:
+							case GeneralFeatureEnum::SDOMaxConnections:
+							case GeneralFeatureEnum::SDOMaxParallelConnections:
 								{
-									uint32_t value = HexToInt<uint32_t>(actualValue);
-									this->SetUntypedActualValue(boost::any(value));
-									break;
-								}
-							}
-						case GeneralFeatureEnum::NMTCycleTimeGranularity:
-						case GeneralFeatureEnum::NMTMinRedCycleTime:
-						case GeneralFeatureEnum::NMTEmergencyQueueSize:
-						case GeneralFeatureEnum::NMTProductCode:
-						case GeneralFeatureEnum::NMTRevisionNo:
-						case GeneralFeatureEnum::PDOMaxDescrMem:
-						case GeneralFeatureEnum::PDORPDOCycleDataLim:
-						case GeneralFeatureEnum::PDORPDOChannelObjects:
-						case GeneralFeatureEnum::PDOTPDOCycleDataLim:
-						case GeneralFeatureEnum::PHYHubDelay:
-						case GeneralFeatureEnum::PHYHubJitter:
-						case GeneralFeatureEnum::SDOMaxConnections:
-						case GeneralFeatureEnum::SDOMaxParallelConnections:
-							{
-								if (!defaultValue.empty())
-								{
-									uint32_t value = HexToInt<uint32_t>(defaultValue);
-									this->SetUntypedDefaultValue(boost::any(value));
-									break;
-								}
-								if (!actualValue.empty())
-								{
-									uint32_t value = HexToInt<uint32_t>(actualValue);
-									this->SetUntypedActualValue(boost::any(value));
-									break;
-								}
+									if (!defaultValue.empty())
+									{
+										uint32_t value = HexToInt<uint32_t>(defaultValue);
+										this->SetUntypedDefaultValue(boost::any(value));
+										break;
+									}
+									if (!actualValue.empty())
+									{
+										uint32_t value = HexToInt<uint32_t>(actualValue);
+										this->SetUntypedActualValue(boost::any(value));
+										break;
+									}
 
-							}
-						case GeneralFeatureEnum::NMTMaxCNNodeID:
-						case GeneralFeatureEnum::NMTMaxCNNumber:
-						case GeneralFeatureEnum::NMTMaxHeartbeats:
-						case GeneralFeatureEnum::PDOGranularity:
-						case GeneralFeatureEnum::PDOTPDOChannelObjects:
-						case GeneralFeatureEnum::PHYExtEPLPorts:
-							{
-								if (!defaultValue.empty())
-								{
-									uint8_t value = HexToInt<uint8_t>(defaultValue);
-									this->SetUntypedDefaultValue(boost::any(value));
-									break;
 								}
-								if (!actualValue.empty())
+							case GeneralFeatureEnum::NMTMaxCNNodeID:
+							case GeneralFeatureEnum::NMTMaxCNNumber:
+							case GeneralFeatureEnum::NMTMaxHeartbeats:
+							case GeneralFeatureEnum::PDOGranularity:
+							case GeneralFeatureEnum::PDOTPDOChannelObjects:
+							case GeneralFeatureEnum::PHYExtEPLPorts:
 								{
-									uint8_t value = HexToInt<uint8_t>(actualValue);
-									this->SetUntypedActualValue(boost::any(value));
-									break;
+									if (!defaultValue.empty())
+									{
+										uint8_t value = HexToInt<uint8_t>(defaultValue);
+										this->SetUntypedDefaultValue(boost::any(value));
+										break;
+									}
+									if (!actualValue.empty())
+									{
+										uint8_t value = HexToInt<uint8_t>(actualValue);
+										this->SetUntypedActualValue(boost::any(value));
+										break;
+									}
 								}
-							}
-						case GeneralFeatureEnum::PDORPDOChannels:
-						case GeneralFeatureEnum::PDORPDOOverallObjects:
-						case GeneralFeatureEnum::PDOTPDOOverallObjects:
-						case GeneralFeatureEnum::SDOSeqLayerTxHistorySize:
-							{
-								if (!defaultValue.empty())
+							case GeneralFeatureEnum::PDORPDOChannels:
+							case GeneralFeatureEnum::PDORPDOOverallObjects:
+							case GeneralFeatureEnum::PDOTPDOOverallObjects:
+							case GeneralFeatureEnum::SDOSeqLayerTxHistorySize:
 								{
-									uint16_t value = HexToInt<uint16_t>(defaultValue);
-									this->SetUntypedDefaultValue(boost::any(value));
-									break;
+									if (!defaultValue.empty())
+									{
+										uint16_t value = HexToInt<uint16_t>(defaultValue);
+										this->SetUntypedDefaultValue(boost::any(value));
+										break;
+									}
+									if (!actualValue.empty())
+									{
+										uint16_t value = HexToInt<uint16_t>(actualValue);
+										this->SetUntypedActualValue(boost::any(value));
+										break;
+									}
 								}
-								if (!actualValue.empty())
-								{
-									uint16_t value = HexToInt<uint16_t>(actualValue);
-									this->SetUntypedActualValue(boost::any(value));
-									break;
-								}
-							}
-						default:
-							break;
+							default:
+								break;
+						}
 					}
-
+					catch (const std::exception& e)
+					{
+						boost::format formatter(kMsgGeneralFeatureDatatypeError);
+						formatter
+						% this->GetName();
+						LOG_FATAL() << formatter.str() << e.what();
+						return Result(ErrorCode::GENERAL_FEATURE_VALUE_INVALID, formatter.str());
+					}
 					return Result();
 				}
 

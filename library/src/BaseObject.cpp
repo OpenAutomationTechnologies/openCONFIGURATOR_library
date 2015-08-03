@@ -127,9 +127,23 @@ namespace IndustrialNetwork
 						{
 							return boost::any_cast<T>(this->GetHighLimit().get());
 						}
-						throw Result(ErrorCode::DATATYPE_MISMATCH);
+						//Datatype does not match
+						boost::format formatter(kMsgObjectDatatypeMismatch);
+						formatter
+						% this->GetName()
+						% typeid(T).name()
+						% this->GetHighLimit().get().type().name();
+						LOG_FATAL() << formatter.str();
+						throw Result(ErrorCode::DATATYPE_MISMATCH, formatter.str());
 					}
-					throw Result(ErrorCode::OBJECT_HAS_NO_DATATYPE);
+					// Object has not datatype defined
+					boost::format formatter(kMsgBaseObjectDataTypeError);
+					formatter
+					% this->GetName()
+					% this->GetId()
+					% (uint32_t) this->GetContainingNode();
+					LOG_FATAL() << formatter.str();
+					throw Result(ErrorCode::OBJECT_HAS_NO_DATATYPE, formatter.str());
 				}
 				template uint16_t BaseObject::GetTypedHighLimit<uint16_t>();
 				template uint32_t BaseObject::GetTypedHighLimit<uint32_t>();
@@ -142,135 +156,125 @@ namespace IndustrialNetwork
 
 				Result BaseObject::SetHighLimit(const std::string& highLimit)
 				{
-					if (!this->GetDataType().is_initialized())
-						return Result(ErrorCode::OBJECT_HAS_NO_DATATYPE);
-
-					switch (this->GetDataType().get())
+					try
 					{
-						case PlkDataType::INTEGER8:
-							{
-								if (highLimit.empty())
-									this->highLimit = (int16_t) INT8_MAX;
-								else
-								{
-									int16_t value = HexToInt<int16_t>(highLimit);
-									this->highLimit = value;
-								}
-								break;
-							}
+						//Set empty is valid behavior leave uninitialised
+						if (highLimit.empty())
+							return Result();
 
-						case PlkDataType::INTEGER16:
-							{
-								if (highLimit.empty())
-									this->highLimit = INT16_MAX;
-								else
+						if (!this->GetDataType().is_initialized())
+						{
+							// Object has not datatype defined
+							boost::format formatter(kMsgBaseObjectDataTypeError);
+							formatter
+							% this->GetName()
+							% this->GetId()
+							% (uint32_t) this->GetContainingNode();
+							LOG_FATAL() << formatter.str();
+							return Result(ErrorCode::OBJECT_HAS_NO_DATATYPE, formatter.str());
+						}
+
+						switch (this->GetDataType().get())
+						{
+							case PlkDataType::INTEGER8:
 								{
 									int16_t value = HexToInt<int16_t>(highLimit);
 									this->highLimit = value;
+									break;
 								}
-								break;
-							}
-						case PlkDataType::INTEGER24:
-						case PlkDataType::INTEGER32:
-							{
-								if (highLimit.empty())
-									this->highLimit = INT32_MAX;
-								else
+
+							case PlkDataType::INTEGER16:
+								{
+									int16_t value = HexToInt<int16_t>(highLimit);
+									this->highLimit = value;
+									break;
+								}
+							case PlkDataType::INTEGER24:
+							case PlkDataType::INTEGER32:
 								{
 									int32_t value = HexToInt<int32_t>(highLimit);
 									this->highLimit = value;
+									break;
 								}
-								break;
-							}
-						case PlkDataType::UNSIGNED8:
-							if (highLimit.empty())
-								this->highLimit = (uint16_t) UINT8_MAX;
-							else
-							{
-								uint16_t value = HexToInt<uint16_t>(highLimit);
-								this->highLimit = value;
-							}
-							break;
-						case PlkDataType::UNSIGNED16:
-							{
-								if (highLimit.empty())
-									this->highLimit = UINT16_MAX;
-								else
+							case PlkDataType::UNSIGNED8:
 								{
 									uint16_t value = HexToInt<uint16_t>(highLimit);
 									this->highLimit = value;
+									break;
 								}
-								break;
-							}
-						case PlkDataType::UNSIGNED24:
-						case PlkDataType::UNSIGNED32:
-							{
-								if (highLimit.empty())
-									this->highLimit = UINT32_MAX;
-								else
+							case PlkDataType::UNSIGNED16:
 								{
+
+									uint16_t value = HexToInt<uint16_t>(highLimit);
+									this->highLimit = value;
+									break;
+								}
+							case PlkDataType::UNSIGNED24:
+							case PlkDataType::UNSIGNED32:
+								{
+
 									uint32_t value = HexToInt<uint32_t>(highLimit);
 									this->highLimit = value;
+									break;
 								}
-								break;
-							}
-						case PlkDataType::REAL32:
-							{
-								float value = boost::lexical_cast<float>(highLimit);
-								this->highLimit = value;
-								break;
-							}
-						case PlkDataType::REAL64:
-							{
-								double value = boost::lexical_cast<double>(highLimit);
-								this->highLimit = value;
-								break;
-							}
-						case PlkDataType::INTEGER40:
-						case PlkDataType::INTEGER48:
-						case PlkDataType::INTEGER56:
-						case PlkDataType::INTEGER64:
-							{
-								if (highLimit.empty())
-									this->highLimit = INT64_MAX;
-								else
+							case PlkDataType::REAL32:
 								{
+									float value = boost::lexical_cast<float>(highLimit);
+									this->highLimit = value;
+									break;
+								}
+							case PlkDataType::REAL64:
+								{
+									double value = boost::lexical_cast<double>(highLimit);
+									this->highLimit = value;
+									break;
+								}
+							case PlkDataType::INTEGER40:
+							case PlkDataType::INTEGER48:
+							case PlkDataType::INTEGER56:
+							case PlkDataType::INTEGER64:
+								{
+
 									int64_t value = HexToInt<int64_t>(highLimit);
 									this->highLimit = value;
+									break;
 								}
-								break;
-							}
-						case PlkDataType::UNSIGNED40:
-						case PlkDataType::UNSIGNED48:
-						case PlkDataType::UNSIGNED56:
-						case PlkDataType::UNSIGNED64:
-							{
-								if (highLimit.empty())
-									this->highLimit = UINT64_MAX;
-								else
+							case PlkDataType::UNSIGNED40:
+							case PlkDataType::UNSIGNED48:
+							case PlkDataType::UNSIGNED56:
+							case PlkDataType::UNSIGNED64:
 								{
 									uint64_t value = HexToInt<uint64_t>(highLimit);
 									this->highLimit = value;
+									break;
 								}
+							case PlkDataType::BOOLEAN:
+							case PlkDataType::Domain:
+							case PlkDataType::MAC_ADDRESS:
+							case PlkDataType::IP_ADDRESS:
+							case PlkDataType::NETTIME:
+							case PlkDataType::VISIBLE_STRING:
+							case PlkDataType::OCTET_STRING:
+							case PlkDataType::UNICODE_STRING:
+							case PlkDataType::TIME_OF_DAY:
+							case PlkDataType::TIME_DIFF:
+								{
+									if (highLimit.empty())
+										return Result();
+									return Result(ErrorCode::DATATYPE_DOES_NOT_SUPPORT_LIMITS);
+								}
+							default:
 								break;
-							}
-						case PlkDataType::BOOLEAN:
-						case PlkDataType::Domain:
-						case PlkDataType::MAC_ADDRESS:
-						case PlkDataType::IP_ADDRESS:
-						case PlkDataType::NETTIME:
-						case PlkDataType::VISIBLE_STRING:
-						case PlkDataType::OCTET_STRING:
-						case PlkDataType::UNICODE_STRING:
-						case PlkDataType::TIME_OF_DAY:
-						case PlkDataType::TIME_DIFF:
-							{
-								if (highLimit.empty())
-									return Result();
-								return Result(ErrorCode::DATATYPE_DOES_NOT_SUPPORT_LIMITS);
-							}
-						default:
-							break;
+						}
+					}
+					catch (const std::exception& e)
+					{
+						boost::format formatter(kMsgHighLimitDatatypeError);
+						formatter
+						% highLimit
+						% (std::uint32_t) this->GetDataType().get();
+						LOG_FATAL() << formatter.str() << e.what();
+						return Result(ErrorCode::HIGH_LIMIT_INVALID, formatter.str());
 					}
 					return Result();
 				}
@@ -289,9 +293,23 @@ namespace IndustrialNetwork
 						{
 							return boost::any_cast<T>(this->GetLowLimit().get());
 						}
-						throw Result(ErrorCode::DATATYPE_MISMATCH);
+						//Datatype does not match
+						boost::format formatter(kMsgObjectDatatypeMismatch);
+						formatter
+						% this->GetName()
+						% typeid(T).name()
+						% this->GetLowLimit().get().type().name();
+						LOG_FATAL() << formatter.str();
+						throw Result(ErrorCode::DATATYPE_MISMATCH, formatter.str());
 					}
-					throw Result(ErrorCode::OBJECT_HAS_NO_DATATYPE);
+					// Object has not datatype defined
+					boost::format formatter(kMsgBaseObjectDataTypeError);
+					formatter
+					% this->GetName()
+					% this->GetId()
+					% (uint32_t) this->GetContainingNode();
+					LOG_FATAL() << formatter.str();
+					throw Result(ErrorCode::OBJECT_HAS_NO_DATATYPE, formatter.str());
 				}
 				template uint16_t BaseObject::GetTypedLowLimit<uint16_t>();
 				template uint32_t BaseObject::GetTypedLowLimit<uint32_t>();
@@ -304,139 +322,120 @@ namespace IndustrialNetwork
 
 				Result BaseObject::SetLowLimit(const std::string& lowLimit)
 				{
-					if (lowLimit.empty())
-						return Result();
-
-					if (!this->GetDataType().is_initialized())
-						return Result(ErrorCode::OBJECT_HAS_NO_DATATYPE);
-
-					switch (this->GetDataType().get())
+					try
 					{
-						case PlkDataType::INTEGER8:
-							{
-								if (lowLimit.empty())
-									this->lowLimit = (int16_t) INT8_MIN;
-								else
+						if (lowLimit.empty())
+							return Result();
+
+						if (!this->GetDataType().is_initialized())
+						{
+							// Object has not datatype defined
+							boost::format formatter(kMsgBaseObjectDataTypeError);
+							formatter
+							% this->GetName()
+							% this->GetId()
+							% (uint32_t) this->GetContainingNode();
+							LOG_FATAL() << formatter.str();
+							return Result(ErrorCode::OBJECT_HAS_NO_DATATYPE, formatter.str());
+						}
+
+						switch (this->GetDataType().get())
+						{
+							case PlkDataType::INTEGER8:
 								{
 									int16_t value = HexToInt<int16_t>(lowLimit);
 									this->lowLimit = value;
+									break;
 								}
-								break;
-							}
-						case PlkDataType::INTEGER16:
-							{
-								if (lowLimit.empty())
-									this->lowLimit = INT16_MIN;
-								else
+							case PlkDataType::INTEGER16:
 								{
 									int16_t value = HexToInt<int16_t>(lowLimit);
 									this->lowLimit = value;
+									break;
 								}
-								break;
-							}
-						case PlkDataType::INTEGER24:
-						case PlkDataType::INTEGER32:
-							{
-								if (lowLimit.empty())
-									this->lowLimit = INT32_MIN;
-								else
+							case PlkDataType::INTEGER24:
+							case PlkDataType::INTEGER32:
 								{
 									int32_t value = HexToInt<int32_t>(lowLimit);
 									this->lowLimit = value;
+									break;
 								}
-								break;
-							}
-						case PlkDataType::UNSIGNED8:
-							{
-								if (lowLimit.empty())
-									this->lowLimit = (uint16_t) 0;
-								else
+							case PlkDataType::UNSIGNED8:
 								{
 									uint16_t value = HexToInt<uint16_t>(lowLimit);
 									this->lowLimit = value;
+									break;
 								}
-								break;
-							}
-						case PlkDataType::UNSIGNED16:
-							{
-								if (lowLimit.empty())
-									this->lowLimit = (uint16_t) 0;
-								else
+							case PlkDataType::UNSIGNED16:
 								{
 									uint16_t value = HexToInt<uint16_t>(lowLimit);
 									this->lowLimit = value;
+									break;
 								}
-								break;
-							}
-						case PlkDataType::UNSIGNED24:
-						case PlkDataType::UNSIGNED32:
-							{
-								if (lowLimit.empty())
-									this->lowLimit = (uint32_t) 0;
-								else
+							case PlkDataType::UNSIGNED24:
+							case PlkDataType::UNSIGNED32:
 								{
 									uint32_t value = HexToInt<uint32_t>(lowLimit);
 									this->lowLimit = value;
+									break;
 								}
-								break;
-							}
-						case PlkDataType::REAL32:
-							{
-								float value = boost::lexical_cast<float>(lowLimit);
-								this->lowLimit = value;
-								break;
-							}
-						case PlkDataType::REAL64:
-							{
-								double value = boost::lexical_cast<double>(lowLimit);
-								this->lowLimit = value;
-								break;
-							}
-						case PlkDataType::INTEGER40:
-						case PlkDataType::INTEGER48:
-						case PlkDataType::INTEGER56:
-						case PlkDataType::INTEGER64:
-							{
-								if (lowLimit.empty())
-									this->lowLimit = INT64_MIN;
-								else
+							case PlkDataType::REAL32:
+								{
+									float value = boost::lexical_cast<float>(lowLimit);
+									this->lowLimit = value;
+									break;
+								}
+							case PlkDataType::REAL64:
+								{
+									double value = boost::lexical_cast<double>(lowLimit);
+									this->lowLimit = value;
+									break;
+								}
+							case PlkDataType::INTEGER40:
+							case PlkDataType::INTEGER48:
+							case PlkDataType::INTEGER56:
+							case PlkDataType::INTEGER64:
 								{
 									int64_t value = HexToInt<int64_t>(lowLimit);
 									this->lowLimit = value;
+									break;
 								}
-								break;
-							}
-						case PlkDataType::UNSIGNED40:
-						case PlkDataType::UNSIGNED48:
-						case PlkDataType::UNSIGNED56:
-						case PlkDataType::UNSIGNED64:
-							{
-								if (lowLimit.empty())
-									this->lowLimit = (uint64_t) 0;
-								else
+							case PlkDataType::UNSIGNED40:
+							case PlkDataType::UNSIGNED48:
+							case PlkDataType::UNSIGNED56:
+							case PlkDataType::UNSIGNED64:
 								{
 									uint64_t value = HexToInt<uint64_t>(lowLimit);
 									this->lowLimit = value;
+									break;
 								}
+							case PlkDataType::BOOLEAN:
+							case PlkDataType::Domain:
+							case PlkDataType::MAC_ADDRESS:
+							case PlkDataType::IP_ADDRESS:
+							case PlkDataType::NETTIME:
+							case PlkDataType::VISIBLE_STRING:
+							case PlkDataType::OCTET_STRING:
+							case PlkDataType::UNICODE_STRING:
+							case PlkDataType::TIME_OF_DAY:
+							case PlkDataType::TIME_DIFF:
+								{
+									if (lowLimit.empty())
+										return Result();
+									return Result(ErrorCode::DATATYPE_DOES_NOT_SUPPORT_LIMITS);
+								}
+							default:
 								break;
-							}
-						case PlkDataType::BOOLEAN:
-						case PlkDataType::Domain:
-						case PlkDataType::MAC_ADDRESS:
-						case PlkDataType::IP_ADDRESS:
-						case PlkDataType::NETTIME:
-						case PlkDataType::VISIBLE_STRING:
-						case PlkDataType::OCTET_STRING:
-						case PlkDataType::UNICODE_STRING:
-						case PlkDataType::TIME_OF_DAY:
-						case PlkDataType::TIME_DIFF:
-							{
-								if (lowLimit.empty())
-									return Result();
-								return Result(ErrorCode::DATATYPE_DOES_NOT_SUPPORT_LIMITS);
-							}
-						default:
-							break;
+						}
+					}
+					catch (const std::exception& e)
+					{
+						boost::format formatter(kMsgLowLimitDatatypeError);
+						formatter
+						% lowLimit
+						% (std::uint32_t) GetDataType().get();
+						LOG_FATAL() << formatter.str() << e.what();
+						return Result(ErrorCode::LOW_LIMIT_INVALID, formatter.str());
 					}
 					return Result();
 				}
@@ -474,83 +473,6 @@ namespace IndustrialNetwork
 				void BaseObject::SetDataType(PlkDataType dataType)
 				{
 					this->dataType = dataType;
-
-					switch (this->dataType.get())
-					{
-						case PlkDataType::INTEGER8:
-							{
-								this->lowLimit = (int16_t) INT8_MIN;
-								this->highLimit = (int16_t) INT8_MAX;
-								break;
-							}
-						case PlkDataType::INTEGER16:
-							{
-								this->lowLimit = (int16_t) INT16_MIN;
-								this->highLimit = (int16_t) INT16_MAX;
-								break;
-							}
-						case PlkDataType::INTEGER24:
-						case PlkDataType::INTEGER32:
-							{
-								this->lowLimit = (int32_t) INT32_MIN;
-								this->highLimit = (int32_t) INT32_MAX;
-								break;
-							}
-						case PlkDataType::UNSIGNED8:
-							{
-								this->lowLimit = (uint16_t) 0;
-								this->highLimit = (uint16_t) UINT8_MAX;
-								break;
-							}
-						case PlkDataType::UNSIGNED16:
-							{
-								this->lowLimit = (uint16_t) 0;
-								this->highLimit = (uint16_t) UINT16_MAX;
-								break;
-							}
-						case PlkDataType::UNSIGNED24:
-						case PlkDataType::UNSIGNED32:
-							{
-								this->lowLimit = (uint32_t) 0;
-								this->highLimit = (uint32_t) UINT32_MAX;
-								break;
-							}
-						case PlkDataType::INTEGER40:
-						case PlkDataType::INTEGER48:
-						case PlkDataType::INTEGER56:
-						case PlkDataType::INTEGER64:
-							{
-								this->lowLimit = (int64_t) INT64_MIN;
-								this->highLimit = (int64_t) INT64_MAX;
-								break;
-							}
-						case PlkDataType::UNSIGNED40:
-						case PlkDataType::UNSIGNED48:
-						case PlkDataType::UNSIGNED56:
-						case PlkDataType::UNSIGNED64:
-							{
-								this->lowLimit = (uint64_t) 0;
-								this->highLimit = (uint64_t) UINT64_MAX;
-								break;
-							}
-						case PlkDataType::REAL32:
-						case PlkDataType::REAL64:
-						case PlkDataType::BOOLEAN:
-						case PlkDataType::Domain:
-						case PlkDataType::MAC_ADDRESS:
-						case PlkDataType::IP_ADDRESS:
-						case PlkDataType::NETTIME:
-						case PlkDataType::VISIBLE_STRING:
-						case PlkDataType::OCTET_STRING:
-						case PlkDataType::UNICODE_STRING:
-						case PlkDataType::TIME_OF_DAY:
-						case PlkDataType::TIME_DIFF:
-						case PlkDataType::UNDEFINED:
-							break;
-						default:
-							break;
-					}
-
 				}
 
 				void BaseObject::SetPDOMapping(PDOMapping pdoMapping)
@@ -569,21 +491,38 @@ namespace IndustrialNetwork
 							return boost::any_cast<T>(this->GetActualValue());
 						}
 						//Datatype does not match
-						boost::format formatter(kMsgDatatypeMismatch);
+						boost::format formatter(kMsgObjectDatatypeMismatch);
 						formatter
+						% this->GetName()
 						% typeid(T).name()
 						% this->GetActualValue().type().name();
 						LOG_FATAL() << formatter.str();
-						throw Result(ErrorCode::DATATYPE_MISMATCH);
+						throw Result(ErrorCode::DATATYPE_MISMATCH, formatter.str());
 					}
-					throw Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE);
+					//No actual value present
+					boost::format formatter(kMsgBaseObjectActualValue);
+					formatter
+					% this->GetName()
+					% this->GetId()
+					% (uint32_t) this->GetContainingNode();
+					LOG_FATAL() << formatter.str();
+					throw Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, formatter.str());
 
 				}
 
 				template<> std::string BaseObject::GetTypedActualValue<std::string>()
 				{
 					if (!this->GetDataType().is_initialized() && !this->GetActualValue().empty())
-						throw Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE);
+					{
+						//No actual value present
+						boost::format formatter(kMsgBaseObjectActualValue);
+						formatter
+						% this->GetName()
+						% this->GetId()
+						% (uint32_t) this->GetContainingNode();
+						LOG_FATAL() << formatter.str();
+						throw Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, formatter.str());
+					}
 
 					std::stringstream convertString;
 					switch (this->GetDataType().get())
@@ -746,20 +685,36 @@ namespace IndustrialNetwork
 							return boost::any_cast<T>(this->GetDefaultValue());
 						}
 						//Datatype does not match
-						boost::format formatter(kMsgDatatypeMismatch);
+						boost::format formatter(kMsgObjectDatatypeMismatch);
 						formatter
+						% this->GetName()
 						% typeid(T).name()
 						% this->GetDefaultValue().type().name();
 						LOG_FATAL() << formatter.str();
 						throw Result(ErrorCode::DATATYPE_MISMATCH, formatter.str());
 					}
-					throw Result(ErrorCode::OBJECT_HAS_NO_DEFAULT_VALUE);
+					//No actual value present
+					boost::format formatter(kMsgBaseObjectDefaultValue);
+					formatter
+					% this->GetName()
+					% this->GetId()
+					% (uint32_t) this->GetContainingNode();
+					LOG_FATAL() << formatter.str();
+					throw Result(ErrorCode::OBJECT_HAS_NO_DEFAULT_VALUE, formatter.str());
 				}
 
 				template<> std::string BaseObject::GetTypedDefaultValue<std::string>()
 				{
 					if (!this->GetDataType().is_initialized() && !this->GetDefaultValue().empty())
-						throw Result(ErrorCode::OBJECT_HAS_NO_DEFAULT_VALUE);
+					{
+						boost::format formatter(kMsgBaseObjectDefaultValue);
+						formatter
+						% this->GetName()
+						% this->GetId()
+						% (uint32_t) this->GetContainingNode();
+						LOG_FATAL() << formatter.str();
+						throw Result(ErrorCode::OBJECT_HAS_NO_DEFAULT_VALUE, formatter.str());
+					}
 
 					std::stringstream convertString;
 					switch (this->GetDataType().get())
@@ -908,336 +863,505 @@ namespace IndustrialNetwork
 
 				Result BaseObject::SetTypedObjectActualValue(const std::string& actualValue)
 				{
-					if (!this->GetDataType().is_initialized())
-						return Result(ErrorCode::OBJECT_HAS_NO_DATATYPE);
-
-					switch (this->GetDataType().get())
+					try
 					{
-						case PlkDataType::BOOLEAN:
-							{
-								bool value = StringToBool(actualValue);
-								this->SetActualValue(boost::any(value));
-								if (this->GetDefaultValue().empty())
-									this->actualValueNotDefaultValue = true;
-								else if (this->GetTypedDefaultValue<bool>() != value)
-									this->actualValueNotDefaultValue = true;
-								else
-									this->actualValueNotDefaultValue = false;
+						if (!this->GetDataType().is_initialized())
+						{
+							// Object has not datatype defined
+							boost::format formatter(kMsgBaseObjectDataTypeError);
+							formatter
+							% this->GetName()
+							% this->GetId()
+							% (uint32_t) this->GetContainingNode();
+							LOG_FATAL() << formatter.str();
+							return Result(ErrorCode::OBJECT_HAS_NO_DATATYPE, formatter.str());
+						}
 
-								break;
-							}
-						case PlkDataType::INTEGER8:
-						case PlkDataType::INTEGER16:
-							{
-								int16_t value = HexToInt<int16_t>(actualValue);
-								if (this->highLimit.is_initialized())
+						switch (this->GetDataType().get())
+						{
+							case PlkDataType::BOOLEAN:
 								{
-									if (value > this->GetTypedHighLimit<int16_t>())
-										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
-								}
-								if (this->lowLimit.is_initialized())
-								{
-									if (value < this->GetTypedLowLimit<int16_t>())
-										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
-								}
-								this->SetActualValue(boost::any(value));
-								if (this->GetDefaultValue().empty())
-									this->actualValueNotDefaultValue = true;
-								else if (this->GetTypedDefaultValue<int16_t>() != value)
-									this->actualValueNotDefaultValue = true;
-								else
-									this->actualValueNotDefaultValue = false;
-								break;
-							}
-						case PlkDataType::INTEGER32:
-							{
-								int32_t value = HexToInt<int32_t>(actualValue);
-								if (this->highLimit.is_initialized())
-								{
-									if (value > this->GetTypedHighLimit<int32_t>())
-										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
-								}
-								if (this->lowLimit.is_initialized())
-								{
-									if (value < this->GetTypedLowLimit<int32_t>())
-										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
-								}
-								this->SetActualValue(boost::any(value));
-								if (this->GetDefaultValue().empty())
-									this->actualValueNotDefaultValue = true;
-								else if (this->GetTypedDefaultValue<int32_t>() != value)
-									this->actualValueNotDefaultValue = true;
-								break;
-							}
-						case PlkDataType::UNSIGNED8:
-						case PlkDataType::UNSIGNED16:
-							{
-								uint16_t value = HexToInt<uint16_t>(actualValue);
-								if (this->highLimit.is_initialized())
-								{
-									if (value > this->GetTypedHighLimit<uint16_t>())
-										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
-								}
-								if (this->lowLimit.is_initialized())
-								{
-									if (value < this->GetTypedLowLimit<uint16_t>())
-										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
-								}
-								this->SetActualValue(boost::any(value));
-								if (this->GetDefaultValue().empty())
-									this->actualValueNotDefaultValue = true;
-								else if (this->GetTypedDefaultValue<uint16_t>() != value)
-									this->actualValueNotDefaultValue = true;
-								else
-									this->actualValueNotDefaultValue = false;
-								break;
-							}
-						case PlkDataType::UNSIGNED24:
-						case PlkDataType::UNSIGNED32:
-							{
-								uint32_t value = HexToInt<uint32_t>(actualValue);
-								if (this->highLimit.is_initialized())
-								{
-									if (value > this->GetTypedHighLimit<uint32_t>())
-										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
-								}
-								if (this->lowLimit.is_initialized())
-								{
-									if (value < this->GetTypedLowLimit<uint32_t>())
-										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
-								}
-								this->SetActualValue(boost::any(value));
-								if (this->GetDefaultValue().empty())
-									this->actualValueNotDefaultValue = true;
-								else if (this->GetTypedDefaultValue<uint32_t>() != value)
-									this->actualValueNotDefaultValue = true;
-								else
-									this->actualValueNotDefaultValue = false;
-								break;
-							}
-						case PlkDataType::Domain:
-							//Both values must be empty if Domain datatype
-							break;
-						case PlkDataType::INTEGER24:
-							{
-								int32_t value = HexToInt<int32_t>(actualValue);
-								if (this->highLimit.is_initialized())
-								{
-									if (value > this->GetTypedHighLimit<int32_t>())
-										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
-								}
-								if (this->lowLimit.is_initialized())
-								{
-									if (value < this->GetTypedLowLimit<int32_t>())
-										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
-								}
-								this->SetActualValue(boost::any(value));
-								if (this->GetDefaultValue().empty())
-									this->actualValueNotDefaultValue = true;
-								else if (this->GetTypedDefaultValue<int32_t>() != value)
-									this->actualValueNotDefaultValue = true;
-								else
-									this->actualValueNotDefaultValue = false;
+									bool value = StringToBool(actualValue);
+									this->SetActualValue(boost::any(value));
+									if (this->GetDefaultValue().empty())
+										this->actualValueNotDefaultValue = true;
+									else if (this->GetTypedDefaultValue<bool>() != value)
+										this->actualValueNotDefaultValue = true;
+									else
+										this->actualValueNotDefaultValue = false;
 
-								break;
-							}
-						case PlkDataType::REAL32:
-							{
-								float value = boost::lexical_cast<float>(actualValue);
-								this->SetActualValue(boost::any(value));
-								if (this->GetDefaultValue().empty())
-									this->actualValueNotDefaultValue = true;
-								else if (this->GetTypedDefaultValue<float>() != value)
-									this->actualValueNotDefaultValue = true;
-								else
-									this->actualValueNotDefaultValue = false;
-								break;
-							}
-						case PlkDataType::REAL64:
-							{
-								double value = boost::lexical_cast<double>(actualValue);
-								this->SetActualValue(boost::any(value));
-								if (this->GetDefaultValue().empty())
-									this->actualValueNotDefaultValue = true;
-								else if (this->GetTypedDefaultValue<double>() != value)
-									this->actualValueNotDefaultValue = true;
-								else
-									this->actualValueNotDefaultValue = false;
-								break;
-							}
-						case PlkDataType::INTEGER40:
-						case PlkDataType::INTEGER48:
-						case PlkDataType::INTEGER56:
-						case PlkDataType::INTEGER64:
-							{
-								int64_t value = HexToInt<int64_t>(actualValue);
-								if (this->highLimit.is_initialized())
-								{
-									if (value > this->GetTypedHighLimit<int64_t>())
-										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
+									break;
 								}
-								if (this->lowLimit.is_initialized())
+							case PlkDataType::INTEGER8:
+							case PlkDataType::INTEGER16:
 								{
-									if (value < this->GetTypedHighLimit<int64_t>())
-										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
+									int16_t value = HexToInt<int16_t>(actualValue);
+									if (this->highLimit.is_initialized())
+									{
+										if (value > this->GetTypedHighLimit<int16_t>())
+										{
+											boost::format formatter(kMsgBaseObjectHighLimitError);
+											formatter
+											% this->GetName()
+											% this->GetId()
+											% (uint32_t) this->GetContainingNode()
+											% this->GetTypedHighLimit<int16_t>();
+											LOG_FATAL() << formatter.str();
+											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT, formatter.str());
+										}
+									}
+									if (this->lowLimit.is_initialized())
+									{
+										if (value < this->GetTypedLowLimit<int16_t>())
+										{
+											boost::format formatter(kMsgBaseObjectLowLimitError);
+											formatter
+											% this->GetName()
+											% this->GetId()
+											% (uint32_t) this->GetContainingNode()
+											% this->GetTypedLowLimit<int16_t>();
+											LOG_FATAL() << formatter.str();
+											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
+										}
+									}
+									this->SetActualValue(boost::any(value));
+									if (this->GetDefaultValue().empty())
+										this->actualValueNotDefaultValue = true;
+									else if (this->GetTypedDefaultValue<int16_t>() != value)
+										this->actualValueNotDefaultValue = true;
+									else
+										this->actualValueNotDefaultValue = false;
+									break;
 								}
-								this->SetActualValue(boost::any(value));
-								if (this->GetDefaultValue().empty())
-									this->actualValueNotDefaultValue = true;
-								else if (this->GetTypedDefaultValue<int64_t>() != value)
-									this->actualValueNotDefaultValue = true;
-								else
-									this->actualValueNotDefaultValue = false;
-								break;
-							}
-						case PlkDataType::MAC_ADDRESS:
-						case PlkDataType::UNSIGNED40:
-						case PlkDataType::UNSIGNED48:
-						case PlkDataType::UNSIGNED56:
-						case PlkDataType::UNSIGNED64:
-							{
-								uint64_t value = HexToInt<uint64_t>(actualValue);
-								if (this->highLimit.is_initialized())
+							case PlkDataType::INTEGER32:
 								{
-									if (value > this->GetTypedHighLimit<uint64_t>())
-										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT);
+									int32_t value = HexToInt<int32_t>(actualValue);
+									if (this->highLimit.is_initialized())
+									{
+										if (value > this->GetTypedHighLimit<int32_t>())
+										{
+											boost::format formatter(kMsgBaseObjectHighLimitError);
+											formatter
+											% this->GetName()
+											% this->GetId()
+											% (uint32_t) this->GetContainingNode()
+											% this->GetTypedHighLimit<int32_t>();
+											LOG_FATAL() << formatter.str();
+											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT, formatter.str());
+										}
+									}
+									if (this->lowLimit.is_initialized())
+									{
+										if (value < this->GetTypedLowLimit<int32_t>())
+										{
+											boost::format formatter(kMsgBaseObjectLowLimitError);
+											formatter
+											% this->GetName()
+											% this->GetId()
+											% (uint32_t) this->GetContainingNode()
+											% this->GetTypedLowLimit<int32_t>();
+											LOG_FATAL() << formatter.str();
+											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
+										}
+									}
+									this->SetActualValue(boost::any(value));
+									if (this->GetDefaultValue().empty())
+										this->actualValueNotDefaultValue = true;
+									else if (this->GetTypedDefaultValue<int32_t>() != value)
+										this->actualValueNotDefaultValue = true;
+									break;
 								}
-								if (this->lowLimit.is_initialized())
+							case PlkDataType::UNSIGNED8:
+							case PlkDataType::UNSIGNED16:
 								{
-									if (value < this->GetTypedLowLimit<uint64_t>())
-										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT);
+									uint16_t value = HexToInt<uint16_t>(actualValue);
+									if (this->highLimit.is_initialized())
+									{
+										if (value > this->GetTypedHighLimit<uint16_t>())
+										{
+											boost::format formatter(kMsgBaseObjectHighLimitError);
+											formatter
+											% this->GetName()
+											% this->GetId()
+											% (uint32_t) this->GetContainingNode()
+											% this->GetTypedHighLimit<uint16_t>();
+											LOG_FATAL() << formatter.str();
+											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT, formatter.str());
+										}
+									}
+									if (this->lowLimit.is_initialized())
+									{
+										if (value < this->GetTypedLowLimit<uint16_t>())
+										{
+											boost::format formatter(kMsgBaseObjectLowLimitError);
+											formatter
+											% this->GetName()
+											% this->GetId()
+											% (uint32_t) this->GetContainingNode()
+											% this->GetTypedLowLimit<uint16_t>();
+											LOG_FATAL() << formatter.str();
+											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
+										}
+									}
+									this->SetActualValue(boost::any(value));
+									if (this->GetDefaultValue().empty())
+										this->actualValueNotDefaultValue = true;
+									else if (this->GetTypedDefaultValue<uint16_t>() != value)
+										this->actualValueNotDefaultValue = true;
+									else
+										this->actualValueNotDefaultValue = false;
+									break;
 								}
-								if (this->GetDefaultValue().empty())
-									this->actualValueNotDefaultValue = true;
-								else if (this->GetTypedDefaultValue<uint64_t>() != value)
-									this->actualValueNotDefaultValue = true;
-								else
-									this->actualValueNotDefaultValue = false;
-								this->SetActualValue(boost::any(value));
+							case PlkDataType::UNSIGNED24:
+							case PlkDataType::UNSIGNED32:
+								{
+									uint32_t value = HexToInt<uint32_t>(actualValue);
+									if (this->highLimit.is_initialized())
+									{
+										if (value > this->GetTypedHighLimit<uint32_t>())
+										{
+											boost::format formatter(kMsgBaseObjectHighLimitError);
+											formatter
+											% this->GetName()
+											% this->GetId()
+											% (uint32_t) this->GetContainingNode()
+											% this->GetTypedHighLimit<uint32_t>();
+											LOG_FATAL() << formatter.str();
+											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT, formatter.str());
+										}
+									}
+									if (this->lowLimit.is_initialized())
+									{
+										if (value < this->GetTypedLowLimit<uint32_t>())
+										{
+											boost::format formatter(kMsgBaseObjectLowLimitError);
+											formatter
+											% this->GetName()
+											% this->GetId()
+											% (uint32_t) this->GetContainingNode()
+											% this->GetTypedLowLimit<uint32_t>();
+											LOG_FATAL() << formatter.str();
+											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
+										}
+									}
+									this->SetActualValue(boost::any(value));
+									if (this->GetDefaultValue().empty())
+										this->actualValueNotDefaultValue = true;
+									else if (this->GetTypedDefaultValue<uint32_t>() != value)
+										this->actualValueNotDefaultValue = true;
+									else
+										this->actualValueNotDefaultValue = false;
+									break;
+								}
+							case PlkDataType::Domain:
+								//Both values must be empty if Domain datatype
 								break;
-							}
-						case PlkDataType::IP_ADDRESS:
-						case PlkDataType::NETTIME:
-						case PlkDataType::VISIBLE_STRING:
-						case PlkDataType::OCTET_STRING:
-						case PlkDataType::UNICODE_STRING:
-						case PlkDataType::TIME_OF_DAY:
-						case PlkDataType::TIME_DIFF:
-							{
-								this->SetActualValue(boost::any(actualValue));
-								if (this->GetDefaultValue().empty())
-									this->actualValueNotDefaultValue = true;
-								else if (this->GetTypedDefaultValue<std::string>() != actualValue)
-									this->actualValueNotDefaultValue = true;
-								else
-									this->actualValueNotDefaultValue = false;
+							case PlkDataType::INTEGER24:
+								{
+									int32_t value = HexToInt<int32_t>(actualValue);
+									if (this->highLimit.is_initialized())
+									{
+										if (value > this->GetTypedHighLimit<int32_t>())
+										{
+											boost::format formatter(kMsgBaseObjectHighLimitError);
+											formatter
+											% this->GetName()
+											% this->GetId()
+											% (uint32_t) this->GetContainingNode()
+											% this->GetTypedHighLimit<int32_t>();
+											LOG_FATAL() << formatter.str();
+											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT, formatter.str());
+										}
+									}
+									if (this->lowLimit.is_initialized())
+									{
+										if (value < this->GetTypedLowLimit<int32_t>())
+										{
+											boost::format formatter(kMsgBaseObjectLowLimitError);
+											formatter
+											% this->GetName()
+											% this->GetId()
+											% (uint32_t) this->GetContainingNode()
+											% this->GetTypedLowLimit<int32_t>();
+											LOG_FATAL() << formatter.str();
+											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
+										}
+									}
+									this->SetActualValue(boost::any(value));
+									if (this->GetDefaultValue().empty())
+										this->actualValueNotDefaultValue = true;
+									else if (this->GetTypedDefaultValue<int32_t>() != value)
+										this->actualValueNotDefaultValue = true;
+									else
+										this->actualValueNotDefaultValue = false;
+
+									break;
+								}
+							case PlkDataType::REAL32:
+								{
+									float value = boost::lexical_cast<float>(actualValue);
+									this->SetActualValue(boost::any(value));
+									if (this->GetDefaultValue().empty())
+										this->actualValueNotDefaultValue = true;
+									else if (this->GetTypedDefaultValue<float>() != value)
+										this->actualValueNotDefaultValue = true;
+									else
+										this->actualValueNotDefaultValue = false;
+									break;
+								}
+							case PlkDataType::REAL64:
+								{
+									double value = boost::lexical_cast<double>(actualValue);
+									this->SetActualValue(boost::any(value));
+									if (this->GetDefaultValue().empty())
+										this->actualValueNotDefaultValue = true;
+									else if (this->GetTypedDefaultValue<double>() != value)
+										this->actualValueNotDefaultValue = true;
+									else
+										this->actualValueNotDefaultValue = false;
+									break;
+								}
+							case PlkDataType::INTEGER40:
+							case PlkDataType::INTEGER48:
+							case PlkDataType::INTEGER56:
+							case PlkDataType::INTEGER64:
+								{
+									int64_t value = HexToInt<int64_t>(actualValue);
+									if (this->highLimit.is_initialized())
+									{
+										if (value > this->GetTypedHighLimit<int64_t>())
+										{
+											boost::format formatter(kMsgBaseObjectHighLimitError);
+											formatter
+											% this->GetName()
+											% this->GetId()
+											% (uint32_t) this->GetContainingNode()
+											% this->GetTypedHighLimit<int64_t>();
+											LOG_FATAL() << formatter.str();
+											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT, formatter.str());
+										}
+									}
+									if (this->lowLimit.is_initialized())
+									{
+										if (value < this->GetTypedHighLimit<int64_t>())
+										{
+											boost::format formatter(kMsgBaseObjectLowLimitError);
+											formatter
+											% this->GetName()
+											% this->GetId()
+											% (uint32_t) this->GetContainingNode()
+											% this->GetTypedHighLimit<int64_t>();
+											LOG_FATAL() << formatter.str();
+											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
+										}
+									}
+									this->SetActualValue(boost::any(value));
+									if (this->GetDefaultValue().empty())
+										this->actualValueNotDefaultValue = true;
+									else if (this->GetTypedDefaultValue<int64_t>() != value)
+										this->actualValueNotDefaultValue = true;
+									else
+										this->actualValueNotDefaultValue = false;
+									break;
+								}
+							case PlkDataType::MAC_ADDRESS:
+							case PlkDataType::UNSIGNED40:
+							case PlkDataType::UNSIGNED48:
+							case PlkDataType::UNSIGNED56:
+							case PlkDataType::UNSIGNED64:
+								{
+									uint64_t value = HexToInt<uint64_t>(actualValue);
+									if (this->highLimit.is_initialized())
+									{
+										if (value > this->GetTypedHighLimit<uint64_t>())
+										{
+											boost::format formatter(kMsgBaseObjectHighLimitError);
+											formatter
+											% this->GetName()
+											% this->GetId()
+											% (uint32_t) this->GetContainingNode()
+											% this->GetTypedHighLimit<uint64_t>();
+											LOG_FATAL() << formatter.str();
+											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT, formatter.str());
+										}
+									}
+									if (this->lowLimit.is_initialized())
+									{
+										if (value < this->GetTypedLowLimit<uint64_t>())
+										{
+											boost::format formatter(kMsgBaseObjectLowLimitError);
+											formatter
+											% this->GetName()
+											% this->GetId()
+											% (uint32_t) this->GetContainingNode()
+											% this->GetTypedLowLimit<uint64_t>();
+											LOG_FATAL() << formatter.str();
+											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
+										}
+									}
+									if (this->GetDefaultValue().empty())
+										this->actualValueNotDefaultValue = true;
+									else if (this->GetTypedDefaultValue<uint64_t>() != value)
+										this->actualValueNotDefaultValue = true;
+									else
+										this->actualValueNotDefaultValue = false;
+									this->SetActualValue(boost::any(value));
+									break;
+								}
+							case PlkDataType::IP_ADDRESS:
+							case PlkDataType::NETTIME:
+							case PlkDataType::VISIBLE_STRING:
+							case PlkDataType::OCTET_STRING:
+							case PlkDataType::UNICODE_STRING:
+							case PlkDataType::TIME_OF_DAY:
+							case PlkDataType::TIME_DIFF:
+								{
+									this->SetActualValue(boost::any(actualValue));
+									if (this->GetDefaultValue().empty())
+										this->actualValueNotDefaultValue = true;
+									else if (this->GetTypedDefaultValue<std::string>() != actualValue)
+										this->actualValueNotDefaultValue = true;
+									else
+										this->actualValueNotDefaultValue = false;
+									break;
+								}
+							default:
 								break;
-							}
-						default:
-							break;
+						}
+					}
+					catch (const std::exception& e)
+					{
+						boost::format formatter(kMsgActualValueDatatypeError);
+						formatter
+						% actualValue
+						% (std::uint32_t) GetDataType().get();
+						LOG_FATAL() << formatter.str() << e.what();
+						return Result(ErrorCode::ACTUAL_VALUE_INVALID, formatter.str());
 					}
 					return Result();
 				}
 
-				void BaseObject::SetTypedObjectDefaultValue(const std::string& defaultValue)
+				Result BaseObject::SetTypedObjectDefaultValue(const std::string& defaultValue)
 				{
-					if (!this->GetDataType().is_initialized())
-						throw  Result(ErrorCode::OBJECT_HAS_NO_DATATYPE);
-
-					switch (this->GetDataType().get())
+					try
 					{
-						case PlkDataType::BOOLEAN:
-							{
-								bool value = StringToBool(defaultValue);
-								this->SetDefaultValue(boost::any(value));
+						if (!this->GetDataType().is_initialized())
+						{
+							// Object has not datatype defined
+							boost::format formatter(kMsgBaseObjectDataTypeError);
+							formatter
+							% this->GetName()
+							% this->GetId()
+							% (uint32_t) this->GetContainingNode();
+							LOG_FATAL() << formatter.str();
+							return Result(ErrorCode::OBJECT_HAS_NO_DATATYPE, formatter.str());
+						}
+
+						switch (this->GetDataType().get())
+						{
+							case PlkDataType::BOOLEAN:
+								{
+									bool value = StringToBool(defaultValue);
+									this->SetDefaultValue(boost::any(value));
+									break;
+								}
+							case PlkDataType::INTEGER8: //Set int16_t datatype to avoid stream problems with char datatypes
+							case PlkDataType::INTEGER16:
+								{
+									int16_t value = HexToInt<int16_t>(defaultValue);
+									this->SetDefaultValue(boost::any(value));
+									break;
+								}
+							case PlkDataType::INTEGER32:
+								{
+									int32_t value = HexToInt<int32_t>(defaultValue);
+									this->SetDefaultValue(boost::any(value));
+									break;
+								}
+							case PlkDataType::UNSIGNED8: //Set uint16_t datatype to avoid stream problems with char datatypes
+							case PlkDataType::UNSIGNED16:
+								{
+									uint16_t value = HexToInt<uint16_t>(defaultValue);
+									this->SetDefaultValue(boost::any(value));
+									break;
+								}
+							case PlkDataType::UNSIGNED32:
+								{
+									uint32_t value = HexToInt<uint32_t>(defaultValue);
+									this->SetDefaultValue(boost::any(value));
+									break;
+								}
+							case PlkDataType::REAL32:
+								{
+									float value = boost::lexical_cast<float>(defaultValue);
+									this->SetDefaultValue(boost::any(value));
+									break;
+								}
+							case PlkDataType::Domain:
+								//Both values must be empty if Domain datatype
 								break;
-							}
-						case PlkDataType::INTEGER8: //Set int16_t datatype to avoid stream problems with char datatypes
-						case PlkDataType::INTEGER16:
-							{
-								int16_t value = HexToInt<int16_t>(defaultValue);
-								this->SetDefaultValue(boost::any(value));
+							case PlkDataType::INTEGER24:
+								{
+									int32_t value = HexToInt<int32_t>(defaultValue);
+									this->SetDefaultValue(boost::any(value));
+									break;
+								}
+							case PlkDataType::REAL64:
+								{
+									double value = boost::lexical_cast<double>(defaultValue);
+									this->SetDefaultValue(boost::any(value));
+									break;
+								}
+							case PlkDataType::INTEGER40:
+							case PlkDataType::INTEGER48:
+							case PlkDataType::INTEGER56:
+							case PlkDataType::INTEGER64:
+								{
+									int64_t value = HexToInt<int64_t>(defaultValue);
+									this->SetDefaultValue(boost::any(value));
+									break;
+								}
+							case PlkDataType::UNSIGNED24:
+								{
+									uint32_t value = HexToInt<uint32_t>(defaultValue);
+									this->SetDefaultValue(boost::any(value));
+									break;
+								}
+							case PlkDataType::MAC_ADDRESS:
+							case PlkDataType::UNSIGNED40:
+							case PlkDataType::UNSIGNED48:
+							case PlkDataType::UNSIGNED56:
+							case PlkDataType::UNSIGNED64:
+								{
+									uint64_t value = HexToInt<uint64_t>(defaultValue);
+									this->SetDefaultValue(boost::any(value));
+									break;
+								}
+							case PlkDataType::VISIBLE_STRING:
+							case PlkDataType::OCTET_STRING:
+							case PlkDataType::UNICODE_STRING:
+							case PlkDataType::TIME_OF_DAY:
+							case PlkDataType::TIME_DIFF:
+							case PlkDataType::IP_ADDRESS:
+							case PlkDataType::NETTIME:
+								{
+									this->SetDefaultValue(boost::any(defaultValue));
+									break;
+								}
+							default:
 								break;
-							}
-						case PlkDataType::INTEGER32:
-							{
-								int32_t value = HexToInt<int32_t>(defaultValue);
-								this->SetDefaultValue(boost::any(value));
-								break;
-							}
-						case PlkDataType::UNSIGNED8: //Set uint16_t datatype to avoid stream problems with char datatypes
-						case PlkDataType::UNSIGNED16:
-							{
-								uint16_t value = HexToInt<uint16_t>(defaultValue);
-								this->SetDefaultValue(boost::any(value));
-								break;
-							}
-						case PlkDataType::UNSIGNED32:
-							{
-								uint32_t value = HexToInt<uint32_t>(defaultValue);
-								this->SetDefaultValue(boost::any(value));
-								break;
-							}
-						case PlkDataType::REAL32:
-							{
-								float value = boost::lexical_cast<float>(defaultValue);
-								this->SetDefaultValue(boost::any(value));
-								break;
-							}
-						case PlkDataType::Domain:
-							//Both values must be empty if Domain datatype
-							break;
-						case PlkDataType::INTEGER24:
-							{
-								int32_t value = HexToInt<int32_t>(defaultValue);
-								this->SetDefaultValue(boost::any(value));
-								break;
-							}
-						case PlkDataType::REAL64:
-							{
-								double value = boost::lexical_cast<double>(defaultValue);
-								this->SetDefaultValue(boost::any(value));
-								break;
-							}
-						case PlkDataType::INTEGER40:
-						case PlkDataType::INTEGER48:
-						case PlkDataType::INTEGER56:
-						case PlkDataType::INTEGER64:
-							{
-								int64_t value = HexToInt<int64_t>(defaultValue);
-								this->SetDefaultValue(boost::any(value));
-								break;
-							}
-						case PlkDataType::UNSIGNED24:
-							{
-								uint32_t value = HexToInt<uint32_t>(defaultValue);
-								this->SetDefaultValue(boost::any(value));
-								break;
-							}
-						case PlkDataType::MAC_ADDRESS:
-						case PlkDataType::UNSIGNED40:
-						case PlkDataType::UNSIGNED48:
-						case PlkDataType::UNSIGNED56:
-						case PlkDataType::UNSIGNED64:
-							{
-								uint64_t value = HexToInt<uint64_t>(defaultValue);
-								this->SetDefaultValue(boost::any(value));
-								break;
-							}
-						case PlkDataType::VISIBLE_STRING:
-						case PlkDataType::OCTET_STRING:
-						case PlkDataType::UNICODE_STRING:
-						case PlkDataType::TIME_OF_DAY:
-						case PlkDataType::TIME_DIFF:
-						case PlkDataType::IP_ADDRESS:
-						case PlkDataType::NETTIME:
-							{
-								this->SetDefaultValue(boost::any(defaultValue));
-								break;
-							}
-						default:
-							break;
+						}
 					}
+					catch (const std::exception& e)
+					{
+						boost::format formatter(kMsgDefaultValueDatatypeError);
+						formatter
+						% defaultValue
+						% (std::uint32_t) GetDataType().get();
+						LOG_FATAL() << formatter.str() << e.what();
+						return Result(ErrorCode::DEFAULT_VALUE_INVALID, formatter.str());
+					}
+					return Result();
 				}
 
 				uint8_t BaseObject::GetContainingNode()

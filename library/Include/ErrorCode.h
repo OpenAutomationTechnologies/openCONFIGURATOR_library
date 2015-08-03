@@ -132,7 +132,15 @@ namespace IndustrialNetwork
 					SUB_OBJECT_HAS_NO_DEFAULT_VALUE, // < The sub object does not have a defined default value
 					OBJECT_HAS_NO_DATATYPE, //An object has no defined data type.
 					DATATYPE_DOES_NOT_SUPPORT_LIMITS, // A data type that does not support the definition of high and low limit.
-					OBJECT_TYPE_DOES_NOT_SUPPORT_VALUES // Only objects with object type VAR may have values
+					OBJECT_TYPE_DOES_NOT_SUPPORT_VALUES, // Only objects with object type VAR may have values
+					ACTUAL_VALUE_INVALID, // Actual value exceeds datatype limits
+					DEFAULT_VALUE_INVALID, // Default value exceeds datatype limits
+					HIGH_LIMIT_INVALID, // High limit exceeds datatype limits
+					LOW_LIMIT_INVALID, // Low limit exceeds datatype limits
+					GENERAL_FEATURE_VALUE_INVALID, //General feature value invalid for datatype
+					CN_FEATURE_VALUE_INVALID, //CN Feature value invalid for datatype
+					MN_FEATURE_VALUE_INVALID // MN Feature value invalid for datatype
+
 				};
 
 			}

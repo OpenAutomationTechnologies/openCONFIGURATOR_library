@@ -39,7 +39,9 @@ StructDataType::StructDataType(const std::string& uniqueID, const std::string& n
 {}
 
 StructDataType::~StructDataType()
-{}
+{
+	this->varDeclarationList.clear();
+}
 
 uint32_t StructDataType::GetBitSize()
 {

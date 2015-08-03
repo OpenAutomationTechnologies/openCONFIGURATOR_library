@@ -49,7 +49,9 @@ ManagingNode::ManagingNode(std::uint8_t nodeID, const std::string& nodeName) : B
 }
 
 ManagingNode::~ManagingNode()
-{}
+{
+	this->dynamicChannelList.clear();
+}
 
 bool ManagingNode::AddNodeAssignement(NodeAssignment assign)
 {

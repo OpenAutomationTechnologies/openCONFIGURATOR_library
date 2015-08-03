@@ -37,6 +37,7 @@ using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
 using namespace IndustrialNetwork::POWERLINK::Core::Configuration;
 using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
+using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 
 Network::Network() :
 	networkId(""),
@@ -61,7 +62,10 @@ Network::Network(const std::string& networkId) :
 {}
 
 Network::~Network()
-{}
+{
+	this->buildConfigurations.clear();
+	this->nodeCollection.clear();
+}
 
 Result Network::AddNode(std::shared_ptr<ControlledNode>& node)
 {
@@ -639,6 +643,14 @@ Result Network::SetOperationMode(const std::uint8_t nodeID, const PlkOperationMo
 				}
 			case PlkOperationMode::CHAINED:
 				{
+					mn->AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_MN_PRES);
+					uint32_t mnAssignValue = mn->GetNodeAssignmentValue();
+					res = cn->SetSubObjectActualValue(0x1F81, 240, IntToHex<unsigned int>(mnAssignValue, 0, "0x"));
+					if (!res.IsSuccessful())
+						return res;
+					res = mn->SetSubObjectActualValue(0x1F81, 240, IntToHex<unsigned int>(mnAssignValue, 0, "0x"));
+					if (!res.IsSuccessful())
+						return res;
 					res = mn->ResetMultiplexedCycle(nodeID);
 					break;
 				}

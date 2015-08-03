@@ -49,7 +49,11 @@ namespace IndustrialNetwork
 				{}
 
 				NetworkManagement::~NetworkManagement()
-				{}
+				{
+					this->mnFeatureList.clear();
+					this->cnFeatureList.clear();
+					this->generalFeatureList.clear();
+				}
 
 				template<typename I>
 				Result NetworkManagement::GetFeatureDefaultValue(CNFeatureEnum feature, I& defaultValue)

@@ -40,7 +40,9 @@ ApplicationProcess::ApplicationProcess() :
 {}
 
 ApplicationProcess::~ApplicationProcess()
-{}
+{
+	this->parameterList.clear();
+}
 
 const std::vector<std::shared_ptr<Parameter>>& ApplicationProcess::GetParameterList()
 {

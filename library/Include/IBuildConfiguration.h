@@ -57,7 +57,9 @@ namespace IndustrialNetwork
 				{}
 
 				virtual ~IBuildConfiguration()
-				{}
+				{
+					this->buildConfigurationSettings.clear();
+				}
 
 				std::vector<std::shared_ptr<T>>& GetBuildConfigurationSettings()
 				{

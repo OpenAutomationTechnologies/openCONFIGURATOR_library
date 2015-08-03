@@ -59,6 +59,8 @@ namespace IndustrialNetwork
 				T HexToInt(const std::string& hexString)
 				{
 					std::stringstream stream;
+					stream.exceptions(std::ios::failbit); 
+
 					T value = 0;
 					if (hexString.substr(0, 2) == "0x")
 					{

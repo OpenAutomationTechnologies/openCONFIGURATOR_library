@@ -36,6 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <string>
 #include <sstream>
+#include <exception>
 
 #include <boost/optional.hpp>
 #include <boost/lexical_cast.hpp>
@@ -115,7 +116,7 @@ namespace IndustrialNetwork
 
 						std::uint8_t GetContainingNode();
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetTypedObjectActualValue(const std::string& actualValueToSet);
-						void SetTypedObjectDefaultValue(const std::string& defaultValueToSet);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetTypedObjectDefaultValue(const std::string& defaultValueToSet);
 
 						void SetComplexDataType(std::shared_ptr<Parameter>& parameter);
 
