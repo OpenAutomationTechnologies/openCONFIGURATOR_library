@@ -59,7 +59,7 @@ namespace IndustrialNetwork
 				T HexToInt(const std::string& hexString)
 				{
 					std::stringstream stream;
-					stream.exceptions(std::ios::failbit); 
+					stream.exceptions(std::ios::failbit);
 
 					T value = 0;
 					if (hexString.substr(0, 2) == "0x")
@@ -192,17 +192,17 @@ namespace IndustrialNetwork
 				}
 
 				template <typename T>
-				std::string ReverseHex(const T& number)
+				std::string ReverseHex(const T& number, const std::uint32_t width)
 				{
 					std::vector<std::string> splitString;
 					std::stringstream originalStr;
 					std::stringstream reverseStr;
-					originalStr << std::hex << std::uppercase << number;
+					originalStr << std::hex << std::uppercase << std::setw(width) << std::setfill('0') << std::right << number;
 					std::string tempStr(originalStr.str());
 
 					for (uint32_t start = 0; start < tempStr.size(); start += 2)
 					{
-						splitString.push_back(tempStr.substr(start, start + 2));
+						splitString.push_back(tempStr.substr(start, 2));
 					}
 
 					for (std::vector<std::string>::reverse_iterator i = splitString.rbegin();
@@ -214,14 +214,14 @@ namespace IndustrialNetwork
 					return reverseStr.str();
 				}
 
-				template<> std::string ReverseHex<std::string>(const std::string& number)
+				template<> std::string ReverseHex<std::string>(const std::string& number, const std::uint32_t width)
 				{
 					std::vector<std::string> splitString;
 					std::stringstream reverseStr;
 
 					for (uint32_t start = 0; start < number.size(); start += 2)
 					{
-						splitString.push_back(number.substr(start, start + 2));
+						splitString.push_back(number.substr(start, 2));
 					}
 
 					for (std::vector<std::string>::reverse_iterator i = splitString.rbegin();
@@ -233,18 +233,51 @@ namespace IndustrialNetwork
 					return reverseStr.str();
 				}
 
-				template std::string ReverseHex<std::uint8_t>(const std::uint8_t& number);
-				template std::string ReverseHex<std::uint16_t>(const std::uint16_t& number);
-				template std::string ReverseHex<std::uint32_t>(const std::uint32_t& number);
-				template std::string ReverseHex<unsigned long>(const unsigned long& number);
-				template std::string ReverseHex<unsigned long long>(const unsigned long long& number);
+				template std::string ReverseHex<std::uint8_t>(const std::uint8_t& number, const std::uint32_t width);
+				template std::string ReverseHex<std::uint16_t>(const std::uint16_t& number, const std::uint32_t width);
+				template std::string ReverseHex<std::uint32_t>(const std::uint32_t& number, const std::uint32_t width);
+				template std::string ReverseHex<unsigned long>(const unsigned long& number, const std::uint32_t width);
+				template std::string ReverseHex<unsigned long long>(const unsigned long long& number, const std::uint32_t width);
 
-				template std::string ReverseHex<std::int8_t>(const std::int8_t& number);
-				template std::string ReverseHex<std::int16_t>(const std::int16_t& number);
-				template std::string ReverseHex<std::int32_t>(const std::int32_t& number);
-				template std::string ReverseHex<long>(const long& number);
-				template std::string ReverseHex<long long>(const long long& number);
+				template std::string ReverseHex<std::int8_t>(const std::int8_t& number, const std::uint32_t width);
+				template std::string ReverseHex<std::int16_t>(const std::int16_t& number, const std::uint32_t width);
+				template std::string ReverseHex<std::int32_t>(const std::int32_t& number, const std::uint32_t width);
+				template std::string ReverseHex<long>(const long& number, const std::uint32_t width);
+				template std::string ReverseHex<long long>(const long long& number, const std::uint32_t width);
+
+
+
+				void ConfigurationToAscii(const std::stringstream& inputConfig, std::vector<std::uint8_t>& output)
+				{
+					//Lowercase
+					std::string hexOutputStr =  inputConfig.str();
+					std::transform(hexOutputStr.begin(), hexOutputStr.end(), hexOutputStr.begin(), ::tolower);
+					//Write ascii character
+					for (std::uint32_t i = 0; i < hexOutputStr.size(); i += 2)
+					{
+						std::uint8_t left = AsciiToHex(hexOutputStr[i]);
+						std::uint8_t right = AsciiToHex(hexOutputStr[i + 1]);
+
+						//Pack two 4bit chars in one byte
+						std::uint8_t complete = (std::uint8_t)(left << 4) | (right);
+						output.push_back(complete);
+					}
+				}
+
+				std::uint8_t AsciiToHex(std::uint8_t input)
+				{
+					if (input >= 97 && input <= 102) //Convert lowercase hex numbers
+					{
+						input = input - 87;
+					}
+					else if (input >= 48 && input <= 57) //Convert Numbers
+					{
+						input = input - 48;
+					}
+					return input;
+				}
 			}
 		}
 	}
 }
+

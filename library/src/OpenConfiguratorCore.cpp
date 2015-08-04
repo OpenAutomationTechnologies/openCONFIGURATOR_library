@@ -30,7 +30,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "OpenConfiguratorCore.h"
-
+#include <fstream>
 
 using namespace IndustrialNetwork::POWERLINK::Core::API;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
@@ -39,6 +39,7 @@ using namespace IndustrialNetwork::POWERLINK::Core::NetworkHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
+using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 
 OpenConfiguratorCore::OpenConfiguratorCore()
 {}
@@ -171,7 +172,7 @@ Result OpenConfiguratorCore::SetPrescaler(const std::string& networkId, uint16_t
 	return nodePtr->SetSubObjectActualValue(0x1F98, 0x9, prescalerStr.str());
 }
 
-Result OpenConfiguratorCore::BuildConfiguration(const std::string& networkId, std::string& configurationOutput)
+Result OpenConfiguratorCore::BuildConfiguration(const std::string& networkId, std::string& configurationOutput, std::vector<std::uint8_t>& binOutput)
 {
 	std::shared_ptr<Network> networkPtr;
 	std::stringstream config;
@@ -183,8 +184,7 @@ Result OpenConfiguratorCore::BuildConfiguration(const std::string& networkId, st
 		res = ConfigurationGenerator::GetInstance().GenerateNetworkConfiguration(networkPtr, config, hexOutput);
 
 	configurationOutput = config.str();
-	//std::cout << hexOutput.str() << std::endl << std::endl;
-
+	ConfigurationToAscii(hexOutput, binOutput);
 	return res;
 }
 

@@ -149,5 +149,5 @@ namespace std {
    %template(StringCollection) std::vector<std::string>;
    %template(ConfigurationCollection) std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::PlkConfiguration>;
    %template(SettingsCollection) std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::BuildConfigurationSetting>;
-   %template(NodeIdCollection) std::vector<unsigned char>;
+   %template(ByteCollection) std::vector<unsigned char>;
 }

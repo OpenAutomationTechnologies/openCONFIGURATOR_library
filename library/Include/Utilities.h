@@ -84,8 +84,10 @@ namespace IndustrialNetwork
 				int64_t DoubleToDoublePrecisisionHex(double value);
 
 				template <typename T>
-				std::string ReverseHex(const T& number);
+				std::string ReverseHex(const T& number, const std::uint32_t width = 0);
 
+				std::uint8_t AsciiToHex(std::uint8_t input);
+				void ConfigurationToAscii(const std::stringstream& inputConfig, std::vector<std::uint8_t>& output);
 			}
 		}
 	}

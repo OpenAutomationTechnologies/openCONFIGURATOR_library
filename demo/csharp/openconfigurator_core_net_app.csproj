@@ -56,6 +56,7 @@
     <Compile Include="BaseNode.cs" />
     <Compile Include="BaseObject.cs" />
     <Compile Include="BuildConfigurationSetting.cs" />
+    <Compile Include="ByteCollection.cs" />
     <Compile Include="CNFeatureEnum.cs" />
     <Compile Include="ConfigurationCollection.cs" />
     <Compile Include="ControlledNode.cs" />
@@ -74,7 +75,6 @@
     <Compile Include="MNFeatureEnum.cs" />
     <Compile Include="Network.cs" />
     <Compile Include="NodeAssignment.cs" />
-    <Compile Include="NodeIdCollection.cs" />
     <Compile Include="Object.cs" />
     <Compile Include="ObjectType.cs" />
     <Compile Include="OpenConfiguratorCore.cs" />

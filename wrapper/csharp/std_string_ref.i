@@ -68,8 +68,8 @@ class string;
 //C++
 %typemap(in, canthrow=1) std::string &
 %{  //typemap in
-    std::string temp;
-    $1 = &temp;
+    std::string temp_$1;
+    $1 = &temp_$1;
  %}
 
 //C++

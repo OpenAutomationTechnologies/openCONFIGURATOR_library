@@ -53,6 +53,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "EnumDataType.h"
 #include "DynamicChannel.h"
 #include "ConfigurationGenerator.h"
+#include "Utilities.h"
 
 namespace IndustrialNetwork
 {
@@ -87,18 +88,18 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetPrescaler(const std::string& networkId, std::uint16_t prescaler);
 
 						//Build related API
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildConfiguration(const std::string& networkId, std::string& configurationOutput);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildConfiguration(const std::string& networkId, std::string& configurationOutput,  std::vector<std::uint8_t>& binOutput);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildProcessImage(const std::string& networkId, std::string& configurationOutput);
 
 						//Node related API
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateNode(const std::string& networkId, const std::uint8_t nodeID, const std::string& nodeName, const bool isRmn = false);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveNode(const std::string& networkId, const std::uint8_t nodeID);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateNode(const std::string& networkId, const std::uint8_t nodeId, const std::string& nodeName, const bool isRmn = false);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveNode(const std::string& networkId, const std::uint8_t nodeId);
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetControlledNode(const std::string& networkId, const std::uint8_t nodeID, IndustrialNetwork::POWERLINK::Core::Node::ControlledNode& node);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetControlledNode(const std::string& networkId, const std::uint8_t nodeId, IndustrialNetwork::POWERLINK::Core::Node::ControlledNode& node);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetManagingNode(const std::string& networkId, IndustrialNetwork::POWERLINK::Core::Node::ManagingNode& node);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetAvailableNodeIds(const std::string& networkId, std::vector<std::uint8_t>& nodeIdCollection);
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result EnableNode(const std::string& networkId, const std::uint8_t nodeID, const bool enable);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result EnableNode(const std::string& networkId, const std::uint8_t nodeId, const bool enable);
 
 						//Modular Node API
 						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateModularHeadNode();
@@ -109,9 +110,9 @@ namespace IndustrialNetwork
 						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ReorderModules();
 						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DeleteModule();
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ResetOperationMode(const std::string& networkId, const std::uint8_t nodeID);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetOperationModeChained(const std::string& networkId, const std::uint8_t nodeID);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetOperationModeMultiplexed(const std::string& networkId, const std::uint8_t nodeID, const std::uint8_t multiplexedCycle);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ResetOperationMode(const std::string& networkId, const std::uint8_t nodeId);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetOperationModeChained(const std::string& networkId, const std::uint8_t nodeId);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetOperationModeMultiplexed(const std::string& networkId, const std::uint8_t nodeId, const std::uint8_t multiplexedCycle);
 
 						//Build Configuration related API
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetConfigurationSettingEnabled(const std::string& networkId, const std::string&  configID, const std::string&  settingID, bool enabled);
