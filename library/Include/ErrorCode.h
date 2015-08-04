@@ -139,7 +139,9 @@ namespace IndustrialNetwork
 					LOW_LIMIT_INVALID, // Low limit exceeds datatype limits
 					GENERAL_FEATURE_VALUE_INVALID, //General feature value invalid for datatype
 					CN_FEATURE_VALUE_INVALID, //CN Feature value invalid for datatype
-					MN_FEATURE_VALUE_INVALID // MN Feature value invalid for datatype
+					MN_FEATURE_VALUE_INVALID, // MN Feature value invalid for datatype
+					NODE_ASSIGNMENT_NOT_SUPPORTED, //Node assignemnt not supported by node
+					NODE_ASSIGNMENT_EXISTS //Node assignment is already set
 
 				};
 

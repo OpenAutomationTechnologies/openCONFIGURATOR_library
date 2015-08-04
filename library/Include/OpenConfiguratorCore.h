@@ -141,8 +141,6 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetObjectActualValue(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, const std::string& actualValue, bool force = false);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetSubObjectActualValue(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::uint8_t subObjectId, const std::string& actualValue, bool force = false);
 
-
-
 						//Mapping API
 
 						//Feature API
@@ -164,6 +162,10 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetDatatypeSize(const std::string& networkId, const std::uint8_t nodeId, const std::string& dataTypeUniqueId, std::uint32_t& size);
 						//Dynamic Channel API
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateDynamicChannel(const std::string& networkId, const std::uint8_t nodeId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::DynamicChannelAccessType accessType, std::uint32_t startIndex, std::uint32_t endIndex, std::uint32_t maxNumber, std::uint32_t addressOffset, std::uint8_t bitAlignment = 0);
+
+						//Node Assignement API
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateNodeAssignment(const std::string& networkId, const std::uint8_t nodeID, const IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment assignment);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveNodeAssignment(const std::string& networkId, const std::uint8_t nodeID, const IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment assignment);
 
 					private:
 						//singleton

@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <memory>
 #include <chrono>
+#include <algorithm>
 
 #include "IBuildConfiguration.h"
 #include "Result.h"

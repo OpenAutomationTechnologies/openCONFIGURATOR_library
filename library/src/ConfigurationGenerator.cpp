@@ -432,8 +432,7 @@ Result ConfigurationGenerator::WriteCommunicationProfileArea(const std::shared_p
 		        && (object.first < 0x1A00 || object.first > 0x1AFF)
 		        && (object.first < 0x1400 || object.first > 0x14FF)
 		        && (object.first < 0x1800 || object.first > 0x18FF)
-		        && object.first < 0x2000
-		        && object.first != 0x1F81)
+		        && object.first < 0x2000)
 		{
 			if (object.second->WriteToConfiguration())
 			{
@@ -448,6 +447,10 @@ Result ConfigurationGenerator::WriteCommunicationProfileArea(const std::shared_p
 
 			for (auto& subobject : object.second->GetSubObjectCollection())
 			{
+				//Write MN node assignement for PResChaining
+				if (object.first == 0x1F81 && subobject.first != 240)
+					continue;
+
 				if (subobject.second->WriteToConfiguration())
 				{
 					configurationOutput << std::hex << std::uppercase << object.first;

@@ -625,12 +625,14 @@ Result Network::SetOperationMode(const std::uint8_t nodeID, const PlkOperationMo
 		if (!res.IsSuccessful())
 			return res;
 
-
 		switch (mode)
 		{
 			case PlkOperationMode::NORMAL:
 				{
 					res = mn->ResetMultiplexedCycle(nodeID);
+					if (!res.IsSuccessful())
+						return res;
+					res = cn->SetSubObjectActualValue(0x1F81, 240, "0");
 					break;
 				}
 			case PlkOperationMode::MULTIPLEXED:
@@ -638,6 +640,9 @@ Result Network::SetOperationMode(const std::uint8_t nodeID, const PlkOperationMo
 					if (multiplexedCycle != 0)
 					{
 						res = mn->SetMultiplexedCycle(nodeID, multiplexedCycle);
+						if (!res.IsSuccessful())
+							return res;
+						res = cn->SetSubObjectActualValue(0x1F81, 240, "0");
 					}
 					break;
 				}
@@ -652,6 +657,7 @@ Result Network::SetOperationMode(const std::uint8_t nodeID, const PlkOperationMo
 					if (!res.IsSuccessful())
 						return res;
 					res = mn->ResetMultiplexedCycle(nodeID);
+
 					break;
 				}
 			default:
@@ -662,5 +668,5 @@ Result Network::SetOperationMode(const std::uint8_t nodeID, const PlkOperationMo
 	else
 		return Result(ErrorCode::NODE_CONFIGURATION_ERROR);
 
-	return Result();
+	return res;
 }

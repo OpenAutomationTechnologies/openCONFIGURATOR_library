@@ -139,6 +139,9 @@ namespace IndustrialNetwork
 				const std::string kMsgCnFeatureDatatypeError = "CN feature '%s' actual / default value does not match datatype.";
 				const std::string kMsgMnFeatureDatatypeError = "MN feature '%s' actual / default value does not match datatype.";
 
+				const std::string kMsgNodeAssignmentNotSupported = "Node assignement '%X' is not supported on node '%d'.";
+				const std::string kMsgNodeAssignmentAlreadyExists = "Node assignement '%X' already exists on node '%d'.";
+
 				const std::string kMsgNoNodesConfigured = "Configuration does not contain any POWERLINK-Nodes.";
 				const std::string kMsgNoControlledNodesConfigured = "Configuration does not contain any POWERLINK-CNs.";
 				const std::string kMsgNoManagingNodeConfigured = "Configuration does not contain any POWERLINK-MN.";

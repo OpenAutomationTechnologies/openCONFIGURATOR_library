@@ -35,15 +35,17 @@ using namespace IndustrialNetwork::POWERLINK::Core::Node;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
+using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 
 ManagingNode::ManagingNode(std::uint8_t nodeID, const std::string& nodeName) : BaseNode(nodeID, nodeName),
 	dynamicChannelList(std::vector<std::shared_ptr<DynamicChannel>>()),
 	rmnCount(0)
 {
+	this->AddNodeAssignement(NodeAssignment::MNT_NODEASSIGN_VALID);
+	this->AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_NODE_EXISTS);
+
 	if (nodeID != 240) //Add assignments for RMNs only
 	{
-		AddNodeAssignement(NodeAssignment::MNT_NODEASSIGN_VALID);
-		AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_NODE_EXISTS);
 		AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_NODE_IS_CN);
 	}
 }
@@ -53,7 +55,7 @@ ManagingNode::~ManagingNode()
 	this->dynamicChannelList.clear();
 }
 
-bool ManagingNode::AddNodeAssignement(NodeAssignment assign)
+Result ManagingNode::AddNodeAssignement(NodeAssignment assign)
 {
 	switch (assign)
 	{
@@ -63,7 +65,14 @@ bool ManagingNode::AddNodeAssignement(NodeAssignment assign)
 		case NodeAssignment::NMT_NODEASSIGN_SWVERSIONCHECK:
 		case NodeAssignment::NMT_NODEASSIGN_SWUPDATE:
 		case NodeAssignment::NMT_NODEASSIGN_MULTIPLEXED_CN:
-			return false;
+			{
+				boost::format formatter(kMsgNodeAssignmentNotSupported);
+				formatter
+				% (uint32_t) assign
+				% (uint32_t) this->GetNodeIdentifier();
+				LOG_FATAL() << formatter.str();
+				return Result(ErrorCode::NODE_ASSIGNMENT_NOT_SUPPORTED, formatter.str());
+			}
 		case NodeAssignment::MNT_NODEASSIGN_VALID:
 		case NodeAssignment::NMT_NODEASSIGN_NODE_EXISTS:
 		case NodeAssignment::NMT_NODEASSIGN_NODE_IS_CN:
@@ -76,23 +85,38 @@ bool ManagingNode::AddNodeAssignement(NodeAssignment assign)
 				if (it == this->GetNodeAssignment().end())
 				{
 					this->GetNodeAssignment().push_back(assign);
-					return true;
+					if (assign == NodeAssignment::NMT_NODEASSIGN_MN_PRES)
+					{
+						this->SetSubObjectActualValue(0x1F81, 240, IntToHex<uint32_t>(this->GetNodeAssignmentValue(), 0, "0x"));
+					}
+					return Result();
 				}
 				else
-					return false;
+				{
+					boost::format formatter(kMsgNodeAssignmentAlreadyExists);
+					formatter
+					% (uint32_t) assign
+					% (uint32_t) this->GetNodeIdentifier();
+					LOG_WARN() << formatter.str();
+					return Result();
+				}
 
 				break;
 			}
 		default:
 			break;
 	}
-	return false;
+	return Result();
 }
 
-bool ManagingNode::RemoveNodeAssignment(NodeAssignment assign)
+Result ManagingNode::RemoveNodeAssignment(NodeAssignment assign)
 {
 	this->GetNodeAssignment().erase(remove(this->GetNodeAssignment().begin(), this->GetNodeAssignment().end(), assign), this->GetNodeAssignment().end());
-	return true;
+	if (assign == NodeAssignment::NMT_NODEASSIGN_MN_PRES) //Reset the node assignement on the managing node
+	{
+		this->SetSubObjectActualValue(0x1F81, 240, "0");
+	}
+	return Result();
 }
 
 uint32_t ManagingNode::GetNodeAssignmentValue()

@@ -1003,3 +1003,35 @@ Result OpenConfiguratorCore::SetOperationModeMultiplexed(const std::string& netw
 
 	return network->SetOperationMode(nodeId, PlkOperationMode::MULTIPLEXED, multiplexedCycle);
 }
+
+Result OpenConfiguratorCore::CreateNodeAssignment(const std::string& networkId, const std::uint8_t nodeId, const NodeAssignment assignment)
+{
+	std::shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (res.IsSuccessful())
+	{
+		std::shared_ptr<BaseNode> node;
+		res = network->GetBaseNode(nodeId, node);
+		if (res.IsSuccessful())
+		{
+			return node->AddNodeAssignement(assignment);
+		}
+	}
+	return res;
+}
+
+Result OpenConfiguratorCore::RemoveNodeAssignment(const std::string& networkId, const std::uint8_t nodeId, const NodeAssignment assignment)
+{
+	std::shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (res.IsSuccessful())
+	{
+		std::shared_ptr<BaseNode> node;
+		res = network->GetBaseNode(nodeId, node);
+		if (res.IsSuccessful())
+		{
+			return node->RemoveNodeAssignment(assignment);
+		}
+	}
+	return res;
+}

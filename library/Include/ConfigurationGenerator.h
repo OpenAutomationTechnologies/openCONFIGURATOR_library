@@ -37,6 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sstream>
 #include <iomanip>
 #include <cstdio>
+#include <algorithm>
 
 #include "BaseNode.h"
 #include "Result.h"

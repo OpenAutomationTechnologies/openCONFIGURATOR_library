@@ -48,29 +48,37 @@ ControlledNode::ControlledNode(uint8_t nodeID, const std::string& nodeName) : Ba
 ControlledNode::~ControlledNode()
 {}
 
-bool ControlledNode::AddNodeAssignement(NodeAssignment assign)
+Result ControlledNode::AddNodeAssignement(NodeAssignment assign)
 {
-
 	if (assign == NodeAssignment::NMT_NODEASSIGN_MN_PRES)
 	{
-		return false;
+		boost::format formatter(kMsgNodeAssignmentNotSupported);
+		formatter
+		% (uint32_t) assign
+		% (uint32_t) this->GetNodeIdentifier();
+		LOG_FATAL() << formatter.str();
+		return Result(ErrorCode::NODE_ASSIGNMENT_NOT_SUPPORTED, formatter.str());
 	}
+
+	auto it = find(this->GetNodeAssignment().begin(), this->GetNodeAssignment().end(), assign);
+	if (it == this->GetNodeAssignment().end())
+		this->GetNodeAssignment().push_back(assign);
 	else
 	{
-		auto it = find(this->GetNodeAssignment().begin(), this->GetNodeAssignment().end(), assign);
-		if (it == this->GetNodeAssignment().end())
-			this->GetNodeAssignment().push_back(assign);
-		else
-			return false;
-
+		boost::format formatter(kMsgNodeAssignmentAlreadyExists);
+		formatter
+		% (uint32_t) assign
+		% (uint32_t) this->GetNodeIdentifier();
+		LOG_WARN() << formatter.str();
+		return Result();
 	}
-	return true;
+	return Result();
 }
 
-bool ControlledNode::RemoveNodeAssignment(NodeAssignment assign)
+Result ControlledNode::RemoveNodeAssignment(NodeAssignment assign)
 {
 	this->GetNodeAssignment().erase(remove(this->GetNodeAssignment().begin(), this->GetNodeAssignment().end(), assign), this->GetNodeAssignment().end());
-	return true;
+	return Result();
 }
 
 uint32_t ControlledNode::GetNodeAssignmentValue()

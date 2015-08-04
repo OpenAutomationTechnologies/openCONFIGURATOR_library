@@ -43,6 +43,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "PlkDataType.h"
 #include "Result.h"
 #include "LoggingConfiguration.h"
+#include "Utilities.h"
 
 namespace IndustrialNetwork
 {
@@ -63,8 +64,8 @@ namespace IndustrialNetwork
 						ManagingNode(std::uint8_t nodeID = 240, const std::string& nodeName = "");
 						virtual ~ManagingNode();
 
-						bool AddNodeAssignement(NodeAssignment assign);
-						bool RemoveNodeAssignment(NodeAssignment assign);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNodeAssignement(NodeAssignment assign);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveNodeAssignment(NodeAssignment assign);
 						std::uint32_t GetNodeAssignmentValue();
 
 						void AddDynamicChannel(std::shared_ptr<DynamicChannel>& channelRef);
