@@ -210,29 +210,29 @@ Result Network::RemoveNode(const uint8_t nodeID)
 	LOG_INFO() << formatter.str();
 
 	//Remove CN related MN and RMN objects
-	for (auto& rmn : this->nodeCollection)
+	for (auto& node : this->nodeCollection)
 	{
-		if (std::dynamic_pointer_cast<ManagingNode>(rmn.second))
+		if (std::dynamic_pointer_cast<ManagingNode>(node.second))
 		{
 			//Reset 0x1F26 / nodeID
-			rmn.second->ForceSubObject(0x1F26, nodeID, false, "0");
+			node.second->ForceSubObject(0x1F26, nodeID, false, "0");
 			//Reset 0x1F27 / nodeID
-			rmn.second->ForceSubObject(0x1F27, nodeID, false, "0");
+			node.second->ForceSubObject(0x1F27, nodeID, false, "0");
 			//Reset 0x1F82 / nodeID
-			rmn.second->ForceSubObject(0x1F81, nodeID, false, "0");
+			node.second->ForceSubObject(0x1F81, nodeID, false, "0");
 			//Reset 0x1F9B / nodeID
-			rmn.second->ForceSubObject(0x1F9B, nodeID, false, "0");
+			node.second->ForceSubObject(0x1F9B, nodeID, false, "0");
 			//Reset 0x1F92 / nodeID
-			rmn.second->ForceSubObject(0x1F92, nodeID, false, "25000");
+			node.second->ForceSubObject(0x1F92, nodeID, false, "25000");
 			//Reset 0x1F92 / nodeID
-			rmn.second->ForceSubObject(0x1F8B, nodeID, false, "36");
+			node.second->ForceSubObject(0x1F8B, nodeID, false, "36");
 			//Reset 0x1F8D / nodeID from all CNs
-			rmn.second->ForceSubObject(0x1F8D, nodeID, false, "36");
+			node.second->ForceSubObject(0x1F8D, nodeID, false, "36");
 		}
 		else
 		{
 			//Reset 0x1F8D / nodeID from all CNs
-			rmn.second->ForceSubObject(0x1F8D, nodeID, false, "0");
+			node.second->ForceSubObject(0x1F8D, nodeID, false, "36");
 		}
 	}
 	return Result();
@@ -669,4 +669,82 @@ Result Network::SetOperationMode(const std::uint8_t nodeID, const PlkOperationMo
 		return Result(ErrorCode::NODE_CONFIGURATION_ERROR);
 
 	return res;
+}
+
+Result Network::EnableNode(const std::uint8_t nodeID, bool enable)
+{
+	if (nodeID == 240)
+	{
+		boost::format formatter(kMsgManagingNodeDisable);
+		formatter
+		% this->networkId;
+		LOG_FATAL() << formatter.str();
+		return Result(ErrorCode::MANAGING_NODE_DISABLE_INVALID, formatter.str());
+	}
+
+	auto it = this->nodeCollection.find(nodeID);
+	if (it == this->nodeCollection.end())
+	{
+		//Node does not exist
+		boost::format formatter(kMsgExistingNode);
+		formatter
+		% (uint32_t) nodeID;
+		LOG_FATAL() << formatter.str();
+		return Result(ErrorCode::NODE_DOES_NOT_EXIST, formatter.str());
+	}
+
+	if (enable)
+	{
+		it->second->SetEnabled(true);
+		if (std::dynamic_pointer_cast<ManagingNode>(it->second))//if RMN is disabled
+		{
+			std::shared_ptr<ManagingNode> mn;
+			Result res = this->GetManagingNode(mn);
+			if (!res.IsSuccessful())
+				return res;
+			mn->SetRmnCount(mn->GetRmnCount() + 1); //Decrement the RMN count in MN
+
+		}
+	}
+	else
+	{
+		it->second->SetEnabled(false);
+		if (std::dynamic_pointer_cast<ManagingNode>(it->second))//if RMN is disabled
+		{
+			std::shared_ptr<ManagingNode> mn;
+			Result res = this->GetManagingNode(mn);
+			if (!res.IsSuccessful())
+				return res;
+			mn->SetRmnCount(mn->GetRmnCount() - 1); //Decrement the RMN count in MN
+
+		}
+
+		//Remove CN related MN and RMN objects
+		for (auto& node : this->nodeCollection)
+		{
+			if (std::dynamic_pointer_cast<ManagingNode>(node.second))
+			{
+				//Reset 0x1F26 / nodeID
+				node.second->ForceSubObject(0x1F26, nodeID, false, "0");
+				//Reset 0x1F27 / nodeID
+				node.second->ForceSubObject(0x1F27, nodeID, false, "0");
+				//Reset 0x1F82 / nodeID
+				node.second->ForceSubObject(0x1F81, nodeID, false, "0");
+				//Reset 0x1F9B / nodeID
+				node.second->ForceSubObject(0x1F9B, nodeID, false, "0");
+				//Reset 0x1F92 / nodeID
+				node.second->ForceSubObject(0x1F92, nodeID, false, "25000");
+				//Reset 0x1F92 / nodeID
+				node.second->ForceSubObject(0x1F8B, nodeID, false, "36");
+				//Reset 0x1F8D / nodeID from all CNs
+				node.second->ForceSubObject(0x1F8D, nodeID, false, "36");
+			}
+			else
+			{
+				//Reset 0x1F8D / nodeID from all CNs
+				node.second->ForceSubObject(0x1F8D, nodeID, false, "36");
+			}
+		}
+	}
+	return Result();
 }

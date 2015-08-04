@@ -78,6 +78,9 @@ Result ConfigurationGenerator::GenerateNetworkConfiguration(const std::shared_pt
 		if (node.first == 240) //skip MN already written
 			continue;
 
+		if (node.second->IsEnabled() == false)
+			continue;
+
 		//Write controlled node or RMN configuration
 		res = WriteControlledNodeConfiguration(net, node.second, configurationOutput, hexOutput);
 		if (!res.IsSuccessful())
@@ -112,6 +115,9 @@ Result ConfigurationGenerator::WriteNodeAssignement(const std::shared_ptr<Networ
 
 	for (auto& node : nodes)
 	{
+		if (node.second->IsEnabled() == false)
+			continue;
+
 		//Determine if Node is RMN
 		if (std::dynamic_pointer_cast<ManagingNode>(node.second))
 		{

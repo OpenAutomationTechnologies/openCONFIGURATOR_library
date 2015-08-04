@@ -100,9 +100,13 @@ namespace IndustrialNetwork
 						virtual std::uint32_t GetConfigurationObjectCount() = 0;
 						virtual std::uint32_t GetConfigurationObjectSize() = 0;
 
+						bool IsEnabled();
+						void SetEnabled(bool enabled);
+
 					private:
 						std::uint8_t nodeId;
 						std::string name;
+						bool enabled;
 						std::map<std::uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>> objectDictionary;
 						std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ApplicationProcess> applicationProcess;
 

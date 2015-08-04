@@ -1035,3 +1035,14 @@ Result OpenConfiguratorCore::RemoveNodeAssignment(const std::string& networkId, 
 	}
 	return res;
 }
+
+Result OpenConfiguratorCore::EnableNode(const std::string& networkId, const std::uint8_t nodeID, const bool enable)
+{
+	std::shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (res.IsSuccessful())
+	{
+		return network->EnableNode(nodeID, enable);
+	}
+	return res;
+}

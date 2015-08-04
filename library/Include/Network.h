@@ -202,6 +202,8 @@ namespace IndustrialNetwork
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetOperationMode(const std::uint8_t nodeID, const IndustrialNetwork::POWERLINK::Core::Node::PlkOperationMode mode, const std::uint8_t multiplexedCycle = 0);
 
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result EnableNode(const std::uint8_t nodeID, bool enable);
+
 						/**
 						* Getter & Setter
 						*/

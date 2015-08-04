@@ -67,9 +67,7 @@ namespace IndustrialNetwork
 						void SetComplexDataType(std::shared_ptr<ComplexDataType>& complexType);
 						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess GetParameterAccess();
 						std::uint32_t GetBitSize();
-
-
-
+						
 					private:
 						std::string uniqueID;
 						std::string uniqueIDRef;

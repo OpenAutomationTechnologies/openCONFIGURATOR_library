@@ -170,12 +170,18 @@ Result PlkConfiguration::DistributeDateTimeStamps(const std::map<uint8_t, std::s
 
 	for (auto& node :  nodeCollection)
 	{
+		if (node.second->IsEnabled() == false)
+			continue;
+
 		//Distribute to MN and RMNs
 		if (std::dynamic_pointer_cast<ManagingNode>(node.second)) //Set MN date and time objects 1F26 / 1F27
 		{
 			for (auto& nodeIds :  nodeCollection)
 			{
 				if (nodeIds.first == 240) //Avoid distributing values for MN nodeID
+					continue;
+
+				if (nodeIds.second->IsEnabled() == false)
 					continue;
 
 				res = node.second->SetSubObjectActualValue(0x1F26, nodeIds.first, dateString.str());
@@ -215,6 +221,9 @@ Result PlkConfiguration::DistributeNodeAssignment(const std::map<uint8_t, std::s
 	std::stringstream nodeAssignmentStr;
 	for (auto& node : nodeCollection)
 	{
+		if (node.second->IsEnabled() == false)
+			continue;
+
 		if (node.first == 240) //Dont distribute assignement for MN
 			continue;
 
@@ -259,6 +268,9 @@ Result PlkConfiguration::DistributeCycleTime(const std::map<uint8_t, std::shared
 
 	for (auto& node : nodeCollection)
 	{
+		if (node.second->IsEnabled() == false)
+			continue;
+
 		if (node.first != 240)
 		{
 			//Set every node 0x1006 actual value to cycle time
@@ -296,6 +308,9 @@ Result PlkConfiguration::DistributeMultiplCycleCount(const std::map<uint8_t, std
 
 	for (auto& node : nodeCollection)
 	{
+		if (node.second->IsEnabled() == false)
+			continue;
+
 		if (node.first != 240)
 		{
 			//Set every node 0x1F98 / 0x7 actual value to multiplexed cycle count
@@ -332,6 +347,9 @@ Result PlkConfiguration::DistributeAsyncMtu(const std::map<uint8_t, std::shared_
 
 	for (auto& node : nodeCollection)
 	{
+		if (node.second->IsEnabled() == false)
+			continue;
+
 		if (node.first != 240)
 		{
 			//Set every node 0x1F98 / 0x8 actual value to async MTU
@@ -368,6 +386,9 @@ Result PlkConfiguration::DistributePrescaler(const std::map<uint8_t, std::shared
 
 	for (auto& node : nodeCollection)
 	{
+		if (node.second->IsEnabled() == false)
+			continue;
+
 		if (node.first != 240)
 		{
 			//Set every node 0x1F98 / 0x9 actual value to prescaler if existing
@@ -386,6 +407,9 @@ Result PlkConfiguration::DistributeMultiplCycleAssign(const std::map<uint8_t, st
 	for (auto& node : nodeCollection)
 	{
 		if (node.first == 240)
+			continue;
+
+		if (node.second->IsEnabled() == false)
 			continue;
 
 		std::shared_ptr<Object> multiplCycleAssignObject;
@@ -424,6 +448,9 @@ Result PlkConfiguration::DistributeSDOSeqLayerTimeout(const std::map<uint8_t, st
 		if (node.first == 240)
 			continue;
 
+		if (node.second->IsEnabled() == false)
+			continue;
+
 		if (sdoSeqLayerTimeoutObject->WriteToConfiguration())
 		{
 			std::stringstream sdoSeqLayerTimeoutStr;
@@ -454,6 +481,9 @@ Result PlkConfiguration::DistributeSDOCmdLayerTimeout(const std::map<uint8_t, st
 		if (node.first == 240)
 			continue;
 
+		if (node.second->IsEnabled() == false)
+			continue;
+
 		if (sdoCmdLayerTimeoutObject->WriteToConfiguration())
 		{
 			std::stringstream sdoCmdLayerTimeoutStr;
@@ -476,6 +506,9 @@ Result PlkConfiguration::DistributePResTimeOut(const std::map<uint8_t, std::shar
 	for (auto& node : nodeCollection)
 	{
 		if (node.first == 240)
+			continue;
+
+		if (node.second->IsEnabled() == false)
 			continue;
 
 		std::shared_ptr<SubObject> presTimoutCNObj;
@@ -519,6 +552,9 @@ Result PlkConfiguration::DistributePReqPayloadLimit(const std::map<uint8_t, std:
 		if (node.first == 240)
 			continue;
 
+		if (node.second->IsEnabled() == false)
+			continue;
+
 		std::shared_ptr<SubObject> preqActPayloadLimitObj;
 		Result res = node.second->GetSubObject(0x1F98, 0x4, preqActPayloadLimitObj);
 		if (!res.IsSuccessful())
@@ -537,6 +573,9 @@ Result PlkConfiguration::DistributePReqPayloadLimit(const std::map<uint8_t, std:
 		for (auto& rmn : nodeCollection)
 		{
 			if (rmn.first == 240)
+				continue;
+
+			if (rmn.second->IsEnabled() == false)
 				continue;
 
 			if (std::dynamic_pointer_cast<ManagingNode>(rmn.second))
@@ -558,6 +597,9 @@ Result PlkConfiguration::DistributePResPayloadLimit(const std::map<uint8_t, std:
 	for (auto& node : nodeCollection)
 	{
 		if (node.first == 240)
+			continue;
+
+		if (node.second->IsEnabled() == false)
 			continue;
 
 		std::shared_ptr<SubObject> presActPayloadLimitObj;
@@ -588,9 +630,6 @@ Result PlkConfiguration::DistributePResPayloadLimit(const std::map<uint8_t, std:
 	}
 	return Result();
 }
-
-
-
 
 
 

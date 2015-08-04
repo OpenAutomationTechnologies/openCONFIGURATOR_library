@@ -141,7 +141,8 @@ namespace IndustrialNetwork
 					CN_FEATURE_VALUE_INVALID, //CN Feature value invalid for datatype
 					MN_FEATURE_VALUE_INVALID, // MN Feature value invalid for datatype
 					NODE_ASSIGNMENT_NOT_SUPPORTED, //Node assignemnt not supported by node
-					NODE_ASSIGNMENT_EXISTS //Node assignment is already set
+					NODE_ASSIGNMENT_EXISTS, //Node assignment is already set
+					MANAGING_NODE_DISABLE_INVALID // The managing node cannot be disabled.
 
 				};
 

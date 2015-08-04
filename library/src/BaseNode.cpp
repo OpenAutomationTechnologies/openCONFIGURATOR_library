@@ -39,6 +39,7 @@ using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 BaseNode::BaseNode(uint8_t nodeId, const std::string& name) :
 	nodeId(nodeId),
 	name(name),
+	enabled(true),
 	objectDictionary(std::map<uint32_t, std::shared_ptr<Object>>()),
 	applicationProcess(std::make_shared<ApplicationProcess>()),
 	nodeAssignment(std::vector<NodeAssignment>()),
@@ -388,4 +389,19 @@ Result BaseNode::GetSubObject(uint32_t objectId, uint32_t subObjectId, std::shar
 		return Result(ErrorCode::OBJECT_DOES_NOT_EXIST, formatter.str());
 	}
 	return iter->second->GetSubObject(subObjectId, subObjRef);
+}
+
+bool BaseNode::IsEnabled()
+{
+	return this->enabled;
+}
+
+void BaseNode::SetEnabled(bool enabled)
+{
+	boost::format formatter(kMsgNodeDisable);
+	formatter
+	% (uint32_t) this->GetNodeIdentifier()
+	% enabled;
+	LOG_INFO() << formatter.str();
+	this->enabled = enabled;
 }

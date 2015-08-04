@@ -60,6 +60,8 @@ namespace IndustrialNetwork
 				const std::string kMsgNodeRemoved = "Node with id %d removed.";
 				const std::string kMsgNodeObjectCount = "Node with id %d has %d configuration objects.";
 				const std::string kMsgNodeObjectCountSize = "Node with id %d has %d configuration objects size.";
+				const std::string kMsgManagingNodeDisable = "Managing node of network '%s' cannot be disabled.";
+				const std::string kMsgNodeDisable = "Node with Id '%d' set enabled to '%s'.";
 
 				const std::string kMsgExistingObject = "Object 0x%X already exists on node %d.";
 				const std::string kMsgExistingSubObject = "Subobject 0x%X/0x%X already exists on node %d.";
@@ -142,6 +144,8 @@ namespace IndustrialNetwork
 				const std::string kMsgNodeAssignmentNotSupported = "Node assignement '%X' is not supported on node '%d'.";
 				const std::string kMsgNodeAssignmentAlreadyExists = "Node assignement '%X' already exists on node '%d'.";
 
+
+				//Unused
 				const std::string kMsgNoNodesConfigured = "Configuration does not contain any POWERLINK-Nodes.";
 				const std::string kMsgNoControlledNodesConfigured = "Configuration does not contain any POWERLINK-CNs.";
 				const std::string kMsgNoManagingNodeConfigured = "Configuration does not contain any POWERLINK-MN.";
