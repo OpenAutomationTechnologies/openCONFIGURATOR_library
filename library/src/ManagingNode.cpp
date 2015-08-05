@@ -307,21 +307,33 @@ Result ManagingNode::SetMultiplexedCycle(const std::uint8_t nodeID, const std::u
 		cycle_count = multplCycleCount->GetTypedDefaultValue<uint16_t>();
 
 	if (multiplexedCycle > cycle_count)
-		return Result(ErrorCode::MULTIPLEX_CYCLE_ASSIGN_INVALID);
+	{
+		boost::format formatter(kMsgMultiplexCycleAssignInvalid);
+		formatter
+		% (uint32_t) multiplexedCycle
+		% (uint32_t) nodeID
+		% cycle_count;
+		LOG_FATAL() << formatter.str();
+		return Result(ErrorCode::MULTIPLEX_CYCLE_ASSIGN_INVALID, formatter.str());
+	}
 
 	std::shared_ptr<SubObject> multplCycleAssign;
 	res = this->GetSubObject(0x1F9B, nodeID, multplCycleAssign);
 	if (!res.IsSuccessful())
 		return res;
 
-	if (multplCycleAssign->WriteToConfiguration())
-		return Result(ErrorCode::MULTIPLEX_CYCLE_ASSIGN_INVALID);
+	if (MultiplexedCycleAlreadyAssigned(multiplexedCycle))
+	{
+		boost::format formatter(kMsgMultiplexCycleAlreadyAssigned);
+		formatter
+		% (uint32_t) multiplexedCycle;
+		LOG_FATAL() << formatter.str();
+		return Result(ErrorCode::MULTIPLEX_CYCLE_ASSIGN_INVALID, formatter.str());
+	}
 
 	std::stringstream nodeIdStr;
 	nodeIdStr << (uint32_t) multiplexedCycle;
-	multplCycleAssign->SetTypedObjectActualValue(nodeIdStr.str());
-
-	return res;
+	return multplCycleAssign->SetTypedObjectActualValue(nodeIdStr.str());
 }
 
 Result ManagingNode::ResetMultiplexedCycle(const std::uint8_t nodeID)
@@ -331,7 +343,25 @@ Result ManagingNode::ResetMultiplexedCycle(const std::uint8_t nodeID)
 	if (!res.IsSuccessful())
 		return res;
 
-	multplCycleAssign->SetTypedObjectActualValue("0");
+	return multplCycleAssign->SetTypedObjectActualValue("0");
+}
 
-	return res;
+bool ManagingNode::MultiplexedCycleAlreadyAssigned(std::uint8_t multiplexedCycle)
+{
+	std::shared_ptr<Object> multplCycleAssign;
+	this->GetObject(0x1F9B, multplCycleAssign);
+	for (auto& cycleAssign : multplCycleAssign->GetSubObjectCollection())
+	{
+		if (cycleAssign.first == 0)
+			continue;
+
+		if (cycleAssign.second->WriteToConfiguration())
+		{
+			if (cycleAssign.second->GetTypedActualValue<uint16_t>() == multiplexedCycle)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
 }

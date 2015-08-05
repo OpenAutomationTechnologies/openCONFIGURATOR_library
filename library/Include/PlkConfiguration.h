@@ -45,6 +45,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "BaseNode.h"
 #include "SubObject.h"
 #include "ManagingNode.h"
+#include "LoggingConfiguration.h"
 
 namespace IndustrialNetwork
 {

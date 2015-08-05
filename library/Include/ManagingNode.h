@@ -83,6 +83,8 @@ namespace IndustrialNetwork
 					private:
 						std::vector<std::shared_ptr<DynamicChannel>> dynamicChannelList;
 						std::uint16_t rmnCount;
+
+						bool MultiplexedCycleAlreadyAssigned(std::uint8_t multiplexedCycle);
 				};
 
 			}

@@ -233,6 +233,8 @@ Result Network::RemoveNode(const uint8_t nodeID)
 		{
 			//Reset 0x1F8D / nodeID from all CNs
 			node.second->ForceSubObject(0x1F8D, nodeID, false, "36");
+			//Reset 0x1F9B / nodeID from all CNs
+			node.second->ForceSubObject(0x1F9B, nodeID, false, "0");
 		}
 	}
 	return Result();
@@ -743,6 +745,8 @@ Result Network::EnableNode(const std::uint8_t nodeID, bool enable)
 			{
 				//Reset 0x1F8D / nodeID from all CNs
 				node.second->ForceSubObject(0x1F8D, nodeID, false, "36");
+				//Reset 0x1F9B / nodeID from all CNs
+				node.second->ForceSubObject(0x1F9B, nodeID, false, "0");
 			}
 		}
 	}

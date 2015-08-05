@@ -249,7 +249,11 @@ Result ControlledNode::SetOperationMode(PlkOperationMode operationMode)
 		}
 		else
 		{
-			return Result(ErrorCode::MULTIPLEXING_NOT_SUPPORTED);
+			boost::format formatter(kMsgMultiplexingNotSupported);
+			formatter
+			% (uint32_t) this->GetNodeIdentifier();
+			LOG_FATAL() << formatter.str();
+			return Result(ErrorCode::MULTIPLEXING_NOT_SUPPORTED, formatter.str());
 		}
 
 	}
@@ -267,7 +271,11 @@ Result ControlledNode::SetOperationMode(PlkOperationMode operationMode)
 		}
 		else
 		{
-			return Result(ErrorCode::CHAINING_NOT_SUPPORTED);
+			boost::format formatter(kMsgChainingNotSupported);
+			formatter
+			% (uint32_t) this->GetNodeIdentifier();
+			LOG_FATAL() << formatter.str();
+			return Result(ErrorCode::CHAINING_NOT_SUPPORTED, formatter.str());
 		}
 	}
 	return Result();

@@ -62,6 +62,10 @@ namespace IndustrialNetwork
 				const std::string kMsgNodeObjectCountSize = "Node with id %d has %d configuration objects size.";
 				const std::string kMsgManagingNodeDisable = "Managing node of network '%s' cannot be disabled.";
 				const std::string kMsgNodeDisable = "Node with Id '%d' set enabled to '%s'.";
+				const std::string kMsgMultiplexingNotSupported = "Multiplexing is not supported by controlled node '%d'";
+				const std::string kMsgChainingNotSupported = "PRes Chaining is not supported by controlled node '%d'";
+				const std::string kMsgMultiplexCycleAssignInvalid = "Multiplexed cycle '%d' assigned to node %d exceeds multiplexed cycle length (%d).";
+				const std::string kMsgMultiplexCycleAlreadyAssigned = "Multiplexed cycle '%d' already assigned.";
 
 				const std::string kMsgExistingObject = "Object 0x%X already exists on node %d.";
 				const std::string kMsgExistingSubObject = "Subobject 0x%X/0x%X already exists on node %d.";
@@ -117,6 +121,7 @@ namespace IndustrialNetwork
 				const std::string kMsgIndexInvalid = "Index 0x%X invalid for node %d.";
 				const std::string kMsgUnsupportedAttributeType = "Attributetype '%d' not supported for this operation.";
 				const std::string kMsgCycleTimeOnMnNotSet = "Cycle time has to be set on the managing node of the POWERLINK network.";
+				const std::string kMsgCycleTimeDefaultValue = "Cycle time should not have a default value on the managing node of the POWERLINK network.";
 
 				const std::string kMsgObjectActualValueNotSet = "Object 0x%X on node %d does not have a defined actual value.";
 				const std::string kMsgObjectDataTypeMismatch = "Object 0x%X datatype on node %d does not match the datatype to be retrieved.";
@@ -166,9 +171,7 @@ namespace IndustrialNetwork
 				const std::string kMsgIsochronousMaxPayloadExceeded = "Node %d: No. of %s-bytes mapped (%d) exceeds limit (1490, C_DLL_ISOCHR_MAX_PAYL).";
 				const std::string kMsgPdoDatatypeInvalid = "Node %d, (Sub)Index 0x%X/0x%s: Mapping of datatype '%s' not supported. Supported data types: Integer8(16/32/64), Unsigned8(16/32/64).";
 				const std::string kMsgMaxPiSizeExceeded = "Max. process image size exceeded: Actual: %d bytes, expected: max. %d bytes.";
-				const std::string kMsgMultiplexingNotSupported = "Multiplexing is not supported by the managing node.";
 				const std::string kMsgUnsupportedPiLanguage = "Process-Image generation for language %d not supported.";
-				const std::string kMsgMultiplexCycleAssignInvalid = "Multiplexed cycle '%d' assigned to node %d exceeds multiplexed cycle length (%d).";
 				const std::string kMsgObjectLimitsInvalid = "Invalid object limits (high limit '%d' < low limit '%d')";
 				const std::string kMsgNodeIndexDescription = "Node %d, Index 0x%X: ";
 				const std::string kMsgNodeSubIndexDescription = "Node %d, (Sub)Index 0x%X/0x%X: ";
@@ -183,7 +186,6 @@ namespace IndustrialNetwork
 				const std::string kMsgAccessTypeForParameterInvalid = "Mapping-Object 0x%X/0x%X: Parameter with uniqueId '%s', referenced by mapped index 0x%X/0x%s on node %d, has invalid access type ('%s').";
 				const std::string kMsgAccessTypeForPdoInvalid = "Mapping-Object 0x%X/0x%X: (Sub)Index 0x%X/0x%s on node %d cannot be mapped. Invalid access type '%s' (RPDOs must be writeable, TPDOs readable).";
 				const std::string kMsgPdoOffsetInvalid = "Mapping-Object 0x%X/0x%X on node %d: Mapping offset invalid. Actual: %d bits, expected %d bits.";
-
 				const std::string kMsgParameterValueInvalid = "Node %d: For parameter '%d' the given value '%s' is invalid.";
 				const std::string kMsgParameterValueNotSet = "Node %d: Parameter '%d' value is not set.";
 				const std::string kMsgMappingInvalid = "Mapping-Object 0x%X/0x%X on node %d: Mapping is enabled (NumberOfEntries != 0) but mapping entry is zero. Expected valid mapping entry.";

@@ -35,6 +35,7 @@ using namespace IndustrialNetwork::POWERLINK::Core::Configuration;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
+using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 
 PlkConfiguration::PlkConfiguration() :
 	IBuildConfiguration<BuildConfigurationSetting>(),
@@ -257,7 +258,7 @@ Result PlkConfiguration::DistributeCycleTime(const std::map<uint8_t, std::shared
 		return res;
 
 	//If actual value exists
-	if (cycleTimeObject->WriteToConfiguration())
+	if (!cycleTimeObject->GetActualValue().empty())
 	{
 		//Convert to cycle time to std::string
 		cycleTimeStr << cycleTimeObject->GetTypedActualValue<uint32_t>();
@@ -266,6 +267,12 @@ Result PlkConfiguration::DistributeCycleTime(const std::map<uint8_t, std::shared
 	else
 		return Result(ErrorCode::CYCLE_TIME_NOT_SET, kMsgCycleTimeOnMnNotSet);
 
+	//Warn if cycle time has a default value on MN
+	if (!cycleTimeObject->GetDefaultValue().empty())
+	{
+		LOG_WARN() << kMsgCycleTimeDefaultValue;
+	}
+	
 	for (auto& node : nodeCollection)
 	{
 		if (node.second->IsEnabled() == false)
@@ -415,7 +422,7 @@ Result PlkConfiguration::DistributeMultiplCycleAssign(const std::map<uint8_t, st
 		std::shared_ptr<Object> multiplCycleAssignObject;
 		Result res = mn->GetObject(0x1F9B, multiplCycleAssignObject);
 		if (!res.IsSuccessful())
-			return res;
+			return Result();
 
 		for (auto& subObj : multiplCycleAssignObject->GetSubObjectCollection())
 		{
@@ -425,7 +432,7 @@ Result PlkConfiguration::DistributeMultiplCycleAssign(const std::map<uint8_t, st
 				multiplCycleAssignValue << subObj.second->GetTypedActualValue<uint16_t>();
 				res = node.second->SetSubObjectActualValue(0x1F9B, subObj.first, multiplCycleAssignValue.str());
 				if (!res.IsSuccessful())
-					return res;
+					return Result();
 			}
 		}
 	}
