@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <vector>
 #include <memory>
+#include <algorithm>
 
 #include <boost/format.hpp>
 
@@ -79,6 +80,9 @@ namespace IndustrialNetwork
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetMultiplexedCycle(const std::uint8_t nodeID, const std::uint8_t multiplexedCycle);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ResetMultiplexedCycle(const std::uint8_t nodeID);
+												
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CalculatePReqPayloadLimit();
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CalculatePResPayloadLimit();
 
 					private:
 						std::vector<std::shared_ptr<DynamicChannel>> dynamicChannelList;

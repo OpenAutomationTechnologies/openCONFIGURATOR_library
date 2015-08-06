@@ -79,6 +79,9 @@ namespace IndustrialNetwork
 						std::uint32_t GetConfigurationObjectCount();
 						std::uint32_t GetConfigurationObjectSize();
 
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CalculatePReqPayloadLimit();
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CalculatePResPayloadLimit();
+
 					private:
 						IndustrialNetwork::POWERLINK::Core::Node::PlkOperationMode operationMode;
 				};

@@ -272,7 +272,7 @@ Result PlkConfiguration::DistributeCycleTime(const std::map<uint8_t, std::shared
 	{
 		LOG_WARN() << kMsgCycleTimeDefaultValue;
 	}
-	
+
 	for (auto& node : nodeCollection)
 	{
 		if (node.second->IsEnabled() == false)
@@ -562,8 +562,12 @@ Result PlkConfiguration::DistributePReqPayloadLimit(const std::map<uint8_t, std:
 		if (node.second->IsEnabled() == false)
 			continue;
 
+		Result res = node.second->CalculatePReqPayloadLimit();
+		if (!res.IsSuccessful())
+			return res;
+
 		std::shared_ptr<SubObject> preqActPayloadLimitObj;
-		Result res = node.second->GetSubObject(0x1F98, 0x4, preqActPayloadLimitObj);
+		res = node.second->GetSubObject(0x1F98, 0x4, preqActPayloadLimitObj);
 		if (!res.IsSuccessful())
 			return res;
 
@@ -609,8 +613,12 @@ Result PlkConfiguration::DistributePResPayloadLimit(const std::map<uint8_t, std:
 		if (node.second->IsEnabled() == false)
 			continue;
 
+		Result res = node.second->CalculatePResPayloadLimit();
+		if (!res.IsSuccessful())
+			return res;
+
 		std::shared_ptr<SubObject> presActPayloadLimitObj;
-		Result res = node.second->GetSubObject(0x1F98, 0x5, presActPayloadLimitObj);
+		res = node.second->GetSubObject(0x1F98, 0x5, presActPayloadLimitObj);
 		if (!res.IsSuccessful())
 			return res;
 
@@ -620,19 +628,46 @@ Result PlkConfiguration::DistributePResPayloadLimit(const std::map<uint8_t, std:
 		else
 			continue;
 
-		res = mn->SetSubObjectActualValue(0x1F8D, node.first, presActPayloadLimitValue.str());
+		res = mn->SetSubObjectActualValue(0x1F8D, node.first, presActPayloadLimitValue.str()); //Write to MN
 		if (!res.IsSuccessful())
 			return res;
 
 		for (auto& cn : nodeCollection)
 		{
+			//Skip the MN and the current node itself
 			if (cn.first == 240 || node.first == cn.first)
 				continue;
 
-			res = cn.second->SetSubObjectActualValue(0x1F8D, node.first, presActPayloadLimitValue.str());
-			if (!res.IsSuccessful() && res.GetErrorType() != ErrorCode::OBJECT_DOES_NOT_EXIST)
-				return res; // this is optional return success
+			//Always distribute for RMNs
+			if (std::dynamic_pointer_cast<ManagingNode>(cn.second))
+			{
+				Result	res = cn.second->SetSubObjectActualValue(0x1F8D, node.first, presActPayloadLimitValue.str());
+				if (!res.IsSuccessful())
+					return res;
+			}
 
+			for (auto& object : cn.second->GetObjectDictionary())
+			{
+				if (object.first >= 0x1400 && object.first < 0x1500)
+				{
+					std::shared_ptr<SubObject> paramObj;
+					//Check corresponding 0x14XX object for origin of Rx Data
+					Result res = object.second->GetSubObject(0x1, paramObj);
+					if (!res.IsSuccessful())
+						return res; //0x14XX/ 0x1 NodeID_U8 does not exist
+
+					if (!paramObj->WriteToConfiguration())
+						continue;
+
+					//Only distribute the PresPayloadLimit for nodes that have cross traffic with the current node
+					if (paramObj->GetTypedActualValue<uint16_t>() == node.first)
+					{
+						res = cn.second->SetSubObjectActualValue(0x1F8D, node.first, presActPayloadLimitValue.str());
+						if (!res.IsSuccessful())
+							return res; // this is optional return success
+					}
+				}
+			}
 		}
 	}
 	return Result();

@@ -103,6 +103,9 @@ namespace IndustrialNetwork
 						bool IsEnabled();
 						void SetEnabled(bool enabled);
 
+						virtual IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CalculatePReqPayloadLimit() = 0;
+						virtual IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CalculatePResPayloadLimit() = 0;
+
 					private:
 						std::uint8_t nodeId;
 						std::string name;

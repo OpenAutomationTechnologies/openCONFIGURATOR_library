@@ -285,3 +285,75 @@ PlkOperationMode ControlledNode::GetOperationMode()
 {
 	return this->operationMode;
 }
+
+IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::CalculatePReqPayloadLimit()
+{
+	for (auto& object : this->GetObjectDictionary())
+	{
+		if (object.first >= 0x1600 && object.first < 0x1700)
+		{
+			//Check corresponding 0x14XX object for origin of Rx Data
+			uint32_t commParamIndex = (object.first - 0x1600) + 0x1400;
+			std::shared_ptr<SubObject> paramObj;
+			Result res = this->GetSubObject(commParamIndex, 0x1, paramObj);
+			if (!res.IsSuccessful())
+				return res; //0x14XX/ 0x1 NodeID_U8 does not exist
+
+			if (paramObj->WriteToConfiguration())
+				continue; //Cross traffic does not count to PreqPayloadLimit
+
+			uint16_t numberOfIndicesToWrite = 0;
+			auto& nrOfEntriesObj = object.second->GetSubObjectCollection().at((uint8_t) 0); //GetNrOfEntries and only count the valid ones
+			if (nrOfEntriesObj->WriteToConfiguration())
+				numberOfIndicesToWrite = nrOfEntriesObj->GetTypedActualValue<uint16_t>();
+
+			uint16_t count = 0;
+			uint16_t preqPayloadLimit = 0;
+			for (auto& subobject : object.second->GetSubObjectCollection())
+			{
+				if (subobject.second->WriteToConfiguration() && subobject.first != 0 && count < numberOfIndicesToWrite)
+				{
+					//Calculate all the mapping object sizes
+					count++;
+				}
+			}
+
+			if (preqPayloadLimit <= 36)
+			{
+				return this->SetSubObjectActualValue(0x1F98, 0x4, "36"); //Set to default value
+			}
+		}
+	}
+	return Result();
+}
+
+IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::CalculatePResPayloadLimit()
+{
+	for (auto& object : this->GetObjectDictionary())
+	{
+		if (object.first >= 0x1A00 && object.first < 0x1B00)
+		{
+			uint16_t numberOfIndicesToWrite = 0;
+			auto& nrOfEntriesObj = object.second->GetSubObjectCollection().at((uint8_t) 0);
+			if (nrOfEntriesObj->WriteToConfiguration())
+				numberOfIndicesToWrite = nrOfEntriesObj->GetTypedActualValue<uint16_t>(); //GetNrOfEntries and only count the valid ones
+
+			uint16_t count = 0;
+			uint16_t presPayloadLimit = 0;
+			for (auto& subobject : object.second->GetSubObjectCollection())
+			{
+				if (subobject.second->WriteToConfiguration() && subobject.first != 0 && count < numberOfIndicesToWrite)
+				{
+					//Calculate all the mapping object sizes
+					count++;
+				}
+			}
+
+			if (presPayloadLimit <= 36)
+			{
+				return this->SetSubObjectActualValue(0x1F98, 0x5, "36"); //Set to default value
+			}
+		}
+	}
+	return Result();
+}

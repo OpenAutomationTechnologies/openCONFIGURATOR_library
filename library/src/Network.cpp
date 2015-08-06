@@ -650,14 +650,29 @@ Result Network::SetOperationMode(const std::uint8_t nodeID, const PlkOperationMo
 				}
 			case PlkOperationMode::CHAINED:
 				{
+					//Add PresMN on managing node
 					mn->AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_MN_PRES);
 					uint32_t mnAssignValue = mn->GetNodeAssignmentValue();
-					res = cn->SetSubObjectActualValue(0x1F81, 240, IntToHex<unsigned int>(mnAssignValue, 0, "0x"));
+					res = cn->SetSubObjectActualValue(0x1F81, 240, IntToHex<uint32_t>(mnAssignValue, 0, "0x"));
 					if (!res.IsSuccessful())
 						return res;
-					res = mn->SetSubObjectActualValue(0x1F81, 240, IntToHex<unsigned int>(mnAssignValue, 0, "0x"));
+					//Set 1F81 / 240 on managing node
+					res = mn->SetSubObjectActualValue(0x1F81, 240, IntToHex<uint32_t>(mnAssignValue, 0, "0x"));
 					if (!res.IsSuccessful())
 						return res;
+
+					//Set 1F81 / 240 also on all RMNs
+					for (auto& rmn : this->nodeCollection)
+					{
+						std::shared_ptr<ManagingNode> rmnPtr = std::dynamic_pointer_cast<ManagingNode>(rmn.second);
+						if (rmnPtr.get())
+						{
+							res = rmnPtr->SetSubObjectActualValue(0x1F81, 240, IntToHex<uint32_t>(mnAssignValue, 0, "0x"));
+							if (!res.IsSuccessful())
+								return res;
+						}
+					}
+
 					res = mn->ResetMultiplexedCycle(nodeID);
 
 					break;
