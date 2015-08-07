@@ -45,6 +45,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "BaseNode.h"
 #include "SubObject.h"
 #include "ManagingNode.h"
+#include "ControlledNode.h"
 #include "LoggingConfiguration.h"
 
 namespace IndustrialNetwork
@@ -88,6 +89,9 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributePResTimeOut(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributePReqPayloadLimit(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributePResPayloadLimit(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
+
+						//Write for all CNs
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeCNLossObjects(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
 
 
 				};

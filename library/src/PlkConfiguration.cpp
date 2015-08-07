@@ -123,6 +123,11 @@ Result PlkConfiguration::GenerateConfiguration(const std::map<uint8_t, std::shar
 
 	//Distribute PResPayloadLimit 1F98 / 05 to all node 1F8D / nodeID
 	res = DistributePResPayloadLimit(nodeCollection);
+	if (!res.IsSuccessful())
+		return res;
+
+	//Write 0x1C0B / 0x1C0C / 0x1C0D / 0x3 for all nodes if no actual values does exist
+	res = DistributeCNLossObjects(nodeCollection);
 	return res;
 }
 
@@ -666,6 +671,58 @@ Result PlkConfiguration::DistributePResPayloadLimit(const std::map<uint8_t, std:
 						if (!res.IsSuccessful())
 							return res; // this is optional return success
 					}
+				}
+			}
+		}
+	}
+	return Result();
+}
+
+Result PlkConfiguration::DistributeCNLossObjects(const std::map<std::uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
+{
+	for (auto& node : nodeCollection)
+	{
+		if (std::dynamic_pointer_cast<ControlledNode>(node.second))
+		{
+			if (node.first == 240)
+				continue;
+
+			if (node.second->IsEnabled() == false)
+				continue;
+
+			std::stringstream cnLossObjectStr;
+			cnLossObjectStr << 0x50; //Set default value
+
+			std::shared_ptr<SubObject> lossOfObject;
+			Result res = node.second->GetSubObject(0x1C0B, 0x3, lossOfObject);
+			if (!res.IsSuccessful())
+				return res; //Mandatory Object
+
+			if (!lossOfObject->WriteToConfiguration()) //Write default value only if no actualValue exists
+			{
+				//Set every node 0x1C0B / 0x3 actual value
+				res = lossOfObject->SetTypedObjectActualValue(cnLossObjectStr.str());
+				if (!res.IsSuccessful())
+					return res; //Mandatory Object
+			}
+
+			res = node.second->GetSubObject(0x1C0C, 0x3, lossOfObject);
+			if (res.IsSuccessful()) //Not mandatory ignore error
+			{
+				if (!lossOfObject->WriteToConfiguration()) //Write default value only if no actualValue exists
+				{
+					//Set every node 0x1C0C/ 0x3 actual value
+					lossOfObject->SetTypedObjectActualValue(cnLossObjectStr.str());
+				}
+			}
+
+			res = node.second->GetSubObject(0x1C0d, 0x3, lossOfObject);
+			if (res.IsSuccessful()) //Not mandatoy ignore error
+			{
+				if (!lossOfObject->WriteToConfiguration()) //Write default value only if no actualValue exist
+				{
+					//Set every node 0x1C0D / 0x3 actual value
+					res = lossOfObject->SetTypedObjectActualValue(cnLossObjectStr.str());
 				}
 			}
 		}
