@@ -66,7 +66,7 @@ ENDIF()
 ###############################################################################
 # Ensure SWIG installation
 ###############################################################################
-FIND_PACKAGE(SWIG 3.0.0 REQUIRED)
+FIND_PACKAGE(SWIG 3.0.3 REQUIRED)
 IF(NOT SWIG_FOUND)
 	MESSAGE(SEND_ERROR "SWIG not found. Add its directory to your Path-Variable or set SWIG_EXECUTABLE to point to swig.exe.")
 	MESSAGE(FATAL_ERROR "Your Path-Variable: $ENV{Path}")
