@@ -53,6 +53,7 @@ namespace IndustrialNetwork
 					BOOL, // < Bool (1 bit)
 					BYTE, // < Byte (8 bit)
 					_CHAR, // < Char (8 bit)
+					WORD, // < Word (16 bit)
 					DWORD, // < Dword (32 bit)
 					LWORD, // < Lword (64 bit)
 					SINT, // < Signed short integer (1 byte)

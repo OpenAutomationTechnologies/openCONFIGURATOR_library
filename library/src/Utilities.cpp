@@ -120,12 +120,13 @@ namespace IndustrialNetwork
 							{
 								return 8; //Byte datatypes
 							}
-						case IEC_Datatype::DWORD:
+						case IEC_Datatype::WORD:
 						case IEC_Datatype::INT:
 						case IEC_Datatype::UINT:
 							{
 								return 16; //2 Byte datatypes
 							}
+						case IEC_Datatype::DWORD:
 						case IEC_Datatype::DINT:
 						case IEC_Datatype::UDINT:
 						case IEC_Datatype::REAL:
