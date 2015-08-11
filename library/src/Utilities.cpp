@@ -80,14 +80,16 @@ namespace IndustrialNetwork
 					return value;
 				}
 
-				template unsigned char HexToInt<unsigned char>(const std::string& hexString);
-				template unsigned short HexToInt<unsigned short>(const std::string& hexString);
-				template unsigned int HexToInt<unsigned int>(const std::string& hexString);
+				template std::uint8_t HexToInt<std::uint8_t >(const std::string& hexString);
+				template std::uint16_t  HexToInt<uint16_t>(const std::string& hexString);
+				template std::uint32_t HexToInt<std::uint32_t>(const std::string& hexString);
+				template unsigned long HexToInt<unsigned long>(const std::string& hexString);
 				template unsigned long long HexToInt<unsigned long long>(const std::string& hexString);
 
-				template signed char HexToInt<signed char>(const std::string& hexString);
-				template short HexToInt<short>(const std::string& hexString);
-				template int HexToInt<int>(const std::string& hexString);
+				template std::int8_t HexToInt<std::int8_t>(const std::string& hexString);
+				template std::int16_t HexToInt<std::int16_t>(const std::string& hexString);
+				template std::int32_t HexToInt<std::int32_t>(const std::string& hexString);
+				template long HexToInt<long>(const std::string& hexString);
 				template long long HexToInt<long long>(const std::string& hexString);
 
 				bool StringToBool(const std::string& str)
@@ -231,12 +233,16 @@ namespace IndustrialNetwork
 					return reverseStr.str();
 				}
 
-				template std::string ReverseHex<unsigned short>(const unsigned short& number);
-				template std::string ReverseHex<unsigned int>(const unsigned int& number);
+				template std::string ReverseHex<std::uint8_t>(const std::uint8_t& number);
+				template std::string ReverseHex<std::uint16_t>(const std::uint16_t& number);
+				template std::string ReverseHex<std::uint32_t>(const std::uint32_t& number);
+				template std::string ReverseHex<unsigned long>(const unsigned long& number);
 				template std::string ReverseHex<unsigned long long>(const unsigned long long& number);
 
-				template std::string ReverseHex<short>(const short& number);
-				template std::string ReverseHex<int>(const int& number);
+				template std::string ReverseHex<std::int8_t>(const std::int8_t& number);
+				template std::string ReverseHex<std::int16_t>(const std::int16_t& number);
+				template std::string ReverseHex<std::int32_t>(const std::int32_t& number);
+				template std::string ReverseHex<long>(const long& number);
 				template std::string ReverseHex<long long>(const long long& number);
 			}
 		}
