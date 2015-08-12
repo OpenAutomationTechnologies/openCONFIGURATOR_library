@@ -753,6 +753,10 @@ namespace openconfigurator_core_net_app
                 Console.WriteLine(var.Value.ToString());
             }
             Console.ReadLine();
+
+            core.SetNodeName("test", 240, "MasterOfDisaster");
+            core.SetNodeName("test", 5, "SuperNode");
+            Console.ReadLine();
             
             string assign;
             core.GetSubObjectActualValue("test", 240, 0x1f81, 0x5, out assign);

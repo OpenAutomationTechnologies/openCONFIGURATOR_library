@@ -101,6 +101,8 @@ namespace IndustrialNetwork
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result EnableNode(const std::string& networkId, const std::uint8_t nodeId, const bool enable);
 
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetNodeName(const std::string& networkId, const std::uint8_t nodeId, const std::string& nodeName);
+
 						//Modular Node API
 						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateModularHeadNode();
 						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateModule();
