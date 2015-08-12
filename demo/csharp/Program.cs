@@ -740,6 +740,20 @@ namespace openconfigurator_core_net_app
             Console.WriteLine(cTime);
             Console.ReadLine();
 
+            Console.ReadLine();
+            ObjectCollection objColl = new ObjectCollection();
+            core.GetObjectsWithActualValue("test", 5, objColl);
+            Console.WriteLine(objColl.Count);
+            foreach (var var in objColl)
+            {
+                Console.Write(var.Key.first.ToString("x"));
+                Console.Write("/");
+                Console.Write(var.Key.second.ToString());
+                Console.Write(" : ");
+                Console.WriteLine(var.Value.ToString());
+            }
+            Console.ReadLine();
+            
             string assign;
             core.GetSubObjectActualValue("test", 240, 0x1f81, 0x5, out assign);
             Console.WriteLine(assign);

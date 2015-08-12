@@ -214,7 +214,7 @@ namespace IndustrialNetwork
 					return reverseStr.str();
 				}
 
-				template<> std::string ReverseHex<std::string>(const std::string& number, const std::uint32_t width)
+				template<> std::string ReverseHex<std::string>(const std::string& number, const std::uint32_t)
 				{
 					std::vector<std::string> splitString;
 					std::stringstream reverseStr;

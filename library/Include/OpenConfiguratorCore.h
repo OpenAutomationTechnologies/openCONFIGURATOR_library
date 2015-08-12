@@ -142,6 +142,8 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetSubObjectSize(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::uint8_t subObjectId, std::uint32_t& size);
 
 						//Object Actual Values
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetObjectsWithActualValue(const std::string& networkId, const std::uint8_t nodeId, std::map<std::pair<std::uint32_t, std::int32_t> , std::string>& objects);
+
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetObjectActualValue(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::string& actualValueReturn);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetSubObjectActualValue(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::uint8_t subObjectId, std::string& actualValueReturn);
 

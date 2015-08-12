@@ -59,6 +59,7 @@
 
 %include typemaps.i
 %include std_except.i
+%include std_pair.i
 %include std_string.i
 %include std_map.i
 %include std_vector.i
@@ -150,4 +151,6 @@ namespace std {
    %template(ConfigurationCollection) std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::PlkConfiguration>;
    %template(SettingsCollection) std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::BuildConfigurationSetting>;
    %template(ByteCollection) std::vector<unsigned char>;
+   %template(ObjectPair) std::pair<unsigned int, int>;
+   %template(ObjectCollection) std::map<std::pair<unsigned int, int> , std::string>;
 }

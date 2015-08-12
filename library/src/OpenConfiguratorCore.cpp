@@ -1115,3 +1115,38 @@ Result OpenConfiguratorCore::GetSubObjectActualValue(const std::string& networkI
 	}
 	return res;
 }
+
+Result OpenConfiguratorCore::GetObjectsWithActualValue(const std::string& networkId, const std::uint8_t nodeId, std::map<std::pair<std::uint32_t, std::int32_t> , std::string>& objects)
+{
+	std::shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::shared_ptr<BaseNode> node;
+	res = network->GetBaseNode(nodeId, node);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::shared_ptr<Object> obj;
+	auto& od = node->GetObjectDictionary();
+	for (auto& obj : od)
+	{
+		if (obj.second->WriteToConfiguration())
+		{
+			auto pair = std::pair<std::uint32_t, std::int32_t>(obj.first, -1);
+			objects.insert(std::pair<std::pair<std::uint32_t, std::int32_t> , std::string>(pair, "0x" + obj.second->GetTypedActualValue<std::string>()));
+		}
+
+		auto& subod = obj.second->GetSubObjectCollection();
+		for (auto& subobj : subod)
+		{
+			if (subobj.second->WriteToConfiguration())
+			{
+				auto pair = std::pair<std::uint32_t, std::int32_t>(obj.first, subobj.first);
+				objects.insert(std::pair<std::pair<std::uint32_t, std::int32_t> , std::string>(pair, "0x" + subobj.second->GetTypedActualValue<std::string>()));
+			}
+		}
+	}
+	return res;
+}
