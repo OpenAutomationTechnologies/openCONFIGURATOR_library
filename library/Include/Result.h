@@ -58,6 +58,8 @@ namespace IndustrialNetwork
 				const std::string kMsgNonExistingNode = "Node with id %d does not exist.";
 				const std::string kMsgNonManagingNode = "Node with id %d is not a managing node or redundant managing node.";
 				const std::string kMsgNonControlledNode = "Node with id %d is not a controlled node.";
+				const std::string kMsgNonRedundantManagingNode = "Node with id %d is not a redundant managing node.";
+				
 				const std::string kMsgNodeCreated = "Node with id %d created.";
 				const std::string kMsgNodeRemoved = "Node with id %d removed.";
 				const std::string kMsgNodeObjectCount = "Node with id %d has %d configuration objects.";

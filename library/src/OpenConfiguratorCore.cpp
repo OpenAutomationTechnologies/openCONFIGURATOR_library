@@ -1227,7 +1227,7 @@ Result OpenConfiguratorCore::SetAsndMaxNr(const std::string& networkId, const st
 	return res;
 }
 
-Result  OpenConfiguratorCore::SetPResTimeOut(const std::string& networkId, const std::uint8_t nodeId, const std::uint32_t presTimeout)
+Result OpenConfiguratorCore::SetPResTimeOut(const std::string& networkId, const std::uint8_t nodeId, const std::uint32_t presTimeout)
 {
 	std::shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -1252,6 +1252,64 @@ Result  OpenConfiguratorCore::SetPResTimeOut(const std::string& networkId, const
 		% nodeId;
 		LOG_FATAL() << formatter.str();
 		return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE, formatter.str());
+	}
+	return res;
+}
+
+Result OpenConfiguratorCore::SetRedundantManagingNodeWaitNotActive(const std::string& networkId, const std::uint8_t nodeId, const std::uint32_t waitNotActive)
+{
+	std::shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::shared_ptr<BaseNode> node;
+	res = network->GetBaseNode(nodeId, node);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::stringstream convert;
+	convert << waitNotActive;
+
+	auto ptr = std::dynamic_pointer_cast<ManagingNode>(node);
+	if (ptr && nodeId != 240)
+		res = ptr->ForceSubObject(0x1F89, 0x1, false, convert.str());
+	else
+	{
+		boost::format formatter(kMsgNonRedundantManagingNode);
+		formatter
+		% nodeId;
+		LOG_FATAL() << formatter.str();
+		return Result(ErrorCode::NODE_IS_NOT_REDUNDANT_MANAGING_NODE, formatter.str());
+	}
+	return res;
+}
+
+Result OpenConfiguratorCore::SetRedundantManagingNodePriority(const std::string& networkId, const std::uint8_t nodeId, const std::uint32_t priority)
+{
+	std::shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::shared_ptr<BaseNode> node;
+	res = network->GetBaseNode(nodeId, node);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::stringstream convert;
+	convert << priority;
+
+	auto ptr = std::dynamic_pointer_cast<ManagingNode>(node);
+	if (ptr && nodeId != 240)
+		res = ptr->ForceSubObject(0x1F89, 0xA, false, convert.str());
+	else
+	{
+		boost::format formatter(kMsgNonRedundantManagingNode);
+		formatter
+		% nodeId;
+		LOG_FATAL() << formatter.str();
+		return Result(ErrorCode::NODE_IS_NOT_REDUNDANT_MANAGING_NODE, formatter.str());
 	}
 	return res;
 }

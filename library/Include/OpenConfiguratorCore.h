@@ -89,8 +89,9 @@ namespace IndustrialNetwork
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetAsyncSlotTimeout(const std::string& networkId, const std::uint8_t nodeId, const std::uint32_t asyncSlotTimeout);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetAsndMaxNr(const std::string& networkId, const std::uint8_t nodeId, const std::uint8_t asndMaxNr);
-
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetPResTimeOut(const std::string& networkId, const std::uint8_t nodeId, const std::uint32_t presTimeout);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetRedundantManagingNodeWaitNotActive(const std::string& networkId, const std::uint8_t nodeId, const std::uint32_t waitNotActive);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetRedundantManagingNodePriority(const std::string& networkId, const std::uint8_t nodeId, const std::uint32_t priority);
 
 						//Build related API
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildConfiguration(const std::string& networkId, std::string& configurationOutput,  std::vector<std::uint8_t>& binOutput);
