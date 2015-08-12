@@ -1226,3 +1226,32 @@ Result OpenConfiguratorCore::SetAsndMaxNr(const std::string& networkId, const st
 	}
 	return res;
 }
+
+Result  OpenConfiguratorCore::SetPResTimeOut(const std::string& networkId, const std::uint8_t nodeId, const std::uint32_t presTimeout)
+{
+	std::shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::shared_ptr<BaseNode> node;
+	res = network->GetBaseNode(nodeId, node);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::stringstream convert;
+	convert << presTimeout;
+
+	auto ptr = std::dynamic_pointer_cast<ControlledNode>(node);
+	if (ptr)
+		res = ptr->ForceSubObject(0x1F98, 0x3, false, convert.str());
+	else
+	{
+		boost::format formatter(kMsgNonControlledNode);
+		formatter
+		% nodeId;
+		LOG_FATAL() << formatter.str();
+		return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE, formatter.str());
+	}
+	return res;
+}

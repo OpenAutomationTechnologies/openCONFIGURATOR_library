@@ -143,7 +143,8 @@ namespace IndustrialNetwork
 					NODE_ASSIGNMENT_NOT_SUPPORTED, //Node assignemnt not supported by node
 					NODE_ASSIGNMENT_EXISTS, //Node assignment is already set
 					MANAGING_NODE_DISABLE_INVALID, // The managing node cannot be disabled.
-					NODE_IS_NOT_MANAGING_NODE // The node is not a managing node
+					NODE_IS_NOT_MANAGING_NODE, // The node is not a managing node
+					NODE_IS_NOT_CONTROLLED_NODE // The node is not a controlled node
 
 				};
 
