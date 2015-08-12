@@ -87,6 +87,9 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetMultiplexedCycleCount(const std::string& networkId, std::uint16_t multiplexedCycleLength);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetPrescaler(const std::string& networkId, std::uint16_t prescaler);
 
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetAsyncSlotTimeout(const std::string& networkId, const std::uint8_t nodeId, const std::uint32_t asyncSlotTimeout);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetAsndMaxNr(const std::string& networkId, const std::uint8_t nodeId, const std::uint8_t asndMaxNr);
+
 						//Build related API
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildConfiguration(const std::string& networkId, std::string& configurationOutput,  std::vector<std::uint8_t>& binOutput);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildProcessImage(const std::string& networkId, std::string& configurationOutput);

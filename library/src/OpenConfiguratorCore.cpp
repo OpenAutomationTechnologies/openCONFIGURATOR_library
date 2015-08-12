@@ -1168,3 +1168,61 @@ Result OpenConfiguratorCore::SetNodeName(const std::string& networkId, const std
 
 	return res;
 }
+
+Result OpenConfiguratorCore::SetAsyncSlotTimeout(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t asyncSlotTimeout)
+{
+	std::shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::shared_ptr<BaseNode> node;
+	res = network->GetBaseNode(nodeId, node);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::stringstream convert;
+	convert << asyncSlotTimeout;
+
+	auto ptr = std::dynamic_pointer_cast<ManagingNode>(node);
+	if (ptr)
+		res = ptr->ForceSubObject(0x1F8A, 0x2, false, convert.str());
+	else
+	{
+		boost::format formatter(kMsgNonManagingNode);
+		formatter
+		% nodeId;
+		LOG_FATAL() << formatter.str();
+		return Result(ErrorCode::NODE_IS_NOT_MANAGING_NODE, formatter.str());
+	}
+	return res;
+}
+
+Result OpenConfiguratorCore::SetAsndMaxNr(const std::string& networkId, const std::uint8_t nodeId, std::uint8_t asndMaxNr)
+{
+	std::shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::shared_ptr<BaseNode> node;
+	res = network->GetBaseNode(nodeId, node);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::stringstream convert;
+	convert << asndMaxNr;
+
+	auto ptr = std::dynamic_pointer_cast<ManagingNode>(node);
+	if (ptr)
+		res = ptr->ForceSubObject(0x1F8A, 0x3, false, convert.str());
+	else
+	{
+		boost::format formatter(kMsgNonManagingNode);
+		formatter
+		% nodeId;
+		LOG_FATAL() << formatter.str();
+		return Result(ErrorCode::NODE_IS_NOT_MANAGING_NODE, formatter.str());
+	}
+	return res;
+}
