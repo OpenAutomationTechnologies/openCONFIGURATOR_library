@@ -1046,3 +1046,72 @@ Result OpenConfiguratorCore::EnableNode(const std::string& networkId, const std:
 	}
 	return res;
 }
+
+Result OpenConfiguratorCore::GetObjectActualValue(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::string& actualValueReturn)
+{
+	std::shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (res.IsSuccessful())
+	{
+		std::shared_ptr<BaseNode> node;
+		res = network->GetBaseNode(nodeId, node);
+		if (res.IsSuccessful())
+		{
+			std::shared_ptr<Object> obj;
+			res = node->GetObject(objectId, obj);
+			if (!res.IsSuccessful())
+				return res;
+
+			if (obj->WriteToConfiguration())
+			{
+				std::string actualValue = "0x";
+				actualValue.append(obj->GetTypedActualValue<std::string>());
+				actualValueReturn = actualValue;
+				return res;
+			}
+			//No actual value present
+			boost::format formatter(kMsgObjectNoActualValue);
+			formatter
+			% objectId
+			% (uint32_t) nodeId;
+			LOG_FATAL() << formatter.str();
+			return Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, formatter.str());
+		}
+	}
+	return res;
+}
+
+Result OpenConfiguratorCore::GetSubObjectActualValue(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::uint8_t subObjectId, std::string& actualValueReturn)
+{
+	std::shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (res.IsSuccessful())
+	{
+		std::shared_ptr<BaseNode> node;
+		res = network->GetBaseNode(nodeId, node);
+		if (res.IsSuccessful())
+		{
+			std::shared_ptr<SubObject> subobj;
+			res = node->GetSubObject(objectId, subObjectId, subobj);
+			if (!res.IsSuccessful())
+				return res;
+
+			if (subobj->WriteToConfiguration())
+			{
+				std::string actualValue = "0x";
+				actualValue.append(subobj->GetTypedActualValue<std::string>());
+				actualValueReturn = actualValue;
+				return res;
+			}
+			//No actual value present
+			boost::format formatter(kMsgSubObjectNoActualValue);
+			formatter
+			% objectId
+			% subObjectId
+			% (uint32_t) nodeId;
+			LOG_FATAL() << formatter.str();
+			return Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, formatter.str());
+		}
+	}
+	return res;
+}

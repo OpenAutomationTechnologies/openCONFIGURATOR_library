@@ -71,6 +71,7 @@
 %apply std::string &INOUT { std::string & activeConfiguration };
 %apply std::string &INOUT { std::string & defaultValue };
 %apply std::string &INOUT { std::string & configurationOutput };
+%apply std::string &INOUT { std::string & actualValueReturn };
 %apply unsigned int& OUTPUT { unsigned int& size };
 
 

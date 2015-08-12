@@ -70,7 +70,9 @@ namespace IndustrialNetwork
 				const std::string kMsgExistingObject = "Object 0x%X already exists on node %d.";
 				const std::string kMsgExistingSubObject = "Subobject 0x%X/0x%X already exists on node %d.";
 				const std::string kMsgObjectCreated = "Object 0x%X created on node %d.";
-				const std::string kMsgSubObjectCreated = "Subobject 0x%X/0x%X  created on node %d.";
+				const std::string kMsgSubObjectCreated = "Subobject 0x%X/0x%X created on node %d.";
+				const std::string kMsgObjectNoActualValue = "Object 0x%X on node %d does not have an actual value.";
+				const std::string kMsgSubObjectNoActualValue = "Subobject 0x%X/0x%X on node %d does not have an actual value.";
 				const std::string kMsgNonExistingObject = "Object 0x%X does not exist on node %d.";
 				const std::string kMsgNonExistingSubObject = "Subobject 0x%X/0x%X does not exist on node %d.";
 				const std::string kMsgForceObject = "Set force flag on object 0x%X on node %d to '%s'.";
@@ -87,7 +89,7 @@ namespace IndustrialNetwork
 				const std::string kMsgBaseObjectHighLimitError = "BaseObject '%s' with id '0x%X' on node '%d' exceeds highlimit '%d'.";
 				const std::string kMsgBaseObjectDataTypeError = "BaseObject '%s' with id '0x%X' on node '%d' does not have a specified datatype.";
 				const std::string kMsgBaseObjectDefaultValue = "BaseObject '%s' with id '0x%X' on node '%d' does not have a default value datatype.";
-				const std::string kMsgBaseObjectActualValue = "BaseObject '%s' with id '0x%X' on node '%d'  does not have an actual value datatype.";
+				const std::string kMsgBaseObjectActualValue = "BaseObject '%s' with id '0x%X' on node '%d' does not have an actual value datatype.";
 				const std::string kMsgBaseObjectValueSupport = "Object '%d' on node %d does not support for actual / default values.";
 
 				const std::string kMsgConfigurationSettingNotSupported = "Configuration setting '%s' is not supported by the library.";
@@ -153,7 +155,6 @@ namespace IndustrialNetwork
 				//Unused
 				const std::string kMsgNoNodesConfigured = "Configuration does not contain any POWERLINK-Nodes.";
 				const std::string kMsgNoControlledNodesConfigured = "Configuration does not contain any POWERLINK-CNs.";
-				const std::string kMsgNoManagingNodeConfigured = "Configuration does not contain any POWERLINK-MN.";
 				const std::string kMsgObjectDictoryEmpty = "Object dictionary of node %d is empty.";
 				const std::string kMsgIndexContainsNoSubIndices = "Index 0x%X of node %d contains no subIndices.";
 				const std::string kMsgNullArgument = "Argument(s) %s must not be NULL.";

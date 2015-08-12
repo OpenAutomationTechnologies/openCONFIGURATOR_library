@@ -735,7 +735,17 @@ namespace openconfigurator_core_net_app
             System.IO.File.WriteAllText(@".\mnobd.txt", tempString);
            
             Console.ReadLine();
+            string cTime;
+            core.GetObjectActualValue("test", 240, 0x1006, out cTime);
+            Console.WriteLine(cTime);
+            Console.ReadLine();
 
+            string assign;
+            core.GetSubObjectActualValue("test", 240, 0x1f81, 0x5, out assign);
+            Console.WriteLine(assign);
+            Console.ReadLine();
+            
+            
             res = core.RemoveNode("test", 1);
             Console.WriteLine(res.IsSuccessful());
             core.EnableNode("test", 10, false);
