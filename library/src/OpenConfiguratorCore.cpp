@@ -1107,7 +1107,7 @@ Result OpenConfiguratorCore::GetSubObjectActualValue(const std::string& networkI
 			boost::format formatter(kMsgSubObjectNoActualValue);
 			formatter
 			% objectId
-			% subObjectId
+			% (uint32_t) subObjectId
 			% (uint32_t) nodeId;
 			LOG_FATAL() << formatter.str();
 			return Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, formatter.str());
