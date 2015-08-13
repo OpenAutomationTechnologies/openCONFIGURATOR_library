@@ -601,12 +601,20 @@ namespace openconfigurator_core_net_app
             core.CreateObject("test", 5, 0x2000, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
             core.CreateSubObject("test", 5, 0x2000, 0x0b, ObjectType.DEFTYPE, "Name", PlkDataType.IP_ADDRESS, AccessType.RW, PDOMapping.RPDO, "100", "254.254.254.254");
 
-            core.CreateNodeAssignment("test", 5, NodeAssignment.NMT_NODEASSIGN_RT1);
-            core.CreateNodeAssignment("test", 5, NodeAssignment.NMT_NODEASSIGN_RT2);
-            core.CreateNodeAssignment("test", 5, NodeAssignment.NMT_NODEASSIGN_SWUPDATE);
-            core.CreateNodeAssignment("test", 5, NodeAssignment.NMT_NODEASSIGN_SWVERSIONCHECK);
+            core.AddNodeAssignment("test", 5, NodeAssignment.NMT_NODEASSIGN_RT1);
+            core.AddNodeAssignment("test", 5, NodeAssignment.NMT_NODEASSIGN_RT2);
+            core.AddNodeAssignment("test", 5, NodeAssignment.NMT_NODEASSIGN_SWUPDATE);
+            core.AddNodeAssignment("test", 5, NodeAssignment.NMT_NODEASSIGN_SWVERSIONCHECK);
 
-            core.CreateNodeAssignment("test", 240, NodeAssignment.NMT_NODEASSIGN_MN_PRES);
+            core.AddNodeAssignment("test", 240, NodeAssignment.NMT_NODEASSIGN_MN_PRES);
+
+            AssignmentCollection collection = new AssignmentCollection();
+            core.GetNodeAssignment("test", 240, collection);
+
+            foreach (var item in collection)
+            {
+                Console.WriteLine((NodeAssignment)item);
+            }
 
             uint obsize = 0;
             res = core.GetObjectSize("test", 5, 0x2300, out obsize);

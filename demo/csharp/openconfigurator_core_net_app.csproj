@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccessType.cs" />
+    <Compile Include="AssignmentCollection.cs" />
     <Compile Include="BaseNode.cs" />
     <Compile Include="BaseObject.cs" />
     <Compile Include="BuildConfigurationSetting.cs" />

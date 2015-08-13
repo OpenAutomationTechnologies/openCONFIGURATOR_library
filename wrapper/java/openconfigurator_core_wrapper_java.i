@@ -164,6 +164,7 @@ namespace std {
    %template(ConfigurationCollection) std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::PlkConfiguration>;
    %template(SettingsCollection) std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::BuildConfigurationSetting>;
    %template(ByteCollection) std::vector<unsigned char>;
+   %template(AssignmentCollection) std::vector<unsigned int>;
 }
 
 %typemap(javainterfaces) MapIterator "java.util.Iterator<String>"

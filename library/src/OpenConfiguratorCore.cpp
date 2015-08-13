@@ -1004,7 +1004,7 @@ Result OpenConfiguratorCore::SetOperationModeMultiplexed(const std::string& netw
 	return network->SetOperationMode(nodeId, PlkOperationMode::MULTIPLEXED, multiplexedCycle);
 }
 
-Result OpenConfiguratorCore::CreateNodeAssignment(const std::string& networkId, const std::uint8_t nodeId, const NodeAssignment assignment)
+Result OpenConfiguratorCore::AddNodeAssignment(const std::string& networkId, const std::uint8_t nodeId, const NodeAssignment assignment)
 {
 	std::shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -1615,6 +1615,7 @@ Result OpenConfiguratorCore::GetRedundantManagingNodeWaitNotActive(const std::st
 	}
 	return res;
 }
+
 Result OpenConfiguratorCore::GetRedundantManagingNodePriority(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t& priority)
 {
 	std::shared_ptr<Network> networkPtr;
@@ -1655,6 +1656,25 @@ Result OpenConfiguratorCore::GetRedundantManagingNodePriority(const std::string&
 		% nodeId;
 		LOG_FATAL() << formatter.str();
 		return Result(ErrorCode::NODE_IS_NOT_REDUNDANT_MANAGING_NODE, formatter.str());
+	}
+	return res;
+}
+
+Result OpenConfiguratorCore::GetNodeAssignment(const std::string& networkId, const std::uint8_t nodeID, std::vector<std::uint32_t>& assignmentColl)
+{
+	std::shared_ptr<Network> networkPtr;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::shared_ptr<BaseNode> nodePtr;
+	res = networkPtr->GetBaseNode(nodeID, nodePtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	for(auto assign : nodePtr->GetNodeAssignment())
+	{
+		assignmentColl.push_back(static_cast<std::underlying_type<NodeAssignment>::type>(assign));
 	}
 	return res;
 }

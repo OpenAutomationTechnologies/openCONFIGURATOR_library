@@ -192,8 +192,9 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateDynamicChannel(const std::string& networkId, const std::uint8_t nodeId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::DynamicChannelAccessType accessType, std::uint32_t startIndex, std::uint32_t endIndex, std::uint32_t maxNumber, std::uint32_t addressOffset, std::uint8_t bitAlignment = 0);
 
 						//Node Assignement API
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateNodeAssignment(const std::string& networkId, const std::uint8_t nodeID, const IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment assignment);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNodeAssignment(const std::string& networkId, const std::uint8_t nodeID, const IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment assignment);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveNodeAssignment(const std::string& networkId, const std::uint8_t nodeID, const IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment assignment);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetNodeAssignment(const std::string& networkId, const std::uint8_t nodeID, std::vector<std::uint32_t>& assignmentColl);
 
 					private:
 						//singleton

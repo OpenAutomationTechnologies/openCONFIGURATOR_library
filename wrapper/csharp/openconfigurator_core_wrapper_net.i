@@ -164,4 +164,5 @@ namespace std {
    %template(ByteCollection) std::vector<unsigned char>;
    %template(ObjectPair) std::pair<unsigned int, int>;
    %template(ObjectCollection) std::map<std::pair<unsigned int, int> , std::string>;
+   %template(AssignmentCollection) std::vector<unsigned int>;
 }

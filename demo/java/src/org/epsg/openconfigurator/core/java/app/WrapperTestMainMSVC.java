@@ -6,6 +6,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import org.epsg.openconfigurator.lib.wrapper.AccessType;
+import org.epsg.openconfigurator.lib.wrapper.AssignmentCollection;
+import org.epsg.openconfigurator.lib.wrapper.NodeAssignment;
 import org.epsg.openconfigurator.lib.wrapper.ByteCollection;
 import org.epsg.openconfigurator.lib.wrapper.CNFeatureEnum;
 import org.epsg.openconfigurator.lib.wrapper.IEC_Datatype;
@@ -1089,6 +1091,14 @@ public class WrapperTestMainMSVC {
 			String actualValue = iterator.GetValue();
 			System.out.println(iterator.GetKey().getFirst() + " / " + iterator.GetKey().getSecond() + " : " + actualValue);
 			iterator.next();
+		}
+		
+		core.AddNodeAssignment("test", (short) 240, NodeAssignment.NMT_NODEASSIGN_MN_PRES);
+		AssignmentCollection assignments = new AssignmentCollection();
+		core.GetNodeAssignment("test", (short)240, assignments);
+		
+		for (int i = 0; i < assignments.size(); i++) {
+			System.out.println(assignments.get(i));
 		}
 		
 		System.console().readLine();
