@@ -153,8 +153,72 @@ namespace std {
    %template(StringCollection) std::vector<std::string>;
    %template(ConfigurationCollection) std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::PlkConfiguration>;
    %template(SettingsCollection) std::vector<IndustrialNetwork::POWERLINK::Core::Configuration::BuildConfigurationSetting>;
-   %template(ByteCollection) std::vector<unsigned char>;   
-   %template(ObjectPair) std::pair<unsigned int, int>;
-   %template(ObjectCollection) std::map<std::pair<unsigned int, int> , std::string>;
-
+   %template(ByteCollection) std::vector<unsigned char>;
 }
+
+%typemap(javainterfaces) MapIterator "java.util.Iterator<String>"
+%typemap(javacode) MapIterator %{
+  public void remove() throws UnsupportedOperationException {
+    throw new UnsupportedOperationException();
+  }
+
+  public String GetValue(){
+   return getValue();
+  }
+
+  public ObjectPair GetKey(){
+    return getKey();
+  }
+
+  public String next() throws java.util.NoSuchElementException {
+    if (!hasNext()) {
+      throw new java.util.NoSuchElementException();
+    }
+    return nextImpl();
+  }
+%}
+
+#%javamethodmodifiers MapIterator::getValue "private";
+#%javamethodmodifiers MapIterator::getKey "private";
+%javamethodmodifiers MapIterator::nextImpl "private";
+%inline %{
+  struct MapIterator {
+    typedef std::map<std::pair<unsigned int, int>, std::string> map_t;
+    MapIterator(const map_t& m) : it(m.begin()), map(m) {}
+
+    bool hasNext() const {
+      return it != map.end();
+    }
+
+	const std::pair<unsigned int, int> getKey(){
+		const std::pair<std::pair<unsigned int, int>, std::string>& ret = *it;
+		return ret.first;
+	}
+
+    const std::string getValue() {
+      const std::pair<std::pair<unsigned int, int>, std::string> ret = *it;
+      return ret.second;
+    }
+
+	const std::string nextImpl() {
+      const std::pair<std::pair<unsigned int, int>, std::string> ret = *it++;
+      return ret.second;
+    }
+
+  private:
+    map_t::const_iterator it;
+    const map_t& map;
+  };
+%}
+
+%typemap(javainterfaces) std::map<std::pair<unsigned int, int>,std::string> "Iterable<String>"
+
+%newobject std::map<std::pair<unsigned int, int>,std::string>::iterator() const;
+%extend std::map<std::pair<unsigned int, int>,std::string> {
+  MapIterator *iterator() const {
+    return new MapIterator(*$self);
+  }
+}
+
+%template(ObjectPair) std::pair<unsigned int, int>;
+%template(ObjectCollection) std::map<std::pair<unsigned int, int> , std::string>;
