@@ -1313,3 +1313,348 @@ Result OpenConfiguratorCore::SetRedundantManagingNodePriority(const std::string&
 	}
 	return res;
 }
+
+Result OpenConfiguratorCore::GetCycleTime(const std::string& networkId, std::uint32_t& cycleTime)
+{
+	std::shared_ptr<Network> networkPtr;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::shared_ptr<ManagingNode> nodePtr;
+	res = networkPtr->GetManagingNode(nodePtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::shared_ptr<Object> object;
+	res = nodePtr->GetObject(0x1006, object);
+	if (!res.IsSuccessful())
+		return res;
+	if (object->WriteToConfiguration())
+		cycleTime = object->GetTypedActualValue<uint32_t>();
+	else
+	{
+		boost::format formatter(kMsgObjectNoActualValue);
+		formatter
+		% (uint32_t) 0x1006
+		% (uint32_t) 240;
+		LOG_FATAL() << formatter.str();
+		return Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, formatter.str());
+	}
+
+	return res;
+}
+
+Result OpenConfiguratorCore::GetAsyncMtu(const std::string& networkId, std::uint16_t& asyncMtu)
+{
+	std::shared_ptr<Network> networkPtr;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::shared_ptr<ManagingNode> nodePtr;
+	res = networkPtr->GetManagingNode(nodePtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::shared_ptr<SubObject> subobject;
+	res = nodePtr->GetSubObject(0x1F98, 0x8, subobject);
+	if (!res.IsSuccessful())
+		return res;
+
+	if (subobject->WriteToConfiguration())
+		asyncMtu = subobject->GetTypedActualValue<uint16_t>();
+	else
+	{
+		boost::format formatter(kMsgSubObjectNoActualValue);
+		formatter
+		% (uint32_t) 0x1F98
+		% (uint32_t) 0x8
+		% (uint32_t) 240;
+		LOG_FATAL() << formatter.str();
+		return Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, formatter.str());
+	}
+	return res;
+}
+
+Result OpenConfiguratorCore::GetMultiplexedCycleCount(const std::string& networkId, std::uint16_t& multiplexedCycleLength)
+{
+	std::shared_ptr<Network> networkPtr;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::shared_ptr<ManagingNode> nodePtr;
+	res = networkPtr->GetManagingNode(nodePtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::shared_ptr<SubObject> subobject;
+	res = nodePtr->GetSubObject(0x1F98, 0x7, subobject);
+	if (!res.IsSuccessful())
+		return res;
+
+	if (subobject->WriteToConfiguration())
+		multiplexedCycleLength = subobject->GetTypedActualValue<uint16_t>();
+	else
+	{
+		boost::format formatter(kMsgSubObjectNoActualValue);
+		formatter
+		% (uint32_t) 0x1F98
+		% (uint32_t) 0x7
+		% (uint32_t) 240;
+		LOG_FATAL() << formatter.str();
+		return Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, formatter.str());
+	}
+	return res;
+}
+Result OpenConfiguratorCore::GetPrescaler(const std::string& networkId, std::uint16_t& prescaler)
+{
+	std::shared_ptr<Network> networkPtr;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::shared_ptr<ManagingNode> nodePtr;
+	res = networkPtr->GetManagingNode(nodePtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::shared_ptr<SubObject> subobject;
+	res = nodePtr->GetSubObject(0x1F98, 0x9, subobject);
+	if (!res.IsSuccessful())
+		return res;
+
+	if (subobject->WriteToConfiguration())
+		prescaler = subobject->GetTypedActualValue<uint16_t>();
+	else
+	{
+		boost::format formatter(kMsgSubObjectNoActualValue);
+		formatter
+		% (uint32_t) 0x1F98
+		% (uint32_t) 0x9
+		% (uint32_t) 240;
+		LOG_FATAL() << formatter.str();
+		return Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, formatter.str());
+	}
+	return res;
+}
+
+Result OpenConfiguratorCore::GetAsyncSlotTimeout(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t& asyncSlotTimeout)
+{
+	std::shared_ptr<Network> networkPtr;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::shared_ptr<ManagingNode> nodePtr;
+	res = networkPtr->GetManagingNode(nodePtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	auto ptr = std::dynamic_pointer_cast<ManagingNode>(nodePtr);
+	if (ptr)
+	{
+		std::shared_ptr<SubObject> subobject;
+		res = nodePtr->GetSubObject(0x1F8A, 0x2, subobject);
+		if (!res.IsSuccessful())
+			return res;
+
+		if (subobject->WriteToConfiguration())
+			asyncSlotTimeout = subobject->GetTypedActualValue<uint32_t>();
+		else
+		{
+			boost::format formatter(kMsgSubObjectNoActualValue);
+			formatter
+			% (uint32_t) 0x1F8A
+			% (uint32_t) 0x2
+			% (uint32_t) 240;
+			LOG_FATAL() << formatter.str();
+			return Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, formatter.str());
+		}
+	}
+	else
+	{
+		boost::format formatter(kMsgNonManagingNode);
+		formatter
+		% nodeId;
+		LOG_FATAL() << formatter.str();
+		return Result(ErrorCode::NODE_IS_NOT_MANAGING_NODE, formatter.str());
+	}
+	return res;
+}
+
+Result OpenConfiguratorCore::GetAsndMaxNr(const std::string& networkId, const std::uint8_t nodeId, std::uint16_t& asndMaxNr)
+{
+	std::shared_ptr<Network> networkPtr;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::shared_ptr<BaseNode> nodePtr;
+	res = networkPtr->GetBaseNode(nodeId, nodePtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	auto ptr = std::dynamic_pointer_cast<ManagingNode>(nodePtr);
+	if (ptr)
+	{
+		std::shared_ptr<SubObject> subobject;
+		res = nodePtr->GetSubObject(0x1F8A, 0x3, subobject);
+		if (!res.IsSuccessful())
+			return res;
+
+		if (subobject->WriteToConfiguration())
+			asndMaxNr = subobject->GetTypedActualValue<uint16_t>();
+		else
+		{
+			boost::format formatter(kMsgSubObjectNoActualValue);
+			formatter
+			% (uint32_t) 0x1F8A
+			% (uint32_t) 0x3
+			% (uint32_t) 240;
+			LOG_FATAL() << formatter.str();
+			return Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, formatter.str());
+		}
+	}
+	else
+	{
+		boost::format formatter(kMsgNonManagingNode);
+		formatter
+		% nodeId;
+		LOG_FATAL() << formatter.str();
+		return Result(ErrorCode::NODE_IS_NOT_MANAGING_NODE, formatter.str());
+	}
+	return res;
+}
+
+Result OpenConfiguratorCore::GetPResTimeOut(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t& presTimeout)
+{
+	std::shared_ptr<Network> networkPtr;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::shared_ptr<BaseNode> nodePtr;
+	res = networkPtr->GetBaseNode(nodeId, nodePtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	auto ptr = std::dynamic_pointer_cast<ControlledNode>(nodePtr);
+	if (ptr)
+	{
+		std::shared_ptr<SubObject> subobject;
+		res = nodePtr->GetSubObject(0x1F98, 0x3, subobject);
+		if (!res.IsSuccessful())
+			return res;
+
+		if (subobject->WriteToConfiguration())
+			presTimeout = subobject->GetTypedActualValue<uint32_t>();
+		else
+		{
+			boost::format formatter(kMsgSubObjectNoActualValue);
+			formatter
+			% (uint32_t) 0x1F98
+			% (uint32_t) 0x3
+			% (uint32_t) 240;
+			LOG_FATAL() << formatter.str();
+			return Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, formatter.str());
+		}
+	}
+	else
+	{
+		boost::format formatter(kMsgNonControlledNode);
+		formatter
+		% nodeId;
+		LOG_FATAL() << formatter.str();
+		return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE, formatter.str());
+	}
+	return res;
+}
+
+Result OpenConfiguratorCore::GetRedundantManagingNodeWaitNotActive(const std::string& networkId, const std::uint8_t nodeId,  std::uint32_t& waitNotActive)
+{
+	std::shared_ptr<Network> networkPtr;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::shared_ptr<ManagingNode> nodePtr;
+	res = networkPtr->GetManagingNode(nodePtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	auto ptr = std::dynamic_pointer_cast<ManagingNode>(nodePtr);
+	if (ptr && nodeId != 240)
+	{
+		std::shared_ptr<SubObject> subobject;
+		res = nodePtr->GetSubObject(0x1F89, 0x1, subobject);
+		if (!res.IsSuccessful())
+			return res;
+
+		if (subobject->WriteToConfiguration())
+			waitNotActive = subobject->GetTypedActualValue<uint32_t>();
+		else
+		{
+			boost::format formatter(kMsgSubObjectNoActualValue);
+			formatter
+			% (uint32_t) 0x1F89
+			% (uint32_t) 0x1
+			% (uint32_t) 240;
+			LOG_FATAL() << formatter.str();
+			return Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, formatter.str());
+		}
+	}
+	else
+	{
+		boost::format formatter(kMsgNonRedundantManagingNode);
+		formatter
+		% nodeId;
+		LOG_FATAL() << formatter.str();
+		return Result(ErrorCode::NODE_IS_NOT_REDUNDANT_MANAGING_NODE, formatter.str());
+	}
+	return res;
+}
+Result OpenConfiguratorCore::GetRedundantManagingNodePriority(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t& priority)
+{
+	std::shared_ptr<Network> networkPtr;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::shared_ptr<ManagingNode> nodePtr;
+	res = networkPtr->GetManagingNode(nodePtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	auto ptr = std::dynamic_pointer_cast<ManagingNode>(nodePtr);
+	if (ptr && nodeId != 240)
+	{
+		std::shared_ptr<SubObject> subobject;
+		res = nodePtr->GetSubObject(0x1F89, 0xA, subobject);
+		if (!res.IsSuccessful())
+			return res;
+
+		if (subobject->WriteToConfiguration())
+			priority = subobject->GetTypedActualValue<uint32_t>();
+		else
+		{
+			boost::format formatter(kMsgSubObjectNoActualValue);
+			formatter
+			% (uint32_t) 0x1F89
+			% (uint32_t) 0xA
+			% (uint32_t) 240;
+			LOG_FATAL() << formatter.str();
+			return Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, formatter.str());
+		}
+	}
+	else
+	{
+		boost::format formatter(kMsgNonRedundantManagingNode);
+		formatter
+		% nodeId;
+		LOG_FATAL() << formatter.str();
+		return Result(ErrorCode::NODE_IS_NOT_REDUNDANT_MANAGING_NODE, formatter.str());
+	}
+	return res;
+}

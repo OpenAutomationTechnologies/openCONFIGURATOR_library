@@ -93,6 +93,17 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetRedundantManagingNodeWaitNotActive(const std::string& networkId, const std::uint8_t nodeId, const std::uint32_t waitNotActive);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetRedundantManagingNodePriority(const std::string& networkId, const std::uint8_t nodeId, const std::uint32_t priority);
 
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetCycleTime(const std::string& networkId, std::uint32_t& cycleTime);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetAsyncMtu(const std::string& networkId, std::uint16_t& asyncMtu);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetMultiplexedCycleCount(const std::string& networkId, std::uint16_t& multiplexedCycleLength);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetPrescaler(const std::string& networkId, std::uint16_t& prescaler);
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetAsyncSlotTimeout(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t& asyncSlotTimeout);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetAsndMaxNr(const std::string& networkId, const std::uint8_t nodeId, std::uint16_t& asndMaxNr);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetPResTimeOut(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t& presTimeout);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetRedundantManagingNodeWaitNotActive(const std::string& networkId, const std::uint8_t nodeId,  std::uint32_t& waitNotActive);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetRedundantManagingNodePriority(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t& priority);
+
 						//Build related API
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildConfiguration(const std::string& networkId, std::string& configurationOutput,  std::vector<std::uint8_t>& binOutput);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result BuildProcessImage(const std::string& networkId, std::string& configurationOutput);

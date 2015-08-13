@@ -73,8 +73,18 @@
 %apply std::string &INOUT { std::string & defaultValue };
 %apply std::string &INOUT { std::string & configurationOutput };
 %apply std::string &INOUT { std::string & actualValueReturn };
-%apply unsigned int& OUTPUT { unsigned int& size };
 
+%apply unsigned int& OUTPUT { unsigned int& size };
+%apply unsigned int& OUTPUT { unsigned int& size };
+%apply unsigned int& OUTPUT { unsigned int& cycleTime };
+%apply unsigned short& OUTPUT { unsigned short& asyncMtu };
+%apply unsigned short& OUTPUT { unsigned short& multiplexedCycleLength };
+%apply unsigned short& OUTPUT { unsigned short& prescaler };
+%apply unsigned int& OUTPUT { unsigned int& asyncSlotTimeout };
+%apply unsigned short& OUTPUT { unsigned short& asndMaxNr };
+%apply unsigned int& OUTPUT { unsigned int& presTimeout };
+%apply unsigned int& OUTPUT { unsigned int& waitNotActive };
+%apply unsigned int& OUTPUT { unsigned int& priority };
 
 %ignore GetNetworkManagement();
 %ignore PlkFeatureDefaultValues;
