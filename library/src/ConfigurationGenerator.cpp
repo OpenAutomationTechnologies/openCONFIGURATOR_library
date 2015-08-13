@@ -322,7 +322,7 @@ Result ConfigurationGenerator::WriteMappingNrOfEntriesZero(const std::shared_ptr
 					hexOutput << ReverseHex(object.first, 4);
 					hexOutput << ReverseHex(subobject->first, 2);
 					hexOutput << ReverseHex(subobject->second->GetBitSize() / 8, 8);
-					hexOutput << ReverseHex(0x0, 8);
+					hexOutput << ReverseHex(0x0, 2);
 
 				}
 			}
