@@ -151,7 +151,7 @@ Result Network::GetBaseNode(const uint8_t nodeID, std::shared_ptr<BaseNode>& nod
 	}
 
 	//Node does not exist
-	boost::format formatter(kMsgExistingNode);
+	boost::format formatter(kMsgNonExistingNode);
 	formatter
 	% (uint32_t) nodeID;
 	LOG_FATAL() << formatter.str();
@@ -170,7 +170,7 @@ Result Network::GetManagingNode(std::shared_ptr<ManagingNode>& node)
 	}
 
 	//Node does not exist
-	boost::format formatter(kMsgExistingNode);
+	boost::format formatter(kMsgNonExistingNode);
 	formatter
 	% 240;
 	LOG_FATAL() << formatter.str();
@@ -186,7 +186,7 @@ Result Network::RemoveNode(const uint8_t nodeID)
 	if (it == this->nodeCollection.end())
 	{
 		//Node does not exist
-		boost::format formatter(kMsgExistingNode);
+		boost::format formatter(kMsgNonExistingNode);
 		formatter
 		% (uint32_t) nodeID;
 		LOG_FATAL() << formatter.str();
@@ -703,7 +703,7 @@ Result Network::EnableNode(const std::uint8_t nodeID, bool enable)
 	if (it == this->nodeCollection.end())
 	{
 		//Node does not exist
-		boost::format formatter(kMsgExistingNode);
+		boost::format formatter(kMsgNonExistingNode);
 		formatter
 		% (uint32_t) nodeID;
 		LOG_FATAL() << formatter.str();
