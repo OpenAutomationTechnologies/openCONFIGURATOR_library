@@ -685,7 +685,7 @@ namespace openconfigurator_core_net_app
             Console.WriteLine(test.IsSuccessful());
             Console.WriteLine(size);
 
-            res = core.CreateDomainObject("test", 1, 0x2000, ObjectType.DEFSTRUCT, "domain", "UID_DOM_Index2101_Sub1E");
+            res = core.CreateDomainObject("test", 1, 0x2000, ObjectType.DEFSTRUCT, "domain", PDOMapping.DEFAULT, "UID_DOM_Index2101_Sub1E");
             Console.WriteLine(res.GetErrorType());
             Console.WriteLine(res.GetErrorMessage());
 
@@ -694,7 +694,7 @@ namespace openconfigurator_core_net_app
             Console.WriteLine(res.GetErrorType());
             Console.WriteLine(res.GetErrorMessage());
 
-            res = core.CreateDomainSubObject("test", 1, 0x2000, 0x1, ObjectType.DEFSTRUCT, "domain", "UID_DOM_Index2101_Sub1E");
+            res = core.CreateDomainSubObject("test", 1, 0x2000, 0x1, ObjectType.DEFSTRUCT, "domain", PDOMapping.DEFAULT, "UID_DOM_Index2101_Sub1E");
             Console.WriteLine(res.GetErrorType());
             Console.WriteLine(res.GetErrorMessage());
 

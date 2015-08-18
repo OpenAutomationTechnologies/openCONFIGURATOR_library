@@ -1037,7 +1037,7 @@ public class WrapperTestMainLinux {
 		System.out.println(test.IsSuccessful());
 		System.out.println(size);
 
-		res = core.CreateDomainObject("test", (short) 1, 0x2000, ObjectType.DEFSTRUCT, "domain",
+		res = core.CreateDomainObject("test", (short) 1, 0x2000, ObjectType.DEFSTRUCT, "domain", PDOMapping.DEFAULT,
 				"UID_DOM_Index2101_Sub1E");
 		System.out.println(res.GetErrorType());
 		System.out.println(res.GetErrorMessage());
@@ -1048,7 +1048,7 @@ public class WrapperTestMainLinux {
 		System.out.println(res.GetErrorType());
 		System.out.println(res.GetErrorMessage());
 
-		res = core.CreateDomainSubObject("test", (short) 1, 0x2000, (short) 0x1, ObjectType.DEFSTRUCT, "domain",
+		res = core.CreateDomainSubObject("test", (short) 1, 0x2000, (short) 0x1, ObjectType.DEFSTRUCT, "domain", PDOMapping.DEFAULT,
 				"UID_DOM_Index2101_Sub1E");
 		System.out.println(res.GetErrorType());
 		System.out.println(res.GetErrorMessage());

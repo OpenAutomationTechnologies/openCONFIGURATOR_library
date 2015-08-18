@@ -472,7 +472,7 @@ Result OpenConfiguratorCore::SetObjectLimits(const std::string& networkId, const
 	return res;
 }
 
-Result OpenConfiguratorCore::CreateDomainObject(const std::string& networkId, const uint8_t nodeId, uint32_t objectId, ObjectType objectType, const std::string& name, const std::string& uniqueIdRef)
+Result OpenConfiguratorCore::CreateDomainObject(const std::string& networkId, const uint8_t nodeId, uint32_t objectId, ObjectType objectType, const std::string& name, PDOMapping pdoMapping, const std::string& uniqueIdRef)
 {
 	std::shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -487,6 +487,10 @@ Result OpenConfiguratorCore::CreateDomainObject(const std::string& networkId, co
 			if (res.IsSuccessful())
 			{
 				std::shared_ptr<Object> ptr(new Object(objectId, objectType, name, nodeId, uniqueIdRef));
+
+				if (pdoMapping != PDOMapping::UNDEFINED)
+					ptr->SetPDOMapping(pdoMapping);
+
 				ptr->SetComplexDataType(param);
 				res = node->AddObject(ptr);
 			}
@@ -560,7 +564,7 @@ Result OpenConfiguratorCore::SetSubObjectLimits(const std::string& networkId, co
 	return res;
 }
 
-Result OpenConfiguratorCore::CreateDomainSubObject(const std::string& networkId, const uint8_t nodeId, uint32_t objectId, uint8_t subObjectId, ObjectType objectType, const std::string& name, const std::string& uniqueIdRef)
+Result OpenConfiguratorCore::CreateDomainSubObject(const std::string& networkId, const uint8_t nodeId, uint32_t objectId, uint8_t subObjectId, ObjectType objectType, const std::string& name, PDOMapping pdoMapping, const std::string& uniqueIdRef)
 {
 	std::shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
@@ -575,6 +579,8 @@ Result OpenConfiguratorCore::CreateDomainSubObject(const std::string& networkId,
 			if (res.IsSuccessful())
 			{
 				std::shared_ptr<SubObject> ptr(new SubObject(subObjectId, objectType, name, nodeId, uniqueIdRef));
+				if (pdoMapping != PDOMapping::UNDEFINED)
+					ptr->SetPDOMapping(pdoMapping);
 				ptr->SetComplexDataType(param);
 				res = node->AddSubObject(objectId, ptr);
 			}
@@ -1671,7 +1677,7 @@ Result OpenConfiguratorCore::GetNodeAssignment(const std::string& networkId, con
 	if (!res.IsSuccessful())
 		return res;
 
-	for(auto assign : nodePtr->GetNodeAssignment())
+	for (auto assign : nodePtr->GetNodeAssignment())
 	{
 		assignmentColl.push_back(static_cast<std::underlying_type<NodeAssignment>::type>(assign));
 	}
