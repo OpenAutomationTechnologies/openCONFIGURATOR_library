@@ -83,6 +83,7 @@
 %apply unsigned int& OUTPUT { unsigned int& asyncSlotTimeout };
 %apply unsigned short& OUTPUT { unsigned short& asndMaxNr };
 %apply unsigned int& OUTPUT { unsigned int& presTimeout };
+%apply unsigned int& OUTPUT { unsigned int& lossOfSocTolerance };
 %apply unsigned int& OUTPUT { unsigned int& waitNotActive };
 %apply unsigned int& OUTPUT { unsigned int& priority };
 

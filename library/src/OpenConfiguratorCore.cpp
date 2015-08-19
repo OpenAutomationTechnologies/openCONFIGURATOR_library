@@ -1683,3 +1683,75 @@ Result OpenConfiguratorCore::GetNodeAssignment(const std::string& networkId, con
 	}
 	return res;
 }
+
+Result OpenConfiguratorCore::SetLossOfSocTolerance(const std::string& networkId, const std::uint8_t nodeId, const std::uint32_t lossOfSocTolerance)
+{
+	std::shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::shared_ptr<BaseNode> node;
+	res = network->GetBaseNode(nodeId, node);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::stringstream convert;
+	convert << lossOfSocTolerance;
+
+	auto ptr = std::dynamic_pointer_cast<ControlledNode>(node);
+	if (ptr)
+		res = ptr->ForceObject(0x1C14, false, convert.str());
+	else
+	{
+		boost::format formatter(kMsgNonControlledNode);
+		formatter
+		% nodeId;
+		LOG_FATAL() << formatter.str();
+		return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE, formatter.str());
+	}
+	return res;
+}
+
+Result OpenConfiguratorCore::GetLossOfSocTolerance(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t& lossOfSocTolerance)
+{
+	std::shared_ptr<Network> networkPtr;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::shared_ptr<BaseNode> nodePtr;
+	res = networkPtr->GetBaseNode(nodeId, nodePtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	auto ptr = std::dynamic_pointer_cast<ControlledNode>(nodePtr);
+	if (ptr)
+	{
+		std::shared_ptr<Object> object;
+		res = nodePtr->GetObject(0x1C14, object);
+		if (!res.IsSuccessful())
+			return res;
+
+		if (object->WriteToConfiguration())
+			lossOfSocTolerance = object->GetTypedActualValue<uint32_t>();
+		else
+		{
+			boost::format formatter(kMsgObjectNoActualValue);
+			formatter
+			% (uint32_t) 0x1C14
+			% (uint32_t) 240;
+			LOG_FATAL() << formatter.str();
+			return Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, formatter.str());
+		}
+	}
+	else
+	{
+		boost::format formatter(kMsgNonControlledNode);
+		formatter
+		% nodeId;
+		LOG_FATAL() << formatter.str();
+		return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE, formatter.str());
+	}
+	return res;
+}
