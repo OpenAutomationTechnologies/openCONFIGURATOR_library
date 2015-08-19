@@ -111,24 +111,42 @@ SET_SOURCE_FILES_PROPERTIES(${SWIG_INTERFACE_FILE} PROPERTIES CPLUSPLUS ON)
 SET_PROPERTY(SOURCE ${SWIG_INTERFACE_FILE} PROPERTY SWIG_FLAGS "-package" "org.epsg.openconfigurator.lib.wrapper")
 SWIG_ADD_MODULE(openconfigurator_core_wrapper_java java ${SWIG_INTERFACE_FILE})
 #SET_TARGET_PROPERTIES(openconfigurator_core_wrapper_java PROPERTIES PREFIX "")
-
 # Create openPOWERLINK wrapper library
 SWIG_LINK_LIBRARIES(openconfigurator_core_wrapper_java openconfigurator_core_lib ${JAVA_LIBRARIES} ${Boost_LIBRARIES})
 
 ###############################################################################
 # Compile SWIG-Generated Java-Sources using javac and create a *.jar
 ###############################################################################
-SET(CMAKE_JAVA_COMPILE_FLAGS "-source" "1.7" "-target" "1.7")
+SET(JAVA_COMPILE_FLAGS -source 1.7 -target 1.7)
 IF (OPEN_CONFIGURATOR_CORE_JAVA_WRAPPER_DEBUG_INFO)
-	SET(CMAKE_JAVA_COMPILE_FLAGS "${CMAKE_JAVA_COMPILE_FLAGS}" "-g")
+	SET(JAVA_COMPILE_FLAGS -source 1.7 -target 1.7 -g)
 ENDIF()
 
-FILE(GLOB JAVA_SOURCE_FILES ${CMAKE_CURRENT_BINARY_DIR}/Java/src/*.java)
-ADD_JAR(org.epsg.openconfigurator.lib.wrapper.v1.0
+FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/Java/classes")
+ADD_CUSTOM_COMMAND(TARGET openconfigurator_core_wrapper_java POST_BUILD
+    COMMAND "${Java_JAVAC_EXECUTABLE}" ${JAVA_COMPILE_FLAGS} -d  ./Java/classes  ./Java/src/*.java
+    COMMAND "${Java_JAR_EXECUTABLE}" -cfM org.epsg.openconfigurator.wrapper.jar -C ./Java/classes .
+    )
+
+SET(WRAPPER_JAR "${CMAKE_CURRENT_BINARY_DIR}/org.epsg.openconfigurator.wrapper.jar")
+
+IF(MSVC)
+	SET(ENTRY_POINT org/epsg/openconfigurator/core/java/app/WrapperTestMainMSVC)
+ELSEIF(MINGW)
+	SET(ENTRY_POINT org/epsg/openconfigurator/core/java/app/WrapperTestMainMinGW)
+ELSEIF(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+	SET(ENTRY_POINT org/epsg/openconfigurator/core/java/app/WrapperTestMainLinux)
+ENDIF()
+
+SET(CMAKE_JAVA_COMPILE_FLAGS "-source" "1.7" "-target" "1.7")
+FILE(GLOB JAVA_SOURCE_FILES ${PROJECT_SOURCE_DIR}/../../demo/java/src/org/epsg/openconfigurator/core/java/app/*.java)
+ADD_JAR(org.epsg.openconfigurator.demo.app
   SOURCES ${JAVA_SOURCE_FILES}
-  OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/Java/bin"
+  INCLUDE_JARS ${WRAPPER_JAR}
+  ENTRY_POINT ${ENTRY_POINT}
+  OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}"
 )
-ADD_DEPENDENCIES(org.epsg.openconfigurator.lib.wrapper.v1.0 openconfigurator_core_wrapper_java)
+ADD_DEPENDENCIES(org.epsg.openconfigurator.demo.app openconfigurator_core_wrapper_java)
 
 ###############################################################################
 # Install
@@ -138,4 +156,5 @@ TARGETS openconfigurator_core_wrapper_java
 LIBRARY DESTINATION ${INSTALL_DIR}
 )
 
-INSTALL(FILES "${CMAKE_CURRENT_BINARY_DIR}/Java/bin/org.epsg.openconfigurator.lib.wrapper.v1.0.jar" DESTINATION ${INSTALL_DIR})
+INSTALL(FILES "${CMAKE_CURRENT_BINARY_DIR}/org.epsg.openconfigurator.wrapper.jar" DESTINATION ${INSTALL_DIR})
+INSTALL(FILES "${CMAKE_CURRENT_BINARY_DIR}/org.epsg.openconfigurator.demo.app.jar" DESTINATION ${INSTALL_DIR})
