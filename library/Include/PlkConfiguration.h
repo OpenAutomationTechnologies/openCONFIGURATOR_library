@@ -92,6 +92,9 @@ namespace IndustrialNetwork
 						//Write for all CNs
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeCNLossObjects(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
 
+						//Sync RMNs
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SyncRedundantManagingNodes(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
+
 
 				};
 			}

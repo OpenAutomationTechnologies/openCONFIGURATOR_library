@@ -10,14 +10,14 @@ Copyright (c) 2015, Bernecker+Rainer Industrie-Elektronik Ges.m.b.H. (B&R)
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name of the copyright holders nor the
-      names of its contributors may be used to endorse or promote products
-      derived from this software without specific prior written permission.
+* Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in the
+documentation and/or other materials provided with the distribution.
+* Neither the name of the copyright holders nor the
+names of its contributors may be used to endorse or promote products
+derived from this software without specific prior written permission.
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -128,6 +128,11 @@ Result PlkConfiguration::GenerateConfiguration(const std::map<uint8_t, std::shar
 
 	//Write 0x1C0B / 0x1C0C / 0x1C0D / 0x3 for all nodes if no actual values does exist
 	res = DistributeCNLossObjects(nodeCollection);
+	if (!res.IsSuccessful())
+		return res;
+
+	//Sync all needed MN object actual values with the RMN objects
+	res = SyncRedundantManagingNodes(nodeCollection);
 	return res;
 }
 
@@ -723,6 +728,45 @@ Result PlkConfiguration::DistributeCNLossObjects(const std::map<std::uint8_t, st
 				{
 					//Set every node 0x1C0D / 0x3 actual value
 					res = lossOfObject->SetTypedObjectActualValue(cnLossObjectStr.str());
+				}
+			}
+		}
+	}
+	return Result();
+}
+
+Result PlkConfiguration::SyncRedundantManagingNodes(const std::map<std::uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
+{
+	//Get managing node
+	auto& mn = nodeCollection.at(240);
+
+	for (auto& node : nodeCollection)
+	{
+		if (node.first == 240)
+			continue;
+
+		//Distribute RMNs
+		if (std::dynamic_pointer_cast<ManagingNode>(node.second))
+		{
+			for (auto& obj : mn->GetObjectDictionary())
+			{
+				if (obj.first == 0x1F81) //Skip node assignments
+					continue;
+
+				if (obj.second->WriteToConfiguration())
+				{
+					Result res = node.second->SetObjectActualValue(obj.first, "0x" + obj.second->GetTypedActualValue<std::string>());
+					if (!res.IsSuccessful())
+						return res;
+				}
+				for (auto& subObj : obj.second->GetSubObjectCollection())
+				{
+					if (subObj.second->WriteToConfiguration())
+					{
+						Result res = node.second->SetSubObjectActualValue(obj.first, subObj.first, "0x" + subObj.second->GetTypedActualValue<std::string>());
+						if (!res.IsSuccessful())
+							return res;
+					}
 				}
 			}
 		}
