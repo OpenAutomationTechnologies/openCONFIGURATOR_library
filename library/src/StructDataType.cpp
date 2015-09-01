@@ -43,9 +43,9 @@ StructDataType::~StructDataType()
 	this->varDeclarationList.clear();
 }
 
-uint32_t StructDataType::GetBitSize()
+std::uint32_t StructDataType::GetBitSize()
 {
-	uint32_t bitSize = 0;
+	std::uint32_t bitSize = 0;
 	for (auto& var : this->varDeclarationList)
 	{
 		bitSize += var->GetBitSize();

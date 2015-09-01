@@ -46,7 +46,6 @@ namespace IndustrialNetwork
 		*/
 		class DLLEXPORT IBuildConfigurationSetting
 		{
-
 			public:
 				IBuildConfigurationSetting(const std::string& name = "", const std::string& value = "", const std::string& description = "") :
 					enabled(true),
@@ -97,7 +96,6 @@ namespace IndustrialNetwork
 				{
 					this->value = value;
 				}
-
 
 			private:
 				bool enabled;

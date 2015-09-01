@@ -31,7 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "Network.h"
 
-
 using namespace IndustrialNetwork::POWERLINK::Core::NetworkHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
@@ -45,7 +44,7 @@ Network::Network() :
 	asyncMTU(300), //DS 301 V1.2.1
 	multiplexedCycleCount(0), //DS 301 V1.2.1
 	prescaler(2), //DS 301 V1.2.1
-	nodeCollection(std::map<uint8_t, std::shared_ptr<BaseNode>>()),
+	nodeCollection(std::map<std::uint8_t, std::shared_ptr<BaseNode>>()),
 	buildConfigurations(std::vector<std::shared_ptr<PlkConfiguration>>()),
 	activeConfiguration("")
 {}
@@ -77,12 +76,12 @@ Result Network::AddNode(std::shared_ptr<ControlledNode>& node)
 
 	for (auto& var : this->nodeCollection)
 	{
-		if (var.first == node->GetNodeIdentifier())
+		if (var.first == node->GetNodeId())
 		{
 			//Node already exists
 			boost::format formatter(kMsgExistingNode);
 			formatter
-			% (uint32_t) var.first;
+			% (std::uint32_t) var.first;
 			LOG_FATAL() << formatter.str();
 			return Result(ErrorCode::NODE_EXISTS, formatter.str());
 		}
@@ -91,12 +90,12 @@ Result Network::AddNode(std::shared_ptr<ControlledNode>& node)
 	//Log info node created
 	boost::format formatter(kMsgNodeCreated);
 	formatter
-	% (uint32_t) node->GetNodeIdentifier();
+	% (std::uint32_t) node->GetNodeId();
 	LOG_INFO() << formatter.str();
-	this->nodeCollection.insert(std::pair<uint8_t, std::shared_ptr<BaseNode>>(node->GetNodeIdentifier(), node));
+	this->nodeCollection.insert(std::pair<std::uint8_t, std::shared_ptr<BaseNode>>(node->GetNodeId(), node));
 
 	//Set Node Assignement with actual value "0"
-	mn->SetSubObjectActualValue(0x1F81, node->GetNodeIdentifier(), "0");
+	mn->SetSubObjectActualValue(0x1F81, node->GetNodeId(), "0");
 
 	return Result();
 }
@@ -105,12 +104,12 @@ Result Network::AddNode(std::shared_ptr<ManagingNode>& node)
 {
 	for (auto& var : this->nodeCollection)
 	{
-		if (var.first == node->GetNodeIdentifier())
+		if (var.first == node->GetNodeId())
 		{
 			//Node already exists
 			boost::format formatter(kMsgExistingNode);
 			formatter
-			% (uint32_t) node->GetNodeIdentifier();
+			% (std::uint32_t) node->GetNodeId();
 			LOG_FATAL() << formatter.str();
 			return Result(ErrorCode::NODE_EXISTS, formatter.str());
 		}
@@ -118,13 +117,13 @@ Result Network::AddNode(std::shared_ptr<ManagingNode>& node)
 	//Log info node created
 	boost::format formatter(kMsgNodeCreated);
 	formatter
-	% (uint32_t) node->GetNodeIdentifier();
+	% (std::uint32_t) node->GetNodeId();
 	LOG_INFO() << formatter.str();
 
-	this->nodeCollection.insert(std::pair<uint8_t, std::shared_ptr<BaseNode>>(node->GetNodeIdentifier(), node));
+	this->nodeCollection.insert(std::pair<std::uint8_t, std::shared_ptr<BaseNode>>(node->GetNodeId(), node));
 
 	//if not active MN
-	if (node->GetNodeIdentifier() != 240)
+	if (node->GetNodeId() != 240)
 	{
 		for (auto& rmn : this->nodeCollection)
 		{
@@ -132,14 +131,14 @@ Result Network::AddNode(std::shared_ptr<ManagingNode>& node)
 			if (rmnPtr.get())
 			{
 				//Increment RMN count
-				rmnPtr->AddRmnId(rmnPtr->GetNodeIdentifier());
+				rmnPtr->AddRmnId(rmnPtr->GetNodeId());
 			}
 		}
 	}
 	return Result();
 }
 
-Result Network::GetBaseNode(const uint8_t nodeID, std::shared_ptr<BaseNode>& node)
+Result Network::GetBaseNode(const std::uint8_t nodeID, std::shared_ptr<BaseNode>& node)
 {
 	for (auto& var : this->nodeCollection)
 	{
@@ -153,7 +152,7 @@ Result Network::GetBaseNode(const uint8_t nodeID, std::shared_ptr<BaseNode>& nod
 	//Node does not exist
 	boost::format formatter(kMsgNonExistingNode);
 	formatter
-	% (uint32_t) nodeID;
+	% (std::uint32_t) nodeID;
 	LOG_FATAL() << formatter.str();
 	return Result(ErrorCode::NODE_DOES_NOT_EXIST, formatter.str());
 }
@@ -177,7 +176,7 @@ Result Network::GetManagingNode(std::shared_ptr<ManagingNode>& node)
 	return Result(ErrorCode::NODE_DOES_NOT_EXIST, formatter.str());
 }
 
-Result Network::RemoveNode(const uint8_t nodeID)
+Result Network::RemoveNode(const std::uint8_t nodeID)
 {
 	if (nodeID == 240)
 		return Result(ErrorCode::NODEID_INVALID);
@@ -188,7 +187,7 @@ Result Network::RemoveNode(const uint8_t nodeID)
 		//Node does not exist
 		boost::format formatter(kMsgNonExistingNode);
 		formatter
-		% (uint32_t) nodeID;
+		% (std::uint32_t) nodeID;
 		LOG_FATAL() << formatter.str();
 		return Result(ErrorCode::NODE_DOES_NOT_EXIST, formatter.str());
 	}
@@ -199,14 +198,14 @@ Result Network::RemoveNode(const uint8_t nodeID)
 		Result res = this->GetManagingNode(mn);
 		if (!res.IsSuccessful())
 			return res;
-		mn->RemoveRmnId(it->second->GetNodeIdentifier()); //Decrement the RMN count in MN
+		mn->RemoveRmnId(it->second->GetNodeId()); //Decrement the RMN count in MN
 
 	}
 	this->nodeCollection.erase(it);
 	//Log info node removed
 	boost::format formatter(kMsgNodeRemoved);
 	formatter
-	% (uint32_t) nodeID;
+	% (std::uint32_t) nodeID;
 	LOG_INFO() << formatter.str();
 
 	//Remove CN related MN and RMN objects
@@ -242,13 +241,13 @@ Result Network::RemoveNode(const uint8_t nodeID)
 	return Result();
 }
 
-Result Network::GetNodes(std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
+Result Network::GetNodes(std::map<std::uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
 	nodeCollection = this->nodeCollection;
 	return Result();
 }
 
-Result Network::GetAvailableNodeIds(std::vector<uint8_t>& nodeIdCollection)
+Result Network::GetAvailableNodeIds(std::vector<std::uint8_t>& nodeIdCollection)
 {
 	for (auto& var : this->nodeCollection)
 	{
@@ -262,42 +261,42 @@ const std::string& Network::GetNetworkId()
 	return this->networkId;
 }
 
-uint32_t Network::GetCycleTime()
+std::uint32_t Network::GetCycleTime()
 {
 	return this->cycleTime;
 }
 
-uint16_t Network::GetAsyncMTU()
+std::uint16_t Network::GetAsyncMTU()
 {
 	return this->asyncMTU;
 }
 
-uint16_t Network::GetMultiplexedCycleCount()
+std::uint16_t Network::GetMultiplexedCycleCount()
 {
 	return this->multiplexedCycleCount;
 }
 
-uint16_t Network::GetPrescaler()
+std::uint16_t Network::GetPrescaler()
 {
 	return this->prescaler;
 }
 
-void Network::SetCycleTime(const uint32_t cycleTime)
+void Network::SetCycleTime(const std::uint32_t cycleTime)
 {
 	this->cycleTime = cycleTime;
 }
 
-void Network::SetAsyncMTU(const uint16_t asyncMTU)
+void Network::SetAsyncMTU(const std::uint16_t asyncMTU)
 {
 	this->asyncMTU = asyncMTU;
 }
 
-void Network::SetMultiplexedCycleCount(const uint16_t multiCycleCount)
+void Network::SetMultiplexedCycleCount(const std::uint16_t multiCycleCount)
 {
 	this->multiplexedCycleCount = multiCycleCount;
 }
 
-void Network::SetPrescaler(const uint16_t prescaler)
+void Network::SetPrescaler(const std::uint16_t prescaler)
 {
 	this->prescaler = prescaler;
 }
@@ -345,7 +344,6 @@ Result Network::SetConfigurationSettingEnabled(const std::string& configID, cons
 	LOG_FATAL() << formatter.str();
 	return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST, formatter.str());
 }
-
 
 Result Network::AddConfigurationSetting(const std::string& configID, std::shared_ptr<BuildConfigurationSetting> newSetting)
 {
@@ -654,12 +652,12 @@ Result Network::SetOperationMode(const std::uint8_t nodeID, const PlkOperationMo
 				{
 					//Add PresMN on managing node
 					mn->AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_MN_PRES);
-					uint32_t mnAssignValue = mn->GetNodeAssignmentValue();
-					res = cn->SetSubObjectActualValue(0x1F81, 240, IntToHex<uint32_t>(mnAssignValue, 0, "0x"));
+					std::uint32_t mnAssignValue = mn->GetNodeAssignmentValue();
+					res = cn->SetSubObjectActualValue(0x1F81, 240, IntToHex<std::uint32_t>(mnAssignValue, 0, "0x"));
 					if (!res.IsSuccessful())
 						return res;
 					//Set 1F81 / 240 on managing node
-					res = mn->SetSubObjectActualValue(0x1F81, 240, IntToHex<uint32_t>(mnAssignValue, 0, "0x"));
+					res = mn->SetSubObjectActualValue(0x1F81, 240, IntToHex<std::uint32_t>(mnAssignValue, 0, "0x"));
 					if (!res.IsSuccessful())
 						return res;
 
@@ -669,7 +667,7 @@ Result Network::SetOperationMode(const std::uint8_t nodeID, const PlkOperationMo
 						std::shared_ptr<ManagingNode> rmnPtr = std::dynamic_pointer_cast<ManagingNode>(rmn.second);
 						if (rmnPtr.get())
 						{
-							res = rmnPtr->SetSubObjectActualValue(0x1F81, 240, IntToHex<uint32_t>(mnAssignValue, 0, "0x"));
+							res = rmnPtr->SetSubObjectActualValue(0x1F81, 240, IntToHex<std::uint32_t>(mnAssignValue, 0, "0x"));
 							if (!res.IsSuccessful())
 								return res;
 						}
@@ -707,7 +705,7 @@ Result Network::EnableNode(const std::uint8_t nodeID, bool enable)
 		//Node does not exist
 		boost::format formatter(kMsgNonExistingNode);
 		formatter
-		% (uint32_t) nodeID;
+		% (std::uint32_t) nodeID;
 		LOG_FATAL() << formatter.str();
 		return Result(ErrorCode::NODE_DOES_NOT_EXIST, formatter.str());
 	}
@@ -721,7 +719,7 @@ Result Network::EnableNode(const std::uint8_t nodeID, bool enable)
 			Result res = this->GetManagingNode(mn);
 			if (!res.IsSuccessful())
 				return res;
-			mn->RemoveRmnId(it->second->GetNodeIdentifier()); //Remove the RMN Id in MN
+			mn->RemoveRmnId(it->second->GetNodeId()); //Remove the RMN Id in MN
 
 		}
 	}
@@ -734,7 +732,7 @@ Result Network::EnableNode(const std::uint8_t nodeID, bool enable)
 			Result res = this->GetManagingNode(mn);
 			if (!res.IsSuccessful())
 				return res;
-			mn->RemoveRmnId(it->second->GetNodeIdentifier()); //Remove the RMN Id in MN
+			mn->RemoveRmnId(it->second->GetNodeId()); //Remove the RMN Id in MN
 
 		}
 

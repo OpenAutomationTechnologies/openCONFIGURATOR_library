@@ -68,7 +68,6 @@ namespace IndustrialNetwork
 						const boost::optional<std::uint32_t> GetBitAlignment();
 
 					private:
-
 						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType;
 						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::DynamicChannelAccessType accessType;
 						std::uint32_t startIndex;

@@ -50,7 +50,7 @@ PlkConfiguration::PlkConfiguration(const std::string& name) :
 PlkConfiguration::~PlkConfiguration()
 {}
 
-Result PlkConfiguration::GenerateConfiguration(const std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
+Result PlkConfiguration::GenerateConfiguration(const std::map<std::uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
 	Result res;
 	//Generate autogeneration settings
@@ -146,7 +146,7 @@ void PlkConfiguration::SetConfigurationName(const std::string& configName)
 	this->configurationName = configName;
 }
 
-Result PlkConfiguration::DistributeDateTimeStamps(const std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
+Result PlkConfiguration::DistributeDateTimeStamps(const std::map<std::uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
 	Result res;
 	// Get current locale time
@@ -227,7 +227,7 @@ Result PlkConfiguration::DistributeDateTimeStamps(const std::map<uint8_t, std::s
 	return res;
 }
 
-Result PlkConfiguration::DistributeNodeAssignment(const std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
+Result PlkConfiguration::DistributeNodeAssignment(const std::map<std::uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
 	std::stringstream nodeAssignmentStr;
 	for (auto& node : nodeCollection)
@@ -254,7 +254,7 @@ Result PlkConfiguration::DistributeNodeAssignment(const std::map<uint8_t, std::s
 	return Result();
 }
 
-Result PlkConfiguration::DistributeCycleTime(const std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
+Result PlkConfiguration::DistributeCycleTime(const std::map<std::uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
 	std::stringstream cycleTimeStr;
 
@@ -271,7 +271,7 @@ Result PlkConfiguration::DistributeCycleTime(const std::map<uint8_t, std::shared
 	if (!cycleTimeObject->GetActualValue().empty())
 	{
 		//Convert to cycle time to std::string
-		cycleTimeStr << cycleTimeObject->GetTypedActualValue<uint32_t>();
+		cycleTimeStr << cycleTimeObject->GetTypedActualValue<std::uint32_t>();
 	}
 	//0x1006 has to be written so return error if not
 	else
@@ -299,7 +299,7 @@ Result PlkConfiguration::DistributeCycleTime(const std::map<uint8_t, std::shared
 	return Result();
 }
 
-Result PlkConfiguration::DistributeMultiplCycleCount(const std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
+Result PlkConfiguration::DistributeMultiplCycleCount(const std::map<std::uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
 	std::stringstream multiplCycleCountStr;
 
@@ -315,11 +315,11 @@ Result PlkConfiguration::DistributeMultiplCycleCount(const std::map<uint8_t, std
 	if (multiplCycleCountObject->WriteToConfiguration())
 	{
 		//Convert multiplexed cycle count to std::string
-		multiplCycleCountStr << multiplCycleCountObject->GetTypedActualValue<uint16_t>();
+		multiplCycleCountStr << multiplCycleCountObject->GetTypedActualValue<std::uint16_t>();
 	}
 	else
 	{
-		multiplCycleCountStr << multiplCycleCountObject->GetTypedDefaultValue<uint16_t>();
+		multiplCycleCountStr << multiplCycleCountObject->GetTypedDefaultValue<std::uint16_t>();
 	}
 
 
@@ -339,7 +339,7 @@ Result PlkConfiguration::DistributeMultiplCycleCount(const std::map<uint8_t, std
 	return Result();
 }
 
-Result PlkConfiguration::DistributeAsyncMtu(const std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
+Result PlkConfiguration::DistributeAsyncMtu(const std::map<std::uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
 	std::stringstream asyncMtuStr;
 
@@ -355,11 +355,11 @@ Result PlkConfiguration::DistributeAsyncMtu(const std::map<uint8_t, std::shared_
 	if (asynMtuObject->WriteToConfiguration())
 	{
 		//Convert Async MTU to std::string
-		asyncMtuStr << asynMtuObject->GetTypedActualValue<uint16_t>();
+		asyncMtuStr << asynMtuObject->GetTypedActualValue<std::uint16_t>();
 	}
 	else
 	{
-		asyncMtuStr << asynMtuObject->GetTypedDefaultValue<uint16_t>();
+		asyncMtuStr << asynMtuObject->GetTypedDefaultValue<std::uint16_t>();
 	}
 
 	for (auto& node : nodeCollection)
@@ -378,7 +378,7 @@ Result PlkConfiguration::DistributeAsyncMtu(const std::map<uint8_t, std::shared_
 	return Result();
 }
 
-Result PlkConfiguration::DistributePrescaler(const std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
+Result PlkConfiguration::DistributePrescaler(const std::map<std::uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
 	std::stringstream prescalerStr;
 
@@ -394,11 +394,11 @@ Result PlkConfiguration::DistributePrescaler(const std::map<uint8_t, std::shared
 	if (prescalerObject->WriteToConfiguration())
 	{
 		//Convert prescaler to std::string
-		prescalerStr << prescalerObject->GetTypedActualValue<uint16_t>();
+		prescalerStr << prescalerObject->GetTypedActualValue<std::uint16_t>();
 	}
 	else
 	{
-		prescalerStr << prescalerObject->GetTypedDefaultValue<uint16_t>();
+		prescalerStr << prescalerObject->GetTypedDefaultValue<std::uint16_t>();
 	}
 
 	for (auto& node : nodeCollection)
@@ -417,7 +417,7 @@ Result PlkConfiguration::DistributePrescaler(const std::map<uint8_t, std::shared
 	return Result();
 }
 
-Result PlkConfiguration::DistributeMultiplCycleAssign(const std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
+Result PlkConfiguration::DistributeMultiplCycleAssign(const std::map<std::uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
 	//Get managing node
 	auto& mn = nodeCollection.at(240);
@@ -434,12 +434,12 @@ Result PlkConfiguration::DistributeMultiplCycleAssign(const std::map<uint8_t, st
 		if (!res.IsSuccessful())
 			return Result();
 
-		for (auto& subObj : multiplCycleAssignObject->GetSubObjectCollection())
+		for (auto& subObj : multiplCycleAssignObject->GetSubObjectDictionary())
 		{
 			if (subObj.second->WriteToConfiguration())
 			{
 				std::stringstream multiplCycleAssignValue;
-				multiplCycleAssignValue << subObj.second->GetTypedActualValue<uint16_t>();
+				multiplCycleAssignValue << subObj.second->GetTypedActualValue<std::uint16_t>();
 				res = node.second->SetSubObjectActualValue(0x1F9B, subObj.first, multiplCycleAssignValue.str());
 				if (!res.IsSuccessful())
 					return Result();
@@ -449,7 +449,7 @@ Result PlkConfiguration::DistributeMultiplCycleAssign(const std::map<uint8_t, st
 	return Result();
 }
 
-Result PlkConfiguration::DistributeSDOSeqLayerTimeout(const std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
+Result PlkConfiguration::DistributeSDOSeqLayerTimeout(const std::map<std::uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
 	//Get managing node
 	auto& mn = nodeCollection.at(240);
@@ -472,7 +472,7 @@ Result PlkConfiguration::DistributeSDOSeqLayerTimeout(const std::map<uint8_t, st
 		{
 			std::stringstream sdoSeqLayerTimeoutStr;
 			//Convert SDOSeqLayerTimeout to std::string
-			sdoSeqLayerTimeoutStr << sdoSeqLayerTimeoutObject->GetTypedActualValue<uint32_t>();
+			sdoSeqLayerTimeoutStr << sdoSeqLayerTimeoutObject->GetTypedActualValue<std::uint32_t>();
 			//Set every node 0x1300 actual value to SDOSeqLayerTimeout
 			res = node.second->SetObjectActualValue(0x1300, sdoSeqLayerTimeoutStr.str());
 			if (!res.IsSuccessful())
@@ -505,7 +505,7 @@ Result PlkConfiguration::DistributeSDOCmdLayerTimeout(const std::map<uint8_t, st
 		{
 			std::stringstream sdoCmdLayerTimeoutStr;
 			//Convert CmdLayerTimeout to std::string
-			sdoCmdLayerTimeoutStr << sdoCmdLayerTimeoutObject->GetTypedActualValue<uint32_t>();
+			sdoCmdLayerTimeoutStr << sdoCmdLayerTimeoutObject->GetTypedActualValue<std::uint32_t>();
 			//Set every node 0x1301 actual value to CmdLayerTimeout
 			res = node.second->SetObjectActualValue(0x1301, sdoCmdLayerTimeoutStr.str());
 			if (!res.IsSuccessful() && res.GetErrorType() != ErrorCode::OBJECT_DOES_NOT_EXIST)
@@ -515,7 +515,7 @@ Result PlkConfiguration::DistributeSDOCmdLayerTimeout(const std::map<uint8_t, st
 	return Result();
 }
 
-Result PlkConfiguration::DistributePResTimeOut(const std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
+Result PlkConfiguration::DistributePResTimeOut(const std::map<std::uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
 	//Get managing node
 	auto& mn = nodeCollection.at(240);
@@ -535,7 +535,7 @@ Result PlkConfiguration::DistributePResTimeOut(const std::map<uint8_t, std::shar
 
 		std::stringstream presTimoutActualValue;
 		if (presTimoutCNObj->WriteToConfiguration())
-			presTimoutActualValue << (presTimoutCNObj->GetTypedActualValue<uint32_t>());
+			presTimoutActualValue << (presTimoutCNObj->GetTypedActualValue<std::uint32_t>());
 		else
 			continue;
 
@@ -559,7 +559,7 @@ Result PlkConfiguration::DistributePResTimeOut(const std::map<uint8_t, std::shar
 	return Result();
 }
 
-Result PlkConfiguration::DistributePReqPayloadLimit(const std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
+Result PlkConfiguration::DistributePReqPayloadLimit(const std::map<std::uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
 	//Get managing node
 	auto& mn = nodeCollection.at(240);
@@ -583,7 +583,7 @@ Result PlkConfiguration::DistributePReqPayloadLimit(const std::map<uint8_t, std:
 
 		std::stringstream preqActPayloadLimitValue;
 		if (preqActPayloadLimitObj->WriteToConfiguration())
-			preqActPayloadLimitValue << preqActPayloadLimitObj->GetTypedActualValue<uint16_t>();
+			preqActPayloadLimitValue << preqActPayloadLimitObj->GetTypedActualValue<std::uint16_t>();
 		else
 			continue;
 
@@ -610,7 +610,7 @@ Result PlkConfiguration::DistributePReqPayloadLimit(const std::map<uint8_t, std:
 	return Result();
 }
 
-Result PlkConfiguration::DistributePResPayloadLimit(const std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
+Result PlkConfiguration::DistributePResPayloadLimit(const std::map<std::uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
 	//Get managing node
 	auto& mn = nodeCollection.at(240);
@@ -631,7 +631,7 @@ Result PlkConfiguration::DistributePResPayloadLimit(const std::map<uint8_t, std:
 
 		std::stringstream presActPayloadLimitValue;
 		if (presActPayloadLimitObj->WriteToConfiguration())
-			presActPayloadLimitValue << presActPayloadLimitObj->GetTypedActualValue<uint16_t>();
+			presActPayloadLimitValue << presActPayloadLimitObj->GetTypedActualValue<std::uint16_t>();
 		else
 			continue;
 
@@ -651,7 +651,7 @@ Result PlkConfiguration::DistributePResPayloadLimit(const std::map<uint8_t, std:
 			//Always distribute for RMNs
 			if (std::dynamic_pointer_cast<ManagingNode>(cn.second))
 			{
-				Result	res = cn.second->SetSubObjectActualValue(0x1F8D, node.first, presActPayloadLimitValue.str());
+				res = cn.second->SetSubObjectActualValue(0x1F8D, node.first, presActPayloadLimitValue.str());
 				if (!res.IsSuccessful())
 					return res;
 			}
@@ -662,7 +662,7 @@ Result PlkConfiguration::DistributePResPayloadLimit(const std::map<uint8_t, std:
 				{
 					std::shared_ptr<SubObject> paramObj;
 					//Check corresponding 0x14XX object for origin of Rx Data
-					Result res = object.second->GetSubObject(0x1, paramObj);
+					res = object.second->GetSubObject(0x1, paramObj);
 					if (!res.IsSuccessful())
 						return res; //0x14XX/ 0x1 NodeID_U8 does not exist
 
@@ -670,7 +670,7 @@ Result PlkConfiguration::DistributePResPayloadLimit(const std::map<uint8_t, std:
 						continue;
 
 					//Only distribute the PresPayloadLimit for nodes that have cross traffic with the current node
-					if (paramObj->GetTypedActualValue<uint16_t>() == node.first)
+					if (paramObj->GetTypedActualValue<std::uint16_t>() == node.first)
 					{
 						res = cn.second->SetSubObjectActualValue(0x1F8D, node.first, presActPayloadLimitValue.str());
 						if (!res.IsSuccessful())
@@ -759,7 +759,7 @@ Result PlkConfiguration::SyncRedundantManagingNodes(const std::map<std::uint8_t,
 					if (!res.IsSuccessful())
 						return res;
 				}
-				for (auto& subObj : obj.second->GetSubObjectCollection())
+				for (auto& subObj : obj.second->GetSubObjectDictionary())
 				{
 					if (subObj.second->WriteToConfiguration())
 					{

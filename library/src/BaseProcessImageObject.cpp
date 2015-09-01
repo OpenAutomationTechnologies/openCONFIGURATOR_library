@@ -56,7 +56,6 @@ BaseProcessImageObject::BaseProcessImageObject(const std::string& name, IEC_Data
 		this->size = GetIECDataTypeBitSize(this->dataType);
 }
 
-
 BaseProcessImageObject::~BaseProcessImageObject()
 {}
 

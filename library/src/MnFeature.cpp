@@ -31,7 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "MnFeature.h"
 
-
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
@@ -44,12 +43,10 @@ namespace IndustrialNetwork
 		{
 			namespace Node
 			{
-
 				MnFeature::MnFeature(MNFeatureEnum type) : PlkFeature<MNFeatureEnum>(type)
 				{
 					SetTypedValues(PlkFeatureDefaultValues[type], "");
 				}
-
 
 				MnFeature::~MnFeature()
 				{}
@@ -77,9 +74,9 @@ namespace IndustrialNetwork
 					return Result(ErrorCode::DATATYPE_MISMATCH, formatter.str());
 				}
 				template Result MnFeature::GetDefaultValue(bool& value);
-				template Result MnFeature::GetDefaultValue(uint8_t& value);
-				template Result MnFeature::GetDefaultValue(uint16_t& value);
-				template Result MnFeature::GetDefaultValue(uint32_t& value);
+				template Result MnFeature::GetDefaultValue(std::uint8_t& value);
+				template Result MnFeature::GetDefaultValue(std::uint16_t& value);
+				template Result MnFeature::GetDefaultValue(std::uint32_t& value);
 
 
 				Result MnFeature::SetTypedValues(const std::string& defaultValue, const std::string& actualValue)
@@ -115,13 +112,13 @@ namespace IndustrialNetwork
 								{
 									if (!defaultValue.empty())
 									{
-										uint8_t value = HexToInt<uint8_t>(defaultValue);
+										std::uint8_t value = HexToInt<std::uint8_t>(defaultValue);
 										this->SetUntypedDefaultValue(boost::any(value));
 										break;
 									}
 									if (!actualValue.empty())
 									{
-										uint8_t value = HexToInt<uint8_t>(actualValue);
+										std::uint8_t value = HexToInt<std::uint8_t>(actualValue);
 										this->SetUntypedActualValue(boost::any(value));
 										break;
 									}
@@ -136,7 +133,7 @@ namespace IndustrialNetwork
 								{
 									if (!actualValue.empty())
 									{
-										uint32_t value = HexToInt<uint32_t>(actualValue);
+										std::uint32_t value = HexToInt<std::uint32_t>(actualValue);
 										this->SetUntypedActualValue(boost::any(value));
 										break;
 									}
@@ -145,13 +142,13 @@ namespace IndustrialNetwork
 								{
 									if (!defaultValue.empty())
 									{
-										uint16_t value = HexToInt<uint16_t>(defaultValue);
+										std::uint16_t value = HexToInt<std::uint16_t>(defaultValue);
 										this->SetUntypedDefaultValue(boost::any(value));
 										break;
 									}
 									if (!actualValue.empty())
 									{
-										uint16_t value = HexToInt<uint16_t>(actualValue);
+										std::uint16_t value = HexToInt<std::uint16_t>(actualValue);
 										this->SetUntypedActualValue(boost::any(value));
 										break;
 									}
@@ -189,9 +186,9 @@ namespace IndustrialNetwork
 					return Result(ErrorCode::DATATYPE_MISMATCH, formatter.str());
 				}
 				template Result MnFeature::GetActualValue(bool& value);
-				template Result MnFeature::GetActualValue(uint8_t& value);
-				template Result MnFeature::GetActualValue(uint16_t& value);
-				template Result MnFeature::GetActualValue(uint32_t& value);
+				template Result MnFeature::GetActualValue(std::uint8_t& value);
+				template Result MnFeature::GetActualValue(std::uint16_t& value);
+				template Result MnFeature::GetActualValue(std::uint32_t& value);
 
 				template<class T>
 				Result MnFeature::SetActualValue(const T actualValue)
@@ -211,9 +208,9 @@ namespace IndustrialNetwork
 					return Result(ErrorCode::DATATYPE_MISMATCH, formatter.str());
 				}
 				template Result MnFeature::SetActualValue(const bool value);
-				template Result MnFeature::SetActualValue(const uint8_t value);
-				template Result MnFeature::SetActualValue(const uint16_t value);
-				template Result MnFeature::SetActualValue(const uint32_t value);
+				template Result MnFeature::SetActualValue(const std::uint8_t value);
+				template Result MnFeature::SetActualValue(const std::uint16_t value);
+				template Result MnFeature::SetActualValue(const std::uint32_t value);
 			}
 		}
 	}

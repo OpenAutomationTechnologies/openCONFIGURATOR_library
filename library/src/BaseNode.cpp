@@ -38,11 +38,11 @@ using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 
 
-BaseNode::BaseNode(uint8_t nodeId, const std::string& name) :
+BaseNode::BaseNode(std::uint8_t nodeId, const std::string& name) :
 	nodeId(nodeId),
 	name(name),
 	enabled(true),
-	objectDictionary(std::map<uint32_t, std::shared_ptr<Object>>()),
+	objectDictionary(std::map<std::uint32_t, std::shared_ptr<Object>>()),
 	applicationProcess(std::make_shared<ApplicationProcess>()),
 	nodeAssignment(std::vector<NodeAssignment>()),
 	networkManagement(std::make_shared<NetworkManagement>()),
@@ -72,22 +72,22 @@ void BaseNode::SetName(const std::string& name)
 	this->name = name;
 }
 
-uint8_t BaseNode::GetNodeIdentifier()
+std::uint8_t BaseNode::GetNodeId()
 {
 	return this->nodeId;
 }
 
-void BaseNode::SetNodeIdentifier(uint8_t nodeId)
+void BaseNode::SetNodeId(std::uint8_t nodeId)
 {
 	this->nodeId = nodeId;
 }
 
-const std::map<uint32_t, std::shared_ptr<Object>>& BaseNode::GetObjectDictionary()
+const std::map<std::uint32_t, std::shared_ptr<Object>>& BaseNode::GetObjectDictionary()
 {
 	return objectDictionary;
 }
 
-void BaseNode::SetObjectDictionary(const std::map<uint32_t, std::shared_ptr<Object>>& od)
+void BaseNode::SetObjectDictionary(const std::map<std::uint32_t, std::shared_ptr<Object>>& od)
 {
 	objectDictionary = od;
 }
@@ -119,29 +119,29 @@ std::vector<std::shared_ptr<BaseProcessDataMapping>>& BaseNode::GetReceiveMappin
 
 Result BaseNode::AddObject(std::shared_ptr<Object>& objRef)
 {
-	if (this->objectDictionary.find(objRef->GetId()) != this->objectDictionary.end())
+	if (this->objectDictionary.find(objRef->GetObjectId()) != this->objectDictionary.end())
 	{
 		//Object already exists
 		boost::format formatter(kMsgExistingObject);
 		formatter
-		% objRef->GetId()
-		% (uint32_t) nodeId;
+		% objRef->GetObjectId()
+		% (std::uint32_t) nodeId;
 		LOG_FATAL() << formatter.str();
 		return Result(ErrorCode::OBJECT_EXISTS, formatter.str());
 	}
 
-	this->objectDictionary.insert(std::pair<uint32_t, std::shared_ptr<Object>>(objRef->GetId(), objRef));
+	this->objectDictionary.insert(std::pair<std::uint32_t, std::shared_ptr<Object>>(objRef->GetObjectId(), objRef));
 
 	//Log object creation
 	boost::format formatter(kMsgObjectCreated);
 	formatter
-	% objRef->GetId()
-	% (uint32_t) nodeId;
+	% objRef->GetObjectId()
+	% (std::uint32_t) nodeId;
 	LOG_INFO() << formatter.str();
 	return Result();
 }
 
-Result BaseNode::AddSubObject(uint32_t objectId, std::shared_ptr<SubObject>& objRef)
+Result BaseNode::AddSubObject(std::uint32_t objectId, std::shared_ptr<SubObject>& objRef)
 {
 	if (this->objectDictionary.find(objectId) == this->objectDictionary.end())
 	{
@@ -149,14 +149,14 @@ Result BaseNode::AddSubObject(uint32_t objectId, std::shared_ptr<SubObject>& obj
 		boost::format formatter(kMsgNonExistingObject);
 		formatter
 		% objectId
-		% (uint32_t) nodeId;
+		% (std::uint32_t) nodeId;
 		LOG_FATAL() << formatter.str();
 		return Result(ErrorCode::OBJECT_DOES_NOT_EXIST, formatter.str());
 	}
 	return this->objectDictionary.find(objectId)->second->AddSubobject(objRef);
 }
 
-Result BaseNode::ForceObject(uint32_t objectId, bool force, const std::string& actualValue)
+Result BaseNode::ForceObject(std::uint32_t objectId, bool force, const std::string& actualValue)
 {
 	auto iter = this->objectDictionary.find(objectId);
 	if (iter == this->objectDictionary.end())
@@ -165,7 +165,7 @@ Result BaseNode::ForceObject(uint32_t objectId, bool force, const std::string& a
 		boost::format formatter(kMsgNonExistingObject);
 		formatter
 		% objectId
-		% (uint32_t) nodeId;
+		% (std::uint32_t) nodeId;
 		LOG_FATAL() << formatter.str();
 		return Result(ErrorCode::OBJECT_DOES_NOT_EXIST, formatter.str());
 	}
@@ -175,7 +175,7 @@ Result BaseNode::ForceObject(uint32_t objectId, bool force, const std::string& a
 		boost::format formatter(kMsgBaseObjectValueSupport);
 		formatter
 		% objectId
-		% (uint32_t) nodeId;
+		% (std::uint32_t) nodeId;
 		LOG_FATAL() << formatter.str();
 		return Result(ErrorCode::OBJECT_TYPE_DOES_NOT_SUPPORT_VALUES);
 	}
@@ -210,7 +210,7 @@ Result BaseNode::ForceObject(uint32_t objectId, bool force, const std::string& a
 	return Result();
 }
 
-Result BaseNode::SetObjectActualValue(uint32_t objectId, const std::string& actualValue)
+Result BaseNode::SetObjectActualValue(std::uint32_t objectId, const std::string& actualValue)
 {
 	auto iter = this->objectDictionary.find(objectId);
 	if (iter == this->objectDictionary.end())
@@ -219,7 +219,7 @@ Result BaseNode::SetObjectActualValue(uint32_t objectId, const std::string& actu
 		boost::format formatter(kMsgNonExistingObject);
 		formatter
 		% objectId
-		% (uint32_t) nodeId;
+		% (std::uint32_t) nodeId;
 		LOG_FATAL() << formatter.str();
 		return Result(ErrorCode::OBJECT_DOES_NOT_EXIST, formatter.str());
 	}
@@ -230,10 +230,11 @@ Result BaseNode::SetObjectActualValue(uint32_t objectId, const std::string& actu
 		formatter
 		% actualValue
 		% iter->first
-		% (uint32_t) this->GetNodeIdentifier();
+		% (uint32_t) this->GetNodeId();
 		LOG_WARN() << formatter.str();
 		return Result();
 	}
+
 	if (!actualValue.empty())
 	{
 		Result res = iter->second->SetTypedObjectActualValue(actualValue);
@@ -245,7 +246,7 @@ Result BaseNode::SetObjectActualValue(uint32_t objectId, const std::string& actu
 		formatter
 		% actualValue
 		% objectId
-		% (uint32_t) nodeId;
+		% (std::uint32_t) nodeId;
 		LOG_INFO() << formatter.str();
 		return Result();
 	}
@@ -256,7 +257,7 @@ Result BaseNode::SetObjectActualValue(uint32_t objectId, const std::string& actu
 	return Result();
 }
 
-Result BaseNode::GetObject(uint32_t objectId, std::shared_ptr<Object>& objRef)
+Result BaseNode::GetObject(std::uint32_t objectId, std::shared_ptr<Object>& objRef)
 {
 	auto iter = this->objectDictionary.find(objectId);
 	if (iter == this->objectDictionary.end())
@@ -273,7 +274,7 @@ Result BaseNode::GetObject(uint32_t objectId, std::shared_ptr<Object>& objRef)
 	return Result();
 }
 
-Result BaseNode::ForceSubObject(uint32_t objectId, uint32_t subObjectId, bool force, const std::string& actualValue)
+Result BaseNode::ForceSubObject(std::uint32_t objectId, std::uint32_t subObjectId, bool force, const std::string& actualValue)
 {
 	auto iter = this->objectDictionary.find(objectId);
 	if (iter == this->objectDictionary.end())
@@ -282,7 +283,7 @@ Result BaseNode::ForceSubObject(uint32_t objectId, uint32_t subObjectId, bool fo
 		boost::format formatter(kMsgNonExistingObject);
 		formatter
 		% objectId
-		% (uint32_t) nodeId;
+		% (std::uint32_t) nodeId;
 		LOG_FATAL() << formatter.str();
 		return Result(ErrorCode::OBJECT_DOES_NOT_EXIST, formatter.str());
 	}
@@ -297,7 +298,7 @@ Result BaseNode::ForceSubObject(uint32_t objectId, uint32_t subObjectId, bool fo
 		log_format
 		% objectId
 		% subObjectId
-		% (uint32_t) nodeId
+		% (std::uint32_t) nodeId
 		% force;
 		LOG_INFO() << log_format.str();
 
@@ -313,7 +314,7 @@ Result BaseNode::ForceSubObject(uint32_t objectId, uint32_t subObjectId, bool fo
 			% actualValue
 			% objectId
 			% subObjectId
-			% (uint32_t) nodeId;
+			% (std::uint32_t) nodeId;
 			LOG_INFO() << formatter.str();
 		}
 		else
@@ -324,7 +325,7 @@ Result BaseNode::ForceSubObject(uint32_t objectId, uint32_t subObjectId, bool fo
 	return res;
 }
 
-Result BaseNode::SetSubObjectActualValue(uint32_t objectId, uint32_t subObjectId, const std::string& actualValue)
+Result BaseNode::SetSubObjectActualValue(std::uint32_t objectId, std::uint32_t subObjectId, const std::string& actualValue)
 {
 	auto iter = this->objectDictionary.find(objectId);
 	if (iter == this->objectDictionary.end())
@@ -333,7 +334,7 @@ Result BaseNode::SetSubObjectActualValue(uint32_t objectId, uint32_t subObjectId
 		boost::format formatter(kMsgNonExistingObject);
 		formatter
 		% objectId
-		% (uint32_t) nodeId;
+		% (std::uint32_t) nodeId;
 		LOG_FATAL() << formatter.str();
 		return Result(ErrorCode::OBJECT_DOES_NOT_EXIST, formatter.str());
 	}
@@ -349,8 +350,8 @@ Result BaseNode::SetSubObjectActualValue(uint32_t objectId, uint32_t subObjectId
 			formatter
 			% actualValue
 			% objectId
-			% subObject->GetId()
-			% (uint32_t) this->GetNodeIdentifier();
+			% subObject->GetObjectId()
+			% (std::uint32_t) this->GetNodeId();
 			LOG_WARN() << formatter.str();
 			return Result();
 		}
@@ -366,7 +367,7 @@ Result BaseNode::SetSubObjectActualValue(uint32_t objectId, uint32_t subObjectId
 			% actualValue
 			% objectId
 			% subObjectId
-			% (uint32_t) nodeId;
+			% (std::uint32_t) nodeId;
 			LOG_INFO() << formatter.str();
 		}
 		else
@@ -377,7 +378,7 @@ Result BaseNode::SetSubObjectActualValue(uint32_t objectId, uint32_t subObjectId
 	return res;
 }
 
-Result BaseNode::GetSubObject(uint32_t objectId, uint32_t subObjectId, std::shared_ptr<SubObject>& subObjRef)
+Result BaseNode::GetSubObject(std::uint32_t objectId, std::uint32_t subObjectId, std::shared_ptr<SubObject>& subObjRef)
 {
 	auto iter = this->objectDictionary.find(objectId);
 	if (iter == this->objectDictionary.end())
@@ -386,7 +387,7 @@ Result BaseNode::GetSubObject(uint32_t objectId, uint32_t subObjectId, std::shar
 		boost::format formatter(kMsgNonExistingObject);
 		formatter
 		% objectId
-		% (uint32_t) nodeId;
+		% (std::uint32_t) nodeId;
 		LOG_FATAL() << formatter.str();
 		return Result(ErrorCode::OBJECT_DOES_NOT_EXIST, formatter.str());
 	}
@@ -402,7 +403,7 @@ void BaseNode::SetEnabled(bool enabled)
 {
 	boost::format formatter(kMsgNodeDisable);
 	formatter
-	% (uint32_t) this->GetNodeIdentifier()
+	% (std::uint32_t) this->GetNodeId()
 	% enabled;
 	LOG_INFO() << formatter.str();
 	this->enabled = enabled;

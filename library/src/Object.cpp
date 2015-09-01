@@ -43,16 +43,16 @@ namespace IndustrialNetwork
 		{
 			namespace ObjectDictionary
 			{
-				Object::Object(uint32_t id, ObjectType objectType, const std::string& name, uint8_t containingNode) : BaseObject(id, objectType, name, containingNode),
+				Object::Object(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode) : BaseObject(id, objectType, name, containingNode),
 					subIndexCollection(std::map<uint32_t, std::shared_ptr<SubObject>>())
 				{}
 
-				Object::Object(uint32_t id, ObjectType objectType, const std::string& name, uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping) : BaseObject(id, objectType, name, containingNode, dataType, accessType, pdoMapping),
+				Object::Object(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping) : BaseObject(id, objectType, name, containingNode, dataType, accessType, pdoMapping),
 					subIndexCollection(std::map<uint32_t, std::shared_ptr<SubObject>>())
 				{}
 
-				Object::Object(uint32_t id, ObjectType objectType, const std::string& name, uint8_t containingNode, const std::string& uniqueIdRef) : BaseObject(id, objectType, name, containingNode, uniqueIdRef),
-					subIndexCollection(std::map<uint32_t, std::shared_ptr<SubObject>>())
+				Object::Object(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode, const std::string& uniqueIdRef) : BaseObject(id, objectType, name, containingNode, uniqueIdRef),
+					subIndexCollection(std::map<std::uint32_t, std::shared_ptr<SubObject>>())
 				{}
 
 				Object::~Object()
@@ -60,30 +60,30 @@ namespace IndustrialNetwork
 
 				Result Object::AddSubobject(std::shared_ptr<SubObject>& ref)
 				{
-					if (this->subIndexCollection.find(ref->GetId()) != this->subIndexCollection.end())
+					if (this->subIndexCollection.find(ref->GetObjectId()) != this->subIndexCollection.end())
 					{
 						//SubObject does already exists
 						boost::format formatter(kMsgExistingSubObject);
 						formatter
-						% this->GetId()
-						% ref->GetId()
-						% (uint32_t) this->GetContainingNode();
+						% this->GetObjectId()
+						% ref->GetObjectId()
+						% (std::uint32_t) this->GetContainingNode();
 						LOG_FATAL() << formatter.str();
 						return Result(ErrorCode::SUBOBJECT_EXISTS, formatter.str());
 					}
 
-					this->subIndexCollection.insert(std::pair<uint32_t, std::shared_ptr<SubObject>>(ref->GetId(), ref));
+					this->subIndexCollection.insert(std::pair<std::uint32_t, std::shared_ptr<SubObject>>(ref->GetObjectId(), ref));
 					//Log info subobject created
 					boost::format formatter(kMsgSubObjectCreated);
 					formatter
-					% this->GetId()
-					% ref->GetId()
-					% (uint32_t) this->GetContainingNode();
+					% this->GetObjectId()
+					% ref->GetObjectId()
+					% (std::uint32_t) this->GetContainingNode();
 					LOG_INFO() << formatter.str();
 					return Result();
 				}
 
-				Result Object::GetSubObject(uint32_t subObjectId, std::shared_ptr<SubObject>& ref)
+				Result Object::GetSubObject(std::uint32_t subObjectId, std::shared_ptr<SubObject>& ref)
 				{
 					auto iter = this->subIndexCollection.find(subObjectId);
 					if (iter == this->subIndexCollection.end())
@@ -91,9 +91,9 @@ namespace IndustrialNetwork
 						//Subobject does not exist
 						boost::format formatter(kMsgNonExistingSubObject);
 						formatter
-						% this->GetId()
+						% this->GetObjectId()
 						% subObjectId
-						% (uint32_t) this->GetContainingNode();
+						% (std::uint32_t) this->GetContainingNode();
 						LOG_FATAL() << formatter.str();
 						return Result(ErrorCode::SUBOBJECT_DOES_NOT_EXIST, formatter.str());
 					}
@@ -101,7 +101,7 @@ namespace IndustrialNetwork
 					return Result();
 				}
 
-				const std::map<std::uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::SubObject>>& Object::GetSubObjectCollection()
+				const std::map<std::uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::SubObject>>& Object::GetSubObjectDictionary()
 				{
 					return this->subIndexCollection;
 				}

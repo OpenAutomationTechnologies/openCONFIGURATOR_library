@@ -128,7 +128,6 @@ namespace IndustrialNetwork
 						void ClearActualValue();
 
 					private:
-
 						bool forceToCDC;
 						boost::optional<boost::any> highLimit;
 						boost::optional<boost::any> lowLimit;

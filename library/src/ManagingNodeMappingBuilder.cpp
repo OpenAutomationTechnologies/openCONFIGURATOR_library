@@ -137,7 +137,7 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 			{
 				//Get Dynamic Channel from MN for datatype amd direction
 				std::shared_ptr<DynamicChannel> dynChannel;
-				Result res = mn->GetDynamicChannel(foundObject->GetDataType().get(), dir, dynChannel);
+				res = mn->GetDynamicChannel(foundObject->GetDataType().get(), dir, dynChannel);
 				if (!res.IsSuccessful())
 					continue; //return res;
 
@@ -159,7 +159,7 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 				}
 
 				// Write mapping to MN object dictionary
-				res = this->WriteMappingToForNode(cn->GetNodeIdentifier(), dir, this->GetMappingString(mapping->GetMappingLength(), bitoffset, subindex, index), mn);
+				res = this->WriteMappingToForNode(cn->GetNodeId(), dir, this->GetMappingString(mapping->GetMappingLength(), bitoffset, subindex, index), mn);
 				if (!res.IsSuccessful())
 					return res;
 
@@ -246,7 +246,7 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 								sizeToWrite = cnPIObject->GetSize(); //All other objects have correct size
 
 							//Write mapping to MN object dictionary
-							res = this->WriteMappingToForNode(cn->GetNodeIdentifier(), dir, this->GetMappingString(sizeToWrite, bitoffset, subindex, index), mn);
+							res = this->WriteMappingToForNode(cn->GetNodeId(), dir, this->GetMappingString(sizeToWrite, bitoffset, subindex, index), mn);
 							if (!res.IsSuccessful())
 								return res;
 
@@ -325,7 +325,7 @@ Result ManagingNodeMappingBuilder::FindMappedObject(const std::shared_ptr<BaseNo
 				boost::format formatter(kMsgNonExistingMappedObject);
 				formatter
 				% dataIndex
-				% (uint32_t) node->GetNodeIdentifier();
+				% (uint32_t) node->GetNodeId();
 				LOG_FATAL() << formatter.str();
 				return Result(ErrorCode::MAPPED_OBJECT_DOES_NOT_EXIST, formatter.str());
 			}
@@ -345,7 +345,7 @@ Result ManagingNodeMappingBuilder::FindMappedObject(const std::shared_ptr<BaseNo
 			formatter
 			% dataIndex
 			% dataSubindex
-			% (uint32_t) node->GetNodeIdentifier();
+			% (std::uint32_t) node->GetNodeId();
 			LOG_FATAL() << formatter.str();
 			return Result(ErrorCode::MAPPED_SUBOBJECT_DOES_NOT_EXIST, formatter.str());
 		}
@@ -388,7 +388,7 @@ Result ManagingNodeMappingBuilder::WriteMappingToForNode(std::uint16_t nodeId, D
 
 			if (nodeID->WriteToConfiguration()) //actual value exist
 			{
-				if (nodeId == nodeID->GetTypedActualValue<uint16_t>())
+				if (nodeId == nodeID->GetTypedActualValue<std::uint16_t>())
 				{
 					mappingObjectIndex = (obj.first - mappingParameterIndex) + mappingObjectIndex; //Calculate mapping object index for node
 					useNewMappingParameter = false; // Mapping paramter already exist for node
@@ -430,7 +430,7 @@ Result ManagingNodeMappingBuilder::WriteMappingToForNode(std::uint16_t nodeId, D
 		return res;
 
 	//Count mapping and set mapping object actual values
-	for (auto& mapping : mappingObject->GetSubObjectCollection())
+	for (auto& mapping : mappingObject->GetSubObjectDictionary())
 	{
 		if (mapping.first == 0x0)//Skip Nr Of Entries
 			continue;
@@ -444,7 +444,7 @@ Result ManagingNodeMappingBuilder::WriteMappingToForNode(std::uint16_t nodeId, D
 		else
 		{
 			//Set mapping object value
-			Result res = mapping.second->SetTypedObjectActualValue(actualMappingValue);
+			res = mapping.second->SetTypedObjectActualValue(actualMappingValue);
 			if (!res.IsSuccessful())
 				return res;
 			break;

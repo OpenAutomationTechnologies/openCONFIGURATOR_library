@@ -54,9 +54,9 @@ namespace IndustrialNetwork
 
 				virtual void SetName(const std::string& name) = 0;
 
-				virtual T GetNodeIdentifier() = 0;
+				virtual T GetNodeId() = 0;
 
-				virtual void SetNodeIdentifier(T id) = 0;
+				virtual void SetNodeId(T id) = 0;
 
 				virtual const std::map<K, std::shared_ptr<V>>& GetObjectDictionary() = 0;
 

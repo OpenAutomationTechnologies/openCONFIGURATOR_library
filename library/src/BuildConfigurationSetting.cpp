@@ -69,7 +69,7 @@ void BuildConfigurationSetting::InitConfigurationSetting(const std::string& id)
 	}
 }
 
-Result BuildConfigurationSetting::GenerateConfiguration(const std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
+Result BuildConfigurationSetting::GenerateConfiguration(const std::map<std::uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
 	return this->configurationBuilder->GenerateConfiguration(this->GetValue(), nodeCollection);
 }

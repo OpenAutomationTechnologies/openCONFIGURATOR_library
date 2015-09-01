@@ -34,7 +34,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 
-
 BaseProcessDataMapping::BaseProcessDataMapping(std::uint32_t object, std::uint32_t subobject, const std::shared_ptr<BaseObject>& obj, std::uint32_t index, std::uint16_t subindex, std::uint16_t offset, std::uint16_t length, std::uint16_t nodeId, bool staticMapping) :
 	object(object),
 	subobject(subobject),
@@ -118,10 +117,10 @@ void BaseProcessDataMapping::InitMappingObject(const std::string& actualValue)
 		splitVector.push_back(actualValue.substr(i, 4).insert(0, "0x"));
 		i += 4;
 	}
-	this->length = HexToInt<uint16_t>(splitVector.at(0));
-	this->offset = HexToInt<uint16_t>(splitVector.at(1));
-	this->subindex = HexToInt<uint16_t>(splitVector.at(2));
-	this->index = HexToInt<uint32_t>(splitVector.at(3));
+	this->length = HexToInt<std::uint16_t>(splitVector.at(0));
+	this->offset = HexToInt<std::uint16_t>(splitVector.at(1));
+	this->subindex = HexToInt<std::uint16_t>(splitVector.at(2));
+	this->index = HexToInt<std::uint32_t>(splitVector.at(3));
 }
 
 std::uint16_t BaseProcessDataMapping::GetDestinationNode() const

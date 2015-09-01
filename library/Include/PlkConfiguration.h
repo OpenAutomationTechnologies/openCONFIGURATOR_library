@@ -94,8 +94,6 @@ namespace IndustrialNetwork
 
 						//Sync RMNs
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SyncRedundantManagingNodes(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
-
-
 				};
 			}
 		}

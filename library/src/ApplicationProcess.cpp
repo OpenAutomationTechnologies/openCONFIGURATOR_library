@@ -115,7 +115,7 @@ Result ApplicationProcess::GetComplexDataType(const std::string& uniqueId, std::
 	return Result(ErrorCode::COMPLEX_DATATYPE_NOT_FOUND, formatter.str());
 }
 
-uint32_t ApplicationProcess::GetBitSize(const std::string& uniqueId)
+std::uint32_t ApplicationProcess::GetBitSize(const std::string& uniqueId)
 {
 	for (auto& param : this->parameterList)
 	{
@@ -124,6 +124,7 @@ uint32_t ApplicationProcess::GetBitSize(const std::string& uniqueId)
 			return param->GetComplexDataType()->GetBitSize();
 		}
 	}
+
 	boost::format formatter(kMsgComplexDataTypeSizeInvalid);
 	formatter
 	% uniqueId;

@@ -55,7 +55,7 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						ArrayDataType(const std::string& uniqueID, const std::string& name, std::uint32_t lowerLimit, std::uint32_t upperLimit, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType);
+						ArrayDataType(const std::string& uniqueID, const std::string& name, std::uint32_t lowerLimit, std::uint32_t upperLimit, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType);
 						virtual ~ArrayDataType();
 
 						std::uint32_t GetLowerLimit();

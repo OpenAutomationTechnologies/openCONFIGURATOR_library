@@ -31,7 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "GeneralFeature.h"
 
-
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
@@ -44,7 +43,6 @@ namespace IndustrialNetwork
 		{
 			namespace Node
 			{
-
 				GeneralFeature::GeneralFeature(GeneralFeatureEnum type) : PlkFeature<GeneralFeatureEnum>(type)
 				{
 					SetTypedValues(PlkFeatureDefaultValues[type], "");
@@ -76,9 +74,9 @@ namespace IndustrialNetwork
 					return Result(ErrorCode::DATATYPE_MISMATCH, formatter.str());
 				}
 				template Result GeneralFeature::GetDefaultValue(bool& value);
-				template Result GeneralFeature::GetDefaultValue(uint8_t& value);
-				template Result GeneralFeature::GetDefaultValue(uint16_t& value);
-				template Result GeneralFeature::GetDefaultValue(uint32_t& value);
+				template Result GeneralFeature::GetDefaultValue(std::uint8_t& value);
+				template Result GeneralFeature::GetDefaultValue(std::uint16_t& value);
+				template Result GeneralFeature::GetDefaultValue(std::uint32_t& value);
 
 				Result GeneralFeature::SetTypedValues(const std::string& defaultValue, const std::string& actualValue)
 				{
@@ -144,7 +142,7 @@ namespace IndustrialNetwork
 								{
 									if (!actualValue.empty())
 									{
-										uint32_t value = HexToInt<uint32_t>(actualValue);
+										std::uint32_t value = HexToInt<std::uint32_t>(actualValue);
 										this->SetUntypedActualValue(boost::any(value));
 										break;
 									}
@@ -164,13 +162,13 @@ namespace IndustrialNetwork
 								{
 									if (!defaultValue.empty())
 									{
-										uint32_t value = HexToInt<uint32_t>(defaultValue);
+										std::uint32_t value = HexToInt<std::uint32_t>(defaultValue);
 										this->SetUntypedDefaultValue(boost::any(value));
 										break;
 									}
 									if (!actualValue.empty())
 									{
-										uint32_t value = HexToInt<uint32_t>(actualValue);
+										std::uint32_t value = HexToInt<std::uint32_t>(actualValue);
 										this->SetUntypedActualValue(boost::any(value));
 										break;
 									}
@@ -186,7 +184,7 @@ namespace IndustrialNetwork
 								{
 									if (!defaultValue.empty())
 									{
-										uint8_t value = HexToInt<uint8_t>(defaultValue);
+										std::uint8_t value = HexToInt<std::uint8_t>(defaultValue);
 										this->SetUntypedDefaultValue(boost::any(value));
 										break;
 									}
@@ -204,13 +202,13 @@ namespace IndustrialNetwork
 								{
 									if (!defaultValue.empty())
 									{
-										uint16_t value = HexToInt<uint16_t>(defaultValue);
+										std::uint16_t value = HexToInt<std::uint16_t>(defaultValue);
 										this->SetUntypedDefaultValue(boost::any(value));
 										break;
 									}
 									if (!actualValue.empty())
 									{
-										uint16_t value = HexToInt<uint16_t>(actualValue);
+										std::uint16_t value = HexToInt<std::uint16_t>(actualValue);
 										this->SetUntypedActualValue(boost::any(value));
 										break;
 									}
@@ -248,9 +246,9 @@ namespace IndustrialNetwork
 					return Result(ErrorCode::DATATYPE_MISMATCH, formatter.str());
 				}
 				template Result GeneralFeature::GetActualValue(bool& value);
-				template Result GeneralFeature::GetActualValue(uint8_t& value);
-				template Result GeneralFeature::GetActualValue(uint16_t& value);
-				template Result GeneralFeature::GetActualValue(uint32_t& value);
+				template Result GeneralFeature::GetActualValue(std::uint8_t& value);
+				template Result GeneralFeature::GetActualValue(std::uint16_t& value);
+				template Result GeneralFeature::GetActualValue(std::uint32_t& value);
 
 				template<class T>
 				Result GeneralFeature::SetActualValue(const T actualValue)
@@ -270,9 +268,9 @@ namespace IndustrialNetwork
 					return Result(ErrorCode::DATATYPE_MISMATCH, formatter.str());
 				}
 				template Result GeneralFeature::SetActualValue(const bool value);
-				template Result GeneralFeature::SetActualValue(const uint8_t value);
-				template Result GeneralFeature::SetActualValue(const uint16_t value);
-				template Result GeneralFeature::SetActualValue(const uint32_t value);
+				template Result GeneralFeature::SetActualValue(const std::uint8_t value);
+				template Result GeneralFeature::SetActualValue(const std::uint16_t value);
+				template Result GeneralFeature::SetActualValue(const std::uint32_t value);
 			}
 		}
 	}

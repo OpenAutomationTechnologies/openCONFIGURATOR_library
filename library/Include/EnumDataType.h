@@ -54,7 +54,6 @@ namespace IndustrialNetwork
 				*/
 				class EnumDataType : public IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ComplexDataType
 				{
-
 					public:
 						EnumDataType(const std::string& uniqueID, const std::string& name, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype datatType, std::uint32_t size = 0);
 						virtual ~EnumDataType();

@@ -43,7 +43,6 @@ Range::Range() :
 	sortNumber()
 {}
 
-
 Range::~Range()
 {
 

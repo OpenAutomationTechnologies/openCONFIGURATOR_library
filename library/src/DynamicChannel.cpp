@@ -35,16 +35,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 
-DynamicChannel::DynamicChannel(PlkDataType dataType, DynamicChannelAccessType accessType, uint32_t startIndex, uint32_t endIndex, uint32_t maxNumber, uint32_t addressOffset, uint8_t bitAlignment) :
+DynamicChannel::DynamicChannel(PlkDataType dataType, DynamicChannelAccessType accessType, std::uint32_t startIndex, std::uint32_t endIndex, std::uint32_t maxNumber, std::uint32_t addressOffset, std::uint8_t bitAlignment) :
 	dataType(dataType),
 	accessType(accessType),
 	startIndex(startIndex),
 	endIndex(endIndex),
 	maxNumber(maxNumber),
 	addressOffset(addressOffset),
-	bitAlignment((bitAlignment == 0) ? boost::optional<uint8_t>() : boost::optional<uint8_t>(bitAlignment))
+	bitAlignment((bitAlignment == 0) ? boost::optional<std::uint8_t>() : boost::optional<std::uint8_t>(bitAlignment))
 {}
-
 
 DynamicChannel::~DynamicChannel()
 {}
@@ -59,12 +58,12 @@ DynamicChannelAccessType DynamicChannel::GetAccessType()
 	return this->accessType;
 }
 
-uint32_t DynamicChannel::GetStartIndex()
+std::uint32_t DynamicChannel::GetStartIndex()
 {
 	return this->startIndex;
 }
 
-uint32_t DynamicChannel::GetMaxNumber()
+std::uint32_t DynamicChannel::GetMaxNumber()
 {
 	return this->maxNumber;
 }

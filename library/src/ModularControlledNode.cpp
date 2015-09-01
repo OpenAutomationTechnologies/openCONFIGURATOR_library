@@ -35,7 +35,7 @@ using namespace IndustrialNetwork::POWERLINK::Core::Node;
 using namespace IndustrialNetwork::POWERLINK::Core::ModularNode;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 
-ModularControlledNode::ModularControlledNode(uint8_t nodeID, const std::string& nodeName) : ControlledNode(nodeID, nodeName),
+ModularControlledNode::ModularControlledNode(std::uint8_t nodeID, const std::string& nodeName) : ControlledNode(nodeID, nodeName),
 	maxChildren(),
 	unusedSlots(false),
 	multipleChildren(false),
@@ -51,7 +51,7 @@ Result AddModule(const Module& )
 	return Result();
 }
 
-Result ChangeModuleOrder(const Module& , uint32_t , bool )
+Result ChangeModuleOrder(const Module& , std::uint32_t , bool )
 {
 	return Result();
 }
@@ -66,7 +66,7 @@ bool ModularControlledNode::RecalculateModularNodeOd()
 	return false;
 }
 
-uint32_t ModularControlledNode::GetModuleCount()
+std::uint32_t ModularControlledNode::GetModuleCount()
 {
 	return 0;
 }

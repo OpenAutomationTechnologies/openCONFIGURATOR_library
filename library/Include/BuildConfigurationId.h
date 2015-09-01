@@ -32,8 +32,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined BUILD_CONFIGURATION_SETTING_ID_H
 #define BUILD_CONFIGURATION_SETTING_ID_H
 
-#include <cstdint>
-
 namespace IndustrialNetwork
 {
 	namespace POWERLINK

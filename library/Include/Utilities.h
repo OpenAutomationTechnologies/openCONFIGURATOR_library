@@ -30,13 +30,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef UTILITIES_H
 #define UTILITIES_H
 
-#include <iostream>
 #include <sstream>
 #include <algorithm>
 #include <cstdint>
 #include <iomanip>
 #include <string>
-#include <cctype>
 #include <limits.h>
 #include <math.h>
 #include <bitset>

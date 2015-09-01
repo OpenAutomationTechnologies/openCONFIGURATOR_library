@@ -58,7 +58,6 @@ namespace IndustrialNetwork
 				*/
 				class NetProcessImageGenerator : public ProcessImageGenerator
 				{
-
 					public:
 						static NetProcessImageGenerator& GetInstance();
 						virtual ~NetProcessImageGenerator();

@@ -41,13 +41,13 @@ namespace IndustrialNetwork
 		{
 			namespace ObjectDictionary
 			{
-				SubObject::SubObject(uint32_t id, ObjectType objectType, const std::string& name, uint8_t containingNode) : BaseObject(id, objectType, name, containingNode)
+				SubObject::SubObject(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode) : BaseObject(id, objectType, name, containingNode)
 				{}
 
-				SubObject::SubObject(uint32_t id, ObjectType objectType, const std::string& name, uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping) : BaseObject(id, objectType, name, containingNode, dataType, accessType, pdoMapping)
+				SubObject::SubObject(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping) : BaseObject(id, objectType, name, containingNode, dataType, accessType, pdoMapping)
 				{}
 
-				SubObject::SubObject(uint32_t id, ObjectType objectType, const std::string& name, uint8_t containingNode, const std::string& uniqueIdRef) : BaseObject(id, objectType, name, containingNode, uniqueIdRef)
+				SubObject::SubObject(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode, const std::string& uniqueIdRef) : BaseObject(id, objectType, name, containingNode, uniqueIdRef)
 				{}
 
 				SubObject::~SubObject()

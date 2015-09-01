@@ -58,7 +58,7 @@ void ConfigurationGenerator::WriteHeader(const std::shared_ptr<Network>& net, st
 	dateTime.imbue(std::locale(dateTime.getloc(), f));
 	dateTime << now;
 
-	std::map<uint8_t, std::shared_ptr<BaseNode>> nodes;
+	std::map<std::uint8_t, std::shared_ptr<BaseNode>> nodes;
 	net->GetNodes(nodes);
 
 	configurationOutput << "////" << std::endl;
@@ -90,7 +90,7 @@ Result ConfigurationGenerator::GenerateNetworkConfiguration(const std::shared_pt
 	if (!res.IsSuccessful())
 		return res;
 
-	std::map<uint8_t, std::shared_ptr<BaseNode>> nodes;
+	std::map<std::uint8_t, std::shared_ptr<BaseNode>> nodes;
 	res = net->GetNodes(nodes);
 	if (!res.IsSuccessful())
 		return res;
@@ -131,7 +131,7 @@ Result ConfigurationGenerator::WriteManagingNodeObjectCount(const std::shared_pt
 
 Result ConfigurationGenerator::WriteNodeAssignement(const std::shared_ptr<Network>& net, std::stringstream& configurationOutput, std::stringstream& hexOutput, bool writeNodeValid, bool writeComments)
 {
-	std::map<uint8_t, std::shared_ptr<BaseNode>> nodes;
+	std::map<std::uint8_t, std::shared_ptr<BaseNode>> nodes;
 	Result res = net->GetNodes(nodes);
 	if (!res.IsSuccessful())
 		return res;
@@ -145,8 +145,8 @@ Result ConfigurationGenerator::WriteNodeAssignement(const std::shared_ptr<Networ
 		if (std::dynamic_pointer_cast<ManagingNode>(node.second))
 		{
 			//Skip if node is RMN and write Reassignment or node is AMN
-			if ((writeNodeValid && node.second->GetNodeIdentifier() != 240)
-			        || node.second->GetNodeIdentifier() == 240) //Do not write Node Reassignment for RMNscontinue;
+			if ((writeNodeValid && node.second->GetNodeId() != 240)
+			        || node.second->GetNodeId() == 240) //Do not write Node Reassignment for RMNscontinue;
 				continue;
 		}
 
@@ -163,14 +163,14 @@ Result ConfigurationGenerator::WriteNodeAssignement(const std::shared_ptr<Networ
 
 		configurationOutput << std::hex << std::uppercase << 0x1F81;
 		configurationOutput << "\t";
-		configurationOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << (uint32_t) node.first;
+		configurationOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << (std::uint32_t) node.first;
 		configurationOutput << "\t";
 		configurationOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << 0x4;
 		configurationOutput << "\t";
 		configurationOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << node.second->GetNodeAssignmentValue() << std::endl;
 
 		hexOutput << ReverseHex(0x1F81, 4);
-		hexOutput << ReverseHex((uint32_t) node.first, 2);
+		hexOutput << ReverseHex((std::uint32_t) node.first, 2);
 		hexOutput << ReverseHex(0x4, 8);
 		hexOutput << ReverseHex(node.second->GetNodeAssignmentValue(), 8);
 
@@ -217,7 +217,7 @@ Result ConfigurationGenerator::WriteManagingNodeConfiguration(const std::shared_
 
 	boost::format formatter(kMsgWriteManagingNode);
 	formatter
-	% (uint32_t) mn->GetNodeIdentifier();
+	% (std::uint32_t) mn->GetNodeId();
 	LOG_INFO() << formatter.str();
 	return res;
 }
@@ -230,16 +230,16 @@ Result ConfigurationGenerator::WriteRedundantManagingNodeConfiguration(const std
 	std::uint32_t rmnDomainSize = (rmn->GetConfigurationObjectSize() / 8) + (rmn->GetConfigurationObjectCount() * 7) + 4;
 
 	//Write the 1F22 object for RMN
-	configurationOutput << "////Configuration Data for CN: " << node->GetName() << "(" << std::dec << (uint32_t) node->GetNodeIdentifier() << ")" << std::endl;
+	configurationOutput << "////Configuration Data for CN: " << node->GetName() << "(" << std::dec << (std::uint32_t) node->GetNodeId() << ")" << std::endl;
 	configurationOutput << std::hex << std::uppercase << 0x1F22;
 	configurationOutput << "\t";
-	configurationOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << (uint32_t) node->GetNodeIdentifier();
+	configurationOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << (std::uint32_t) node->GetNodeId();
 	configurationOutput << "\t";
 	configurationOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << rmnDomainSize << std::endl;
 	configurationOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << rmn->GetConfigurationObjectCount() << std::endl;
 
 	hexOutput << ReverseHex(0x1F22, 4);
-	hexOutput << ReverseHex((uint32_t) node->GetNodeIdentifier(), 2);
+	hexOutput << ReverseHex((std::uint32_t) node->GetNodeId(), 2);
 	hexOutput << ReverseHex(rmnDomainSize, 8);
 	hexOutput << ReverseHex(rmn->GetConfigurationObjectCount(), 8);
 
@@ -270,7 +270,7 @@ Result ConfigurationGenerator::WriteRedundantManagingNodeConfiguration(const std
 	res = WriteNodeAssignement(net, configurationOutput, hexOutput, true, false);
 	boost::format formatter(kMsgWriteRedundantManagingNode);
 	formatter
-	% (uint32_t) rmn->GetNodeIdentifier();
+	% (uint32_t) rmn->GetNodeId();
 	LOG_INFO() << formatter.str();
 	return res;
 }
@@ -284,16 +284,16 @@ Result ConfigurationGenerator::WriteControlledNodeConfiguration(const std::share
 	// BitSize / 8 + 7 Byte per Object (2 Byte Index / 1 Byte SubIndex / 4 Byte Size) + 4 Byte NrOfObjects
 	std::uint32_t cnDomainSize = (cn->GetConfigurationObjectSize() / 8) + (cn->GetConfigurationObjectCount() * 7) + 4;
 
-	configurationOutput << "////Configuration Data for CN: " << node->GetName() << "(" << std::dec << (uint32_t) node->GetNodeIdentifier() << ")" << std::endl;
+	configurationOutput << "////Configuration Data for CN: " << node->GetName() << "(" << std::dec << (std::uint32_t) node->GetNodeId() << ")" << std::endl;
 	configurationOutput << std::hex << std::uppercase << "1F22";
 	configurationOutput << "\t";
-	configurationOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << (uint32_t) node->GetNodeIdentifier();
+	configurationOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << (std::uint32_t) node->GetNodeId();
 	configurationOutput << "\t";
 	configurationOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << cnDomainSize << std::endl;
 	configurationOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << cn->GetConfigurationObjectCount() << std::endl;
 
 	hexOutput << ReverseHex(0x1F22, 4);
-	hexOutput << ReverseHex((uint32_t) node->GetNodeIdentifier(), 2);
+	hexOutput << ReverseHex((std::uint32_t) node->GetNodeId(), 2);
 	hexOutput << ReverseHex(cnDomainSize, 8);
 	hexOutput << ReverseHex(cn->GetConfigurationObjectCount(), 8);
 
@@ -318,7 +318,7 @@ Result ConfigurationGenerator::WriteControlledNodeConfiguration(const std::share
 
 	boost::format formatter(kMsgWriteControlledNode);
 	formatter
-	% (uint32_t) cn->GetNodeIdentifier();
+	% (std::uint32_t) cn->GetNodeId();
 	LOG_INFO() << formatter.str();
 	return res;
 }
@@ -329,8 +329,8 @@ Result ConfigurationGenerator::WriteMappingNrOfEntriesZero(const std::shared_ptr
 	{
 		if ((object.first >= 0x1600 && object.first < 0x1700) || (object.first >= 0x1A00 && object.first < 0x1B00))
 		{
-			auto subobject = object.second->GetSubObjectCollection().find((uint32_t) 0);
-			if (subobject != object.second->GetSubObjectCollection().end())
+			auto subobject = object.second->GetSubObjectDictionary().find((std::uint32_t) 0);
+			if (subobject != object.second->GetSubObjectDictionary().end())
 			{
 				if (subobject->second->WriteToConfiguration())
 				{
@@ -354,7 +354,7 @@ Result ConfigurationGenerator::WriteMappingNrOfEntriesZero(const std::shared_ptr
 
 	boost::format formatter(kMsgWriteMappingObjectsNrOfEntriesZero);
 	formatter
-	% (uint32_t) node->GetNodeIdentifier();
+	% (std::uint32_t) node->GetNodeId();
 	LOG_INFO() << formatter.str();
 	return Result();
 }
@@ -366,7 +366,7 @@ Result ConfigurationGenerator::WriteMappingObjects(const std::shared_ptr<BaseNod
 		if ((object.first >= 0x1800 && object.first < 0x1900)
 		        || (object.first >= 0x1400 && object.first < 0x1500))
 		{
-			for (auto& subobject : object.second->GetSubObjectCollection())
+			for (auto& subobject : object.second->GetSubObjectDictionary())
 			{
 				if (subobject.second->WriteToConfiguration() && subobject.first == 1)
 				{
@@ -388,13 +388,13 @@ Result ConfigurationGenerator::WriteMappingObjects(const std::shared_ptr<BaseNod
 		else if ((object.first >= 0x1600 && object.first < 0x1700)
 		         || (object.first >= 0x1A00 && object.first < 0x1B00))
 		{
-			uint16_t numberOfIndicesToWrite = 0;
-			auto& nrOfEntriesObj = object.second->GetSubObjectCollection().at((uint8_t) 0);
+			std::uint16_t numberOfIndicesToWrite = 0;
+			auto& nrOfEntriesObj = object.second->GetSubObjectDictionary().at((std::uint8_t) 0);
 			if (nrOfEntriesObj->WriteToConfiguration())
-				numberOfIndicesToWrite = nrOfEntriesObj->GetTypedActualValue<uint16_t>();
+				numberOfIndicesToWrite = nrOfEntriesObj->GetTypedActualValue<std::uint16_t>();
 
-			uint16_t count = 0;
-			for (auto& subobject : object.second->GetSubObjectCollection())
+			std::uint16_t count = 0;
+			for (auto& subobject : object.second->GetSubObjectDictionary())
 			{
 				if (subobject.second->WriteToConfiguration() && subobject.first != 0 && count < numberOfIndicesToWrite)
 				{
@@ -419,7 +419,7 @@ Result ConfigurationGenerator::WriteMappingObjects(const std::shared_ptr<BaseNod
 
 	boost::format formatter(kMsgWriteMappingObjects);
 	formatter
-	% (uint32_t) node->GetNodeIdentifier();
+	% (std::uint32_t) node->GetNodeId();
 	LOG_INFO() << formatter.str();
 	return Result();
 }
@@ -430,8 +430,8 @@ Result ConfigurationGenerator::WriteMappingNrOfEntries(const std::shared_ptr<Bas
 	{
 		if ((object.first >= 0x1600 && object.first < 0x1700) || (object.first >= 0x1A00 && object.first < 0x1B00))
 		{
-			auto subobject = object.second->GetSubObjectCollection().find((uint32_t) 0);
-			if (subobject != object.second->GetSubObjectCollection().end())
+			auto subobject = object.second->GetSubObjectDictionary().find((std::uint32_t) 0);
+			if (subobject != object.second->GetSubObjectDictionary().end())
 			{
 				if (subobject->second->WriteToConfiguration())
 				{
@@ -454,7 +454,7 @@ Result ConfigurationGenerator::WriteMappingNrOfEntries(const std::shared_ptr<Bas
 
 	boost::format formatter(kMsgWriteMappingObjectsNrOfEntries);
 	formatter
-	% (uint32_t) node->GetNodeIdentifier();
+	% (std::uint32_t) node->GetNodeId();
 	LOG_INFO() << formatter.str();
 	return Result();
 }
@@ -485,7 +485,7 @@ Result ConfigurationGenerator::WriteCommunicationProfileArea(const std::shared_p
 				hexOutput << ReverseHex(object.second->GetTypedActualValue<std::string>());
 			}
 
-			for (auto& subobject : object.second->GetSubObjectCollection())
+			for (auto& subobject : object.second->GetSubObjectDictionary())
 			{
 				//Write MN node assignement for PResChaining
 				if (object.first == 0x1F81 && subobject.first != 240)
@@ -512,7 +512,7 @@ Result ConfigurationGenerator::WriteCommunicationProfileArea(const std::shared_p
 
 	boost::format formatter(kMsgWriteCommunicationRangeObjects);
 	formatter
-	% (uint32_t) node->GetNodeIdentifier();
+	% (std::uint32_t) node->GetNodeId();
 	LOG_INFO() << formatter.str();
 	return Result();
 }
@@ -539,7 +539,7 @@ Result ConfigurationGenerator::WriteManufacturerSpecificProfileArea(const std::s
 				hexOutput << ReverseHex(object.second->GetTypedActualValue<std::string>());
 			}
 
-			for (auto& subobject : object.second->GetSubObjectCollection())
+			for (auto& subobject : object.second->GetSubObjectDictionary())
 			{
 				if (subobject.second->WriteToConfiguration())
 				{
@@ -562,7 +562,7 @@ Result ConfigurationGenerator::WriteManufacturerSpecificProfileArea(const std::s
 
 	boost::format formatter(kMsgWriteUserDefinedRangeObjects);
 	formatter
-	% (uint32_t) node->GetNodeIdentifier();
+	% (std::uint32_t) node->GetNodeId();
 	LOG_INFO() << formatter.str();
 	return Result();
 }

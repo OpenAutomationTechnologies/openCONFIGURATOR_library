@@ -43,7 +43,6 @@ namespace IndustrialNetwork
 		{
 			namespace Node
 			{
-
 				CnFeature::CnFeature(CNFeatureEnum type) : PlkFeature<CNFeatureEnum>(type)
 				{
 					SetTypedValues(PlkFeatureDefaultValues[type], "");
@@ -76,7 +75,7 @@ namespace IndustrialNetwork
 					return Result(ErrorCode::DATATYPE_MISMATCH, formatter.str());
 				}
 				template Result CnFeature::GetDefaultValue(bool& value);
-				template Result CnFeature::GetDefaultValue(uint32_t& value);
+				template Result CnFeature::GetDefaultValue(std::uint32_t& value);
 
 				Result CnFeature::SetTypedValues(const std::string& defaultValue, const std::string& actualValue)
 				{
@@ -104,7 +103,7 @@ namespace IndustrialNetwork
 								{
 									if (!actualValue.empty())
 									{
-										uint32_t value = HexToInt<uint32_t>(actualValue);
+										std::uint32_t value = HexToInt<std::uint32_t>(actualValue);
 										this->SetUntypedActualValue(boost::any(value));
 										break;
 									}
@@ -143,7 +142,7 @@ namespace IndustrialNetwork
 					return Result(ErrorCode::DATATYPE_MISMATCH, formatter.str());
 				}
 				template Result CnFeature::GetActualValue(bool& value);
-				template Result CnFeature::GetActualValue(uint32_t& value);
+				template Result CnFeature::GetActualValue(std::uint32_t& value);
 
 				template<class T>
 				Result CnFeature::SetActualValue(const T actualValue)
@@ -164,7 +163,7 @@ namespace IndustrialNetwork
 					return Result(ErrorCode::DATATYPE_MISMATCH, formatter.str());
 				}
 				template Result CnFeature::SetActualValue(bool value);
-				template Result CnFeature::SetActualValue(uint32_t value);
+				template Result CnFeature::SetActualValue(std::uint32_t value);
 			}
 		}
 	}

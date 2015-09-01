@@ -46,7 +46,7 @@ namespace IndustrialNetwork
 				\brief
 				\author rueckerc
 				*/
-				enum IEC_Datatype
+				enum class IEC_Datatype : std::int8_t
 				{
 					UNDEFINED = -1, // < Undefined
 					BITSTRING = 0, // < Bit string (1 bit)

@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 
-ComplexDataType::ComplexDataType(const std::string& uniqueID, const std::string& name, uint32_t size) :
+ComplexDataType::ComplexDataType(const std::string& uniqueID, const std::string& name, std::uint32_t size) :
 	name(name),
 	uniqueID(uniqueID),
 	size(size)

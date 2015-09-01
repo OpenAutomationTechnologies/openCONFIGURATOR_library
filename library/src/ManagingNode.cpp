@@ -68,8 +68,8 @@ Result ManagingNode::AddNodeAssignement(NodeAssignment assign)
 			{
 				boost::format formatter(kMsgNodeAssignmentNotSupported);
 				formatter
-				% (uint32_t) assign
-				% (uint32_t) this->GetNodeIdentifier();
+				% (std::uint32_t) assign
+				% (std::uint32_t) this->GetNodeId();
 				LOG_FATAL() << formatter.str();
 				return Result(ErrorCode::NODE_ASSIGNMENT_NOT_SUPPORTED, formatter.str());
 			}
@@ -87,7 +87,7 @@ Result ManagingNode::AddNodeAssignement(NodeAssignment assign)
 					this->GetNodeAssignment().push_back(assign);
 					if (assign == NodeAssignment::NMT_NODEASSIGN_MN_PRES)
 					{
-						this->SetSubObjectActualValue(0x1F81, 240, IntToHex<uint32_t>(this->GetNodeAssignmentValue(), 0, "0x"));
+						this->SetSubObjectActualValue(0x1F81, 240, IntToHex<std::uint32_t>(this->GetNodeAssignmentValue(), 0, "0x"));
 					}
 					return Result();
 				}
@@ -95,8 +95,8 @@ Result ManagingNode::AddNodeAssignement(NodeAssignment assign)
 				{
 					boost::format formatter(kMsgNodeAssignmentAlreadyExists);
 					formatter
-					% (uint32_t) assign
-					% (uint32_t) this->GetNodeIdentifier();
+					% (std::uint32_t) assign
+					% (std::uint32_t) this->GetNodeId();
 					LOG_WARN() << formatter.str();
 					return Result();
 				}
@@ -119,7 +119,7 @@ Result ManagingNode::RemoveNodeAssignment(NodeAssignment assign)
 	return Result();
 }
 
-uint32_t ManagingNode::GetNodeAssignmentValue()
+std::uint32_t ManagingNode::GetNodeAssignmentValue()
 {
 	if (this->GetNodeAssignment().empty())
 		return 0;
@@ -164,7 +164,7 @@ Result ManagingNode::GetDynamicChannel(PlkDataType dataType, Direction dir, std:
 	boost::format formatter(kMsgDynamicChannelNotFound);
 	formatter
 	% GetPlkDataTypeName(dataType)
-	% DirectionTypeValues[(std::uint32_t) dir];
+	% DirectionTypeValues[(std::uint8_t) dir];
 	LOG_FATAL() << formatter.str();
 	return Result(ErrorCode::DYNAMIC_CHANNEL_NOT_FOUND, formatter.str());
 }
@@ -174,9 +174,9 @@ const std::vector<std::shared_ptr<DynamicChannel>>& ManagingNode::GetDynamicChan
 	return this->dynamicChannelList;
 }
 
-uint32_t ManagingNode::GetConfigurationObjectCount()
+std::uint32_t ManagingNode::GetConfigurationObjectCount()
 {
-	uint32_t count = 0;
+	std::uint32_t count = 0;
 	for (auto& object : this->GetObjectDictionary())
 	{
 		if (object.second->GetObjectType() == ObjectType::VAR && object.second->WriteToConfiguration())
@@ -184,16 +184,16 @@ uint32_t ManagingNode::GetConfigurationObjectCount()
 			count++;
 		}
 
-		uint32_t mappingObjNrOfEntries = 0;
-		uint32_t mappingObjCount = 0;
-		for (auto& subobject : object.second->GetSubObjectCollection())
+		std::uint32_t mappingObjNrOfEntries = 0;
+		std::uint32_t mappingObjCount = 0;
+		for (auto& subobject : object.second->GetSubObjectDictionary())
 		{
 			if (object.first >= 0x1600 && object.first < 0x1700) //Count for reset and actual NrOfEntries
 			{
 				if (subobject.second->WriteToConfiguration() && subobject.first == 0x0)
 				{
 					count += 2; //Add count for mapping set and reset
-					mappingObjNrOfEntries = subobject.second->GetTypedActualValue<uint16_t>(); //Set actual nr of mapping objects
+					mappingObjNrOfEntries = subobject.second->GetTypedActualValue<std::uint16_t>(); //Set actual nr of mapping objects
 				}
 				else if (subobject.second->WriteToConfiguration() && mappingObjCount < mappingObjNrOfEntries) //Only count mapping objects of they are activated
 				{
@@ -206,7 +206,7 @@ uint32_t ManagingNode::GetConfigurationObjectCount()
 				if (subobject.second->WriteToConfiguration() && subobject.first == 0x0)
 				{
 					count += 2; //Add count for mapping set and reset
-					mappingObjNrOfEntries = subobject.second->GetTypedActualValue<uint16_t>(); //Set actual nr of mapping objects
+					mappingObjNrOfEntries = subobject.second->GetTypedActualValue<std::uint16_t>(); //Set actual nr of mapping objects
 				}
 				else if (subobject.second->WriteToConfiguration() && mappingObjCount < mappingObjNrOfEntries) //Only count mapping objects of they are activated
 				{
@@ -225,7 +225,7 @@ uint32_t ManagingNode::GetConfigurationObjectCount()
 					else
 					{
 						count += 2; //Add assignment and reassignment count
-						if (this->GetNodeIdentifier() == 240) //Count 1F22 only for active managing node
+						if (this->GetNodeId() == 240) //Count 1F22 only for active managing node
 							count++;
 					}
 				}
@@ -241,15 +241,15 @@ uint32_t ManagingNode::GetConfigurationObjectCount()
 
 	boost::format formatter(kMsgNodeObjectCount);
 	formatter
-	% (uint32_t) this->GetNodeIdentifier()
+	% (std::uint32_t) this->GetNodeId()
 	% count;
 	LOG_INFO() << formatter.str();
 	return count;
 }
 
-uint32_t ManagingNode::GetConfigurationObjectSize()
+std::uint32_t ManagingNode::GetConfigurationObjectSize()
 {
-	uint32_t size = 0;
+	std::uint32_t size = 0;
 	for (auto& object : this->GetObjectDictionary())
 	{
 		if (object.second->GetObjectType() == ObjectType::VAR && object.second->WriteToConfiguration())
@@ -257,16 +257,16 @@ uint32_t ManagingNode::GetConfigurationObjectSize()
 			size += object.second->GetBitSize();
 		}
 
-		uint32_t mappingObjNrOfEntries = 0;
-		uint32_t mappingObjCount = 0;
-		for (auto& subobject : object.second->GetSubObjectCollection())
+		std::uint32_t mappingObjNrOfEntries = 0;
+		std::uint32_t mappingObjCount = 0;
+		for (auto& subobject : object.second->GetSubObjectDictionary())
 		{
 			if (object.first >= 0x1600 && object.first < 0x1700) //Count for reset and actual NrOfEntries
 			{
 				if (subobject.second->WriteToConfiguration() && subobject.first == 0x0)
 				{
 					size += 2 * subobject.second->GetBitSize(); //Add size of NrOfEntries set and reset
-					mappingObjNrOfEntries = subobject.second->GetTypedActualValue<uint16_t>(); //Set actual nr of mapping objects
+					mappingObjNrOfEntries = subobject.second->GetTypedActualValue<std::uint16_t>(); //Set actual nr of mapping objects
 				}
 				else if (subobject.second->WriteToConfiguration() && mappingObjCount < mappingObjNrOfEntries) //Only count mapping objects of they are activated
 				{
@@ -279,7 +279,7 @@ uint32_t ManagingNode::GetConfigurationObjectSize()
 				if (subobject.second->WriteToConfiguration() && subobject.first == 0x0)
 				{
 					size += 2 * subobject.second->GetBitSize();//Add size of NrOfEntries
-					mappingObjNrOfEntries = subobject.second->GetTypedActualValue<uint16_t>(); //Set actual nr of mapping objects
+					mappingObjNrOfEntries = subobject.second->GetTypedActualValue<std::uint16_t>(); //Set actual nr of mapping objects
 				}
 				else if (subobject.second->WriteToConfiguration() && mappingObjCount < mappingObjNrOfEntries) //Only count mapping objects of they are activated
 				{
@@ -298,7 +298,7 @@ uint32_t ManagingNode::GetConfigurationObjectSize()
 					else
 					{
 						size += 2 * subobject.second->GetBitSize();
-						if (this->GetNodeIdentifier() == 240) //Count 1F22 only for active managing node
+						if (this->GetNodeId() == 240) //Count 1F22 only for active managing node
 							size += subobject.second->GetBitSize();
 					}
 				}
@@ -314,7 +314,7 @@ uint32_t ManagingNode::GetConfigurationObjectSize()
 
 	boost::format formatter(kMsgNodeObjectCountSize);
 	formatter
-	% (uint32_t) this->GetNodeIdentifier()
+	% (std::uint32_t) this->GetNodeId()
 	% size;
 	LOG_INFO() << formatter.str();
 	return size;
@@ -350,18 +350,18 @@ Result ManagingNode::SetMultiplexedCycle(const std::uint8_t nodeID, const std::u
 	if (!res.IsSuccessful())
 		return res;
 
-	uint16_t cycle_count = 0;
+	std::uint16_t cycle_count = 0;
 	if (multplCycleCount->WriteToConfiguration())
-		cycle_count = multplCycleCount->GetTypedActualValue<uint16_t>();
+		cycle_count = multplCycleCount->GetTypedActualValue<std::uint16_t>();
 	else
-		cycle_count = multplCycleCount->GetTypedDefaultValue<uint16_t>();
+		cycle_count = multplCycleCount->GetTypedDefaultValue<std::uint16_t>();
 
 	if (multiplexedCycle > cycle_count)
 	{
 		boost::format formatter(kMsgMultiplexCycleAssignInvalid);
 		formatter
-		% (uint32_t) multiplexedCycle
-		% (uint32_t) nodeID
+		% (std::uint32_t) multiplexedCycle
+		% (std::uint32_t) nodeID
 		% cycle_count;
 		LOG_FATAL() << formatter.str();
 		return Result(ErrorCode::MULTIPLEX_CYCLE_ASSIGN_INVALID, formatter.str());
@@ -376,13 +376,13 @@ Result ManagingNode::SetMultiplexedCycle(const std::uint8_t nodeID, const std::u
 	{
 		boost::format formatter(kMsgMultiplexCycleAlreadyAssigned);
 		formatter
-		% (uint32_t) multiplexedCycle;
+		% (std::uint32_t) multiplexedCycle;
 		LOG_FATAL() << formatter.str();
 		return Result(ErrorCode::MULTIPLEX_CYCLE_ASSIGN_INVALID, formatter.str());
 	}
 
 	std::stringstream nodeIdStr;
-	nodeIdStr << (uint32_t) multiplexedCycle;
+	nodeIdStr << (std::uint32_t) multiplexedCycle;
 	return multplCycleAssign->SetTypedObjectActualValue(nodeIdStr.str());
 }
 
@@ -401,14 +401,14 @@ bool ManagingNode::MultiplexedCycleAlreadyAssigned(std::uint8_t multiplexedCycle
 {
 	std::shared_ptr<Object> multplCycleAssign;
 	this->GetObject(0x1F9B, multplCycleAssign);
-	for (auto& cycleAssign : multplCycleAssign->GetSubObjectCollection())
+	for (auto& cycleAssign : multplCycleAssign->GetSubObjectDictionary())
 	{
 		if (cycleAssign.first == 0)
 			continue;
 
 		if (cycleAssign.second->WriteToConfiguration())
 		{
-			if (cycleAssign.second->GetTypedActualValue<uint16_t>() == multiplexedCycle)
+			if (cycleAssign.second->GetTypedActualValue<std::uint16_t>() == multiplexedCycle)
 			{
 				return true;
 			}
@@ -419,16 +419,16 @@ bool ManagingNode::MultiplexedCycleAlreadyAssigned(std::uint8_t multiplexedCycle
 
 IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::CalculatePReqPayloadLimit()
 {
-	if (this->GetNodeIdentifier() != 240) //Only calculate for RMN
+	if (this->GetNodeId() != 240) //Only calculate for RMN
 		return Result();
 
-	uint32_t preqPayloadLimit = 0;
+	std::uint32_t preqPayloadLimit = 0;
 	for (auto& object : this->GetObjectDictionary())
 	{
 		if (object.first >= 0x1600 && object.first < 0x1700)
 		{
 			//Check corresponding 0x14XX object for origin of Rx Data
-			uint32_t commParamIndex = (object.first - 0x1600) + 0x1400;
+			std::uint32_t commParamIndex = (object.first - 0x1600) + 0x1400;
 			std::shared_ptr<SubObject> paramObj;
 			Result res = this->GetSubObject(commParamIndex, 0x1, paramObj);
 			if (!res.IsSuccessful())
@@ -437,18 +437,18 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::Calculat
 			if (paramObj->WriteToConfiguration())
 				continue; //Cross traffic does not count to PreqPayloadLimit
 
-			uint16_t numberOfIndicesToWrite = 0;
-			auto& nrOfEntriesObj = object.second->GetSubObjectCollection().at((uint8_t) 0); //GetNrOfEntries and only count the valid ones
+			std::uint16_t numberOfIndicesToWrite = 0;
+			auto& nrOfEntriesObj = object.second->GetSubObjectDictionary().at((std::uint8_t) 0); //GetNrOfEntries and only count the valid ones
 			if (nrOfEntriesObj->WriteToConfiguration())
-				numberOfIndicesToWrite = nrOfEntriesObj->GetTypedActualValue<uint16_t>();
+				numberOfIndicesToWrite = nrOfEntriesObj->GetTypedActualValue<std::uint16_t>();
 
-			uint16_t count = 0;
+			std::uint16_t count = 0;
 
-			for (auto& subobject : object.second->GetSubObjectCollection())
+			for (auto& subobject : object.second->GetSubObjectDictionary())
 			{
 				if (subobject.second->WriteToConfiguration() && subobject.first != 0 && count < numberOfIndicesToWrite)
 				{
-					BaseProcessDataMapping mapping = BaseProcessDataMapping(subobject.second->GetTypedActualValue<std::string>(), this->GetNodeIdentifier());
+					BaseProcessDataMapping mapping = BaseProcessDataMapping(subobject.second->GetTypedActualValue<std::string>(), this->GetNodeId());
 					preqPayloadLimit += mapping.GetMappingLength() / 8;
 					count++;
 				}
@@ -473,24 +473,24 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::Calculat
 	//Calculate only if managing node transmits PRes
 	if (std::find(this->GetNodeAssignment().begin(), this->GetNodeAssignment().end(), NodeAssignment::NMT_NODEASSIGN_MN_PRES) != this->GetNodeAssignment().end())
 	{
-		uint32_t presPayloadLimit = 0;
+		std::uint32_t presPayloadLimit = 0;
 		for (auto& object : this->GetObjectDictionary())
 		{
 
 			if (object.first >= 0x1A00 && object.first < 0x1B00)
 			{
-				uint16_t numberOfIndicesToWrite = 0;
-				auto& nrOfEntriesObj = object.second->GetSubObjectCollection().at((uint8_t) 0);
+				std::uint16_t numberOfIndicesToWrite = 0;
+				auto& nrOfEntriesObj = object.second->GetSubObjectDictionary().at((std::uint8_t) 0);
 				if (nrOfEntriesObj->WriteToConfiguration())
-					numberOfIndicesToWrite = nrOfEntriesObj->GetTypedActualValue<uint16_t>();
+					numberOfIndicesToWrite = nrOfEntriesObj->GetTypedActualValue<std::uint16_t>();
 
-				uint16_t count = 0;
+				std::uint16_t count = 0;
 
-				for (auto& subobject : object.second->GetSubObjectCollection())
+				for (auto& subobject : object.second->GetSubObjectDictionary())
 				{
 					if (subobject.second->WriteToConfiguration() && subobject.first != 0 && count < numberOfIndicesToWrite)
 					{
-						BaseProcessDataMapping mapping = BaseProcessDataMapping(subobject.second->GetTypedActualValue<std::string>(), this->GetNodeIdentifier());
+						BaseProcessDataMapping mapping = BaseProcessDataMapping(subobject.second->GetTypedActualValue<std::string>(), this->GetNodeId());
 						presPayloadLimit += mapping.GetMappingLength() / 8;
 						count++;
 					}
@@ -542,7 +542,7 @@ Result ManagingNode::UpdateProcessImage(const std::map<std::uint8_t, std::shared
 	return this->UpdateProcessDataMapping(nodeCollection, dir);
 }
 
-IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::UpdateProcessDataMapping(const std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection, Direction dir)
+IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::UpdateProcessDataMapping(const std::map<std::uint8_t, std::shared_ptr<BaseNode>>& nodeCollection, Direction dir)
 {
 	std::uint32_t mappingParameterIndex = 0;
 	std::uint32_t mappingObjectIndex = 0;
@@ -576,7 +576,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::UpdatePr
 
 			if (nodeID->WriteToConfiguration())
 			{
-				mappedFromNode = nodeID->GetTypedActualValue<uint16_t>();
+				mappedFromNode = nodeID->GetTypedActualValue<std::uint16_t>();
 			}
 
 			//Get according mapping object
@@ -593,15 +593,15 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::UpdatePr
 
 			if (nrOfEntriesObj->WriteToConfiguration())
 			{
-				nrOfEntries = nrOfEntriesObj->GetTypedActualValue<uint16_t>();
+				nrOfEntries = nrOfEntriesObj->GetTypedActualValue<std::uint16_t>();
 			}
 			else if (nrOfEntriesObj->HasDefaultValue())
 			{
-				nrOfEntries = nrOfEntriesObj->GetTypedDefaultValue<uint16_t>();
+				nrOfEntries = nrOfEntriesObj->GetTypedDefaultValue<std::uint16_t>();
 				defaultMapping = true;
 			}
 
-			for (auto& mapping : mappingObject->GetSubObjectCollection())
+			for (auto& mapping : mappingObject->GetSubObjectDictionary())
 			{
 				if (mapping.first == 0)
 					continue;
@@ -612,9 +612,9 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::UpdatePr
 				if (defaultMapping && mapping.second->HasDefaultValue())
 				{
 					std::shared_ptr<BaseProcessDataMapping> mappingPtr = std::shared_ptr<BaseProcessDataMapping>(new BaseProcessDataMapping(mappedFromNode,
-					        mapping.second->GetId(), mapping.second, mapping.second->GetTypedDefaultValue<std::string>(), this->GetNodeIdentifier(), true));
+					        mapping.second->GetObjectId(), mapping.second, mapping.second->GetTypedDefaultValue<std::string>(), this->GetNodeId(), true));
 
-					res = CheckProcessDataMapping(nodeCollection.at((uint8_t)mappedFromNode), mappingPtr, dir);
+					res = CheckProcessDataMapping(nodeCollection.at((std::uint8_t)mappedFromNode), mappingPtr, dir);
 					if (!res.IsSuccessful())
 						return res;
 
@@ -628,13 +628,13 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::UpdatePr
 				else if (mapping.second->WriteToConfiguration())
 				{
 					std::shared_ptr<BaseProcessDataMapping> mappingPtr = std::shared_ptr<BaseProcessDataMapping>(new BaseProcessDataMapping(mappedFromNode,
-					        mapping.second->GetId(), mapping.second, mapping.second->GetTypedActualValue<std::string>(), this->GetNodeIdentifier(), false));
+					        mapping.second->GetObjectId(), mapping.second, mapping.second->GetTypedActualValue<std::string>(), this->GetNodeId(), false));
 
 					Direction nodeDir = Direction::RX;
 					if (dir == Direction::RX)
 						nodeDir = Direction::TX;
 
-					res = CheckProcessDataMapping(nodeCollection.at((uint8_t)mappedFromNode), mappingPtr, nodeDir);
+					res = CheckProcessDataMapping(nodeCollection.at((std::uint8_t)mappedFromNode), mappingPtr, nodeDir);
 					if (!res.IsSuccessful())
 						return res;
 
@@ -742,7 +742,7 @@ void ManagingNode::ClearMappingObjects()
 		if ((object.first >= 0x1800 && object.first < 0x1900)
 		        || (object.first >= 0x1400 && object.first < 0x1500))
 		{
-			for (auto& subobject : object.second->GetSubObjectCollection())
+			for (auto& subobject : object.second->GetSubObjectDictionary())
 			{
 				if (subobject.second->WriteToConfiguration() && subobject.first == 1)
 				{
@@ -753,7 +753,7 @@ void ManagingNode::ClearMappingObjects()
 		else if ((object.first >= 0x1600 && object.first < 0x1700)
 		         || (object.first >= 0x1A00 && object.first < 0x1B00))
 		{
-			for (auto& subobject : object.second->GetSubObjectCollection())
+			for (auto& subobject : object.second->GetSubObjectDictionary())
 			{
 				if (subobject.second->WriteToConfiguration())
 				{

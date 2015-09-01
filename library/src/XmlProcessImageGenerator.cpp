@@ -63,7 +63,7 @@ const std::string XmlProcessImageGenerator::Generate(std::uint8_t nodeid, std::s
 	std::shared_ptr<ControlledNode> cn = std::dynamic_pointer_cast<ControlledNode>(node);
 	if (mn.get())
 	{
-		std::map<uint8_t, std::shared_ptr<BaseNode>> nodes;
+		std::map<std::uint8_t, std::shared_ptr<BaseNode>> nodes;
 		network->GetNodes(nodes);
 
 		mn->UpdateProcessImage(nodes, Direction::RX);
@@ -76,7 +76,7 @@ const std::string XmlProcessImageGenerator::Generate(std::uint8_t nodeid, std::s
 	}
 
 	this->processImageStream << "<!-- Application process for " << node->GetName() << "(";
-	this->processImageStream << std::dec << (uint32_t) node->GetNodeIdentifier();
+	this->processImageStream << std::dec << (std::uint32_t) node->GetNodeId();
 	this->processImageStream << ") -->" << std::endl;
 
 	this->processImageStream << "<ApplicationProcess>" << std::endl;
@@ -111,7 +111,7 @@ const std::string XmlProcessImageGenerator::PrintChannel(const std::string& name
 
 	channel << "\t\t<Channel";
 	channel << " name=\"" + name + "\"";
-	channel << " dataType=\"" + IECDatatypeValues[datatype] + "\"";
+	channel << " dataType=\"" + IECDatatypeValues[(std::int8_t) datatype] + "\"";
 	channel << " dataSize=\"";
 	channel << std::dec << size;
 	channel << "\"";
@@ -126,6 +126,7 @@ void XmlProcessImageGenerator::WriteXMLHeader()
 {
 	std::ostringstream dateTime;
 	const boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
+	//No deletion needed : http://stackoverflow.com/questions/17779660/who-is-responsible-for-deleting-the-facet
 	boost::posix_time::time_facet* const f = new boost::posix_time::time_facet("%d-%b-%Y %H:%M:%S");
 	dateTime.imbue(std::locale(dateTime.getloc(), f));
 	dateTime << now;

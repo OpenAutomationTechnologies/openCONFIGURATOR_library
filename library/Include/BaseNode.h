@@ -74,8 +74,8 @@ namespace IndustrialNetwork
 
 						const std::string& GetName();
 						void SetName(const std::string& name);
-						std::uint8_t GetNodeIdentifier();
-						void SetNodeIdentifier(std::uint8_t nodeId);
+						std::uint8_t GetNodeId();
+						void SetNodeId(std::uint8_t nodeId);
 						const std::map<std::uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>>& GetObjectDictionary();
 						void SetObjectDictionary(const std::map<uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>>& od);
 

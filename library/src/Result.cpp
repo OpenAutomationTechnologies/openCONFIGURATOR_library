@@ -48,10 +48,6 @@ Result::Result() :
 Result::~Result()
 {}
 
-
-/**
-\return bool
-*/
 bool Result::IsSuccessful()
 {
 	return (this->GetErrorType() == ErrorCode::SUCCESS);

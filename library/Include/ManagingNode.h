@@ -66,7 +66,6 @@ namespace IndustrialNetwork
 				*/
 				class DLLEXPORT ManagingNode : public IndustrialNetwork::POWERLINK::Core::Node::BaseNode
 				{
-
 					public:
 						ManagingNode(std::uint8_t nodeID = 240, const std::string& nodeName = "");
 						virtual ~ManagingNode();
@@ -87,8 +86,8 @@ namespace IndustrialNetwork
 						void RemoveRmnId(std::uint16_t nodeId);
 						const std::vector<std::uint16_t>& GetRmnIds();
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapObject(uint32_t index, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, uint32_t position = 0, uint16_t fromNode = 0);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapSubObject(uint32_t index, uint16_t subindex, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, uint32_t position = 0, std::uint16_t fromNode = 0);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapObject(std::uint32_t index, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint32_t position = 0, std::uint16_t fromNode = 0);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapSubObject(std::uint32_t index, std::uint16_t subindex, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint32_t position = 0, std::uint16_t fromNode = 0);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapAllRxObjects(bool updateNrOfEntries);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapAllTxObjects(bool updateNrOfEntries);
 
@@ -98,7 +97,7 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CalculatePReqPayloadLimit();
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CalculatePResPayloadLimit();
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result UpdateProcessImage(const std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result UpdateProcessImage(const std::map<std::uint8_t, std::shared_ptr<BaseNode>>& nodeCollection, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir);
 
 						void ClearMappingObjects();
 

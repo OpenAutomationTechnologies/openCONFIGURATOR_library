@@ -31,7 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "Parameter.h"
 
-
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 
@@ -84,7 +83,7 @@ ParameterAccess Parameter::GetParameterAccess()
 	return this->parameterAccess;
 }
 
-uint32_t Parameter::GetBitSize()
+std::uint32_t Parameter::GetBitSize()
 {
 	if (!this->uniqueIDRef.empty())
 		return this->complexDataType->GetBitSize();

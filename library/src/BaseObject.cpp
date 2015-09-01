@@ -56,7 +56,7 @@ namespace IndustrialNetwork
 					actualValueNotDefaultValue(false)
 				{}
 
-				BaseObject::BaseObject(uint32_t id, ObjectType objectType, const std::string& name, uint8_t containingNode) : IBaseObject(id, objectType, name),
+				BaseObject::BaseObject(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode) : IBaseObject(id, objectType, name),
 					forceToCDC(false),
 					highLimit(boost::optional<boost::any>()),
 					lowLimit(boost::optional<boost::any>()),
@@ -69,7 +69,7 @@ namespace IndustrialNetwork
 					actualValueNotDefaultValue(false)
 				{}
 
-				BaseObject::BaseObject(uint32_t id, ObjectType objectType, const std::string& name, uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping) : IBaseObject(id, objectType, name),
+				BaseObject::BaseObject(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping) : IBaseObject(id, objectType, name),
 					forceToCDC(false),
 					highLimit(boost::optional<boost::any>()),
 					lowLimit(boost::optional<boost::any>()),
@@ -82,7 +82,7 @@ namespace IndustrialNetwork
 					actualValueNotDefaultValue(false)
 				{}
 
-				BaseObject::BaseObject(uint32_t id, ObjectType objectType, const std::string& name, uint8_t containingNode, const std::string& uniqueIdRef) : IBaseObject(id, objectType, name),
+				BaseObject::BaseObject(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode, const std::string& uniqueIdRef) : IBaseObject(id, objectType, name),
 					forceToCDC(false),
 					highLimit(boost::optional<boost::any>()),
 					lowLimit(boost::optional<boost::any>()),
@@ -100,7 +100,7 @@ namespace IndustrialNetwork
 
 				bool BaseObject::operator== (const BaseObject& baseObject) const
 				{
-					return (baseObject.GetId() == this->GetId());
+					return (baseObject.GetObjectId() == this->GetObjectId());
 				}
 
 				bool BaseObject::GetForceToCDC() const
@@ -140,17 +140,17 @@ namespace IndustrialNetwork
 					boost::format formatter(kMsgBaseObjectDataTypeError);
 					formatter
 					% this->GetName()
-					% this->GetId()
-					% (uint32_t) this->GetContainingNode();
+					% this->GetObjectId()
+					% (std::uint32_t) this->GetContainingNode();
 					LOG_FATAL() << formatter.str();
 					throw Result(ErrorCode::OBJECT_HAS_NO_DATATYPE, formatter.str());
 				}
-				template uint16_t BaseObject::GetTypedHighLimit<uint16_t>();
-				template uint32_t BaseObject::GetTypedHighLimit<uint32_t>();
-				template uint64_t BaseObject::GetTypedHighLimit<uint64_t>();
-				template int16_t BaseObject::GetTypedHighLimit<int16_t>();
-				template int32_t BaseObject::GetTypedHighLimit<int32_t>();
-				template int64_t BaseObject::GetTypedHighLimit<int64_t>();
+				template std::uint16_t BaseObject::GetTypedHighLimit<std::uint16_t>();
+				template std::uint32_t BaseObject::GetTypedHighLimit<std::uint32_t>();
+				template std::uint64_t BaseObject::GetTypedHighLimit<std::uint64_t>();
+				template std::int16_t BaseObject::GetTypedHighLimit<std::int16_t>();
+				template std::int32_t BaseObject::GetTypedHighLimit<std::int32_t>();
+				template std::int64_t BaseObject::GetTypedHighLimit<std::int64_t>();
 				template float BaseObject::GetTypedHighLimit<float>();
 				template double BaseObject::GetTypedHighLimit<double>();
 
@@ -168,8 +168,8 @@ namespace IndustrialNetwork
 							boost::format formatter(kMsgBaseObjectDataTypeError);
 							formatter
 							% this->GetName()
-							% this->GetId()
-							% (uint32_t) this->GetContainingNode();
+							% this->GetObjectId()
+							% (std::uint32_t) this->GetContainingNode();
 							LOG_FATAL() << formatter.str();
 							return Result(ErrorCode::OBJECT_HAS_NO_DATATYPE, formatter.str());
 						}
@@ -178,34 +178,34 @@ namespace IndustrialNetwork
 						{
 							case PlkDataType::INTEGER8:
 								{
-									int16_t value = HexToInt<int16_t>(highLimit);
+									std::int16_t value = HexToInt<std::int16_t>(highLimit);
 									this->highLimit = value;
 									break;
 								}
 
 							case PlkDataType::INTEGER16:
 								{
-									int16_t value = HexToInt<int16_t>(highLimit);
+									std::int16_t value = HexToInt<std::int16_t>(highLimit);
 									this->highLimit = value;
 									break;
 								}
 							case PlkDataType::INTEGER24:
 							case PlkDataType::INTEGER32:
 								{
-									int32_t value = HexToInt<int32_t>(highLimit);
+									std::int32_t value = HexToInt<std::int32_t>(highLimit);
 									this->highLimit = value;
 									break;
 								}
 							case PlkDataType::UNSIGNED8:
 								{
-									uint16_t value = HexToInt<uint16_t>(highLimit);
+									std::uint16_t value = HexToInt<std::uint16_t>(highLimit);
 									this->highLimit = value;
 									break;
 								}
 							case PlkDataType::UNSIGNED16:
 								{
 
-									uint16_t value = HexToInt<uint16_t>(highLimit);
+									std::uint16_t value = HexToInt<std::uint16_t>(highLimit);
 									this->highLimit = value;
 									break;
 								}
@@ -213,7 +213,7 @@ namespace IndustrialNetwork
 							case PlkDataType::UNSIGNED32:
 								{
 
-									uint32_t value = HexToInt<uint32_t>(highLimit);
+									std::uint32_t value = HexToInt<std::uint32_t>(highLimit);
 									this->highLimit = value;
 									break;
 								}
@@ -235,7 +235,7 @@ namespace IndustrialNetwork
 							case PlkDataType::INTEGER64:
 								{
 
-									int64_t value = HexToInt<int64_t>(highLimit);
+									std::int64_t value = HexToInt<std::int64_t>(highLimit);
 									this->highLimit = value;
 									break;
 								}
@@ -244,7 +244,7 @@ namespace IndustrialNetwork
 							case PlkDataType::UNSIGNED56:
 							case PlkDataType::UNSIGNED64:
 								{
-									uint64_t value = HexToInt<uint64_t>(highLimit);
+									std::uint64_t value = HexToInt<std::uint64_t>(highLimit);
 									this->highLimit = value;
 									break;
 								}
@@ -259,8 +259,6 @@ namespace IndustrialNetwork
 							case PlkDataType::TIME_OF_DAY:
 							case PlkDataType::TIME_DIFF:
 								{
-									if (highLimit.empty())
-										return Result();
 									return Result(ErrorCode::DATATYPE_DOES_NOT_SUPPORT_LIMITS);
 								}
 							default:
@@ -306,17 +304,17 @@ namespace IndustrialNetwork
 					boost::format formatter(kMsgBaseObjectDataTypeError);
 					formatter
 					% this->GetName()
-					% this->GetId()
-					% (uint32_t) this->GetContainingNode();
+					% this->GetObjectId()
+					% (std::uint32_t) this->GetContainingNode();
 					LOG_FATAL() << formatter.str();
 					throw Result(ErrorCode::OBJECT_HAS_NO_DATATYPE, formatter.str());
 				}
-				template uint16_t BaseObject::GetTypedLowLimit<uint16_t>();
-				template uint32_t BaseObject::GetTypedLowLimit<uint32_t>();
-				template uint64_t BaseObject::GetTypedLowLimit<uint64_t>();
-				template int16_t BaseObject::GetTypedLowLimit<int16_t>();
-				template int32_t BaseObject::GetTypedLowLimit<int32_t>();
-				template int64_t BaseObject::GetTypedLowLimit<int64_t>();
+				template std::uint16_t BaseObject::GetTypedLowLimit<std::uint16_t>();
+				template std::uint32_t BaseObject::GetTypedLowLimit<std::uint32_t>();
+				template std::uint64_t BaseObject::GetTypedLowLimit<std::uint64_t>();
+				template std::int16_t BaseObject::GetTypedLowLimit<std::int16_t>();
+				template std::int32_t BaseObject::GetTypedLowLimit<std::int32_t>();
+				template std::int64_t BaseObject::GetTypedLowLimit<std::int64_t>();
 				template float BaseObject::GetTypedLowLimit<float>();
 				template double BaseObject::GetTypedLowLimit<double>();
 
@@ -333,8 +331,8 @@ namespace IndustrialNetwork
 							boost::format formatter(kMsgBaseObjectDataTypeError);
 							formatter
 							% this->GetName()
-							% this->GetId()
-							% (uint32_t) this->GetContainingNode();
+							% this->GetObjectId()
+							% (std::uint32_t) this->GetContainingNode();
 							LOG_FATAL() << formatter.str();
 							return Result(ErrorCode::OBJECT_HAS_NO_DATATYPE, formatter.str());
 						}
@@ -343,39 +341,39 @@ namespace IndustrialNetwork
 						{
 							case PlkDataType::INTEGER8:
 								{
-									int16_t value = HexToInt<int16_t>(lowLimit);
+									std::int16_t value = HexToInt<std::int16_t>(lowLimit);
 									this->lowLimit = value;
 									break;
 								}
 							case PlkDataType::INTEGER16:
 								{
-									int16_t value = HexToInt<int16_t>(lowLimit);
+									std::int16_t value = HexToInt<std::int16_t>(lowLimit);
 									this->lowLimit = value;
 									break;
 								}
 							case PlkDataType::INTEGER24:
 							case PlkDataType::INTEGER32:
 								{
-									int32_t value = HexToInt<int32_t>(lowLimit);
+									std::int32_t value = HexToInt<std::int32_t>(lowLimit);
 									this->lowLimit = value;
 									break;
 								}
 							case PlkDataType::UNSIGNED8:
 								{
-									uint16_t value = HexToInt<uint16_t>(lowLimit);
+									std::uint16_t value = HexToInt<std::uint16_t>(lowLimit);
 									this->lowLimit = value;
 									break;
 								}
 							case PlkDataType::UNSIGNED16:
 								{
-									uint16_t value = HexToInt<uint16_t>(lowLimit);
+									std::uint16_t value = HexToInt<std::uint16_t>(lowLimit);
 									this->lowLimit = value;
 									break;
 								}
 							case PlkDataType::UNSIGNED24:
 							case PlkDataType::UNSIGNED32:
 								{
-									uint32_t value = HexToInt<uint32_t>(lowLimit);
+									std::uint32_t value = HexToInt<std::uint32_t>(lowLimit);
 									this->lowLimit = value;
 									break;
 								}
@@ -396,7 +394,7 @@ namespace IndustrialNetwork
 							case PlkDataType::INTEGER56:
 							case PlkDataType::INTEGER64:
 								{
-									int64_t value = HexToInt<int64_t>(lowLimit);
+									int64_t value = HexToInt<std::int64_t>(lowLimit);
 									this->lowLimit = value;
 									break;
 								}
@@ -405,7 +403,7 @@ namespace IndustrialNetwork
 							case PlkDataType::UNSIGNED56:
 							case PlkDataType::UNSIGNED64:
 								{
-									uint64_t value = HexToInt<uint64_t>(lowLimit);
+									std::uint64_t value = HexToInt<std::uint64_t>(lowLimit);
 									this->lowLimit = value;
 									break;
 								}
@@ -420,8 +418,6 @@ namespace IndustrialNetwork
 							case PlkDataType::TIME_OF_DAY:
 							case PlkDataType::TIME_DIFF:
 								{
-									if (lowLimit.empty())
-										return Result();
 									return Result(ErrorCode::DATATYPE_DOES_NOT_SUPPORT_LIMITS);
 								}
 							default:
@@ -503,8 +499,8 @@ namespace IndustrialNetwork
 					boost::format formatter(kMsgBaseObjectActualValue);
 					formatter
 					% this->GetName()
-					% this->GetId()
-					% (uint32_t) this->GetContainingNode();
+					% this->GetObjectId()
+					% (std::uint32_t) this->GetContainingNode();
 					LOG_FATAL() << formatter.str();
 					throw Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, formatter.str());
 
@@ -518,8 +514,8 @@ namespace IndustrialNetwork
 						boost::format formatter(kMsgBaseObjectActualValue);
 						formatter
 						% this->GetName()
-						% this->GetId()
-						% (uint32_t) this->GetContainingNode();
+						% this->GetObjectId()
+						% (std::uint32_t) this->GetContainingNode();
 						LOG_FATAL() << formatter.str();
 						throw Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, formatter.str());
 					}
@@ -534,42 +530,42 @@ namespace IndustrialNetwork
 							}
 						case PlkDataType::INTEGER8:
 							{
-								convertString << std::uppercase << std::setfill('0') << std::setw(2) << std::hex << boost::any_cast<int16_t>(this->GetActualValue());
+								convertString << std::uppercase << std::setfill('0') << std::setw(2) << std::hex << boost::any_cast<std::int16_t>(this->GetActualValue());
 								return convertString.str();
 							}
 						case PlkDataType::INTEGER16:
 							{
-								convertString << std::uppercase << std::setfill('0') << std::setw(4) << std::hex << boost::any_cast<int16_t>(this->GetActualValue());
+								convertString << std::uppercase << std::setfill('0') << std::setw(4) << std::hex << boost::any_cast<std::int16_t>(this->GetActualValue());
 								return convertString.str();
 							}
 						case PlkDataType::INTEGER24:
 							{
-								convertString << std::uppercase << std::setfill('0') << std::setw(6) << std::hex << boost::any_cast<int32_t>(this->GetActualValue());
+								convertString << std::uppercase << std::setfill('0') << std::setw(6) << std::hex << boost::any_cast<std::int32_t>(this->GetActualValue());
 								return convertString.str();
 							}
 						case PlkDataType::INTEGER32:
 							{
-								convertString << std::uppercase << std::setfill('0') << std::setw(8) << std::hex << boost::any_cast<int32_t>(this->GetActualValue());
+								convertString << std::uppercase << std::setfill('0') << std::setw(8) << std::hex << boost::any_cast<std::int32_t>(this->GetActualValue());
 								return convertString.str();
 							}
 						case PlkDataType::UNSIGNED8:
 							{
-								convertString << std::uppercase << std::setfill('0') << std::setw(2) << std::hex << boost::any_cast<uint16_t>(this->GetActualValue());
+								convertString << std::uppercase << std::setfill('0') << std::setw(2) << std::hex << boost::any_cast<std::uint16_t>(this->GetActualValue());
 								return convertString.str();
 							}
 						case PlkDataType::UNSIGNED16:
 							{
-								convertString << std::uppercase << std::setfill('0') << std::setw(4) << std::hex << boost::any_cast<uint16_t>(this->GetActualValue());
+								convertString << std::uppercase << std::setfill('0') << std::setw(4) << std::hex << boost::any_cast<std::uint16_t>(this->GetActualValue());
 								return convertString.str();
 							}
 						case PlkDataType::UNSIGNED24:
 							{
-								convertString << std::uppercase << std::setfill('0') << std::setw(6) << std::hex << boost::any_cast<uint32_t>(this->GetActualValue());
+								convertString << std::uppercase << std::setfill('0') << std::setw(6) << std::hex << boost::any_cast<std::uint32_t>(this->GetActualValue());
 								return convertString.str();
 							}
 						case PlkDataType::UNSIGNED32:
 							{
-								convertString << std::uppercase << std::setfill('0') << std::setw(8) << std::hex << boost::any_cast<uint32_t>(this->GetActualValue());
+								convertString << std::uppercase << std::setfill('0') << std::setw(8) << std::hex << boost::any_cast<std::uint32_t>(this->GetActualValue());
 								return convertString.str();
 							}
 						case PlkDataType::REAL32:
@@ -586,43 +582,43 @@ namespace IndustrialNetwork
 							break;
 						case PlkDataType::INTEGER40:
 							{
-								convertString << std::uppercase << std::setfill('0') << std::setw(10) << std::hex << boost::any_cast<int64_t>(this->GetActualValue());
+								convertString << std::uppercase << std::setfill('0') << std::setw(10) << std::hex << boost::any_cast<std::int64_t>(this->GetActualValue());
 								return convertString.str();
 							}
 						case PlkDataType::INTEGER48:
 							{
-								convertString << std::uppercase << std::setfill('0') << std::setw(12) << std::hex << boost::any_cast<int64_t>(this->GetActualValue());
+								convertString << std::uppercase << std::setfill('0') << std::setw(12) << std::hex << boost::any_cast<std::int64_t>(this->GetActualValue());
 								return convertString.str();
 							}
 						case PlkDataType::INTEGER56:
 							{
-								convertString << std::uppercase << std::setfill('0') << std::setw(14) << std::hex << boost::any_cast<int64_t>(this->GetActualValue());
+								convertString << std::uppercase << std::setfill('0') << std::setw(14) << std::hex << boost::any_cast<std::int64_t>(this->GetActualValue());
 								return convertString.str();
 							}
 						case PlkDataType::INTEGER64:
 							{
-								convertString << std::uppercase << std::setfill('0') << std::setw(16) << std::hex << boost::any_cast<int64_t>(this->GetActualValue());
+								convertString << std::uppercase << std::setfill('0') << std::setw(16) << std::hex << boost::any_cast<std::int64_t>(this->GetActualValue());
 								return convertString.str();
 							}
 						case PlkDataType::UNSIGNED40:
 							{
-								convertString << std::uppercase << std::setfill('0') << std::setw(10) << std::hex << boost::any_cast<uint64_t>(this->GetActualValue());
+								convertString << std::uppercase << std::setfill('0') << std::setw(10) << std::hex << boost::any_cast<std::uint64_t>(this->GetActualValue());
 								return convertString.str();
 							}
 						case PlkDataType::MAC_ADDRESS:
 						case PlkDataType::UNSIGNED48:
 							{
-								convertString << std::uppercase << std::setfill('0') << std::setw(12) << std::hex << boost::any_cast<uint64_t>(this->GetActualValue());
+								convertString << std::uppercase << std::setfill('0') << std::setw(12) << std::hex << boost::any_cast<std::uint64_t>(this->GetActualValue());
 								return convertString.str();
 							}
 						case PlkDataType::UNSIGNED56:
 							{
-								convertString << std::uppercase << std::setfill('0') << std::setw(14) << std::hex << boost::any_cast<uint64_t>(this->GetActualValue());
+								convertString << std::uppercase << std::setfill('0') << std::setw(14) << std::hex << boost::any_cast<std::uint64_t>(this->GetActualValue());
 								return convertString.str();
 							}
 						case PlkDataType::UNSIGNED64:
 							{
-								convertString << std::uppercase << std::setfill('0') << std::setw(16) << std::hex << boost::any_cast<uint64_t>(this->GetActualValue());
+								convertString << std::uppercase << std::setfill('0') << std::setw(16) << std::hex << boost::any_cast<std::uint64_t>(this->GetActualValue());
 								return convertString.str();
 							}
 						case PlkDataType::VISIBLE_STRING:
@@ -630,7 +626,7 @@ namespace IndustrialNetwork
 						case PlkDataType::UNICODE_STRING:
 							{
 								std::string actualValue = boost::any_cast<std::string>(this->GetActualValue());
-								for (uint32_t i = 0; i < actualValue.length(); ++i)
+								for (std::uint32_t i = 0; i < actualValue.length(); ++i)
 								{
 									convertString << std::uppercase << std::hex << unsigned(actualValue.at(i));
 								}
@@ -641,7 +637,7 @@ namespace IndustrialNetwork
 								std::string actualValue = boost::any_cast<std::string>(this->GetActualValue());
 								if (actualValue.substr(0, 2) == "0x")
 								{
-									convertString << std::uppercase << std::setw(8) << std::setfill('0') << std::hex << HexToInt<uint32_t>(actualValue);
+									convertString << std::uppercase << std::setw(8) << std::setfill('0') << std::hex << HexToInt<std::uint32_t>(actualValue);
 								}
 								else
 								{
@@ -650,7 +646,7 @@ namespace IndustrialNetwork
 
 									for (auto& part : ipAddressParts)
 									{
-										convertString << std::uppercase << std::setw(2) << std::setfill('0') << std::hex << HexToInt<uint32_t>(part);
+										convertString << std::uppercase << std::setw(2) << std::setfill('0') << std::hex << HexToInt<std::uint32_t>(part);
 									}
 								}
 								return convertString.str();
@@ -667,12 +663,12 @@ namespace IndustrialNetwork
 					return "";
 				}
 				template bool BaseObject::GetTypedActualValue<bool>();
-				template uint16_t BaseObject::GetTypedActualValue<uint16_t>();
-				template uint32_t BaseObject::GetTypedActualValue<uint32_t>();
-				template uint64_t BaseObject::GetTypedActualValue<uint64_t>();
-				template int16_t BaseObject::GetTypedActualValue<int16_t>();
-				template int32_t BaseObject::GetTypedActualValue<int32_t>();
-				template int64_t BaseObject::GetTypedActualValue<int64_t>();
+				template std::uint16_t BaseObject::GetTypedActualValue<std::uint16_t>();
+				template std::uint32_t BaseObject::GetTypedActualValue<std::uint32_t>();
+				template std::uint64_t BaseObject::GetTypedActualValue<std::uint64_t>();
+				template std::int16_t BaseObject::GetTypedActualValue<std::int16_t>();
+				template std::int32_t BaseObject::GetTypedActualValue<std::int32_t>();
+				template std::int64_t BaseObject::GetTypedActualValue<std::int64_t>();
 				template double BaseObject::GetTypedActualValue<double>();
 
 				template<typename T>
@@ -697,8 +693,8 @@ namespace IndustrialNetwork
 					boost::format formatter(kMsgBaseObjectDefaultValue);
 					formatter
 					% this->GetName()
-					% this->GetId()
-					% (uint32_t) this->GetContainingNode();
+					% this->GetObjectId()
+					% (std::uint32_t) this->GetContainingNode();
 					LOG_FATAL() << formatter.str();
 					throw Result(ErrorCode::OBJECT_HAS_NO_DEFAULT_VALUE, formatter.str());
 				}
@@ -710,8 +706,8 @@ namespace IndustrialNetwork
 						boost::format formatter(kMsgBaseObjectDefaultValue);
 						formatter
 						% this->GetName()
-						% this->GetId()
-						% (uint32_t) this->GetContainingNode();
+						% this->GetObjectId()
+						% (std::uint32_t) this->GetContainingNode();
 						LOG_FATAL() << formatter.str();
 						throw Result(ErrorCode::OBJECT_HAS_NO_DEFAULT_VALUE, formatter.str());
 					}
@@ -726,42 +722,42 @@ namespace IndustrialNetwork
 							}
 						case PlkDataType::INTEGER8:
 							{
-								convertString << std::uppercase << std::setfill('0') << std::setw(2) << std::hex << boost::any_cast<int16_t>(this->GetDefaultValue());
+								convertString << std::uppercase << std::setfill('0') << std::setw(2) << std::hex << boost::any_cast<std::int16_t>(this->GetDefaultValue());
 								return convertString.str();
 							}
 						case PlkDataType::INTEGER16:
 							{
-								convertString << std::uppercase << std::setfill('0') << std::setw(4) << std::hex << boost::any_cast<int16_t>(this->GetDefaultValue());
+								convertString << std::uppercase << std::setfill('0') << std::setw(4) << std::hex << boost::any_cast<std::int16_t>(this->GetDefaultValue());
 								return convertString.str();
 							}
 						case PlkDataType::INTEGER24:
 							{
-								convertString << std::uppercase << std::setfill('0') << std::setw(6) << std::hex << boost::any_cast<int32_t>(this->GetDefaultValue());
+								convertString << std::uppercase << std::setfill('0') << std::setw(6) << std::hex << boost::any_cast<std::int32_t>(this->GetDefaultValue());
 								return convertString.str();
 							}
 						case PlkDataType::INTEGER32:
 							{
-								convertString << std::uppercase << std::setfill('0') << std::setw(8) << std::hex << boost::any_cast<int32_t>(this->GetDefaultValue());
+								convertString << std::uppercase << std::setfill('0') << std::setw(8) << std::hex << boost::any_cast<std::int32_t>(this->GetDefaultValue());
 								return convertString.str();
 							}
 						case PlkDataType::UNSIGNED8:
 							{
-								convertString << std::uppercase << std::setfill('0') << std::setw(2) << std::hex << boost::any_cast<uint16_t>(this->GetDefaultValue());
+								convertString << std::uppercase << std::setfill('0') << std::setw(2) << std::hex << boost::any_cast<std::uint16_t>(this->GetDefaultValue());
 								return convertString.str();
 							}
 						case PlkDataType::UNSIGNED16:
 							{
-								convertString << std::uppercase << std::setfill('0') << std::setw(4) << std::hex << boost::any_cast<uint16_t>(this->GetDefaultValue());
+								convertString << std::uppercase << std::setfill('0') << std::setw(4) << std::hex << boost::any_cast<std::uint16_t>(this->GetDefaultValue());
 								return convertString.str();
 							}
 						case PlkDataType::UNSIGNED24:
 							{
-								convertString << std::uppercase << std::setfill('0') << std::setw(6) << std::hex << boost::any_cast<uint32_t>(this->GetDefaultValue());
+								convertString << std::uppercase << std::setfill('0') << std::setw(6) << std::hex << boost::any_cast<std::uint32_t>(this->GetDefaultValue());
 								return convertString.str();
 							}
 						case PlkDataType::UNSIGNED32:
 							{
-								convertString << std::uppercase << std::setfill('0') << std::setw(8) << std::hex << boost::any_cast<uint32_t>(this->GetDefaultValue());
+								convertString << std::uppercase << std::setfill('0') << std::setw(8) << std::hex << boost::any_cast<std::uint32_t>(this->GetDefaultValue());
 								return convertString.str();
 							}
 						case PlkDataType::REAL32:
@@ -778,43 +774,43 @@ namespace IndustrialNetwork
 							break;
 						case PlkDataType::INTEGER40:
 							{
-								convertString << std::uppercase << std::setfill('0') << std::setw(10) << std::hex << boost::any_cast<int64_t>(this->GetDefaultValue());
+								convertString << std::uppercase << std::setfill('0') << std::setw(10) << std::hex << boost::any_cast<std::int64_t>(this->GetDefaultValue());
 								return convertString.str();
 							}
 						case PlkDataType::INTEGER48:
 							{
-								convertString << std::uppercase << std::setfill('0') << std::setw(12) << std::hex << boost::any_cast<int64_t>(this->GetDefaultValue());
+								convertString << std::uppercase << std::setfill('0') << std::setw(12) << std::hex << boost::any_cast<std::int64_t>(this->GetDefaultValue());
 								return convertString.str();
 							}
 						case PlkDataType::INTEGER56:
 							{
-								convertString << std::uppercase << std::setfill('0') << std::setw(14) << std::hex << boost::any_cast<int64_t>(this->GetDefaultValue());
+								convertString << std::uppercase << std::setfill('0') << std::setw(14) << std::hex << boost::any_cast<std::int64_t>(this->GetDefaultValue());
 								return convertString.str();
 							}
 						case PlkDataType::INTEGER64:
 							{
-								convertString << std::uppercase << std::setfill('0') << std::setw(16) << std::hex << boost::any_cast<int64_t>(this->GetDefaultValue());
+								convertString << std::uppercase << std::setfill('0') << std::setw(16) << std::hex << boost::any_cast<std::int64_t>(this->GetDefaultValue());
 								return convertString.str();
 							}
 						case PlkDataType::UNSIGNED40:
 							{
-								convertString << std::uppercase << std::setfill('0') << std::setw(10) << std::hex << boost::any_cast<uint64_t>(this->GetDefaultValue());
+								convertString << std::uppercase << std::setfill('0') << std::setw(10) << std::hex << boost::any_cast<std::uint64_t>(this->GetDefaultValue());
 								return convertString.str();
 							}
 						case PlkDataType::MAC_ADDRESS:
 						case PlkDataType::UNSIGNED48:
 							{
-								convertString << std::uppercase << std::setfill('0') << std::setw(12) << std::hex << boost::any_cast<uint64_t>(this->GetDefaultValue());
+								convertString << std::uppercase << std::setfill('0') << std::setw(12) << std::hex << boost::any_cast<std::uint64_t>(this->GetDefaultValue());
 								return convertString.str();
 							}
 						case PlkDataType::UNSIGNED56:
 							{
-								convertString << std::uppercase << std::setfill('0') << std::setw(14) << std::hex << boost::any_cast<uint64_t>(this->GetDefaultValue());
+								convertString << std::uppercase << std::setfill('0') << std::setw(14) << std::hex << boost::any_cast<std::uint64_t>(this->GetDefaultValue());
 								return convertString.str();
 							}
 						case PlkDataType::UNSIGNED64:
 							{
-								convertString << std::uppercase << std::setfill('0') << std::setw(16) << std::hex << boost::any_cast<uint64_t>(this->GetDefaultValue());
+								convertString << std::uppercase << std::setfill('0') << std::setw(16) << std::hex << boost::any_cast<std::uint64_t>(this->GetDefaultValue());
 								return convertString.str();
 							}
 						case PlkDataType::VISIBLE_STRING:
@@ -822,7 +818,7 @@ namespace IndustrialNetwork
 						case PlkDataType::UNICODE_STRING:
 							{
 								std::string defaultValue = boost::any_cast<std::string>(this->GetDefaultValue());
-								for (uint32_t i = 0; i < defaultValue.length(); ++i)
+								for (std::uint32_t i = 0; i < defaultValue.length(); ++i)
 								{
 									convertString << std::uppercase << std::hex << unsigned(defaultValue.at(i));
 								}
@@ -836,7 +832,7 @@ namespace IndustrialNetwork
 
 								for (auto& part : ipAddressParts)
 								{
-									convertString << std::uppercase << std::setw(2) << std::setfill('0') << std::hex << HexToInt<uint32_t>(part);
+									convertString << std::uppercase << std::setw(2) << std::setfill('0') << std::hex << HexToInt<std::uint32_t>(part);
 								}
 								return convertString.str();
 							}
@@ -852,12 +848,12 @@ namespace IndustrialNetwork
 					return "";
 				}
 				template bool BaseObject::GetTypedDefaultValue<bool>();
-				template uint16_t BaseObject::GetTypedDefaultValue<uint16_t>();
-				template uint32_t BaseObject::GetTypedDefaultValue<uint32_t>();
-				template uint64_t BaseObject::GetTypedDefaultValue<uint64_t>();
-				template int16_t BaseObject::GetTypedDefaultValue<int16_t>();
-				template int32_t BaseObject::GetTypedDefaultValue<int32_t>();
-				template int64_t BaseObject::GetTypedDefaultValue<int64_t>();
+				template std::uint16_t BaseObject::GetTypedDefaultValue<std::uint16_t>();
+				template std::uint32_t BaseObject::GetTypedDefaultValue<std::uint32_t>();
+				template std::uint64_t BaseObject::GetTypedDefaultValue<std::uint64_t>();
+				template std::int16_t BaseObject::GetTypedDefaultValue<std::int16_t>();
+				template std::int32_t BaseObject::GetTypedDefaultValue<std::int32_t>();
+				template std::int64_t BaseObject::GetTypedDefaultValue<std::int64_t>();
 				template float BaseObject::GetTypedDefaultValue<float>();
 				template double BaseObject::GetTypedDefaultValue<double>();
 
@@ -871,8 +867,8 @@ namespace IndustrialNetwork
 							boost::format formatter(kMsgBaseObjectDataTypeError);
 							formatter
 							% this->GetName()
-							% this->GetId()
-							% (uint32_t) this->GetContainingNode();
+							% this->GetObjectId()
+							% (std::uint32_t) this->GetContainingNode();
 							LOG_FATAL() << formatter.str();
 							return Result(ErrorCode::OBJECT_HAS_NO_DATATYPE, formatter.str());
 						}
@@ -895,31 +891,31 @@ namespace IndustrialNetwork
 							case PlkDataType::INTEGER8:
 							case PlkDataType::INTEGER16:
 								{
-									int16_t value = HexToInt<int16_t>(actualValue);
+									std::int16_t value = HexToInt<std::int16_t>(actualValue);
 									if (this->highLimit.is_initialized())
 									{
-										if (value > this->GetTypedHighLimit<int16_t>())
+										if (value > this->GetTypedHighLimit<std::int16_t>())
 										{
 											boost::format formatter(kMsgBaseObjectHighLimitError);
 											formatter
 											% this->GetName()
-											% this->GetId()
-											% (uint32_t) this->GetContainingNode()
-											% this->GetTypedHighLimit<int16_t>();
+											% this->GetObjectId()
+											% (std::uint32_t) this->GetContainingNode()
+											% this->GetTypedHighLimit<std::int16_t>();
 											LOG_FATAL() << formatter.str();
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT, formatter.str());
 										}
 									}
 									if (this->lowLimit.is_initialized())
 									{
-										if (value < this->GetTypedLowLimit<int16_t>())
+										if (value < this->GetTypedLowLimit<std::int16_t>())
 										{
 											boost::format formatter(kMsgBaseObjectLowLimitError);
 											formatter
 											% this->GetName()
-											% this->GetId()
-											% (uint32_t) this->GetContainingNode()
-											% this->GetTypedLowLimit<int16_t>();
+											% this->GetObjectId()
+											% (std::uint32_t) this->GetContainingNode()
+											% this->GetTypedLowLimit<std::int16_t>();
 											LOG_FATAL() << formatter.str();
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
 										}
@@ -927,7 +923,7 @@ namespace IndustrialNetwork
 									this->SetActualValue(boost::any(value));
 									if (this->GetDefaultValue().empty())
 										this->actualValueNotDefaultValue = true;
-									else if (this->GetTypedDefaultValue<int16_t>() != value)
+									else if (this->GetTypedDefaultValue<std::int16_t>() != value)
 										this->actualValueNotDefaultValue = true;
 									else
 										this->actualValueNotDefaultValue = false;
@@ -935,31 +931,31 @@ namespace IndustrialNetwork
 								}
 							case PlkDataType::INTEGER32:
 								{
-									int32_t value = HexToInt<int32_t>(actualValue);
+									std::int32_t value = HexToInt<std::int32_t>(actualValue);
 									if (this->highLimit.is_initialized())
 									{
-										if (value > this->GetTypedHighLimit<int32_t>())
+										if (value > this->GetTypedHighLimit<std::int32_t>())
 										{
 											boost::format formatter(kMsgBaseObjectHighLimitError);
 											formatter
 											% this->GetName()
-											% this->GetId()
-											% (uint32_t) this->GetContainingNode()
-											% this->GetTypedHighLimit<int32_t>();
+											% this->GetObjectId()
+											% (std::uint32_t) this->GetContainingNode()
+											% this->GetTypedHighLimit<std::int32_t>();
 											LOG_FATAL() << formatter.str();
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT, formatter.str());
 										}
 									}
 									if (this->lowLimit.is_initialized())
 									{
-										if (value < this->GetTypedLowLimit<int32_t>())
+										if (value < this->GetTypedLowLimit<std::int32_t>())
 										{
 											boost::format formatter(kMsgBaseObjectLowLimitError);
 											formatter
 											% this->GetName()
-											% this->GetId()
-											% (uint32_t) this->GetContainingNode()
-											% this->GetTypedLowLimit<int32_t>();
+											% this->GetObjectId()
+											% (std::uint32_t) this->GetContainingNode()
+											% this->GetTypedLowLimit<std::int32_t>();
 											LOG_FATAL() << formatter.str();
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
 										}
@@ -967,38 +963,38 @@ namespace IndustrialNetwork
 									this->SetActualValue(boost::any(value));
 									if (this->GetDefaultValue().empty())
 										this->actualValueNotDefaultValue = true;
-									else if (this->GetTypedDefaultValue<int32_t>() != value)
+									else if (this->GetTypedDefaultValue<std::int32_t>() != value)
 										this->actualValueNotDefaultValue = true;
 									break;
 								}
 							case PlkDataType::UNSIGNED8:
 							case PlkDataType::UNSIGNED16:
 								{
-									uint16_t value = HexToInt<uint16_t>(actualValue);
+									uint16_t value = HexToInt<std::uint16_t>(actualValue);
 									if (this->highLimit.is_initialized())
 									{
-										if (value > this->GetTypedHighLimit<uint16_t>())
+										if (value > this->GetTypedHighLimit<std::uint16_t>())
 										{
 											boost::format formatter(kMsgBaseObjectHighLimitError);
 											formatter
 											% this->GetName()
-											% this->GetId()
-											% (uint32_t) this->GetContainingNode()
-											% this->GetTypedHighLimit<uint16_t>();
+											% this->GetObjectId()
+											% (std::uint32_t) this->GetContainingNode()
+											% this->GetTypedHighLimit<std::uint16_t>();
 											LOG_FATAL() << formatter.str();
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT, formatter.str());
 										}
 									}
 									if (this->lowLimit.is_initialized())
 									{
-										if (value < this->GetTypedLowLimit<uint16_t>())
+										if (value < this->GetTypedLowLimit<std::uint16_t>())
 										{
 											boost::format formatter(kMsgBaseObjectLowLimitError);
 											formatter
 											% this->GetName()
-											% this->GetId()
-											% (uint32_t) this->GetContainingNode()
-											% this->GetTypedLowLimit<uint16_t>();
+											% this->GetObjectId()
+											% (std::uint32_t) this->GetContainingNode()
+											% this->GetTypedLowLimit<std::uint16_t>();
 											LOG_FATAL() << formatter.str();
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
 										}
@@ -1006,7 +1002,7 @@ namespace IndustrialNetwork
 									this->SetActualValue(boost::any(value));
 									if (this->GetDefaultValue().empty())
 										this->actualValueNotDefaultValue = true;
-									else if (this->GetTypedDefaultValue<uint16_t>() != value)
+									else if (this->GetTypedDefaultValue<std::uint16_t>() != value)
 										this->actualValueNotDefaultValue = true;
 									else
 										this->actualValueNotDefaultValue = false;
@@ -1015,31 +1011,31 @@ namespace IndustrialNetwork
 							case PlkDataType::UNSIGNED24:
 							case PlkDataType::UNSIGNED32:
 								{
-									uint32_t value = HexToInt<uint32_t>(actualValue);
+									std::uint32_t value = HexToInt<std::uint32_t>(actualValue);
 									if (this->highLimit.is_initialized())
 									{
-										if (value > this->GetTypedHighLimit<uint32_t>())
+										if (value > this->GetTypedHighLimit<std::uint32_t>())
 										{
 											boost::format formatter(kMsgBaseObjectHighLimitError);
 											formatter
 											% this->GetName()
-											% this->GetId()
-											% (uint32_t) this->GetContainingNode()
-											% this->GetTypedHighLimit<uint32_t>();
+											% this->GetObjectId()
+											% (std::uint32_t) this->GetContainingNode()
+											% this->GetTypedHighLimit<std::uint32_t>();
 											LOG_FATAL() << formatter.str();
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT, formatter.str());
 										}
 									}
 									if (this->lowLimit.is_initialized())
 									{
-										if (value < this->GetTypedLowLimit<uint32_t>())
+										if (value < this->GetTypedLowLimit<std::uint32_t>())
 										{
 											boost::format formatter(kMsgBaseObjectLowLimitError);
 											formatter
 											% this->GetName()
-											% this->GetId()
-											% (uint32_t) this->GetContainingNode()
-											% this->GetTypedLowLimit<uint32_t>();
+											% this->GetObjectId()
+											% (std::uint32_t) this->GetContainingNode()
+											% this->GetTypedLowLimit<std::uint32_t>();
 											LOG_FATAL() << formatter.str();
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
 										}
@@ -1047,7 +1043,7 @@ namespace IndustrialNetwork
 									this->SetActualValue(boost::any(value));
 									if (this->GetDefaultValue().empty())
 										this->actualValueNotDefaultValue = true;
-									else if (this->GetTypedDefaultValue<uint32_t>() != value)
+									else if (this->GetTypedDefaultValue<std::uint32_t>() != value)
 										this->actualValueNotDefaultValue = true;
 									else
 										this->actualValueNotDefaultValue = false;
@@ -1058,31 +1054,31 @@ namespace IndustrialNetwork
 								break;
 							case PlkDataType::INTEGER24:
 								{
-									int32_t value = HexToInt<int32_t>(actualValue);
+									std::int32_t value = HexToInt<std::int32_t>(actualValue);
 									if (this->highLimit.is_initialized())
 									{
-										if (value > this->GetTypedHighLimit<int32_t>())
+										if (value > this->GetTypedHighLimit<std::int32_t>())
 										{
 											boost::format formatter(kMsgBaseObjectHighLimitError);
 											formatter
 											% this->GetName()
-											% this->GetId()
-											% (uint32_t) this->GetContainingNode()
-											% this->GetTypedHighLimit<int32_t>();
+											% this->GetObjectId()
+											% (std::uint32_t) this->GetContainingNode()
+											% this->GetTypedHighLimit<std::int32_t>();
 											LOG_FATAL() << formatter.str();
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT, formatter.str());
 										}
 									}
 									if (this->lowLimit.is_initialized())
 									{
-										if (value < this->GetTypedLowLimit<int32_t>())
+										if (value < this->GetTypedLowLimit<std::int32_t>())
 										{
 											boost::format formatter(kMsgBaseObjectLowLimitError);
 											formatter
 											% this->GetName()
-											% this->GetId()
-											% (uint32_t) this->GetContainingNode()
-											% this->GetTypedLowLimit<int32_t>();
+											% this->GetObjectId()
+											% (std::uint32_t) this->GetContainingNode()
+											% this->GetTypedLowLimit<std::int32_t>();
 											LOG_FATAL() << formatter.str();
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
 										}
@@ -1090,7 +1086,7 @@ namespace IndustrialNetwork
 									this->SetActualValue(boost::any(value));
 									if (this->GetDefaultValue().empty())
 										this->actualValueNotDefaultValue = true;
-									else if (this->GetTypedDefaultValue<int32_t>() != value)
+									else if (this->GetTypedDefaultValue<std::int32_t>() != value)
 										this->actualValueNotDefaultValue = true;
 									else
 										this->actualValueNotDefaultValue = false;
@@ -1126,31 +1122,31 @@ namespace IndustrialNetwork
 							case PlkDataType::INTEGER56:
 							case PlkDataType::INTEGER64:
 								{
-									int64_t value = HexToInt<int64_t>(actualValue);
+									int64_t value = HexToInt<std::int64_t>(actualValue);
 									if (this->highLimit.is_initialized())
 									{
-										if (value > this->GetTypedHighLimit<int64_t>())
+										if (value > this->GetTypedHighLimit<std::int64_t>())
 										{
 											boost::format formatter(kMsgBaseObjectHighLimitError);
 											formatter
 											% this->GetName()
-											% this->GetId()
-											% (uint32_t) this->GetContainingNode()
-											% this->GetTypedHighLimit<int64_t>();
+											% this->GetObjectId()
+											% (std::uint32_t) this->GetContainingNode()
+											% this->GetTypedHighLimit<std::int64_t>();
 											LOG_FATAL() << formatter.str();
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT, formatter.str());
 										}
 									}
 									if (this->lowLimit.is_initialized())
 									{
-										if (value < this->GetTypedHighLimit<int64_t>())
+										if (value < this->GetTypedHighLimit<std::int64_t>())
 										{
 											boost::format formatter(kMsgBaseObjectLowLimitError);
 											formatter
 											% this->GetName()
-											% this->GetId()
-											% (uint32_t) this->GetContainingNode()
-											% this->GetTypedHighLimit<int64_t>();
+											% this->GetObjectId()
+											% (std::uint32_t) this->GetContainingNode()
+											% this->GetTypedHighLimit<std::int64_t>();
 											LOG_FATAL() << formatter.str();
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
 										}
@@ -1158,7 +1154,7 @@ namespace IndustrialNetwork
 									this->SetActualValue(boost::any(value));
 									if (this->GetDefaultValue().empty())
 										this->actualValueNotDefaultValue = true;
-									else if (this->GetTypedDefaultValue<int64_t>() != value)
+									else if (this->GetTypedDefaultValue<std::int64_t>() != value)
 										this->actualValueNotDefaultValue = true;
 									else
 										this->actualValueNotDefaultValue = false;
@@ -1170,38 +1166,38 @@ namespace IndustrialNetwork
 							case PlkDataType::UNSIGNED56:
 							case PlkDataType::UNSIGNED64:
 								{
-									uint64_t value = HexToInt<uint64_t>(actualValue);
+									uint64_t value = HexToInt<std::uint64_t>(actualValue);
 									if (this->highLimit.is_initialized())
 									{
-										if (value > this->GetTypedHighLimit<uint64_t>())
+										if (value > this->GetTypedHighLimit<std::uint64_t>())
 										{
 											boost::format formatter(kMsgBaseObjectHighLimitError);
 											formatter
 											% this->GetName()
-											% this->GetId()
-											% (uint32_t) this->GetContainingNode()
-											% this->GetTypedHighLimit<uint64_t>();
+											% this->GetObjectId()
+											% (std::uint32_t) this->GetContainingNode()
+											% this->GetTypedHighLimit<std::uint64_t>();
 											LOG_FATAL() << formatter.str();
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT, formatter.str());
 										}
 									}
 									if (this->lowLimit.is_initialized())
 									{
-										if (value < this->GetTypedLowLimit<uint64_t>())
+										if (value < this->GetTypedLowLimit<std::uint64_t>())
 										{
 											boost::format formatter(kMsgBaseObjectLowLimitError);
 											formatter
 											% this->GetName()
-											% this->GetId()
-											% (uint32_t) this->GetContainingNode()
-											% this->GetTypedLowLimit<uint64_t>();
+											% this->GetObjectId()
+											% (std::uint32_t) this->GetContainingNode()
+											% this->GetTypedLowLimit<std::uint64_t>();
 											LOG_FATAL() << formatter.str();
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
 										}
 									}
 									if (this->GetDefaultValue().empty())
 										this->actualValueNotDefaultValue = true;
-									else if (this->GetTypedDefaultValue<uint64_t>() != value)
+									else if (this->GetTypedDefaultValue<std::uint64_t>() != value)
 										this->actualValueNotDefaultValue = true;
 									else
 										this->actualValueNotDefaultValue = false;
@@ -1251,8 +1247,8 @@ namespace IndustrialNetwork
 							boost::format formatter(kMsgBaseObjectDataTypeError);
 							formatter
 							% this->GetName()
-							% this->GetId()
-							% (uint32_t) this->GetContainingNode();
+							% this->GetObjectId()
+							% (std::uint32_t) this->GetContainingNode();
 							LOG_FATAL() << formatter.str();
 							return Result(ErrorCode::OBJECT_HAS_NO_DATATYPE, formatter.str());
 						}
@@ -1268,26 +1264,26 @@ namespace IndustrialNetwork
 							case PlkDataType::INTEGER8: //Set int16_t datatype to avoid stream problems with char datatypes
 							case PlkDataType::INTEGER16:
 								{
-									int16_t value = HexToInt<int16_t>(defaultValue);
+									int16_t value = HexToInt<std::int16_t>(defaultValue);
 									this->SetDefaultValue(boost::any(value));
 									break;
 								}
 							case PlkDataType::INTEGER32:
 								{
-									int32_t value = HexToInt<int32_t>(defaultValue);
+									std::int32_t value = HexToInt<std::int32_t>(defaultValue);
 									this->SetDefaultValue(boost::any(value));
 									break;
 								}
 							case PlkDataType::UNSIGNED8: //Set uint16_t datatype to avoid stream problems with char datatypes
 							case PlkDataType::UNSIGNED16:
 								{
-									uint16_t value = HexToInt<uint16_t>(defaultValue);
+									uint16_t value = HexToInt<std::uint16_t>(defaultValue);
 									this->SetDefaultValue(boost::any(value));
 									break;
 								}
 							case PlkDataType::UNSIGNED32:
 								{
-									uint32_t value = HexToInt<uint32_t>(defaultValue);
+									std::uint32_t value = HexToInt<std::uint32_t>(defaultValue);
 									this->SetDefaultValue(boost::any(value));
 									break;
 								}
@@ -1302,7 +1298,7 @@ namespace IndustrialNetwork
 								break;
 							case PlkDataType::INTEGER24:
 								{
-									int32_t value = HexToInt<int32_t>(defaultValue);
+									std::int32_t value = HexToInt<std::int32_t>(defaultValue);
 									this->SetDefaultValue(boost::any(value));
 									break;
 								}
@@ -1317,13 +1313,13 @@ namespace IndustrialNetwork
 							case PlkDataType::INTEGER56:
 							case PlkDataType::INTEGER64:
 								{
-									int64_t value = HexToInt<int64_t>(defaultValue);
+									int64_t value = HexToInt<std::int64_t>(defaultValue);
 									this->SetDefaultValue(boost::any(value));
 									break;
 								}
 							case PlkDataType::UNSIGNED24:
 								{
-									uint32_t value = HexToInt<uint32_t>(defaultValue);
+									std::uint32_t value = HexToInt<std::uint32_t>(defaultValue);
 									this->SetDefaultValue(boost::any(value));
 									break;
 								}
@@ -1333,7 +1329,7 @@ namespace IndustrialNetwork
 							case PlkDataType::UNSIGNED56:
 							case PlkDataType::UNSIGNED64:
 								{
-									uint64_t value = HexToInt<uint64_t>(defaultValue);
+									uint64_t value = HexToInt<std::uint64_t>(defaultValue);
 									this->SetDefaultValue(boost::any(value));
 									break;
 								}
@@ -1369,7 +1365,7 @@ namespace IndustrialNetwork
 					return this->containingNode;
 				}
 
-				uint32_t BaseObject::GetBitSize()
+				std::uint32_t BaseObject::GetBitSize()
 				{
 					if (this->GetDataType().is_initialized())
 					{
@@ -1392,17 +1388,17 @@ namespace IndustrialNetwork
 							case PlkDataType::UNICODE_STRING:
 								{
 									if (this->GetTypedActualValue<std::string>().size() != 0)
-										return 8 * (uint32_t) this->GetTypedActualValue<std::string>().size();
+										return 8 * (std::uint32_t) this->GetTypedActualValue<std::string>().size();
 									else if (this->GetTypedDefaultValue<std::string>().size() != 0)
-										return 8 * (uint32_t) this->GetTypedDefaultValue<std::string>().size();
+										return 8 * (std::uint32_t) this->GetTypedDefaultValue<std::string>().size();
 									break;
 								}
 							/*case PlkDataType::UNICODE_STRING:
 								{
 									if (this->GetTypedActualValue<std::string>().size() != 0)
-										return 16 * (uint32_t) this->GetTypedActualValue<std::string>().size();
+										return 16 * (std::uint32_t) this->GetTypedActualValue<std::string>().size();
 									else if (this->GetTypedDefaultValue<std::string>().size() != 0)
-										return 16 * (uint32_t) this->GetTypedDefaultValue<std::string>().size();
+										return 16 * (std::uint32_t) this->GetTypedDefaultValue<std::string>().size();
 									break;
 						}*///Since we do not have Unicode support calculate normal octet size for std::string
 							case PlkDataType::Domain:

@@ -52,7 +52,6 @@ namespace IndustrialNetwork
 				*/
 				class ModularControlledNode : public IndustrialNetwork::POWERLINK::Core::Node::ControlledNode
 				{
-
 					public:
 						ModularControlledNode(std::uint8_t nodeID, const std::string& nodeName);
 						virtual ~ModularControlledNode();

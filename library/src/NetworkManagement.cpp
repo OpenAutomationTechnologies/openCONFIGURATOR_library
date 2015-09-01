@@ -62,7 +62,7 @@ namespace IndustrialNetwork
 					return test.GetDefaultValue<I>(defaultValue);
 				}
 				template Result NetworkManagement::GetFeatureDefaultValue<bool>(CNFeatureEnum feature, bool& defaultValue);
-				template Result NetworkManagement::GetFeatureDefaultValue<uint32_t>(CNFeatureEnum feature, uint32_t& defaultValue);
+				template Result NetworkManagement::GetFeatureDefaultValue<std::uint32_t>(CNFeatureEnum feature, std::uint32_t& defaultValue);
 
 				template<typename I >
 				Result NetworkManagement::GetFeatureActualValue(CNFeatureEnum featureid, I& actualValue)
@@ -77,7 +77,7 @@ namespace IndustrialNetwork
 					return Result(ErrorCode::FEATURE_VALUE_NOT_FOUND);
 				}
 				template Result NetworkManagement::GetFeatureActualValue<bool>(CNFeatureEnum feature, bool& actualValue);
-				template Result NetworkManagement::GetFeatureActualValue<uint32_t>(CNFeatureEnum feature, uint32_t& actualValue);
+				template Result NetworkManagement::GetFeatureActualValue<std::uint32_t>(CNFeatureEnum feature, std::uint32_t& actualValue);
 
 				template<typename I >
 				Result NetworkManagement::SetFeatureActualValue(CNFeatureEnum featureId, const I actualValue)
@@ -104,7 +104,7 @@ namespace IndustrialNetwork
 
 				}
 				template Result NetworkManagement::SetFeatureActualValue<bool>(CNFeatureEnum feature, const bool actualValue);
-				template Result NetworkManagement::SetFeatureActualValue<uint32_t>(CNFeatureEnum feature, const uint32_t actualValue);
+				template Result NetworkManagement::SetFeatureActualValue<std::uint32_t>(CNFeatureEnum feature, const std::uint32_t actualValue);
 
 				template<typename I>
 				Result NetworkManagement::GetFeatureDefaultValue(MNFeatureEnum feature, I& defaultValue)
@@ -113,9 +113,9 @@ namespace IndustrialNetwork
 					return test.GetDefaultValue<I>(defaultValue);
 				}
 				template Result NetworkManagement::GetFeatureDefaultValue<bool>(MNFeatureEnum feature, bool& defaultValue);
-				template Result NetworkManagement::GetFeatureDefaultValue<uint8_t>(MNFeatureEnum feature, uint8_t& defaultValue);
-				template Result NetworkManagement::GetFeatureDefaultValue<uint16_t>(MNFeatureEnum feature, uint16_t& defaultValue);
-				template Result NetworkManagement::GetFeatureDefaultValue<uint32_t>(MNFeatureEnum feature, uint32_t& defaultValue);
+				template Result NetworkManagement::GetFeatureDefaultValue<std::uint8_t>(MNFeatureEnum feature, std::uint8_t& defaultValue);
+				template Result NetworkManagement::GetFeatureDefaultValue<std::uint16_t>(MNFeatureEnum feature, std::uint16_t& defaultValue);
+				template Result NetworkManagement::GetFeatureDefaultValue<std::uint32_t>(MNFeatureEnum feature, std::uint32_t& defaultValue);
 
 				template<typename I >
 				Result NetworkManagement::GetFeatureActualValue(MNFeatureEnum featureid, I& actualValue)
@@ -130,9 +130,9 @@ namespace IndustrialNetwork
 					return Result(ErrorCode::FEATURE_VALUE_NOT_FOUND);
 				}
 				template Result NetworkManagement::GetFeatureActualValue<bool>(MNFeatureEnum feature, bool& actualValue);
-				template Result NetworkManagement::GetFeatureActualValue<uint8_t>(MNFeatureEnum feature, uint8_t& actualValue);
-				template Result NetworkManagement::GetFeatureActualValue<uint16_t>(MNFeatureEnum feature, uint16_t& actualValue);
-				template Result NetworkManagement::GetFeatureActualValue<uint32_t>(MNFeatureEnum feature, uint32_t& actualValue);
+				template Result NetworkManagement::GetFeatureActualValue<std::uint8_t>(MNFeatureEnum feature, std::uint8_t& actualValue);
+				template Result NetworkManagement::GetFeatureActualValue<std::uint16_t>(MNFeatureEnum feature, std::uint16_t& actualValue);
+				template Result NetworkManagement::GetFeatureActualValue<std::uint32_t>(MNFeatureEnum feature, std::uint32_t& actualValue);
 
 				template<typename I >
 				Result NetworkManagement::SetFeatureActualValue(MNFeatureEnum featureId, const I actualValue)
@@ -158,9 +158,9 @@ namespace IndustrialNetwork
 					return Result();
 				}
 				template Result NetworkManagement::SetFeatureActualValue<bool>(MNFeatureEnum feature, const bool actualValue);
-				template Result NetworkManagement::SetFeatureActualValue<uint8_t>(MNFeatureEnum feature, const uint8_t actualValue);
-				template Result NetworkManagement::SetFeatureActualValue<uint16_t>(MNFeatureEnum feature, const uint16_t actualValue);
-				template Result NetworkManagement::SetFeatureActualValue<uint32_t>(MNFeatureEnum feature, const uint32_t actualValue);
+				template Result NetworkManagement::SetFeatureActualValue<std::uint8_t>(MNFeatureEnum feature, const std::uint8_t actualValue);
+				template Result NetworkManagement::SetFeatureActualValue<std::uint16_t>(MNFeatureEnum feature, const std::uint16_t actualValue);
+				template Result NetworkManagement::SetFeatureActualValue<std::uint32_t>(MNFeatureEnum feature, const std::uint32_t actualValue);
 
 				template<typename I>
 				Result NetworkManagement::GetFeatureDefaultValue(GeneralFeatureEnum feature, I& defaultValue)
@@ -169,9 +169,9 @@ namespace IndustrialNetwork
 					return test.GetDefaultValue<I>(defaultValue);
 				}
 				template Result NetworkManagement::GetFeatureDefaultValue<bool>(GeneralFeatureEnum feature, bool& defaultValue);
-				template Result NetworkManagement::GetFeatureDefaultValue<uint8_t>(GeneralFeatureEnum feature, uint8_t& defaultValue);
-				template Result NetworkManagement::GetFeatureDefaultValue<uint16_t>(GeneralFeatureEnum feature, uint16_t& defaultValue);
-				template Result NetworkManagement::GetFeatureDefaultValue<uint32_t>(GeneralFeatureEnum feature, uint32_t& defaultValue);
+				template Result NetworkManagement::GetFeatureDefaultValue<std::uint8_t>(GeneralFeatureEnum feature, std::uint8_t& defaultValue);
+				template Result NetworkManagement::GetFeatureDefaultValue<std::uint16_t>(GeneralFeatureEnum feature, std::uint16_t& defaultValue);
+				template Result NetworkManagement::GetFeatureDefaultValue<std::uint32_t>(GeneralFeatureEnum feature, std::uint32_t& defaultValue);
 
 				template<typename I >
 				Result NetworkManagement::GetFeatureActualValue(GeneralFeatureEnum featureid, I& actualValue)
@@ -186,9 +186,9 @@ namespace IndustrialNetwork
 					return Result(ErrorCode::FEATURE_VALUE_NOT_FOUND);
 				}
 				template Result NetworkManagement::GetFeatureActualValue<bool>(GeneralFeatureEnum feature, bool& actualValue);
-				template Result NetworkManagement::GetFeatureActualValue<uint8_t>(GeneralFeatureEnum feature, uint8_t& actualValue);
-				template Result NetworkManagement::GetFeatureActualValue<uint16_t>(GeneralFeatureEnum feature, uint16_t& actualValue);
-				template Result NetworkManagement::GetFeatureActualValue<uint32_t>(GeneralFeatureEnum feature, uint32_t& actualValue);
+				template Result NetworkManagement::GetFeatureActualValue<std::uint8_t>(GeneralFeatureEnum feature, std::uint8_t& actualValue);
+				template Result NetworkManagement::GetFeatureActualValue<std::uint16_t>(GeneralFeatureEnum feature, std::uint16_t& actualValue);
+				template Result NetworkManagement::GetFeatureActualValue<std::uint32_t>(GeneralFeatureEnum feature, std::uint32_t& actualValue);
 
 				template<typename I >
 				Result NetworkManagement::SetFeatureActualValue(GeneralFeatureEnum featureId, const I actualValue)
@@ -214,9 +214,9 @@ namespace IndustrialNetwork
 					return Result();
 				}
 				template Result NetworkManagement::SetFeatureActualValue<bool>(GeneralFeatureEnum feature, const bool actualValue);
-				template Result NetworkManagement::SetFeatureActualValue<uint8_t>(GeneralFeatureEnum feature, const uint8_t actualValue);
-				template Result NetworkManagement::SetFeatureActualValue<uint16_t>(GeneralFeatureEnum feature, const uint16_t actualValue);
-				template Result NetworkManagement::SetFeatureActualValue<uint32_t>(GeneralFeatureEnum feature, const uint32_t actualValue);
+				template Result NetworkManagement::SetFeatureActualValue<std::uint8_t>(GeneralFeatureEnum feature, const std::uint8_t actualValue);
+				template Result NetworkManagement::SetFeatureActualValue<std::uint16_t>(GeneralFeatureEnum feature, const std::uint16_t actualValue);
+				template Result NetworkManagement::SetFeatureActualValue<std::uint32_t>(GeneralFeatureEnum feature, const std::uint32_t actualValue);
 
 				Result NetworkManagement::SetFeatureUntypedActualValue(CNFeatureEnum featureId, const std::string& actualValue)
 				{

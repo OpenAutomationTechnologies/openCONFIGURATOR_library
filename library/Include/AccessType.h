@@ -56,7 +56,7 @@ namespace IndustrialNetwork
 					RO,
 					CONST,
 					COND
-					
+
 				};
 
 				static const std::string AccessTypeValues[] =

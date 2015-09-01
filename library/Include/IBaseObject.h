@@ -71,7 +71,7 @@ namespace IndustrialNetwork
 				virtual ~IBaseObject()
 				{}
 
-				const T GetId() const
+				const T GetObjectId() const
 				{
 					return this->id;
 				}
@@ -83,7 +83,6 @@ namespace IndustrialNetwork
 
 				const std::string& GetName() const
 				{
-
 					return this->name;
 				}
 

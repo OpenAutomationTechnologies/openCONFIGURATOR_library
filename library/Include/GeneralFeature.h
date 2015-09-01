@@ -57,7 +57,6 @@ namespace IndustrialNetwork
 				*/
 				class GeneralFeature : public PlkFeature<GeneralFeatureEnum>
 				{
-
 					public:
 						explicit GeneralFeature(GeneralFeatureEnum type);
 						virtual ~GeneralFeature();

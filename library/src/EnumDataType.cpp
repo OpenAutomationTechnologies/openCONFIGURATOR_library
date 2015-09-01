@@ -31,12 +31,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
 #include "EnumDataType.h"
 
-
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 
-EnumDataType::EnumDataType(const std::string& uniqueID, const std::string& name, IEC_Datatype dataType, uint32_t size) : ComplexDataType(uniqueID, name, size),
+EnumDataType::EnumDataType(const std::string& uniqueID, const std::string& name, IEC_Datatype dataType, std::uint32_t size) : ComplexDataType(uniqueID, name, size),
 	dataType(dataType),
 	enumValues(std::unordered_map<std::string, std::string>())
 {}
@@ -60,7 +59,7 @@ Result EnumDataType::AddEnumValue(const std::string& name, const std::string& va
 	return Result();
 }
 
-uint32_t EnumDataType::GetBitSize()
+std::uint32_t EnumDataType::GetBitSize()
 {
 	return GetIECDataTypeBitSize(this->dataType);
 }

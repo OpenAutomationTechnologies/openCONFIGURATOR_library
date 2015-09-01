@@ -67,7 +67,6 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetComplexDataType(const std::string& uniqueId, std::shared_ptr<ComplexDataType>& returnType);
 						std::uint32_t GetBitSize(const std::string& uniqueIdRef);
 
-
 					private:
 						std::vector<std::shared_ptr<Parameter>> parameterList;
 

@@ -50,7 +50,6 @@ namespace IndustrialNetwork
 		template<typename T>
 		class DLLEXPORT IBuildConfiguration
 		{
-
 			public:
 				IBuildConfiguration() :
 					buildConfigurationSettings(std::vector<std::shared_ptr<T>>())
@@ -70,6 +69,7 @@ namespace IndustrialNetwork
 				{
 					this->buildConfigurationSettings.push_back(setting);
 				}
+
 			private:
 				std::vector<std::shared_ptr<T>> buildConfigurationSettings;
 		};

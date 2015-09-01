@@ -81,7 +81,7 @@ namespace IndustrialNetwork
 				}
 
 				template std::uint8_t HexToInt<std::uint8_t >(const std::string& hexString);
-				template std::uint16_t HexToInt<uint16_t>(const std::string& hexString);
+				template std::uint16_t HexToInt<std::uint16_t>(const std::string& hexString);
 				template std::uint32_t HexToInt<std::uint32_t>(const std::string& hexString);
 				template unsigned long HexToInt<unsigned long>(const std::string& hexString);
 				template unsigned long long HexToInt<unsigned long long>(const std::string& hexString);
@@ -102,7 +102,7 @@ namespace IndustrialNetwork
 					return b;
 				}
 
-				uint32_t GetIECDataTypeBitSize(const IEC_Datatype dataType)
+				std::uint32_t GetIECDataTypeBitSize(const IEC_Datatype dataType)
 				{
 					switch (dataType)
 					{
@@ -150,7 +150,7 @@ namespace IndustrialNetwork
 
 				//Convert float into the 32-bit binary encoding into std::hexadecimal (IEEE 754)
 				//Adapted from http://www.technical-recipes.com/2012/converting-between-binary-and-decimal-representations-of-ieee-754-floating-point-numbers-in-c/
-				int32_t FloatToSinglePrecisisionHex(float value)
+				std::int32_t FloatToSinglePrecisisionHex(float value)
 				{
 					union
 					{
@@ -164,14 +164,14 @@ namespace IndustrialNetwork
 					std::string outputString = bits.to_string<char, std::char_traits<char>, std::allocator<char>>();
 
 					std::bitset<32> set(outputString);
-					int32_t hex = set.to_ulong();
+					std::int32_t hex = set.to_ulong();
 
 					return hex;
 				}
 
 				//Convert double into the 64-bit binary encoding into std::hexadecimal (IEEE 754)
 				//Adapted from http://www.technical-recipes.com/2012/converting-between-binary-and-decimal-representations-of-ieee-754-floating-point-numbers-in-c/
-				int64_t DoubleToDoublePrecisisionHex(double value)
+				std::int64_t DoubleToDoublePrecisisionHex(double value)
 				{
 					union
 					{
@@ -186,7 +186,7 @@ namespace IndustrialNetwork
 					std::string outputString = bits.to_string<char, std::char_traits<char>, std::allocator<char>>();
 
 					std::bitset<64> set(outputString);
-					int64_t hex = set.to_ullong();
+					std::int64_t hex = set.to_ullong();
 
 					return hex;
 				}
@@ -200,7 +200,7 @@ namespace IndustrialNetwork
 					originalStr << std::hex << std::uppercase << std::setw(width) << std::setfill('0') << std::right << number;
 					std::string tempStr(originalStr.str());
 
-					for (uint32_t start = 0; start < tempStr.size(); start += 2)
+					for (std::uint32_t start = 0; start < tempStr.size(); start += 2)
 					{
 						splitString.push_back(tempStr.substr(start, 2));
 					}
@@ -219,7 +219,7 @@ namespace IndustrialNetwork
 					std::vector<std::string> splitString;
 					std::stringstream reverseStr;
 
-					for (uint32_t start = 0; start < number.size(); start += 2)
+					for (std::uint32_t start = 0; start < number.size(); start += 2)
 					{
 						splitString.push_back(number.substr(start, 2));
 					}
@@ -330,37 +330,37 @@ namespace IndustrialNetwork
 				{
 					switch (dataType)
 					{
-						case UNDEFINED:
+					case IEC_Datatype::UNDEFINED:
 							return PlkDataType::UNDEFINED;
-						case BITSTRING:
-						case BOOL:
-						case BYTE:
-						case _CHAR:
-						case USINT:
+						case IEC_Datatype::BITSTRING:
+						case IEC_Datatype::BOOL:
+						case IEC_Datatype::BYTE:
+						case IEC_Datatype::_CHAR:
+						case IEC_Datatype::USINT:
 							return PlkDataType::UNSIGNED8;
-						case WORD:
-						case UINT:
+						case IEC_Datatype::WORD:
+						case IEC_Datatype::UINT:
 							return PlkDataType::UNSIGNED16;
-						case DWORD:
-						case UDINT:
+						case IEC_Datatype::DWORD:
+						case IEC_Datatype::UDINT:
 							return PlkDataType::UNSIGNED32;
-						case LWORD:
-						case ULINT:
+						case IEC_Datatype::LWORD:
+						case IEC_Datatype::ULINT:
 							return PlkDataType::UNSIGNED64;
-						case SINT:
+						case IEC_Datatype::SINT:
 							return PlkDataType::INTEGER8;
-						case INT:
+						case IEC_Datatype::INT:
 							return PlkDataType::INTEGER16;
-						case DINT:
+						case IEC_Datatype::DINT:
 							return PlkDataType::INTEGER32;
-						case LINT:
+						case IEC_Datatype::LINT:
 							return PlkDataType::INTEGER64;
-						case REAL:
+						case IEC_Datatype::REAL:
 							return PlkDataType::REAL32;
-						case LREAL:
+						case IEC_Datatype::LREAL:
 							return PlkDataType::REAL64;
-						case STRING:
-						case WSTRING:
+						case IEC_Datatype::STRING:
+						case IEC_Datatype::WSTRING:
 							return PlkDataType::UNDEFINED;
 						default:
 							break;

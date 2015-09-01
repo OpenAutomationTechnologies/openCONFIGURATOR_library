@@ -136,6 +136,7 @@ namespace IndustrialNetwork
 					NMTSimpleBoot,
 					PDOTPDOChannels
 				};
+
 				enum CNFeatureEnum
 				{
 					//POWERLINK CN features >= 82
@@ -143,6 +144,7 @@ namespace IndustrialNetwork
 					DLLCNPResChaining,
 					NMTCNSoC2PReq
 				};
+
 				static const std::string PlkFeatureStrings[] =
 				{
 					"CFMConfigManager",
@@ -231,6 +233,7 @@ namespace IndustrialNetwork
 					"DLLCNPResChaining",
 					"NMTCNSoC2PReq"
 				};
+
 				static const std::string PlkFeatureDefaultValues[] =
 				{
 					"false",
