@@ -46,17 +46,17 @@ ModularControlledNode::ModularControlledNode(std::uint8_t nodeID, const std::str
 ModularControlledNode::~ModularControlledNode()
 {}
 
-Result AddModule(const Module& )
+Result AddModule(const Module&)
 {
 	return Result();
 }
 
-Result ChangeModuleOrder(const Module& , std::uint32_t , bool )
+Result ChangeModuleOrder(const Module&, std::uint32_t , bool)
 {
 	return Result();
 }
 
-Result RemoveModule(const Module& , bool )
+Result RemoveModule(const Module&, bool)
 {
 	return Result();
 }

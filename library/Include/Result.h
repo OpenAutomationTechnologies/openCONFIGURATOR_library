@@ -159,7 +159,7 @@ namespace IndustrialNetwork
 				const std::string kMsgNonExistingMappedObject = "Mapped object 0x%X does not exist on node %d.";
 				const std::string kMsgNonExistingMappedSubObject= "Mapped subobject 0x%X/0x%X does not exist on node %d.";
 				const std::string kMsgAccessTypeForParameterInvalid = "Parameter with uniqueId '%s', referenced by mapped index 0x%X/0x%s on node %d, has invalid access type ('%s').";
-				const std::string kMsgMappingTypeForPdoInvalid = "(Sub)Index 0x%X/0x%s on node %d cannot be mapped. Wrong PDOMapping '%s' for mapping.";
+				const std::string kMsgMappingTypeForPdoInvalid = "(Sub)Index 0x%X/0x%s on node %d cannot be mapped. Wrong PDOMapping attribute '%s' for mapping.";
 				const std::string kMsgAccessTypeForPdoInvalid = "(Sub)Index 0x%X/0x%s on node %d cannot be mapped. Invalid access type '%s' (RPDOs must be writeable, TPDOs readable).";
 				const std::string kMsgPdoOffsetInvalid = "Mapping-Object 0x%X/0x%X on node %d: Mapping offset invalid. Actual: %d bits, expected %d bits.";
 

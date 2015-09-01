@@ -548,7 +548,6 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::UpdatePr
 	std::uint32_t mappingObjectIndex = 0;
 	std::uint16_t mappedFromNode = 0;
 	std::uint16_t nrOfEntries = 0;
-	bool defaultMapping = false;
 
 	if (dir == Direction::RX)
 	{
@@ -572,7 +571,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::UpdatePr
 			std::shared_ptr<SubObject> nodeID;
 			Result res = obj.second->GetSubObject(0x1, nodeID);
 			if (!res.IsSuccessful())
-				return res;
+				continue;
 
 			if (nodeID->WriteToConfiguration())
 			{
@@ -598,7 +597,17 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::UpdatePr
 			else if (nrOfEntriesObj->HasDefaultValue())
 			{
 				nrOfEntries = nrOfEntriesObj->GetTypedDefaultValue<std::uint16_t>();
-				defaultMapping = true;
+			}
+
+			//Node mapped does not longer exist
+			if (nodeCollection.find((std::uint8_t) mappedFromNode) == nodeCollection.end())
+			{
+				for (auto& mapping : mappingObject->GetSubObjectDictionary())
+				{
+					mapping.second->ClearActualValue(); //delete mapping actual values
+					nodeID->ClearActualValue(); //clear node id mapping parameter
+				}
+				continue;
 			}
 
 			for (auto& mapping : mappingObject->GetSubObjectDictionary())
@@ -609,12 +618,17 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::UpdatePr
 				if (nrOfEntries == 0)
 					break;
 
-				if (defaultMapping && mapping.second->HasDefaultValue())
+				if (mapping.second->WriteToConfiguration()
+				        && mapping.second->GetTypedActualValue<std::uint64_t>() != 0)
 				{
 					std::shared_ptr<BaseProcessDataMapping> mappingPtr = std::shared_ptr<BaseProcessDataMapping>(new BaseProcessDataMapping(mappedFromNode,
-					        mapping.second->GetObjectId(), mapping.second, mapping.second->GetTypedDefaultValue<std::string>(), this->GetNodeId(), true));
+					        mapping.second->GetObjectId(), mapping.second, mapping.second->GetTypedActualValue<std::string>(), this->GetNodeId(), false));
 
-					res = CheckProcessDataMapping(nodeCollection.at((std::uint8_t)mappedFromNode), mappingPtr, dir);
+					Direction nodeDir = Direction::RX;
+					if (dir == Direction::RX)
+						nodeDir = Direction::TX;
+
+					res = CheckProcessDataMapping(nodeCollection.at((std::uint8_t) mappedFromNode), mappingPtr, nodeDir);
 					if (!res.IsSuccessful())
 						return res;
 
@@ -625,16 +639,13 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::UpdatePr
 
 					nrOfEntries--;
 				}
-				else if (mapping.second->WriteToConfiguration())
+				else if (mapping.second->HasDefaultValue()
+				         && mapping.second->GetTypedDefaultValue<std::uint64_t>() != 0)
 				{
 					std::shared_ptr<BaseProcessDataMapping> mappingPtr = std::shared_ptr<BaseProcessDataMapping>(new BaseProcessDataMapping(mappedFromNode,
-					        mapping.second->GetObjectId(), mapping.second, mapping.second->GetTypedActualValue<std::string>(), this->GetNodeId(), false));
+					        mapping.second->GetObjectId(), mapping.second, mapping.second->GetTypedDefaultValue<std::string>(), this->GetNodeId(), true));
 
-					Direction nodeDir = Direction::RX;
-					if (dir == Direction::RX)
-						nodeDir = Direction::TX;
-
-					res = CheckProcessDataMapping(nodeCollection.at((std::uint8_t)mappedFromNode), mappingPtr, nodeDir);
+					res = CheckProcessDataMapping(nodeCollection.at((std::uint8_t) mappedFromNode), mappingPtr, dir);
 					if (!res.IsSuccessful())
 						return res;
 
@@ -664,7 +675,10 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::UpdatePr
 			{
 				bitCount += receivePI->GetSize();
 				if (bitCount == 8)
+				{
 					piOffset++;
+					bitCount = 0;
+				}
 			}
 			else
 				piOffset += receivePI->GetSize() / 8;
@@ -679,7 +693,10 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::UpdatePr
 			{
 				bitCount += transmitPI->GetSize();
 				if (bitCount == 8)
+				{
 					piOffset++;
+					bitCount = 0;
+				}
 			}
 			else
 				piOffset += transmitPI->GetSize() / 8;
@@ -690,12 +707,10 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::UpdatePr
 
 Result ManagingNode::CheckProcessDataMapping(const std::shared_ptr<BaseNode>& node, const std::shared_ptr<BaseProcessDataMapping>& mnMappingObject, Direction dir)
 {
-	const std::shared_ptr<ControlledNode>& cn = std::dynamic_pointer_cast<ControlledNode>(node);
-	if (cn.get())
-	{
-		cn->UpdateProcessImage(dir);
-	}
 	std::uint32_t size = mnMappingObject->GetMappingLength();
+
+	//Correct offset
+	std::uint32_t channelOffset = mnMappingObject->GetMappingOffset();
 
 	std::vector<std::shared_ptr<BaseProcessImageObject>> piCollection;
 	if (dir == Direction::RX)
@@ -710,16 +725,23 @@ Result ManagingNode::CheckProcessDataMapping(const std::shared_ptr<BaseNode>& no
 	std::uint32_t fillSize = 0;
 	for (auto& cnPIObject : piCollection)
 	{
-		if (cnPIObject->GetPiOffset() >= mnMappingObject->GetMappingOffset() / 8
+		if (cnPIObject->GetPiOffset() >= channelOffset / 8
 		        || foundMapping) //allow Gaps
 		{
 			foundMapping = true;
 			if (fillSize < size) // as long as size is not reached
 			{
+				std::shared_ptr<BaseProcessImageObject> mnPiObj = std::make_shared<BaseProcessImageObject>(
+				            cnPIObject->GetName(),
+				            cnPIObject->GetDataType(),
+				            cnPIObject->GetPiOffset(),
+				            cnPIObject->GetBitOffset().is_initialized() == true ? cnPIObject->GetBitOffset().get() : 0,
+				            cnPIObject->GetSize());
+
 				if (dir == Direction::RX)
-					this->GetTransmitProcessImage().push_back(cnPIObject);
+					this->GetTransmitProcessImage().push_back(mnPiObj);
 				else if (dir == Direction::TX)
-					this->GetReceiveProcessImage().push_back(cnPIObject);
+					this->GetReceiveProcessImage().push_back(mnPiObj);
 
 				fillSize += cnPIObject->GetSize();
 			}
@@ -744,9 +766,10 @@ void ManagingNode::ClearMappingObjects()
 		{
 			for (auto& subobject : object.second->GetSubObjectDictionary())
 			{
-				if (subobject.second->WriteToConfiguration() && subobject.first == 1)
+				if (subobject.first == 1)
 				{
 					subobject.second->ClearActualValue(); //Clear Mapping Parameter Node Ids
+					break;
 				}
 			}
 		}
@@ -755,10 +778,7 @@ void ManagingNode::ClearMappingObjects()
 		{
 			for (auto& subobject : object.second->GetSubObjectDictionary())
 			{
-				if (subobject.second->WriteToConfiguration())
-				{
-					subobject.second->ClearActualValue(); //Clear Mapping Objects
-				}
+				subobject.second->ClearActualValue(); //Clear Mapping Objects
 			}
 		}
 	}

@@ -38,7 +38,8 @@ using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 
 ControlledNode::ControlledNode(std::uint8_t nodeID, const std::string& nodeName) : BaseNode(nodeID, nodeName),
-	operationMode(PlkOperationMode::NORMAL)
+	operationMode(PlkOperationMode::NORMAL),
+	nodeDataPresMnOffset(0)
 {
 	this->AddNodeAssignement(NodeAssignment::MNT_NODEASSIGN_VALID);
 	this->AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_NODE_EXISTS);
@@ -122,6 +123,14 @@ Result ControlledNode::MapSubObject(std::uint32_t index, std::uint16_t subindex,
 
 Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap, std::uint32_t index, std::uint16_t subindex, const Direction dir, bool updateNrOfEntries, std::uint32_t position, std::uint16_t fromNode)
 {
+	//Set fromNode for PresChained nodes
+	if (dir == Direction::RX
+	        && this->GetOperationMode() == PlkOperationMode::CHAINED
+	        && fromNode == 0)
+	{
+		fromNode = 240;
+	}
+
 	//Object has domain datatype
 	if (objToMap->GetUniqueIdRef().is_initialized() &&
 	        objToMap->GetDataType().get() == PlkDataType::Domain)
@@ -175,7 +184,8 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 	{
 		if (dir == Direction::RX)
 		{
-			if (objToMap->GetPDOMapping().get() != PDOMapping::RPDO)
+			if (objToMap->GetPDOMapping().get() != PDOMapping::RPDO
+			        && objToMap->GetPDOMapping().get() != PDOMapping::OPTIONAL)
 			{
 				boost::format formatter(kMsgMappingTypeForPdoInvalid);
 				formatter
@@ -189,7 +199,8 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 		}
 		else if (dir == Direction::TX)
 		{
-			if (objToMap->GetPDOMapping().get() != PDOMapping::TPDO)
+			if (objToMap->GetPDOMapping().get() != PDOMapping::TPDO
+			        && objToMap->GetPDOMapping().get() != PDOMapping::OPTIONAL)
 			{
 				boost::format formatter(kMsgMappingTypeForPdoInvalid);
 				formatter
@@ -282,7 +293,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 			std::shared_ptr<SubObject> subObj;
 			Result res = this->GetSubObject(mappingParameterIndex, 0x1, subObj);
 			if (!res.IsSuccessful())
-				return res;
+				continue;
 
 			//Has actual node id value
 			if (subObj->WriteToConfiguration())
@@ -321,7 +332,9 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 		//Set node id for new mapping parameter
 		if (writeNewMappingParameterObject)
 		{
-			mappingParameter->SetActualValue(boost::any(fromNode));
+			std::stringstream convert;
+			convert << fromNode;
+			mappingParameter->SetTypedObjectActualValue(convert.str());
 			mappingParameterFound = true;
 		}
 
@@ -345,6 +358,14 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 	std::uint16_t nrOfEntries = 0; //mapping object NrOfEntries
 	std::uint32_t offset = 0; // Mapping offset
 	std::uint32_t expectedOffset = 0; //calculated mapping offset with object + datasize
+
+	if (dir == Direction::RX
+	        && this->GetOperationMode() == PlkOperationMode::CHAINED
+	        && fromNode == 0)
+	{
+		offset = this->nodeDataPresMnOffset; // start with Offset from the MN
+		expectedOffset = this->nodeDataPresMnOffset;
+	}
 
 	if (mappingObj->GetSubObjectDictionary().size() < position)
 	{
@@ -996,10 +1017,6 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 {
 	std::uint32_t mappingParameterIndex = 0;
 	std::uint32_t mappingObjectIndex = 0;
-	std::uint16_t mappedFromNode = 0;
-	std::uint16_t nrOfEntries = 0;
-	std::uint32_t expectedOffset = 0;
-	bool defaultMapping = false;
 
 	if (dir == Direction::RX)
 	{
@@ -1017,8 +1034,13 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 
 	for (auto& obj : this->GetObjectDictionary())
 	{
+		std::uint16_t mappedFromNode = 0;
+		std::uint16_t nrOfEntries = 0;
+		std::uint32_t expectedOffset = 0;
+
 		if (obj.first >= mappingParameterIndex && obj.first < (mappingParameterIndex + 0x100))
 		{
+			bool updateOffset = false;
 			//Get mapping parameter object
 			std::shared_ptr<SubObject> nodeID;
 			Result res = obj.second->GetSubObject(0x1, nodeID);
@@ -1027,6 +1049,13 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 
 			if (nodeID->WriteToConfiguration())
 				mappedFromNode = nodeID->GetTypedActualValue<std::uint16_t>();
+
+			if (this->GetOperationMode() == PlkOperationMode::CHAINED
+			        && mappedFromNode == 240)
+			{
+				expectedOffset = this->nodeDataPresMnOffset;
+				updateOffset = true;
+			}
 
 			//Get according mapping object
 			std::shared_ptr<Object> mappingObject;
@@ -1047,7 +1076,6 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 			else if (nrOfEntriesObj->HasDefaultValue())
 			{
 				nrOfEntries = nrOfEntriesObj->GetTypedDefaultValue<std::uint16_t>();
-				defaultMapping = true;
 			}
 
 			for (auto& mapping : mappingObject->GetSubObjectDictionary())
@@ -1058,10 +1086,17 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 				if (nrOfEntries == 0)
 					break;
 
-				if (defaultMapping && mapping.second->HasDefaultValue())
+				if (mapping.second->WriteToConfiguration()
+				        && mapping.second->GetTypedActualValue<std::uint64_t>() != 0)
 				{
 					std::shared_ptr<BaseProcessDataMapping> mappingPtr = std::shared_ptr<BaseProcessDataMapping>(new BaseProcessDataMapping(mappingObject->GetObjectId(),
-					        mapping.second->GetObjectId(), mapping.second, mapping.second->GetTypedDefaultValue<std::string>(), mappedFromNode, true));
+					        mapping.second->GetObjectId(), mapping.second, mapping.second->GetTypedActualValue<std::string>(), mappedFromNode, false));
+
+					if (updateOffset)
+					{
+						mappingPtr->SetMappingOffset(expectedOffset);
+						mapping.second->SetTypedObjectActualValue(IntToHex<std::uint64_t>(mappingPtr->GetValue(), 16, "0x"));
+					}
 
 					res = CheckProcessDataMapping(mappingPtr, expectedOffset, dir);
 					if (!res.IsSuccessful())
@@ -1075,10 +1110,17 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 					nrOfEntries--;
 					expectedOffset += mappingPtr->GetMappingLength();
 				}
-				else if (mapping.second->WriteToConfiguration())
+				else if (mapping.second->HasDefaultValue()
+				         && mapping.second->GetTypedDefaultValue<std::uint64_t>() != 0)
 				{
 					std::shared_ptr<BaseProcessDataMapping> mappingPtr = std::shared_ptr<BaseProcessDataMapping>(new BaseProcessDataMapping(mappingObject->GetObjectId(),
-					        mapping.second->GetObjectId(), mapping.second, mapping.second->GetTypedActualValue<std::string>(), mappedFromNode, false));
+					        mapping.second->GetObjectId(), mapping.second, mapping.second->GetTypedDefaultValue<std::string>(), mappedFromNode, true));
+
+					if (updateOffset)
+					{
+						mappingPtr->SetMappingOffset(expectedOffset);
+						mapping.second->SetTypedObjectActualValue(IntToHex<std::uint64_t>(mappingPtr->GetValue(), 16, "0x"));
+					}
 
 					res = CheckProcessDataMapping(mappingPtr, expectedOffset, dir);
 					if (!res.IsSuccessful())
@@ -1229,7 +1271,8 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 	{
 		if (dir == Direction::RX)
 		{
-			if (foundObject->GetPDOMapping().get() != PDOMapping::RPDO)
+			if (foundObject->GetPDOMapping().get() != PDOMapping::RPDO
+			        && foundObject->GetPDOMapping().get() != PDOMapping::OPTIONAL)
 			{
 				boost::format formatter(kMsgMappingTypeForPdoInvalid);
 				formatter
@@ -1243,7 +1286,8 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 		}
 		else if (dir == Direction::TX)
 		{
-			if (foundObject->GetPDOMapping().get() != PDOMapping::TPDO)
+			if (foundObject->GetPDOMapping().get() != PDOMapping::TPDO
+			        && foundObject->GetPDOMapping().get() != PDOMapping::OPTIONAL)
 			{
 				boost::format formatter(kMsgMappingTypeForPdoInvalid);
 				formatter
@@ -1316,4 +1360,9 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 		return Result(ErrorCode::ACCESS_TYPE_FOR_PDO_INVALID, formatter.str());
 	}
 	return Result();
+}
+
+void ControlledNode::SetNodeDataPresMnOffset(std::uint32_t offset)
+{
+	this->nodeDataPresMnOffset = offset;
 }

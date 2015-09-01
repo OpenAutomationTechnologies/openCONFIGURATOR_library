@@ -48,7 +48,7 @@ Result ManagingNodeMappingBuilder::GenerateConfiguration(const std::string& valu
 {
 	//Get Managing Node (this must not fail)
 	const std::shared_ptr<ManagingNode>& mn = std::dynamic_pointer_cast<ManagingNode>(nodeCollection.at(240));
-	mn->ClearMappingObjects(); //clearn MN mapping
+	mn->ClearMappingObjects(); //clear MN mapping
 
 	//Generate MN RX Mapping
 	Result res = GenerateMnMapping(value, Direction::RX, nodeCollection);
@@ -62,6 +62,7 @@ Result ManagingNodeMappingBuilder::GenerateConfiguration(const std::string& valu
 Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, Direction dir, const std::map<std::uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
 	//Get Managing Node (this must not fail)
+
 	const std::shared_ptr<ManagingNode>& mn = std::dynamic_pointer_cast<ManagingNode>(nodeCollection.at(240));
 
 	//Direction from node point of view
@@ -70,15 +71,20 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 		nodeDir = Direction::RX;
 
 	std::uint32_t bitoffset = 0;
+	std::uint32_t channelBitOffset = 0;
+	std::uint32_t presMnOffset = 0;
 	std::uint32_t index = 0;
 	std::uint32_t subindex = 1;
 
 	//Traverse all controlled nodes
 	for (auto& node : nodeCollection)
 	{
+		//Reset channel bit offset
+		channelBitOffset = 0;
+
 		//CN receive default from 0 for MN
 		std::uint16_t receiveFromNode = 0;
-		if (value != "all")
+		if (!value.empty())
 		{
 			if (!this->GenerateForNode(value, node.first)) //Check if values have to be generated
 				continue;
@@ -93,30 +99,34 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 
 		//Node is PRes Chained set receive from not to 240 (PResMN)
 		if (cn->GetOperationMode() == PlkOperationMode::CHAINED
-		        && dir == Direction::RX)
+		        && dir == Direction::TX)
+		{
 			receiveFromNode = 240;
+			//Set correct offset for CN receive PDO form MN
+			cn->SetNodeDataPresMnOffset(presMnOffset);
+		}
 
-		//Update CN RX Mapping
+		//Update CN Mapping
 		cn->UpdateProcessImage(nodeDir);
 
 		//Get MN PDO Channel Objects for direction
-		std::uint8_t pdoChannelObjects = 1;
+		std::uint16_t pdoChannelObjects = 1;
 		Result res;
 		std::vector<std::shared_ptr<BaseProcessDataMapping>> mappingCollection;
 		if (dir == Direction::RX)
 		{
-			res = mn->GetNetworkManagement()->GetFeatureActualValue<std::uint8_t>(GeneralFeatureEnum::PDORPDOChannelObjects, pdoChannelObjects);
+			res = mn->GetNetworkManagement()->GetFeatureActualValue<std::uint16_t>(GeneralFeatureEnum::PDORPDOChannelObjects, pdoChannelObjects);
 			//Traverse Tx Mapping from Node to create Rx Mapping on MN
 			mappingCollection = cn->GetTransmitMapping();
 		}
 		else if (dir == Direction::TX)
 		{
-			res = mn->GetNetworkManagement()->GetFeatureActualValue<std::uint8_t>(GeneralFeatureEnum::PDOTPDOChannelObjects, pdoChannelObjects);
+			res = mn->GetNetworkManagement()->GetFeatureActualValue<std::uint16_t>(GeneralFeatureEnum::PDOTPDOChannelObjects, pdoChannelObjects);
 			//Traverse Rx Mapping from Node to create Tx Mapping on MN
 			mappingCollection = cn->GetReceiveMapping();
 		}
-		if (!res.IsSuccessful())
-			return res;
+		if (!res.IsSuccessful()) //Use default value
+			pdoChannelObjects = 254;
 
 		for (auto& mapping : mappingCollection)
 		{
@@ -158,13 +168,30 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 					}
 				}
 
+				std::uint32_t offsetToWrite = channelBitOffset;
+				//Chained nodes output data mapped to PResMN
+				std::uint8_t nodeId = cn->GetNodeId();
+				if (cn->GetOperationMode() == PlkOperationMode::CHAINED
+				        && dir == Direction::TX)
+				{
+					nodeId = 240;
+					offsetToWrite = presMnOffset;
+				}
+
 				// Write mapping to MN object dictionary
-				res = this->WriteMappingToForNode(cn->GetNodeId(), dir, this->GetMappingString(mapping->GetMappingLength(), bitoffset, subindex, index), mn);
+				res = this->WriteMappingToForNode(nodeId, dir, this->GetMappingString(mapping->GetMappingLength(), offsetToWrite, subindex, index), mn);
 				if (!res.IsSuccessful())
 					return res;
 
 				// Increment bitoffset with the length of the added mapping
 				bitoffset += mapping->GetMappingLength();
+				channelBitOffset += mapping->GetMappingLength();
+
+				if (cn->GetOperationMode() == PlkOperationMode::CHAINED
+				        && dir == Direction::TX)
+				{
+					presMnOffset += mapping->GetMappingLength();
+				}
 			}
 			else if (foundObject->GetUniqueIdRef().is_initialized()
 			         && foundObject->GetDataType().get() == PlkDataType::Domain) // CN mapps a domain object
@@ -245,8 +272,18 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 							else
 								sizeToWrite = cnPIObject->GetSize(); //All other objects have correct size
 
+							std::uint32_t offsetToWrite = channelBitOffset;
+							//Chained nodes output data mapped to PResMN
+							std::uint8_t nodeId = cn->GetNodeId();
+							if (cn->GetOperationMode() == PlkOperationMode::CHAINED
+							        && dir == Direction::TX)
+							{
+								nodeId = 240;
+								offsetToWrite = presMnOffset;
+							}
+
 							//Write mapping to MN object dictionary
-							res = this->WriteMappingToForNode(cn->GetNodeId(), dir, this->GetMappingString(sizeToWrite, bitoffset, subindex, index), mn);
+							res = this->WriteMappingToForNode(nodeId, dir, this->GetMappingString(sizeToWrite, offsetToWrite, subindex, index), mn);
 							if (!res.IsSuccessful())
 								return res;
 
@@ -254,13 +291,27 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 							if (bitCount == 8)
 							{
 								bitoffset += 8; // Add one byte
+								channelBitOffset += 8; // Add one byte
 								fillSize += 8; // Add one byte
 								bitCount = 0; //Reset bitcount
+
+								if (cn->GetOperationMode() == PlkOperationMode::CHAINED
+								        && dir == Direction::TX)
+								{
+									presMnOffset += 8;
+								}
 							}
 							else //normal datatype
 							{
 								fillSize += cnPIObject->GetSize(); //Add datatype size to fillsize
 								bitoffset += cnPIObject->GetSize(); //Add datatype size to offset
+								channelBitOffset += cnPIObject->GetSize(); //Add datatype size to channel offset
+
+								if (cn->GetOperationMode() == PlkOperationMode::CHAINED
+								        && dir == Direction::TX)
+								{
+									presMnOffset += cnPIObject->GetSize();
+								}
 							}
 						}
 					}

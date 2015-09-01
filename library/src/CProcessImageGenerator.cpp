@@ -58,21 +58,6 @@ const std::string CProcessImageGenerator::Generate(std::uint8_t nodeid, std::sha
 	std::shared_ptr<BaseNode> node;
 	network->GetBaseNode(nodeid, node);
 
-	std::shared_ptr<ManagingNode> mn = std::dynamic_pointer_cast<ManagingNode>(node);
-	std::shared_ptr<ControlledNode> cn = std::dynamic_pointer_cast<ControlledNode>(node);
-	if (mn.get())
-	{
-		std::map<std::uint8_t, std::shared_ptr<BaseNode>> nodes;
-		network->GetNodes(nodes);
-
-		mn->UpdateProcessImage(nodes, Direction::RX);
-		mn->UpdateProcessImage(nodes, Direction::TX);
-	}
-	else if (cn.get())
-	{
-		cn->UpdateProcessImage(Direction::RX);
-		cn->UpdateProcessImage(Direction::TX);
-	}
 	this->WriteCHeader(node);
 
 	this->WriteCProcessImage(Direction::RX, node);

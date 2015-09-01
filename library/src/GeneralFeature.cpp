@@ -74,7 +74,6 @@ namespace IndustrialNetwork
 					return Result(ErrorCode::DATATYPE_MISMATCH, formatter.str());
 				}
 				template Result GeneralFeature::GetDefaultValue(bool& value);
-				template Result GeneralFeature::GetDefaultValue(std::uint8_t& value);
 				template Result GeneralFeature::GetDefaultValue(std::uint16_t& value);
 				template Result GeneralFeature::GetDefaultValue(std::uint32_t& value);
 
@@ -184,13 +183,13 @@ namespace IndustrialNetwork
 								{
 									if (!defaultValue.empty())
 									{
-										std::uint8_t value = HexToInt<std::uint8_t>(defaultValue);
+										std::uint16_t value = HexToInt<std::uint16_t>(defaultValue);
 										this->SetUntypedDefaultValue(boost::any(value));
 										break;
 									}
 									if (!actualValue.empty())
 									{
-										uint8_t value = HexToInt<uint8_t>(actualValue);
+										uint16_t value = HexToInt<uint16_t>(actualValue);
 										this->SetUntypedActualValue(boost::any(value));
 										break;
 									}
@@ -246,7 +245,6 @@ namespace IndustrialNetwork
 					return Result(ErrorCode::DATATYPE_MISMATCH, formatter.str());
 				}
 				template Result GeneralFeature::GetActualValue(bool& value);
-				template Result GeneralFeature::GetActualValue(std::uint8_t& value);
 				template Result GeneralFeature::GetActualValue(std::uint16_t& value);
 				template Result GeneralFeature::GetActualValue(std::uint32_t& value);
 

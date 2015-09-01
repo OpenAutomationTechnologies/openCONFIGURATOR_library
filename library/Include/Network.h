@@ -51,6 +51,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "LoggingConfiguration.h"
 #include "PlkOperationMode.h"
 #include "Utilities.h"
+#include "Direction.h"
 
 namespace IndustrialNetwork
 {

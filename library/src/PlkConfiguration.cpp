@@ -746,8 +746,11 @@ Result PlkConfiguration::SyncRedundantManagingNodes(const std::map<std::uint8_t,
 			continue;
 
 		//Distribute RMNs
-		if (std::dynamic_pointer_cast<ManagingNode>(node.second))
+		std::shared_ptr<ManagingNode> rmn = std::dynamic_pointer_cast<ManagingNode>(node.second);
+		if (rmn)
 		{
+			rmn->ClearMappingObjects();
+
 			for (auto& obj : mn->GetObjectDictionary())
 			{
 				if (obj.first == 0x1F81) //Skip node assignments
@@ -768,6 +771,17 @@ Result PlkConfiguration::SyncRedundantManagingNodes(const std::map<std::uint8_t,
 							return res;
 					}
 				}
+			}
+
+			rmn->GetTransmitProcessImage().clear();
+			rmn->GetReceiveProcessImage().clear();
+			for (auto& rxPi : mn->GetReceiveProcessImage())
+			{
+				rmn->GetReceiveProcessImage().push_back(rxPi);
+			}
+			for (auto& txPi : mn->GetTransmitProcessImage())
+			{
+				rmn->GetTransmitProcessImage().push_back(txPi);
 			}
 		}
 	}

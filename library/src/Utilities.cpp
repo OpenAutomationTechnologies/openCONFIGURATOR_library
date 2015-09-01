@@ -330,7 +330,7 @@ namespace IndustrialNetwork
 				{
 					switch (dataType)
 					{
-					case IEC_Datatype::UNDEFINED:
+						case IEC_Datatype::UNDEFINED:
 							return PlkDataType::UNDEFINED;
 						case IEC_Datatype::BITSTRING:
 						case IEC_Datatype::BOOL:

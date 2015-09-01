@@ -40,7 +40,7 @@ Module::Module() :
 Module::~Module()
 {}
 
-bool Module::UpdateModuleOd(std::uint32_t , SortMode , SortNumber )
+bool Module::UpdateModuleOd(std::uint32_t , SortMode , SortNumber)
 {
 	return  true;
 }

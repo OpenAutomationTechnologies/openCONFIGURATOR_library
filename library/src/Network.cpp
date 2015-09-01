@@ -37,6 +37,7 @@ using namespace IndustrialNetwork::POWERLINK::Core::Node;
 using namespace IndustrialNetwork::POWERLINK::Core::Configuration;
 using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
+using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 
 Network::Network() :
 	networkId(""),
@@ -577,6 +578,22 @@ Result Network::SetActiveConfiguration(const std::string& configID)
 Result Network::GenerateConfiguration()
 {
 	Result res;
+	for (auto& node : this->nodeCollection)
+	{
+		std::shared_ptr<ManagingNode> mn = std::dynamic_pointer_cast<ManagingNode>(node.second);
+		std::shared_ptr<ControlledNode> cn = std::dynamic_pointer_cast<ControlledNode>(node.second);
+		if (mn.get() && node.first == 240) //only managing node
+		{
+			mn->UpdateProcessImage(this->nodeCollection, Direction::RX);
+			mn->UpdateProcessImage(this->nodeCollection, Direction::TX);
+		}
+		else if (cn.get())
+		{
+			cn->UpdateProcessImage(Direction::RX);
+			cn->UpdateProcessImage(Direction::TX);
+		}
+	}
+
 	for (auto& config : this->buildConfigurations)
 	{
 		if (config->GetConfigurationName() == this->GetActiveConfiguration())

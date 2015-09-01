@@ -642,7 +642,7 @@ Result OpenConfiguratorCore::GetObjectSize(const std::string& networkId, const s
 	return res;
 }
 
-Result OpenConfiguratorCore::GetSubObjectSize(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId,std:: uint8_t subObjectId, uint32_t& size)
+Result OpenConfiguratorCore::GetSubObjectSize(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, std:: uint8_t subObjectId, uint32_t& size)
 {
 	std::shared_ptr<Network> network;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
