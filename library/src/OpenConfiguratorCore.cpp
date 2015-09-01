@@ -1731,18 +1731,7 @@ Result OpenConfiguratorCore::SetLossOfSocTolerance(const std::string& networkId,
 	std::stringstream convert;
 	convert << lossOfSocTolerance;
 
-	auto ptr = std::dynamic_pointer_cast<ControlledNode>(node);
-	if (ptr)
-		res = ptr->ForceObject(0x1C14, false, convert.str());
-	else
-	{
-		boost::format formatter(kMsgNonControlledNode);
-		formatter
-		% nodeId;
-		LOG_FATAL() << formatter.str();
-		return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE, formatter.str());
-	}
-	return res;
+	return node->ForceObject(0x1C14, false, convert.str());
 }
 
 Result OpenConfiguratorCore::GetLossOfSocTolerance(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t& lossOfSocTolerance)
