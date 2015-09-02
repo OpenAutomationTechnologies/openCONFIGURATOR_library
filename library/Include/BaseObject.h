@@ -64,7 +64,7 @@ namespace IndustrialNetwork
 			namespace ObjectDictionary
 			{
 				/**
-				\brief Represents the common basis for all POWERLINK objects.
+				\brief Represents the common case class for all POWERLINK objects.
 				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
 				class DLLEXPORT BaseObject : public IndustrialNetwork::Fieldbus::IBaseObject<std::uint32_t, ObjectType>

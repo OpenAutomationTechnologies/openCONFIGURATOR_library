@@ -47,8 +47,8 @@ namespace IndustrialNetwork
 			namespace ModularNode
 			{
 				/**
-				\brief
-				\author rueckerc
+				\brief Represents a module in the POWERLINK network.
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
 				class Module
 				{

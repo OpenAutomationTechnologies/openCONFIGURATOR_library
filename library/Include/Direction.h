@@ -43,8 +43,8 @@ namespace IndustrialNetwork
 			namespace ObjectDictionary
 			{
 				/**
-				\brief
-				\author rueckerc
+				\brief Represents the input and output directory.
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
 				enum class Direction : std::uint8_t
 				{

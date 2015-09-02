@@ -44,8 +44,8 @@ namespace IndustrialNetwork
 			namespace Node
 			{
 				/**
-				\brief
-				\author rueckerc
+				\brief Represents a feature flag of a POWERLINK node (0x1F82).
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
 				enum class FeatureFlags : std::uint32_t
 				{

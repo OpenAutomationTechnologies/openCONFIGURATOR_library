@@ -56,6 +56,10 @@ namespace IndustrialNetwork
 		{
 			namespace Configuration
 			{
+				/**
+				\brief Builds the managing node mapping.
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
+				*/
 				class ManagingNodeMappingBuilder : public IndustrialNetwork::POWERLINK::Core::Configuration::BuildConfigurationSettingBuilder
 				{
 					public:

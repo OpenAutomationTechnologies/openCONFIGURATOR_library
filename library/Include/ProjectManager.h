@@ -67,8 +67,8 @@ namespace IndustrialNetwork
 
 						/**
 						\brief Add a network configuration to the core library.
-						\param[in] Network reference to be added.
-						\param[in] Network ID reference to be added.
+						\param[in] networkId Network reference to be added.
+						\param[in] network Network ID reference to be added.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
 
@@ -76,10 +76,11 @@ namespace IndustrialNetwork
 
 						/**
 						\brief Retrieve a network configuration from the library.
-						\param[out] NetworkManagement reference to be retrieved.
+						\param[in] networkId Network identifier.
+						\param[out] net NetworkManagement reference to be retrieved.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetNetwork(const std::string& networkUuid, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network>& net);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetNetwork(const std::string& networkId, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network>& net);
 
 						/**
 						\brief Removes a network configuration from the list.
@@ -109,7 +110,7 @@ namespace IndustrialNetwork
 
 						/**
 						\brief Define the logging configuration for the boost log library.
-						\param[in] configFile path
+						\param[in] configuration Logging configuration.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result InitLoggingConfiguration(const std::string& configuration);

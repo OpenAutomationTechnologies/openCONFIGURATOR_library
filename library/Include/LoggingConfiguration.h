@@ -64,6 +64,10 @@ namespace IndustrialNetwork
 	{
 		namespace Core
 		{
+			/**
+			\brief Library configuration related namespace
+			\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
+			*/
 			namespace CoreConfiguration
 			{
 				/**
@@ -75,7 +79,7 @@ namespace IndustrialNetwork
 					public:
 						/**
 						\brief Initialises the boost logger with the configuration file.
-						\param[in] configFile path
+						\param[in] configuration Logging configuration.
 						*/
 						static IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result InitConfiguration(const std::string& configuration);
 				};

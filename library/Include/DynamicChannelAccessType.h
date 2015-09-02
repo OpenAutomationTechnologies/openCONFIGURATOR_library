@@ -43,8 +43,8 @@ namespace IndustrialNetwork
 			namespace ObjectDictionary
 			{
 				/**
-				\brief
-				\author rueckerc
+				\brief Represents the access type for dynamic channels of a POWERLINK node.
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
 				enum class DynamicChannelAccessType : std::uint8_t
 				{

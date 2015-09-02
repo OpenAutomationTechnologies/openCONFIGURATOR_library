@@ -51,8 +51,8 @@ namespace IndustrialNetwork
 			namespace Node
 			{
 				/**
-				\brief
-				\author rueckerc
+				\brief Represents a POWERLINK controlled node feature.
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
 				class CnFeature : public PlkFeature<CNFeatureEnum>
 				{

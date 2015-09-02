@@ -1,6 +1,6 @@
 /************************************************************************
-\file ModuleRange.cpp
-\brief Implementation of the Class ModuleRange
+\file Range.cpp
+\brief Implementation of the Class Range
 \author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 \date 01-May-2015 12:00:00
 ************************************************************************/

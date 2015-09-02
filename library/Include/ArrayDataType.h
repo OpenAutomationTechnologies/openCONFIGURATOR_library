@@ -48,8 +48,8 @@ namespace IndustrialNetwork
 			namespace ObjectDictionary
 			{
 				/**
-				\brief
-				\author rueckerc
+				\brief Represents a complex array datatype of a POWERLINK node.
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
 				class DLLEXPORT ArrayDataType : public IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ComplexDataType
 				{

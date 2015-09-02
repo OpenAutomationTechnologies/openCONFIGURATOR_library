@@ -46,8 +46,8 @@ namespace IndustrialNetwork
 			namespace Node
 			{
 				/**
-				\brief
-				\author rueckerc
+				\brief Represents the case class for a POWERLINK feature.
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
 				template<typename I>
 				class PlkFeature

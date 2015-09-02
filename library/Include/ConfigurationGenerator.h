@@ -55,8 +55,17 @@ namespace IndustrialNetwork
 	{
 		namespace Core
 		{
+			/**
+			\brief %Network handling related namespace
+			\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
+			*/
 			namespace NetworkHandling
 			{
+
+				/**
+				\brief Computes the POWERLINK network configuration.
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
+				*/
 				class ConfigurationGenerator
 				{
 					public:

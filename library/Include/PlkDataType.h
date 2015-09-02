@@ -45,7 +45,7 @@ namespace IndustrialNetwork
 				/**
 				\brief Powerlink Data Types
 				See EPSG DS 301, v1.1.0, v1.2.0
-				\author rueckerc
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
 				enum class PlkDataType : std::uint32_t
 				{

@@ -50,8 +50,8 @@ namespace IndustrialNetwork
 			namespace ObjectDictionary
 			{
 				/**
-				\brief
-				\author rueckerc
+				\brief Represents the a process data mapping of a POWERLINK node.
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
 				class DLLEXPORT BaseProcessDataMapping
 				{

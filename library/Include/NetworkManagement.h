@@ -52,8 +52,8 @@ namespace IndustrialNetwork
 			namespace Node
 			{
 				/**
-				\brief
-				\author rueckerc
+				\brief Represents the network managment for a POWERLINK node.
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
 				class DLLEXPORT NetworkManagement
 				{

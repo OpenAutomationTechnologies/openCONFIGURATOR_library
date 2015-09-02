@@ -44,8 +44,8 @@ namespace IndustrialNetwork
 			namespace Node
 			{
 				/**
-				\brief
-				\author rueckerc
+				\brief Represents a node assignment of a POWERLINK node.
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
 				enum class NodeAssignment : std::uint32_t
 				{

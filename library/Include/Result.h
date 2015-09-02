@@ -157,7 +157,7 @@ namespace IndustrialNetwork
 
 				const std::string kMsgDynamicChannelNotFound = "Dynamic channel for datatype: '%s' and direction: '%s' not found on MN.";
 				const std::string kMsgNonExistingMappedObject = "Mapped object 0x%X does not exist on node %d.";
-				const std::string kMsgNonExistingMappedSubObject= "Mapped subobject 0x%X/0x%X does not exist on node %d.";
+				const std::string kMsgNonExistingMappedSubObject = "Mapped subobject 0x%X/0x%X does not exist on node %d.";
 				const std::string kMsgAccessTypeForParameterInvalid = "Parameter with uniqueId '%s', referenced by mapped index 0x%X/0x%s on node %d, has invalid access type ('%s').";
 				const std::string kMsgMappingTypeForPdoInvalid = "(Sub)Index 0x%X/0x%s on node %d cannot be mapped. Wrong PDOMapping attribute '%s' for mapping.";
 				const std::string kMsgAccessTypeForPdoInvalid = "(Sub)Index 0x%X/0x%s on node %d cannot be mapped. Invalid access type '%s' (RPDOs must be writeable, TPDOs readable).";
@@ -195,10 +195,12 @@ namespace IndustrialNetwork
 				const std::string kMsgParameterValueNotSet = "Node %d: Parameter '%d' value is not set.";
 				const std::string kMsgMappingInvalid = "Mapping-Object 0x%X/0x%X on node %d: Mapping is enabled (NumberOfEntries != 0) but mapping entry is zero. Expected valid mapping entry.";
 
+				/** \addtogroup apireturn
+				* @{
+				*/				
 				/**
-				\class Result
-				\brief
-				\author rueckerc
+				\brief Represents the return class for the libary.
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
 				class DLLEXPORT Result : public IndustrialNetwork::Fieldbus::IResult<IndustrialNetwork::POWERLINK::Core::ErrorHandling::ErrorCode>
 				{
@@ -207,13 +209,14 @@ namespace IndustrialNetwork
 						Result();
 						explicit Result(ErrorCode errorCode);
 						Result(ErrorCode errorCode, const std::string& errorMessage);
-						
+
 						virtual ~Result();
 						/**
 						\return bool
 						*/
 						bool IsSuccessful();
 				};
+				/** @} */
 			}
 		}
 	}

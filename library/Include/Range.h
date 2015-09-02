@@ -44,8 +44,8 @@ namespace IndustrialNetwork
 			namespace ModularNode
 			{
 				/**
-				\brief
-				\author rueckerc
+				\brief Represents a range in the modular controlled node.
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
 				class Range
 				{

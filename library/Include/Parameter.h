@@ -49,8 +49,8 @@ namespace IndustrialNetwork
 			namespace ObjectDictionary
 			{
 				/**
-				\brief
-				\author rueckerc
+				\brief Represents a complex datatype parameter.
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
 				class Parameter
 				{
@@ -67,7 +67,7 @@ namespace IndustrialNetwork
 						void SetComplexDataType(std::shared_ptr<ComplexDataType>& complexType);
 						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess GetParameterAccess();
 						std::uint32_t GetBitSize();
-						
+
 					private:
 						std::string uniqueID;
 						std::string uniqueIDRef;

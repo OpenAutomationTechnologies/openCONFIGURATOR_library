@@ -49,8 +49,8 @@ namespace IndustrialNetwork
 			namespace ObjectDictionary
 			{
 				/**
-				\brief
-				\author rueckerc
+				\brief Represents the complex struct datatype of a POWERLINK node.
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
 				class StructDataType : public IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ComplexDataType
 				{

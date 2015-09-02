@@ -43,31 +43,31 @@ namespace IndustrialNetwork
 			namespace ObjectDictionary
 			{
 				/**
-				\brief
-				\author rueckerc
+				\brief Represents an IEC data type.
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
 				enum class IEC_Datatype : std::int8_t
 				{
-					UNDEFINED = -1, // < Undefined
-					BITSTRING = 0, // < Bit string (1 bit)
-					BOOL, // < Bool (1 bit)
-					BYTE, // < Byte (8 bit)
-					_CHAR, // < Char (8 bit)
-					WORD, // < Word (16 bit)
-					DWORD, // < Dword (32 bit)
-					LWORD, // < Lword (64 bit)
-					SINT, // < Signed short integer (1 byte)
-					INT, // < Signed integer (2 byte)
-					DINT, // < Double integer (4 byte)
-					LINT, // < Long integer (8 byte)
-					USINT, // < Unsigned short integer (1 byte)
-					UINT, // < Unsigned integer (2 byte)
-					UDINT, // < Unsigned double integer (4 byte)
-					ULINT, // < Unsigned long integer (8 byte)
-					REAL, // < REAL (4 byte)
-					LREAL, // < LREAL (8 byte)
-					STRING, // < STRING
-					WSTRING // < WSTRING to hold multi byte string
+					UNDEFINED = -1, //!< Undefined
+					BITSTRING = 0, //!< Bit string (1 bit)
+					BOOL, //!< Bool (1 bit)
+					BYTE, //!< Byte (8 bit)
+					_CHAR, //!< Char (8 bit)
+					WORD, //!< Word (16 bit)
+					DWORD, //!< Dword (32 bit)
+					LWORD, //!< Lword (64 bit)
+					SINT, //!< Signed short integer (1 byte)
+					INT, //!< Signed integer (2 byte)
+					DINT, //!< Double integer (4 byte)
+					LINT, //!< Long integer (8 byte)
+					USINT, //!< Unsigned short integer (1 byte)
+					UINT, //!< Unsigned integer (2 byte)
+					UDINT, //!< Unsigned double integer (4 byte)
+					ULINT, //!< Unsigned long integer (8 byte)
+					REAL, //!< REAL (4 byte)
+					LREAL, //!< LREAL (8 byte)
+					STRING, //!< STRING
+					WSTRING //!< WSTRING to hold multi byte string
 				};
 
 				static const std::string IECDatatypeValues[] =

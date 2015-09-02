@@ -45,8 +45,8 @@ namespace IndustrialNetwork
 			namespace NetworkHandling
 			{
 				/**
-				\brief
-				\author rueckerc
+				\brief Calculates the process images for the nodes in the POWERLINK network.
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
 				class ProcessImageGenerator
 				{

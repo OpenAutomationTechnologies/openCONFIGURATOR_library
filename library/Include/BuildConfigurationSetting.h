@@ -69,8 +69,8 @@ namespace IndustrialNetwork
 
 						/**
 						\brief Constructor for the BuildConfigurationHandler class.
-						\param[in] id BuildConfigurationSettingId for the setting.
-						\param[in] value std::string of the setting. Default value is empty.
+						\param[in] name Name for the setting.
+						\param[in] value String value of the setting. Default value is empty.
 						*/
 						BuildConfigurationSetting(const std::string& name, const std::string& value = "");
 

@@ -39,8 +39,8 @@ namespace IndustrialNetwork
 	namespace Fieldbus
 	{
 		/**
-		\brief
-		\author rueckerc
+		\brief Represents the template class for a return value in a Fieldbus.
+		\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 		*/
 		template<typename T>
 		class IResult

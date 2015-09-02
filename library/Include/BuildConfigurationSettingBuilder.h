@@ -52,6 +52,10 @@ namespace IndustrialNetwork
 		{
 			namespace Configuration
 			{
+				/**
+				\brief Represents the base class for a build configuration setting builder.
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
+				*/
 				class BuildConfigurationSettingBuilder
 				{
 					public:

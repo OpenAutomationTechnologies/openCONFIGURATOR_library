@@ -44,11 +44,15 @@ namespace IndustrialNetwork
 	{
 		namespace Core
 		{
+			/**
+			\brief Modular node related namespace
+			\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
+			*/
 			namespace ModularNode
 			{
 				/**
-				\brief
-				\author rueckerc
+				\brief Represents a modular controlled node in the POWERLINK network.
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
 				class ModularControlledNode : public IndustrialNetwork::POWERLINK::Core::Node::ControlledNode
 				{

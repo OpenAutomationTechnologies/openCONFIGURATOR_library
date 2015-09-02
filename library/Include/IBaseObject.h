@@ -38,10 +38,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace IndustrialNetwork
 {
+	/**
+	\brief Generic fieldbus related namespace
+	\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
+	*/
 	namespace Fieldbus
 	{
 		/**
-		\brief Represents the template class for the Fieldbus objects.
+		\brief Represents the template class for a Fieldbus object.
 		\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 		*/
 		// T datatype for the object id

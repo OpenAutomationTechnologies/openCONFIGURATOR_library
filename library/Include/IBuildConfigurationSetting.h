@@ -41,7 +41,7 @@ namespace IndustrialNetwork
 	namespace Fieldbus
 	{
 		/**
-		\brief Represents the base class for a Fieldbus build configuration setting.
+		\brief Represents the template class for a Fieldbus build configuration setting.
 		\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 		*/
 		class DLLEXPORT IBuildConfigurationSetting

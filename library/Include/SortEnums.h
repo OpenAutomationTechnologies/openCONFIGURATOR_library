@@ -43,8 +43,8 @@ namespace IndustrialNetwork
 			namespace ModularNode
 			{
 				/**
-				\brief
-				\author rueckerc
+				\brief Represents sort enums for modular controlled nodes.
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
 				enum class SortNumber : std::uint8_t
 				{

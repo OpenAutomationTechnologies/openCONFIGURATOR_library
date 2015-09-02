@@ -49,8 +49,8 @@ namespace IndustrialNetwork
 			namespace ObjectDictionary
 			{
 				/**
-				\brief
-				\author rueckerc
+				\brief Represents a complex enum datatype of a POWERLINK node.
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
 				class EnumDataType : public IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ComplexDataType
 				{

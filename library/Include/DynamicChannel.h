@@ -50,8 +50,8 @@ namespace IndustrialNetwork
 			namespace Node
 			{
 				/**
-				\brief
-				\author rueckerc
+				\brief Represents a dynamic channel of a POWERLINK node. (EPSG DS 301 1.2.1 chapter 6.8.2)
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
 				class DLLEXPORT DynamicChannel
 				{

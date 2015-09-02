@@ -59,10 +59,14 @@ namespace IndustrialNetwork
 	{
 		namespace Core
 		{
+			/**
+			\brief %Node related namespace
+			\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
+			*/
 			namespace Node
 			{
 				/**
-				\brief Represents the common basis for all POWERLINK node.
+				\brief Represents the common base class for all POWERLINK nodes.
 				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
 				class DLLEXPORT BaseNode : public IndustrialNetwork::Fieldbus::IFieldbusNode<std::uint8_t, std::uint32_t, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>

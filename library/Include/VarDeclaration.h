@@ -47,8 +47,8 @@ namespace IndustrialNetwork
 			namespace ObjectDictionary
 			{
 				/**
-				\brief
-				\author rueckerc
+				\brief Represents a var declaration in a complex struct datatype.
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
 				class VarDeclaration : public IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ComplexDataType
 				{

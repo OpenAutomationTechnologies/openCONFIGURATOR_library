@@ -49,6 +49,10 @@ namespace IndustrialNetwork
 	{
 		namespace Core
 		{
+			/**
+			\brief %Utilities related namespace
+			\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
+			*/
 			namespace Utilities
 			{
 

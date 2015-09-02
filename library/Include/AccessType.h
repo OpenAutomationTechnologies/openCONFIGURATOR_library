@@ -40,11 +40,15 @@ namespace IndustrialNetwork
 	{
 		namespace Core
 		{
+			/**
+			\brief %Object dictionary related namespace
+			\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
+			*/
 			namespace ObjectDictionary
 			{
 				/**
-				\brief
-				\author rueckerc
+				\brief Presents the access type of a POWERLINK object
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
 				enum class AccessType : std::uint8_t
 				{

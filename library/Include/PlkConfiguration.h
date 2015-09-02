@@ -56,8 +56,8 @@ namespace IndustrialNetwork
 			namespace Configuration
 			{
 				/**
-				\brief
-				\author rueckerc
+				\brief Calculates the POWERLINK network configuration.
+				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
 				class DLLEXPORT PlkConfiguration : public IndustrialNetwork::Fieldbus::IBuildConfiguration<IndustrialNetwork::POWERLINK::Core::Configuration::BuildConfigurationSetting>
 				{
