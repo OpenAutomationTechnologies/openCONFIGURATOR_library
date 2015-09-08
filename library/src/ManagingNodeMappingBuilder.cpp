@@ -342,15 +342,13 @@ const std::string ManagingNodeMappingBuilder::GetMappingString(std::uint32_t bit
 
 bool ManagingNodeMappingBuilder::GenerateForNode(const std::string& value, std::uint16_t nodeId)
 {
-	std::stringstream convert;
-	convert << std::dec << nodeId;
-
 	std::vector<std::string> nodeIds;
 	boost::split(nodeIds, value, boost::is_any_of(";"));
 
+	//Node ids can be hex or dec numbers
 	for (auto& part : nodeIds)
 	{
-		if (part == convert.str())
+		if (HexToInt<std::uint16_t>(part) == nodeId)
 			return true;
 	}
 	return false;
@@ -376,7 +374,7 @@ Result ManagingNodeMappingBuilder::FindMappedObject(const std::shared_ptr<BaseNo
 				boost::format formatter(kMsgNonExistingMappedObject);
 				formatter
 				% dataIndex
-				% (uint32_t) node->GetNodeId();
+				% (std::uint32_t) node->GetNodeId();
 				LOG_FATAL() << formatter.str();
 				return Result(ErrorCode::MAPPED_OBJECT_DOES_NOT_EXIST, formatter.str());
 			}

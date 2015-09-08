@@ -100,7 +100,7 @@ const std::string XmlProcessImageGenerator::PrintChannel(const std::string& name
 	channel << std::dec << size;
 	channel << "\"";
 	channel << " PIOffset=\"" << IntToHex<std::uint32_t>(piOffset, 4, "0x") << "\"";
-	if (bitOffset.is_initialized())
+	if (bitOffset.is_initialized() && size < 8)
 		channel << " BitOffset=\"" + IntToHex<std::uint32_t>(bitOffset.get(), 2, "0x") + "\"";
 	channel << "/>" << std::endl;
 	return channel.str();

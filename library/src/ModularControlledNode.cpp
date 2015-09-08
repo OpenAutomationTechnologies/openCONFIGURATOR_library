@@ -51,7 +51,7 @@ Result AddModule(const Module&)
 	return Result();
 }
 
-Result ChangeModuleOrder(const Module&, std::uint32_t , bool)
+Result ChangeModuleOrder(const Module&, std::uint32_t, bool)
 {
 	return Result();
 }

@@ -44,6 +44,4 @@ Range::Range() :
 {}
 
 Range::~Range()
-{
-
-}
+{}

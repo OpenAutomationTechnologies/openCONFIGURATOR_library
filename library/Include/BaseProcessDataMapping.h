@@ -85,9 +85,6 @@ namespace IndustrialNetwork
 
 						std::uint64_t GetValue();
 
-						bool GetActive();
-						void SetActive(bool active);
-
 						std::uint32_t GetObject();
 						std::uint32_t GetSubObject();
 
@@ -106,7 +103,6 @@ namespace IndustrialNetwork
 						std::uint32_t length;
 
 						bool staticMapping;
-						bool active;
 
 				};
 			}

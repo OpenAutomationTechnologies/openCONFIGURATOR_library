@@ -54,6 +54,7 @@ void ConfigurationGenerator::WriteHeader(const std::shared_ptr<Network>& net, st
 {
 	std::ostringstream dateTime;
 	const boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
+	//No deletion needed : http://stackoverflow.com/questions/17779660/who-is-responsible-for-deleting-the-facet
 	boost::posix_time::time_facet* const f = new boost::posix_time::time_facet("%d-%b-%Y %H:%M:%S");
 	dateTime.imbue(std::locale(dateTime.getloc(), f));
 	dateTime << now;

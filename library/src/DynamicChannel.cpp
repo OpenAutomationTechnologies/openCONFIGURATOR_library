@@ -68,7 +68,7 @@ std::uint32_t DynamicChannel::GetMaxNumber()
 	return this->maxNumber;
 }
 
-uint32_t DynamicChannel::GetAddressOffset()
+std::uint32_t DynamicChannel::GetAddressOffset()
 {
 	return this->addressOffset;
 }

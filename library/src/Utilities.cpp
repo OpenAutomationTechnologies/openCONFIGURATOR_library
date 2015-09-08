@@ -40,7 +40,7 @@ namespace IndustrialNetwork
 			namespace Utilities
 			{
 				template <typename T>
-				std::string IntToHex(const T number, const unsigned int padLength, const std::string& prefix, const std::string& suffix)
+				const std::string IntToHex(const T number, const std::uint32_t padLength, const std::string& prefix, const std::string& suffix)
 				{
 					std::ostringstream hexStream;
 					hexStream << std::setfill('0')
@@ -51,9 +51,9 @@ namespace IndustrialNetwork
 					          << suffix;
 					return (prefix + hexStream.str());
 				}
-				template std::string IntToHex<unsigned short>(const unsigned short number, const unsigned int padLength, const std::string& prefix, const std::string& suffix);
-				template std::string IntToHex<unsigned int>(const unsigned int number, const unsigned int padLength, const std::string& prefix, const std::string& suffix);
-				template std::string IntToHex<unsigned long long>(const unsigned long long number, const unsigned int padLength, const std::string& prefix, const std::string& suffix);
+				template const std::string IntToHex<std::uint16_t>(const std::uint16_t number, const std::uint32_t padLength, const std::string& prefix, const std::string& suffix);
+				template const std::string IntToHex<std::uint32_t>(const std::uint32_t number, const std::uint32_t padLength, const std::string& prefix, const std::string& suffix);
+				template const std::string IntToHex<std::uint64_t>(const std::uint64_t number, const std::uint32_t padLength, const std::string& prefix, const std::string& suffix);
 
 				template <typename T>
 				T HexToInt(const std::string& hexString)
@@ -80,7 +80,7 @@ namespace IndustrialNetwork
 					return value;
 				}
 
-				template std::uint8_t HexToInt<std::uint8_t >(const std::string& hexString);
+				template std::uint8_t HexToInt<std::uint8_t>(const std::string& hexString);
 				template std::uint16_t HexToInt<std::uint16_t>(const std::string& hexString);
 				template std::uint32_t HexToInt<std::uint32_t>(const std::string& hexString);
 				template unsigned long HexToInt<unsigned long>(const std::string& hexString);

@@ -58,8 +58,8 @@ namespace IndustrialNetwork
 				template<typename I>
 				Result NetworkManagement::GetFeatureDefaultValue(CNFeatureEnum feature, I& defaultValue)
 				{
-					CnFeature test(feature);
-					return test.GetDefaultValue<I>(defaultValue);
+					CnFeature cnfeature(feature);
+					return cnfeature.GetDefaultValue<I>(defaultValue);
 				}
 				template Result NetworkManagement::GetFeatureDefaultValue<bool>(CNFeatureEnum feature, bool& defaultValue);
 				template Result NetworkManagement::GetFeatureDefaultValue<std::uint32_t>(CNFeatureEnum feature, std::uint32_t& defaultValue);
@@ -109,8 +109,8 @@ namespace IndustrialNetwork
 				template<typename I>
 				Result NetworkManagement::GetFeatureDefaultValue(MNFeatureEnum feature, I& defaultValue)
 				{
-					MnFeature test(feature);
-					return test.GetDefaultValue<I>(defaultValue);
+					MnFeature mnfeature(feature);
+					return mnfeature.GetDefaultValue<I>(defaultValue);
 				}
 				template Result NetworkManagement::GetFeatureDefaultValue<bool>(MNFeatureEnum feature, bool& defaultValue);
 				template Result NetworkManagement::GetFeatureDefaultValue<std::uint16_t>(MNFeatureEnum feature, std::uint16_t& defaultValue);
@@ -162,8 +162,8 @@ namespace IndustrialNetwork
 				template<typename I>
 				Result NetworkManagement::GetFeatureDefaultValue(GeneralFeatureEnum feature, I& defaultValue)
 				{
-					GeneralFeature test(feature);
-					return test.GetDefaultValue<I>(defaultValue);
+					GeneralFeature generalFeature(feature);
+					return generalFeature.GetDefaultValue<I>(defaultValue);
 				}
 				template Result NetworkManagement::GetFeatureDefaultValue<bool>(GeneralFeatureEnum feature, bool& defaultValue);
 				template Result NetworkManagement::GetFeatureDefaultValue<std::uint16_t>(GeneralFeatureEnum feature, std::uint16_t& defaultValue);

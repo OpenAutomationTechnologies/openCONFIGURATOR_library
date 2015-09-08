@@ -100,7 +100,6 @@ Result ManagingNode::AddNodeAssignement(NodeAssignment assign)
 					LOG_WARN() << formatter.str();
 					return Result();
 				}
-
 				break;
 			}
 		default:
@@ -380,10 +379,7 @@ Result ManagingNode::SetMultiplexedCycle(const std::uint8_t nodeID, const std::u
 		LOG_FATAL() << formatter.str();
 		return Result(ErrorCode::MULTIPLEX_CYCLE_ASSIGN_INVALID, formatter.str());
 	}
-
-	std::stringstream nodeIdStr;
-	nodeIdStr << (std::uint32_t) multiplexedCycle;
-	return multplCycleAssign->SetTypedObjectActualValue(nodeIdStr.str());
+	return multplCycleAssign->SetTypedObjectActualValue(IntToHex((std::uint32_t) multiplexedCycle, 2, "0x"));
 }
 
 Result ManagingNode::ResetMultiplexedCycle(const std::uint8_t nodeID)
@@ -462,9 +458,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::Calculat
 	}
 	else
 	{
-		std::stringstream convert;
-		convert << preqPayloadLimit;
-		return this->SetSubObjectActualValue(0x1F98, 0x4, convert.str());
+		return this->SetSubObjectActualValue(0x1F98, 0x4, IntToHex(preqPayloadLimit, 4, "0x"));
 	}
 }
 
@@ -504,9 +498,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::Calculat
 		}
 		else
 		{
-			std::stringstream convert;
-			convert << presPayloadLimit;
-			return this->SetSubObjectActualValue(0x1F98, 0x5, convert.str());
+			return this->SetSubObjectActualValue(0x1F98, 0x5, IntToHex(presPayloadLimit, 4, "0x"));
 		}
 	}
 	return Result();
@@ -782,6 +774,5 @@ void ManagingNode::ClearMappingObjects()
 			}
 		}
 	}
-
 }
 

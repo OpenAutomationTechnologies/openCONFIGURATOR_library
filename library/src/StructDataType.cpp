@@ -70,4 +70,3 @@ std::vector<std::shared_ptr<VarDeclaration>>& StructDataType::GetVarDeclarations
 {
 	return this->varDeclarationList;
 }
-

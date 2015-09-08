@@ -67,7 +67,7 @@ namespace IndustrialNetwork
 				\return A std::hexadecimal std::string representation of number.
 				************************************************************************/
 				template <typename T>
-				std::string IntToHex(const T number, const unsigned int padLength, const std::string& prefix = "", const std::string& suffix = "");
+				const std::string IntToHex(const T number, const std::uint32_t padLength, const std::string& prefix = "", const std::string& suffix = "");
 
 				/************************************************************************
 				\brief Convert a std::string in std::hex-representation to an integral datatype

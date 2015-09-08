@@ -43,8 +43,7 @@ BaseProcessDataMapping::BaseProcessDataMapping(std::uint32_t object, std::uint32
 	subindex(subindex),
 	offset(offset),
 	length(length),
-	staticMapping(staticMapping),
-	active(true)
+	staticMapping(staticMapping)
 {}
 
 BaseProcessDataMapping::BaseProcessDataMapping(std::uint32_t object, std::uint32_t subobject, const std::shared_ptr<BaseObject>& obj, std::uint64_t actualValue, std::uint16_t nodeId, bool staticMapping) :
@@ -56,8 +55,7 @@ BaseProcessDataMapping::BaseProcessDataMapping(std::uint32_t object, std::uint32
 	subindex(0),
 	offset(0),
 	length(0),
-	staticMapping(staticMapping),
-	active(true)
+	staticMapping(staticMapping)
 {
 	InitMappingObject(actualValue);
 }
@@ -71,8 +69,7 @@ BaseProcessDataMapping::BaseProcessDataMapping(std::uint32_t object, std::uint32
 	subindex(0),
 	offset(0),
 	length(0),
-	staticMapping(staticMapping),
-	active(true)
+	staticMapping(staticMapping)
 {
 	InitMappingObject(actualValue);
 }
@@ -86,8 +83,7 @@ BaseProcessDataMapping::BaseProcessDataMapping(const std::string& actualValue, s
 	subindex(0),
 	offset(0),
 	length(0),
-	staticMapping(staticMapping),
-	active(true)
+	staticMapping(staticMapping)
 {
 	InitMappingObject(actualValue);
 }
@@ -97,22 +93,14 @@ BaseProcessDataMapping::~BaseProcessDataMapping()
 
 void BaseProcessDataMapping::InitMappingObject(std::uint64_t actualValue)
 {
-	std::stringstream valueStr;
-	valueStr << std::hex << std::uppercase << actualValue;
-
-	InitMappingObject(valueStr.str());
+	InitMappingObject(IntToHex(actualValue, 16));
 }
 
 void BaseProcessDataMapping::InitMappingObject(const std::string& actualValue)
 {
-	//Strip prefix
-	std::uint32_t start = 0;
-	if (actualValue.substr(0, 2) == "0x")
-		start = 2;
-
 	//Split into 4 octets pieces
 	std::vector<std::string> splitVector;
-	for (std::uint32_t i = start; i < actualValue.size();)
+	for (std::uint32_t i = 0; i < actualValue.size();)
 	{
 		splitVector.push_back(actualValue.substr(i, 4).insert(0, "0x"));
 		i += 4;
@@ -196,16 +184,6 @@ const std::string BaseProcessDataMapping::ToString(bool addPrefix)
 std::uint64_t BaseProcessDataMapping::GetValue()
 {
 	return HexToInt<uint64_t>(this->ToString(true));
-}
-
-bool BaseProcessDataMapping::GetActive()
-{
-	return this->active;
-}
-
-void BaseProcessDataMapping::SetActive(bool active)
-{
-	this->active = active;
 }
 
 std::uint32_t BaseProcessDataMapping::GetObject()

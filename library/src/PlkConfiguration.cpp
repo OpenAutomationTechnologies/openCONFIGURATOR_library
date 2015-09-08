@@ -36,6 +36,7 @@ using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
 using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
+using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 
 PlkConfiguration::PlkConfiguration() :
 	IBuildConfiguration<BuildConfigurationSetting>(),
@@ -695,9 +696,6 @@ Result PlkConfiguration::DistributeCNLossObjects(const std::map<std::uint8_t, st
 			if (node.second->IsEnabled() == false)
 				continue;
 
-			std::stringstream cnLossObjectStr;
-			cnLossObjectStr << 0x50; //Set default value
-
 			std::shared_ptr<SubObject> lossOfObject;
 			Result res = node.second->GetSubObject(0x1C0B, 0x3, lossOfObject);
 			if (!res.IsSuccessful())
@@ -706,7 +704,7 @@ Result PlkConfiguration::DistributeCNLossObjects(const std::map<std::uint8_t, st
 			if (!lossOfObject->WriteToConfiguration()) //Write default value only if no actualValue exists
 			{
 				//Set every node 0x1C0B / 0x3 actual value
-				res = lossOfObject->SetTypedObjectActualValue(cnLossObjectStr.str());
+				res = lossOfObject->SetTypedObjectActualValue(IntToHex((std::uint16_t) 80, 2, "0x"));
 				if (!res.IsSuccessful())
 					return res; //Mandatory Object
 			}
@@ -717,7 +715,7 @@ Result PlkConfiguration::DistributeCNLossObjects(const std::map<std::uint8_t, st
 				if (!lossOfObject->WriteToConfiguration()) //Write default value only if no actualValue exists
 				{
 					//Set every node 0x1C0C/ 0x3 actual value
-					lossOfObject->SetTypedObjectActualValue(cnLossObjectStr.str());
+					lossOfObject->SetTypedObjectActualValue(IntToHex((std::uint16_t)80, 2, "0x"));
 				}
 			}
 
@@ -727,7 +725,7 @@ Result PlkConfiguration::DistributeCNLossObjects(const std::map<std::uint8_t, st
 				if (!lossOfObject->WriteToConfiguration()) //Write default value only if no actualValue exist
 				{
 					//Set every node 0x1C0D / 0x3 actual value
-					res = lossOfObject->SetTypedObjectActualValue(cnLossObjectStr.str());
+					res = lossOfObject->SetTypedObjectActualValue(IntToHex((std::uint16_t)80, 2, "0x"));
 				}
 			}
 		}

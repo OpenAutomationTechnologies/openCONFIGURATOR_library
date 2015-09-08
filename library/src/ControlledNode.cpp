@@ -332,9 +332,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 		//Set node id for new mapping parameter
 		if (writeNewMappingParameterObject)
 		{
-			std::stringstream convert;
-			convert << fromNode;
-			mappingParameter->SetTypedObjectActualValue(convert.str());
+			mappingParameter->SetTypedObjectActualValue(IntToHex(fromNode, 2, "0x"));
 			mappingParameterFound = true;
 		}
 
@@ -464,10 +462,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 		res = mappingObj->GetSubObject(0, nrOfEntriesObj); //Get Subobject NrOfEntries
 		if (!res.IsSuccessful())
 			return res;
-
-		std::stringstream convert;
-		convert << nrOfEntries - 1;
-		nrOfEntriesObj->SetTypedObjectActualValue(convert.str()); //reduce because of sub index 0
+		nrOfEntriesObj->SetTypedObjectActualValue(IntToHex((std::uint16_t)(nrOfEntries - 1), 2, "0x")); //reduce because of sub index 0
 	}
 
 	return res;
@@ -733,7 +728,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Calcul
 				continue; //Cross traffic does not count to PreqPayloadLimit
 
 			std::uint16_t numberOfIndicesToWrite = 0;
-			auto& nrOfEntriesObj = object.second->GetSubObjectDictionary().at((std::uint8_t) 0); //GetNrOfEntries and only count the valid ones
+			auto& nrOfEntriesObj = object.second->GetSubObjectDictionary().at((std::uint16_t) 0); //GetNrOfEntries and only count the valid ones
 			if (nrOfEntriesObj->WriteToConfiguration())
 				numberOfIndicesToWrite = nrOfEntriesObj->GetTypedActualValue<std::uint16_t>();
 
@@ -757,9 +752,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Calcul
 	}
 	else
 	{
-		std::stringstream convert;
-		convert << preqPayloadLimit;
-		return this->SetSubObjectActualValue(0x1F98, 0x4, convert.str());
+		return this->SetSubObjectActualValue(0x1F98, 0x4, IntToHex(preqPayloadLimit, 4, "0x"));
 	}
 }
 
@@ -771,7 +764,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Calcul
 		if (object.first >= 0x1A00 && object.first < 0x1B00)
 		{
 			std::uint16_t numberOfIndicesToWrite = 0;
-			auto& nrOfEntriesObj = object.second->GetSubObjectDictionary().at((std::uint8_t) 0);
+			auto& nrOfEntriesObj = object.second->GetSubObjectDictionary().at((std::uint16_t) 0);
 			if (nrOfEntriesObj->WriteToConfiguration())
 				numberOfIndicesToWrite = nrOfEntriesObj->GetTypedActualValue<std::uint16_t>(); //GetNrOfEntries and only count the valid ones
 
@@ -794,9 +787,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Calcul
 	}
 	else
 	{
-		std::stringstream convert;
-		convert << presPayloadLimit;
-		return this->SetSubObjectActualValue(0x1F98, 0x5, convert.str());
+		return this->SetSubObjectActualValue(0x1F98, 0x5, IntToHex(presPayloadLimit, 4, "0x"));
 	}
 }
 

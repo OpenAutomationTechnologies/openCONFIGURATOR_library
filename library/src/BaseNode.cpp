@@ -424,7 +424,7 @@ std::uint32_t BaseNode::GetTransmitProcessImageSize()
 	std::uint32_t size = 0;
 	for (auto& transPI : this->transmitProcessImage)
 	{
-		size = size + transPI->GetSize();
+		size += transPI->GetSize();
 	}
 	return size;
 }
@@ -434,7 +434,7 @@ std::uint32_t BaseNode::GetReceiveProcessImageSize()
 	std::uint32_t size = 0;
 	for (auto& recPI : this->receiveProcessImage)
 	{
-		size = size + recPI->GetSize();
+		size += recPI->GetSize();
 	}
 	return size;
 }

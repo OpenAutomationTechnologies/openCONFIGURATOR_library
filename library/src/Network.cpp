@@ -697,7 +697,6 @@ Result Network::SetOperationMode(const std::uint8_t nodeID, const PlkOperationMo
 			default:
 				break;
 		}
-
 	}
 	else
 		return Result(ErrorCode::NODE_CONFIGURATION_ERROR);

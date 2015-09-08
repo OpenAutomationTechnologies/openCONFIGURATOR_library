@@ -141,7 +141,7 @@ void NetProcessImageGenerator::WriteNETProcessImage(const Direction dir, const s
 	}
 }
 
-std::string NetProcessImageGenerator::PrintChannel(const std::string& name, const IEC_Datatype dt, const std::uint32_t, const std::uint32_t, const boost::optional<std::uint32_t>&)
+const std::string NetProcessImageGenerator::PrintChannel(const std::string& name, const IEC_Datatype dt, const std::uint32_t, const std::uint32_t, const boost::optional<std::uint32_t>&)
 {
 	std::stringstream channel;
 	channel << "\t\tpublic " << GetNetDatatypeFromIEC(dt) << " " << name << ";" << std::endl;

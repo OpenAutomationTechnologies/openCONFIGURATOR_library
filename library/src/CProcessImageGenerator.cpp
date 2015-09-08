@@ -67,7 +67,7 @@ const std::string CProcessImageGenerator::Generate(std::uint8_t nodeid, std::sha
 	return this->processImageStream.str();
 }
 
-std::string CProcessImageGenerator::PrintChannel(const std::string& name, const IEC_Datatype, const std::uint32_t size, const std::uint32_t, const boost::optional<std::uint32_t>&)
+const std::string CProcessImageGenerator::PrintChannel(const std::string& name, const IEC_Datatype, const std::uint32_t size, const std::uint32_t, const boost::optional<std::uint32_t>&)
 {
 	std::stringstream channel;
 	channel << "\tunsigned " << name << ":";
@@ -150,9 +150,9 @@ void CProcessImageGenerator::WriteCProcessImage(const Direction dir, const std::
 			std::uint32_t totalSize = piSize;
 			while (totalSize % 32 != 0)
 			{
-				std::stringstream convert;
-				convert << "PADDING_VAR_" << paddingCount;
-				this->processImageStream << PrintChannel(convert.str(), IEC_Datatype::USINT, 8, 0, boost::optional<std::uint32_t>());
+				std::stringstream paddingVarName;
+				paddingVarName << "PADDING_VAR_" << paddingCount;
+				this->processImageStream << PrintChannel(paddingVarName.str(), IEC_Datatype::USINT, 8, 0, boost::optional<std::uint32_t>());
 				paddingCount++;
 				totalSize += 8;
 
