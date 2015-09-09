@@ -162,9 +162,10 @@ namespace IndustrialNetwork
 				const std::string kMsgMappingTypeForPdoInvalid = "(Sub)Index 0x%X/0x%s on node %d cannot be mapped. Wrong PDOMapping attribute '%s' for mapping.";
 				const std::string kMsgAccessTypeForPdoInvalid = "(Sub)Index 0x%X/0x%s on node %d cannot be mapped. Invalid access type '%s' (RPDOs must be writeable, TPDOs readable).";
 				const std::string kMsgPdoOffsetInvalid = "Mapping-Object 0x%X/0x%X on node %d: Mapping offset invalid. Actual: %d bits, expected %d bits.";
+				const std::string kMsgNoNodesConfigured = "Network does not contain any POWERLINK controlled nodes.";
+				const std::string kMsgLowCnPresTimeout = "PResTimeout (%dns) (subIndex 0x1F92/0x%X on MN) of node %d is less than PresMaxLatency (subIndex 0x1F98/0x03 on CN).";
 
 				//Unused
-				const std::string kMsgNoNodesConfigured = "Configuration does not contain any POWERLINK-Nodes.";
 				const std::string kMsgNoControlledNodesConfigured = "Configuration does not contain any POWERLINK-CNs.";
 				const std::string kMsgObjectDictoryEmpty = "Object dictionary of node %d is empty.";
 				const std::string kMsgIndexContainsNoSubIndices = "Index 0x%X of node %d contains no subIndices.";
@@ -184,7 +185,6 @@ namespace IndustrialNetwork
 				const std::string kMsgObjectLimitsInvalid = "Invalid object limits (high limit '%d' < low limit '%d')";
 				const std::string kMsgNodeIndexDescription = "Node %d, Index 0x%X: ";
 				const std::string kMsgNodeSubIndexDescription = "Node %d, (Sub)Index 0x%X/0x%X: ";
-				const std::string kMsgLowCnPresTimeout = "PResTimeout (%dns) (subIndex 0x1F92/0x%X on MN) of node %d is less than PresMaxLatency (subIndex 0x1F98/0x03 on CN).";
 				const std::string kMsgCrossTrafficStationLimitExceeded = "Node %d: No. of cross traffic stations (%d) exceeds limit (%d).";
 				const std::string kMsgPDOTPDOChannelCountExceeded = "Node 240: No. of TPDO-Channels exceeded. Allowed: %d (MN-Feature D_PDO_TPDOChannels_U16), existing: %d.";
 				const std::string kMsgNoActualOrDefaultValue = "Object 0x%X/0x%X on node %d has neither a default value nor an actual value.";
@@ -197,7 +197,7 @@ namespace IndustrialNetwork
 
 				/** \addtogroup apireturn
 				* @{
-				*/				
+				*/
 				/**
 				\brief Represents the return class for the libary.
 				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.

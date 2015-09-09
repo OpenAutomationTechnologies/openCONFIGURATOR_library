@@ -159,8 +159,8 @@ void CProcessImageGenerator::WriteCProcessImage(const Direction dir, const std::
 			}
 		}
 		if (dir == Direction::RX)
-			this->processImageStream << "} PI_OUT" << std::endl << std::endl;
+			this->processImageStream << "} PI_OUT;" << std::endl << std::endl;
 		else if (dir == Direction::TX)
-			this->processImageStream << "} PI_IN" << std::endl << std::endl;
+			this->processImageStream << "} PI_IN;" << std::endl << std::endl;
 	}
 }

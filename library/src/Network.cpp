@@ -787,3 +787,16 @@ Result Network::EnableNode(const std::uint8_t nodeID, bool enable)
 	}
 	return Result();
 }
+
+bool Network::HasControlledNodes()
+{
+	if (this->nodeCollection.empty())
+		return false;
+
+	for (auto& node : this->nodeCollection)
+	{
+		if (std::dynamic_pointer_cast<ControlledNode>(node.second))
+			return true;
+	}
+	return false;
+}

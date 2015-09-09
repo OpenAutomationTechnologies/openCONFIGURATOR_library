@@ -41,13 +41,13 @@ ManagingNode::ManagingNode(std::uint8_t nodeID, const std::string& nodeName) : B
 	dynamicChannelList(std::vector<std::shared_ptr<DynamicChannel>>()),
 	rmnList(std::vector<std::uint16_t>())
 {
-	this->AddNodeAssignement(NodeAssignment::MNT_NODEASSIGN_VALID);
-	this->AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_NODE_EXISTS);
+	//this->AddNodeAssignement(NodeAssignment::MNT_NODEASSIGN_VALID);
+	//this->AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_NODE_EXISTS);
 
-	if (nodeID != 240) //Add assignments for RMNs only
-	{
-		AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_NODE_IS_CN);
-	}
+	//if (nodeID != 240) //Add assignments for RMNs only
+	//{
+		//AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_NODE_IS_CN);
+	//}
 }
 
 ManagingNode::~ManagingNode()
@@ -699,6 +699,11 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::UpdatePr
 
 Result ManagingNode::CheckProcessDataMapping(const std::shared_ptr<BaseNode>& node, const std::shared_ptr<BaseProcessDataMapping>& mnMappingObject, Direction dir)
 {
+	//Add node id prefix to the PI name to be unique
+	std::stringstream nodeIdPrefix;
+	if ((std::uint16_t) node->GetNodeId() != 240)
+		nodeIdPrefix << "CN" << IntToHex<std::uint16_t>((std::uint16_t) node->GetNodeId(), 2) << ".";
+
 	std::uint32_t size = mnMappingObject->GetMappingLength();
 
 	//Correct offset
@@ -724,7 +729,7 @@ Result ManagingNode::CheckProcessDataMapping(const std::shared_ptr<BaseNode>& no
 			if (fillSize < size) // as long as size is not reached
 			{
 				std::shared_ptr<BaseProcessImageObject> mnPiObj = std::make_shared<BaseProcessImageObject>(
-				            cnPIObject->GetName(),
+				            nodeIdPrefix.str().substr(0, 4) == cnPIObject->GetName().substr(0, 4) ? cnPIObject->GetName() : nodeIdPrefix.str() + cnPIObject->GetName(),
 				            cnPIObject->GetDataType(),
 				            cnPIObject->GetPiOffset(),
 				            cnPIObject->GetBitOffset().is_initialized() == true ? cnPIObject->GetBitOffset().get() : 0,

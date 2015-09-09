@@ -273,6 +273,13 @@ Result PlkConfiguration::DistributeCycleTime(const std::map<std::uint8_t, std::s
 	{
 		//Convert to cycle time to std::string
 		cycleTimeStr << cycleTimeObject->GetTypedActualValue<std::uint32_t>();
+
+		//actual == default cycle time force MN object
+		if (cycleTimeObject->WriteToConfiguration() == false)
+			cycleTimeObject->SetForceToCDC(true);
+		else
+			cycleTimeObject->SetForceToCDC(false);
+
 	}
 	//0x1006 has to be written so return error if not
 	else
@@ -529,20 +536,41 @@ Result PlkConfiguration::DistributePResTimeOut(const std::map<std::uint8_t, std:
 		if (node.second->IsEnabled() == false)
 			continue;
 
-		std::shared_ptr<SubObject> presTimoutCNObj;
-		Result res = node.second->GetSubObject(0x1F98, 0x3, presTimoutCNObj);
+		std::shared_ptr<SubObject> presMaxLatencyCNObj;
+		Result res = node.second->GetSubObject(0x1F98, 0x3, presMaxLatencyCNObj);
 		if (!res.IsSuccessful())
 			return res;
 
-		std::stringstream presTimoutActualValue;
-		if (presTimoutCNObj->WriteToConfiguration())
-			presTimoutActualValue << (presTimoutCNObj->GetTypedActualValue<std::uint32_t>());
+		std::shared_ptr<SubObject> presTimoutMNObj;
+		res = mn->GetSubObject(0x1F92, (std::uint32_t) node.first, presTimoutMNObj);
+		if (!res.IsSuccessful())
+			return res;
+
+		std::uint32_t presMaxLatencyActualValue = 0;
+		if (presMaxLatencyCNObj->WriteToConfiguration())
+			presMaxLatencyActualValue = presMaxLatencyCNObj->GetTypedActualValue<std::uint32_t>();
+		else if (presMaxLatencyCNObj->HasDefaultValue())
+			presMaxLatencyActualValue = presMaxLatencyCNObj->GetTypedDefaultValue<std::uint32_t>();
+
+		std::uint32_t presTimoutActualValue = 0;
+		if (presTimoutMNObj->WriteToConfiguration())
+			presTimoutActualValue = presTimoutMNObj->GetTypedActualValue<std::uint32_t>();
 		else
-			continue;
+		{
+			presTimoutActualValue = 25000 + presMaxLatencyActualValue; //Default value
+			presTimoutMNObj->SetTypedObjectActualValue(IntToHex(presTimoutActualValue, 8, "0x"));
+		}
 
-		res = mn->SetSubObjectActualValue(0x1F92, node.first, presTimoutActualValue.str());
-		if (!res.IsSuccessful())
-			return res;
+		if (presTimoutActualValue < presMaxLatencyActualValue)
+		{
+			boost::format formatter(kMsgLowCnPresTimeout);
+			formatter
+			% (std::uint32_t) presTimoutActualValue
+			% (std::uint32_t) node.first
+			% (std::uint32_t) node.first;
+			LOG_FATAL() << formatter.str();
+			return Result(ErrorCode::LOW_CN_PRES_TIMEOUT, formatter.str());
+		}
 
 		for (auto& rmn : nodeCollection)
 		{
@@ -551,7 +579,7 @@ Result PlkConfiguration::DistributePResTimeOut(const std::map<std::uint8_t, std:
 
 			if (std::dynamic_pointer_cast<ManagingNode>(rmn.second))
 			{
-				res = rmn.second->SetSubObjectActualValue(0x1F92, node.first, presTimoutActualValue.str());
+				res = rmn.second->SetSubObjectActualValue(0x1F92, node.first, IntToHex(presTimoutActualValue, 8, "0x"));
 				if (!res.IsSuccessful())
 					return res;
 			}

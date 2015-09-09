@@ -206,6 +206,8 @@ namespace IndustrialNetwork
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result EnableNode(const std::uint8_t nodeID, bool enable);
 
+						bool HasControlledNodes();
+
 						/**
 						* Getter & Setter
 						*/

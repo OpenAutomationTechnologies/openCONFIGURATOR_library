@@ -220,7 +220,7 @@ Result BaseNode::SetObjectActualValue(std::uint32_t objectId, const std::string&
 		formatter
 		% objectId
 		% (std::uint32_t) nodeId;
-		LOG_FATAL() << formatter.str();
+		//LOG_FATAL() << formatter.str();
 		return Result(ErrorCode::OBJECT_DOES_NOT_EXIST, formatter.str());
 	}
 	if (iter->second->GetForceToCDC())
@@ -335,7 +335,7 @@ Result BaseNode::SetSubObjectActualValue(std::uint32_t objectId, std::uint32_t s
 		formatter
 		% objectId
 		% (std::uint32_t) nodeId;
-		LOG_FATAL() << formatter.str();
+		//LOG_FATAL() << formatter.str();
 		return Result(ErrorCode::OBJECT_DOES_NOT_EXIST, formatter.str());
 	}
 

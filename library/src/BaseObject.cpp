@@ -1446,7 +1446,8 @@ namespace IndustrialNetwork
 					if ((this->forceToCDC == true //Object forced
 					        || this->actualValueNotDefaultValue == true) //Actual value != default value
 					        && (this->GetAccessType() != AccessType::COND //correct AccessType
-					            && this->GetAccessType() != AccessType::CONST))
+					            && this->GetAccessType() != AccessType::CONST
+					            && this->GetAccessType() != AccessType::RO))
 						return true;
 					else
 						return false;

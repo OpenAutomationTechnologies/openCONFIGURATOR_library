@@ -169,8 +169,15 @@ Result OpenConfiguratorCore::BuildConfiguration(const std::string& networkId, st
 	std::stringstream config;
 	std::stringstream hexOutput;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
-	if (res.IsSuccessful())
-		res = networkPtr->GenerateConfiguration();
+	if (!res.IsSuccessful())
+		return res;
+
+	if (!networkPtr->HasControlledNodes())
+	{
+		return Result(ErrorCode::NO_CONTROLLED_NODES_CONFIGURED, kMsgNoNodesConfigured);
+	}
+
+	res = networkPtr->GenerateConfiguration();
 	if (res.IsSuccessful())
 		res = ConfigurationGenerator::GetInstance().GenerateNetworkConfiguration(networkPtr, config, hexOutput);
 
@@ -184,8 +191,15 @@ Result OpenConfiguratorCore::BuildXMLProcessImage(const std::string& networkId, 
 
 	std::shared_ptr<Network> networkPtr;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
-	if (res.IsSuccessful())
-		res = networkPtr->GenerateConfiguration();
+	if (!res.IsSuccessful())
+		return res;
+
+	if (!networkPtr->HasControlledNodes())
+	{
+		return Result(ErrorCode::NO_CONTROLLED_NODES_CONFIGURED, kMsgNoNodesConfigured);
+	}
+
+	res = networkPtr->GenerateConfiguration();
 	if (res.IsSuccessful())
 		processImageOutput = XmlProcessImageGenerator::GetInstance().Generate(nodeid, networkPtr);
 
@@ -196,8 +210,15 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result OpenConfiguratorCore::
 {
 	std::shared_ptr<Network> networkPtr;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
-	if (res.IsSuccessful())
-		res = networkPtr->GenerateConfiguration();
+	if (!res.IsSuccessful())
+		return res;
+
+	if (!networkPtr->HasControlledNodes())
+	{
+		return Result(ErrorCode::NO_CONTROLLED_NODES_CONFIGURED, kMsgNoNodesConfigured);
+	}
+
+	res = networkPtr->GenerateConfiguration();
 	if (res.IsSuccessful())
 		processImageOutput = NetProcessImageGenerator::GetInstance().Generate(nodeid, networkPtr);
 
@@ -208,8 +229,15 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result OpenConfiguratorCore::
 {
 	std::shared_ptr<Network> networkPtr;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
-	if (res.IsSuccessful())
-		res = networkPtr->GenerateConfiguration();
+	if (!res.IsSuccessful())
+		return res;
+
+	if (!networkPtr->HasControlledNodes())
+	{
+		return Result(ErrorCode::NO_CONTROLLED_NODES_CONFIGURED, kMsgNoNodesConfigured);
+	}
+
+	res = networkPtr->GenerateConfiguration();
 	if (res.IsSuccessful())
 		processImageOutput = CProcessImageGenerator::GetInstance().Generate(nodeid, networkPtr);
 
@@ -944,10 +972,14 @@ Result OpenConfiguratorCore::CreateDynamicChannel(const std::string& networkId, 
 		return res;
 
 	auto mnPtr = std::dynamic_pointer_cast<ManagingNode>(node);
-	auto ptr = std::shared_ptr<DynamicChannel>(new DynamicChannel(dataType, accessType, startIndex, endIndex, maxNumber, addressOffset, bitAlignment));
-
-	mnPtr->AddDynamicChannel(ptr);
-	return res;
+	if (mnPtr)
+	{
+		auto ptr = std::shared_ptr<DynamicChannel>(new DynamicChannel(dataType, accessType, startIndex, endIndex, maxNumber, addressOffset, bitAlignment));
+		mnPtr->AddDynamicChannel(ptr);
+		return res;
+	}
+	else
+		return Result(ErrorCode::NODE_IS_NOT_MANAGING_NODE);
 }
 
 Result OpenConfiguratorCore::SetObjectActualValue(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, const std::string& actualValue, bool force)
@@ -1235,7 +1267,7 @@ Result OpenConfiguratorCore::SetPResTimeOut(const std::string& networkId, const 
 
 	auto ptr = std::dynamic_pointer_cast<ControlledNode>(node);
 	if (ptr)
-		res = ptr->ForceSubObject(0x1F98, 0x3, false, IntToHex(presTimeout, 8, "0x"));
+		res = ptr->ForceSubObject(0x1F92, (std::uint32_t) nodeId, false, IntToHex(presTimeout, 8, "0x"));
 	else
 	{
 		boost::format formatter(kMsgNonControlledNode);
@@ -1519,40 +1551,30 @@ Result OpenConfiguratorCore::GetPResTimeOut(const std::string& networkId, const 
 	if (!res.IsSuccessful())
 		return res;
 
-	std::shared_ptr<BaseNode> nodePtr;
-	res = networkPtr->GetBaseNode(nodeId, nodePtr);
+	std::shared_ptr<ManagingNode> nodePtr;
+	res = networkPtr->GetManagingNode(nodePtr);
 	if (!res.IsSuccessful())
 		return res;
 
-	auto ptr = std::dynamic_pointer_cast<ControlledNode>(nodePtr);
-	if (ptr)
-	{
-		std::shared_ptr<SubObject> subobject;
-		res = nodePtr->GetSubObject(0x1F98, 0x3, subobject);
-		if (!res.IsSuccessful())
-			return res;
+	std::shared_ptr<SubObject> subobject;
+	res = nodePtr->GetSubObject(0x1F92, (std::uint32_t) nodeId, subobject);
+	if (!res.IsSuccessful())
+		return res;
 
-		if (subobject->WriteToConfiguration())
-			presTimeout = subobject->GetTypedActualValue<std::uint32_t>();
-		else
-		{
-			boost::format formatter(kMsgSubObjectNoActualValue);
-			formatter
-			% (std::uint32_t) 0x1F98
-			% (std::uint32_t) 0x3
-			% (std::uint32_t) 240;
-			LOG_FATAL() << formatter.str();
-			return Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, formatter.str());
-		}
-	}
+	if (subobject->WriteToConfiguration())
+		presTimeout = subobject->GetTypedActualValue<std::uint32_t>();
 	else
 	{
-		boost::format formatter(kMsgNonControlledNode);
+		boost::format formatter(kMsgSubObjectNoActualValue);
 		formatter
-		% nodeId;
+		% (std::uint32_t) 0x1F92
+		% (std::uint32_t) nodeId
+		% (std::uint32_t) 240;
 		LOG_FATAL() << formatter.str();
-		return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE, formatter.str());
+		return Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, formatter.str());
 	}
+
+
 	return res;
 }
 

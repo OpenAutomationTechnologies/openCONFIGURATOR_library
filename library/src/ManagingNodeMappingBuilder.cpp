@@ -149,7 +149,7 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 				std::shared_ptr<DynamicChannel> dynChannel;
 				res = mn->GetDynamicChannel(foundObject->GetDataType().get(), dir, dynChannel);
 				if (!res.IsSuccessful())
-					continue; //return res;
+					return res;
 
 				//Get first index of dynamic channel
 				index = dynChannel->GetStartIndex();

@@ -41,10 +41,10 @@ ControlledNode::ControlledNode(std::uint8_t nodeID, const std::string& nodeName)
 	operationMode(PlkOperationMode::NORMAL),
 	nodeDataPresMnOffset(0)
 {
-	this->AddNodeAssignement(NodeAssignment::MNT_NODEASSIGN_VALID);
-	this->AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_NODE_EXISTS);
-	this->AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_NODE_IS_CN);
-	this->AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_START_CN);
+	//this->AddNodeAssignement(NodeAssignment::MNT_NODEASSIGN_VALID);
+	//this->AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_NODE_EXISTS);
+	//this->AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_NODE_IS_CN);
+	//this->AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_START_CN);
 }
 
 ControlledNode::~ControlledNode()
