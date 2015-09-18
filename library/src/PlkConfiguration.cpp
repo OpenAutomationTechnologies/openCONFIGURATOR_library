@@ -168,6 +168,9 @@ Result PlkConfiguration::DistributeDateTimeStamps(const std::map<std::uint8_t, s
 	// Create milliseconds since midnight
 	time_t tnow = std::chrono::system_clock::to_time_t(now);
 	tm* date = localtime(&tnow); // today
+	if(date == NULL)
+		return Result(ErrorCode::ARGUMENT_INVALID_NULL);
+
 	date->tm_hour = 0; // set to midnight
 	date->tm_min = 0;
 	date->tm_sec = 0;

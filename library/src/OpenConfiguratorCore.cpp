@@ -304,7 +304,11 @@ Result OpenConfiguratorCore::GetControlledNode(const std::string& networkId, con
 		res = network->GetBaseNode(nodeID, nodePtr);
 		if (res.IsSuccessful())
 		{
-			node = *std::dynamic_pointer_cast<ControlledNode>(nodePtr).get();
+			std::shared_ptr<ControlledNode> cn = std::dynamic_pointer_cast<ControlledNode>(nodePtr);
+			if (cn)
+				node = *cn.get();
+			else
+				return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE);
 		}
 	}
 	return res;

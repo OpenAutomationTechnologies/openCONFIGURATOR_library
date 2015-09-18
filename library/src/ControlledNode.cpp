@@ -462,6 +462,11 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 		res = mappingObj->GetSubObject(0, nrOfEntriesObj); //Get Subobject NrOfEntries
 		if (!res.IsSuccessful())
 			return res;
+
+		//this should not happen because a mapping object has to have at least a NrOfEntries subindex
+		if (nrOfEntries == 0)
+			nrOfEntries++;
+
 		nrOfEntriesObj->SetTypedObjectActualValue(IntToHex((std::uint16_t)(nrOfEntries - 1), 2, "0x")); //reduce because of sub index 0
 	}
 
