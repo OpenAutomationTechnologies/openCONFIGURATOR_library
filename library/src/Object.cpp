@@ -83,7 +83,7 @@ namespace IndustrialNetwork
 					return Result();
 				}
 
-				Result Object::GetSubObject(std::uint32_t subObjectId, std::shared_ptr<SubObject>& ref)
+				Result Object::GetSubObject(std::uint32_t subObjectId, std::shared_ptr<SubObject>& ref, bool enableLog)
 				{
 					auto iter = this->subIndexCollection.find(subObjectId);
 					if (iter == this->subIndexCollection.end())
@@ -94,7 +94,10 @@ namespace IndustrialNetwork
 						% this->GetObjectId()
 						% subObjectId
 						% (std::uint32_t) this->GetContainingNode();
-						LOG_FATAL() << formatter.str();
+						if (enableLog)
+						{
+							LOG_FATAL() << formatter.str();
+						}
 						return Result(ErrorCode::SUBOBJECT_DOES_NOT_EXIST, formatter.str());
 					}
 					ref = iter->second;

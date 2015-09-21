@@ -71,7 +71,7 @@ Result ControlledNode::AddNodeAssignement(NodeAssignment assign)
 		formatter
 		% (std::uint32_t) assign
 		% (std::uint32_t) this->GetNodeId();
-		LOG_WARN() << formatter.str();
+		LOG_INFO() << formatter.str();
 		return Result();
 	}
 	return Result();
@@ -291,7 +291,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 		{
 			//Get SubObject 0x1 "NodeID"
 			std::shared_ptr<SubObject> subObj;
-			Result res = this->GetSubObject(mappingParameterIndex, 0x1, subObj);
+			Result res = this->GetSubObject(mappingParameterIndex, 0x1, subObj, false);
 			if (!res.IsSuccessful())
 				continue;
 
@@ -805,7 +805,7 @@ Result ControlledNode::GetDataObjectFromMapping(const std::shared_ptr<BaseProces
 	std::shared_ptr<SubObject> dataSubObject;
 	if (dataSubindex == 0)
 	{
-		Result res = this->GetSubObject(dataIndex, dataSubindex, dataSubObject);
+		Result res = this->GetSubObject(dataIndex, dataSubindex, dataSubObject, false);
 		if (!res.IsSuccessful())
 		{
 			res = this->GetObject(dataIndex, dataObject);
@@ -837,7 +837,8 @@ Result ControlledNode::GetDataObjectFromMapping(const std::shared_ptr<BaseProces
 			LOG_FATAL() << formatter.str();
 			return Result(ErrorCode::MAPPED_SUBOBJECT_DOES_NOT_EXIST, formatter.str());
 		}
-		returnObject = dataSubObject;
+		else
+			returnObject = dataSubObject;
 	}
 	return Result();
 }
@@ -1154,7 +1155,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 	//Check that mapped object exist
 	if (dataSubindex == 0)
 	{
-		Result res = this->GetSubObject(dataIndex, dataSubindex, dataSubObject);
+		Result res = this->GetSubObject(dataIndex, dataSubindex, dataSubObject, false);
 		if (!res.IsSuccessful())
 		{
 			res = this->GetObject(dataIndex, dataObject);

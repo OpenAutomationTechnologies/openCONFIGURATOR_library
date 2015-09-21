@@ -156,9 +156,6 @@ namespace IndustrialNetwork
 				{
 					try
 					{
-						logging::register_formatter_factory("Scope", boost::make_shared<scope_formatter_factory>());
-
-						logging::core::get()->add_global_attribute("Scope", logging::attributes::named_scope());
 						logging::add_common_attributes();
 
 						logging::add_file_log
@@ -186,7 +183,7 @@ namespace IndustrialNetwork
 						            << "!MESSAGE " << expr::smessage << std::endl
 						        ),
 						    keywords::auto_flush = "true",
-						    keywords::filter = logging::trivial::severity > logging::trivial::info
+						    keywords::filter = logging::trivial::severity >= logging::trivial::warning
 
 						);
 

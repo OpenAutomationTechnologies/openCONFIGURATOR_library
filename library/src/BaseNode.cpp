@@ -156,7 +156,7 @@ Result BaseNode::AddSubObject(std::uint32_t objectId, std::shared_ptr<SubObject>
 	return this->objectDictionary.find(objectId)->second->AddSubobject(objRef);
 }
 
-Result BaseNode::ForceObject(std::uint32_t objectId, bool force, const std::string& actualValue)
+Result BaseNode::ForceObject(std::uint32_t objectId, bool force, const std::string& actualValue, bool enableLog)
 {
 	auto iter = this->objectDictionary.find(objectId);
 	if (iter == this->objectDictionary.end())
@@ -166,7 +166,10 @@ Result BaseNode::ForceObject(std::uint32_t objectId, bool force, const std::stri
 		formatter
 		% objectId
 		% (std::uint32_t) nodeId;
-		LOG_FATAL() << formatter.str();
+		if (enableLog)
+		{
+			LOG_FATAL() << formatter.str();
+		}
 		return Result(ErrorCode::OBJECT_DOES_NOT_EXIST, formatter.str());
 	}
 
@@ -220,7 +223,7 @@ Result BaseNode::SetObjectActualValue(std::uint32_t objectId, const std::string&
 		formatter
 		% objectId
 		% (std::uint32_t) nodeId;
-		//LOG_FATAL() << formatter.str();
+		LOG_FATAL() << formatter.str();
 		return Result(ErrorCode::OBJECT_DOES_NOT_EXIST, formatter.str());
 	}
 	if (iter->second->GetForceToCDC())
@@ -257,7 +260,7 @@ Result BaseNode::SetObjectActualValue(std::uint32_t objectId, const std::string&
 	return Result();
 }
 
-Result BaseNode::GetObject(std::uint32_t objectId, std::shared_ptr<Object>& objRef)
+Result BaseNode::GetObject(std::uint32_t objectId, std::shared_ptr<Object>& objRef, bool enableLog)
 {
 	auto iter = this->objectDictionary.find(objectId);
 	if (iter == this->objectDictionary.end())
@@ -267,14 +270,17 @@ Result BaseNode::GetObject(std::uint32_t objectId, std::shared_ptr<Object>& objR
 		formatter
 		% objectId
 		% (uint32_t) nodeId;
-		LOG_FATAL() << formatter.str();
+		if (enableLog)
+		{
+			LOG_FATAL() << formatter.str();
+		}
 		return Result(ErrorCode::OBJECT_DOES_NOT_EXIST, formatter.str());
 	}
 	objRef = iter->second;
 	return Result();
 }
 
-Result BaseNode::ForceSubObject(std::uint32_t objectId, std::uint32_t subObjectId, bool force, const std::string& actualValue)
+Result BaseNode::ForceSubObject(std::uint32_t objectId, std::uint32_t subObjectId, bool force, const std::string& actualValue, bool enableLog)
 {
 	auto iter = this->objectDictionary.find(objectId);
 	if (iter == this->objectDictionary.end())
@@ -284,12 +290,15 @@ Result BaseNode::ForceSubObject(std::uint32_t objectId, std::uint32_t subObjectI
 		formatter
 		% objectId
 		% (std::uint32_t) nodeId;
-		LOG_FATAL() << formatter.str();
+		if (enableLog)
+		{
+			LOG_FATAL() << formatter.str();
+		}
 		return Result(ErrorCode::OBJECT_DOES_NOT_EXIST, formatter.str());
 	}
 
 	std::shared_ptr<SubObject> subObject;
-	Result res = iter->second->GetSubObject(subObjectId, subObject);
+	Result res = iter->second->GetSubObject(subObjectId, subObject, enableLog);
 	if (res.IsSuccessful())
 	{
 		subObject->SetForceToCDC(force);
@@ -335,7 +344,7 @@ Result BaseNode::SetSubObjectActualValue(std::uint32_t objectId, std::uint32_t s
 		formatter
 		% objectId
 		% (std::uint32_t) nodeId;
-		//LOG_FATAL() << formatter.str();
+		LOG_FATAL() << formatter.str();
 		return Result(ErrorCode::OBJECT_DOES_NOT_EXIST, formatter.str());
 	}
 
@@ -378,7 +387,7 @@ Result BaseNode::SetSubObjectActualValue(std::uint32_t objectId, std::uint32_t s
 	return res;
 }
 
-Result BaseNode::GetSubObject(std::uint32_t objectId, std::uint32_t subObjectId, std::shared_ptr<SubObject>& subObjRef)
+Result BaseNode::GetSubObject(std::uint32_t objectId, std::uint32_t subObjectId, std::shared_ptr<SubObject>& subObjRef, bool enableLog)
 {
 	auto iter = this->objectDictionary.find(objectId);
 	if (iter == this->objectDictionary.end())
@@ -388,10 +397,13 @@ Result BaseNode::GetSubObject(std::uint32_t objectId, std::uint32_t subObjectId,
 		formatter
 		% objectId
 		% (std::uint32_t) nodeId;
-		LOG_FATAL() << formatter.str();
+		if (enableLog)
+		{
+			LOG_FATAL() << formatter.str();
+		}
 		return Result(ErrorCode::OBJECT_DOES_NOT_EXIST, formatter.str());
 	}
-	return iter->second->GetSubObject(subObjectId, subObjRef);
+	return iter->second->GetSubObject(subObjectId, subObjRef, enableLog);
 }
 
 bool BaseNode::IsEnabled()

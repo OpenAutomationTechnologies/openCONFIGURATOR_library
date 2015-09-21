@@ -168,7 +168,7 @@ Result PlkConfiguration::DistributeDateTimeStamps(const std::map<std::uint8_t, s
 	// Create milliseconds since midnight
 	time_t tnow = std::chrono::system_clock::to_time_t(now);
 	tm* date = localtime(&tnow); // today
-	if(date == NULL)
+	if (date == NULL)
 		return Result(ErrorCode::ARGUMENT_INVALID_NULL);
 
 	date->tm_hour = 0; // set to midnight
@@ -397,8 +397,8 @@ Result PlkConfiguration::DistributePrescaler(const std::map<std::uint8_t, std::s
 	auto& mn = nodeCollection.at(240);
 	std::shared_ptr<SubObject> prescalerObject;
 
-	//Get Cycle Time object
-	Result res = mn->GetSubObject(0x1F98, 0x9, prescalerObject);
+	//Get Prescaler object
+	Result res = mn->GetSubObject(0x1F98, 0x9, prescalerObject, false);
 	if (!res.IsSuccessful())
 		return Result();
 
@@ -419,10 +419,15 @@ Result PlkConfiguration::DistributePrescaler(const std::map<std::uint8_t, std::s
 
 		if (node.first != 240)
 		{
+			std::shared_ptr<SubObject> cnPrescalerObject;
+			Result res = node.second->GetSubObject(0x1F98, 0x9, cnPrescalerObject, false);
+			if (!res.IsSuccessful())
+				continue;
+
 			//Set every node 0x1F98 / 0x9 actual value to prescaler if existing
-			res = node.second->SetSubObjectActualValue(0x1F98, 0x9, prescalerStr.str());
-			if (!res.IsSuccessful() && res.GetErrorType() != ErrorCode::SUBOBJECT_DOES_NOT_EXIST)
-				return res; //If error occurs during set of prescaler return
+			res = cnPrescalerObject->SetTypedObjectActualValue(prescalerStr.str());
+			if (!res.IsSuccessful())
+				return res;
 		}
 	}
 	return Result();
@@ -500,7 +505,7 @@ Result PlkConfiguration::DistributeSDOCmdLayerTimeout(const std::map<uint8_t, st
 	std::shared_ptr<Object> sdoCmdLayerTimeoutObject;
 
 	//Get CmdLayerTimeout object
-	Result res = mn->GetObject(0x1301, sdoCmdLayerTimeoutObject);
+	Result res = mn->GetObject(0x1301, sdoCmdLayerTimeoutObject, false);
 	if (!res.IsSuccessful())
 		return Result();
 
@@ -740,23 +745,23 @@ Result PlkConfiguration::DistributeCNLossObjects(const std::map<std::uint8_t, st
 					return res; //Mandatory Object
 			}
 
-			res = node.second->GetSubObject(0x1C0C, 0x3, lossOfObject);
+			res = node.second->GetSubObject(0x1C0C, 0x3, lossOfObject, false);
 			if (res.IsSuccessful()) //Not mandatory ignore error
 			{
 				if (!lossOfObject->WriteToConfiguration()) //Write default value only if no actualValue exists
 				{
 					//Set every node 0x1C0C/ 0x3 actual value
-					lossOfObject->SetTypedObjectActualValue(IntToHex((std::uint16_t)80, 2, "0x"));
+					lossOfObject->SetTypedObjectActualValue(IntToHex((std::uint16_t) 80, 2, "0x"));
 				}
 			}
 
-			res = node.second->GetSubObject(0x1C0d, 0x3, lossOfObject);
+			res = node.second->GetSubObject(0x1C0d, 0x3, lossOfObject, false);
 			if (res.IsSuccessful()) //Not mandatoy ignore error
 			{
 				if (!lossOfObject->WriteToConfiguration()) //Write default value only if no actualValue exist
 				{
 					//Set every node 0x1C0D / 0x3 actual value
-					res = lossOfObject->SetTypedObjectActualValue(IntToHex((std::uint16_t)80, 2, "0x"));
+					res = lossOfObject->SetTypedObjectActualValue(IntToHex((std::uint16_t) 80, 2, "0x"));
 				}
 			}
 		}

@@ -97,7 +97,7 @@ Result ManagingNode::AddNodeAssignement(NodeAssignment assign)
 					formatter
 					% (std::uint32_t) assign
 					% (std::uint32_t) this->GetNodeId();
-					LOG_WARN() << formatter.str();
+					LOG_INFO() << formatter.str();
 					return Result();
 				}
 				break;

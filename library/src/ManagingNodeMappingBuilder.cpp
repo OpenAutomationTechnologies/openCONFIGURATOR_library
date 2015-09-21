@@ -364,7 +364,7 @@ Result ManagingNodeMappingBuilder::FindMappedObject(const std::shared_ptr<BaseNo
 	if (dataSubindex == 0) //Can be either subindex 0 or object
 	{
 		//Check if subindex 0 exist
-		Result res = node->GetSubObject(dataIndex, dataSubindex, dataSubObject);
+		Result res = node->GetSubObject(dataIndex, dataSubindex, dataSubObject, false);
 		if (!res.IsSuccessful())
 		{
 			//Check if object exist
