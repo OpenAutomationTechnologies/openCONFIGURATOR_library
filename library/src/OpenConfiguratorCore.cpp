@@ -57,6 +57,11 @@ Result OpenConfiguratorCore::InitLoggingConfiguration(const std::string& configu
 	return ProjectManager::GetInstance().InitLoggingConfiguration(configuration);
 }
 
+Result OpenConfiguratorCore::InitEclipseLoggingPath(const std::string& loggingPath)
+{
+	return ProjectManager::GetInstance().InitEclipseLoggingConfiguration(loggingPath);
+}
+
 Result OpenConfiguratorCore::GetSupportedSettingIds(std::vector<std::string>& supportedSettings)
 {
 	supportedSettings = ProjectManager::GetInstance().GetSupportedSettingIds();

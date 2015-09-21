@@ -105,6 +105,7 @@ namespace IndustrialNetwork
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result InitLoggingConfiguration(const std::string& configuration);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result InitEclipseLoggingPath(const std::string& loggingPath);
 						/** @} */
 
 						/** \addtogroup network

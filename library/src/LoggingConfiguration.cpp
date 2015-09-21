@@ -34,6 +34,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 
 namespace logging = boost::log;
+namespace src = boost::log::sources;
+namespace expr = boost::log::expressions;
+namespace sinks = boost::log::sinks;
+namespace attrs = boost::log::attributes;
+namespace keywords = boost::log::keywords;
 
 namespace IndustrialNetwork
 {
@@ -43,6 +48,9 @@ namespace IndustrialNetwork
 		{
 			namespace CoreConfiguration
 			{
+
+				BOOST_LOG_ATTRIBUTE_KEYWORD(timestamp, "TimeStamp", boost::posix_time::ptime)
+
 				/**
 				\brief	Custom formatter for the boost.log "Scope" attribute.
 
@@ -133,6 +141,54 @@ namespace IndustrialNetwork
 
 						logging::core::get()->add_global_attribute("Scope", logging::attributes::named_scope());
 						logging::add_common_attributes();
+
+						sev_logger::get();
+						return Result();
+					}
+					catch (const boost::exception& ex)
+					{
+						LOG_FATAL() << boost::diagnostic_information(ex);
+						return Result(ErrorCode::UNHANDLED_EXCEPTION, boost::diagnostic_information(ex));
+					}
+				}
+
+				Result LoggingConfiguration::InitEclipseConfiguration(const std::string& loggingPath)
+				{
+					try
+					{
+						logging::register_formatter_factory("Scope", boost::make_shared<scope_formatter_factory>());
+
+						logging::core::get()->add_global_attribute("Scope", logging::attributes::named_scope());
+						logging::add_common_attributes();
+
+						logging::add_file_log
+						(
+						    keywords::file_name = loggingPath + "org.epsg.openconfigurator.%N.log",
+						    keywords::format =
+						        (
+						            expr::stream
+						            << "!ENTRY org.epsg.openconfigurator.core "
+						            << expr::if_(logging::trivial::severity == logging::trivial::info)
+						            [
+						                expr::stream << "1"
+						            ]
+						            << expr::if_(logging::trivial::severity == logging::trivial::warning)
+						            [
+						                expr::stream << "2"
+						            ]
+						            << expr::if_(logging::trivial::severity == logging::trivial::fatal)
+						            [
+						                expr::stream << "4"
+						            ]
+						            << " 0 "
+						            << expr::format_date_time(timestamp, "%Y-%m-%d %H:%M:%S.%f")
+						            << std::endl
+						            << "!MESSAGE " << expr::smessage << std::endl
+						        ),
+						    keywords::auto_flush = "true",
+						    keywords::filter = logging::trivial::severity > logging::trivial::info
+
+						);
 
 						sev_logger::get();
 						return Result();

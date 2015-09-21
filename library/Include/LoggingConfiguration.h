@@ -49,6 +49,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <boost/log/utility/setup/filter_parser.hpp>
 #include <boost/log/sources/global_logger_storage.hpp>
 #include <boost/exception/diagnostic_information.hpp>
+#include <boost/date_time/posix_time/posix_time_types.hpp>
+#include <boost/log/support/date_time.hpp>
+#include <boost/log/expressions.hpp>
+#include <boost/log/utility/setup/file.hpp>
 
 #ifdef _MSC_VER
 #pragma warning(pop) // Restore previous warning state
@@ -82,6 +86,8 @@ namespace IndustrialNetwork
 						\param[in] configuration Logging configuration.
 						*/
 						static IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result InitConfiguration(const std::string& configuration);
+
+						static IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result InitEclipseConfiguration(const std::string& loggingPath);
 				};
 
 				BOOST_LOG_INLINE_GLOBAL_LOGGER_DEFAULT(sev_logger, boost::log::sources::severity_logger_mt<boost::log::trivial::severity_level>)

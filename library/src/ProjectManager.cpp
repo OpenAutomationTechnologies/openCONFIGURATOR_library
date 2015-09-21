@@ -146,6 +146,20 @@ Result ProjectManager::InitLoggingConfiguration(const std::string& configuration
 	return res;
 }
 
+Result ProjectManager::InitEclipseLoggingConfiguration(const std::string& loggingPath)
+{
+	Result res = LoggingConfiguration::InitEclipseConfiguration(loggingPath);
+	if (res.IsSuccessful())
+	{
+		//Log info logging initialised
+		boost::format formatter(kMsgLoggingInitialised);
+		formatter
+		% loggingPath;
+		LOG_INFO() << formatter.str();
+	}
+	return res;
+}
+
 std::vector<std::string> ProjectManager::GetNetworkIds()
 {
 	std::vector<std::string> returnVec;

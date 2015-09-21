@@ -114,6 +114,7 @@ namespace IndustrialNetwork
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result InitLoggingConfiguration(const std::string& configuration);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result InitEclipseLoggingConfiguration(const std::string& loggingPath);
 
 						/**
 						\brief Returns a std::vector including all the existing network ids.
