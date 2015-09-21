@@ -185,7 +185,8 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 		if (dir == Direction::RX)
 		{
 			if (objToMap->GetPDOMapping().get() != PDOMapping::RPDO
-			        && objToMap->GetPDOMapping().get() != PDOMapping::OPTIONAL)
+			        && objToMap->GetPDOMapping().get() != PDOMapping::OPTIONAL
+			        && objToMap->GetPDOMapping().get() != PDOMapping::DEFAULT)
 			{
 				boost::format formatter(kMsgMappingTypeForPdoInvalid);
 				formatter
@@ -200,7 +201,8 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 		else if (dir == Direction::TX)
 		{
 			if (objToMap->GetPDOMapping().get() != PDOMapping::TPDO
-			        && objToMap->GetPDOMapping().get() != PDOMapping::OPTIONAL)
+			        && objToMap->GetPDOMapping().get() != PDOMapping::OPTIONAL
+			        && objToMap->GetPDOMapping().get() != PDOMapping::DEFAULT)
 			{
 				boost::format formatter(kMsgMappingTypeForPdoInvalid);
 				formatter
@@ -1269,7 +1271,8 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 		if (dir == Direction::RX)
 		{
 			if (foundObject->GetPDOMapping().get() != PDOMapping::RPDO
-			        && foundObject->GetPDOMapping().get() != PDOMapping::OPTIONAL)
+			        && foundObject->GetPDOMapping().get() != PDOMapping::OPTIONAL
+			        && foundObject->GetPDOMapping().get() != PDOMapping::DEFAULT)
 			{
 				boost::format formatter(kMsgMappingTypeForPdoInvalid);
 				formatter
@@ -1284,7 +1287,8 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 		else if (dir == Direction::TX)
 		{
 			if (foundObject->GetPDOMapping().get() != PDOMapping::TPDO
-			        && foundObject->GetPDOMapping().get() != PDOMapping::OPTIONAL)
+			        && foundObject->GetPDOMapping().get() != PDOMapping::OPTIONAL
+			        && foundObject->GetPDOMapping().get() != PDOMapping::DEFAULT)
 			{
 				boost::format formatter(kMsgMappingTypeForPdoInvalid);
 				formatter
