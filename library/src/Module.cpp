@@ -32,15 +32,138 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Module.h"
 
 using namespace IndustrialNetwork::POWERLINK::Core::ModularNode;
+using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
+using namespace IndustrialNetwork::POWERLINK::Core::Node;
+using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
+using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 
-Module::Module() :
-	moduleType()
+Module::Module(std::uint8_t containingNode, const std::string& moduleId, const std::string& moduleType, ModuleAddressing addressing, std::uint32_t address, std::uint32_t position, const std::string& moduleName): BaseNode(containingNode, moduleName),
+	position(position),
+	address(address),
+	moduleInterface(std::shared_ptr<ModuleInterface>(new ModuleInterface(moduleId, moduleType, addressing, 0, 0, 0, 0, 0))),
+	parameterNameMapping(std::map<std::string, std::string>()),
+	disabledSubindices(std::map<std::pair<std::uint32_t, std::uint32_t>, std::shared_ptr<SubObject>>())
+{}
+
+Module::Module(std::uint8_t containingNode, const std::string& moduleId, const std::string& moduleType, ModuleAddressing addressing, std::uint32_t address, std::uint32_t position, const std::string& moduleName, std::uint16_t minPosition, std::uint16_t maxPosition, std::uint16_t minAddress, std::uint16_t maxAddress, std::uint16_t maxCount) : BaseNode(containingNode, moduleName),
+	position(position),
+	address(address),
+	moduleInterface(std::shared_ptr<ModuleInterface>(new ModuleInterface(moduleId, moduleType, addressing, minPosition, maxPosition, minAddress, maxAddress, maxCount))),
+	parameterNameMapping(std::map<std::string, std::string>()),
+	disabledSubindices(std::map<std::pair<std::uint32_t, std::uint32_t>, std::shared_ptr<SubObject>>())
 {}
 
 Module::~Module()
 {}
 
-bool Module::UpdateModuleOd(std::uint32_t, SortMode, SortNumber)
+const std::string& Module::GetModuleId() const
 {
-	return true;
+	return this->moduleInterface->GetUniqueId();
+}
+
+Result Module::AddNodeAssignment(const NodeAssignment&)
+{
+	return Result();
+}
+
+Result Module::RemoveNodeAssignment(const NodeAssignment&)
+{
+	return Result();
+}
+
+std::uint32_t Module::GetNodeAssignmentValue()
+{
+	return 0;
+}
+
+std::uint32_t Module::GetConfigurationObjectCount()
+{
+	return 0;
+}
+
+std::uint32_t Module::GetConfigurationObjectSize()
+{
+	return 0;
+}
+
+Result Module::CalculatePReqPayloadLimit()
+{
+	return Result();
+}
+
+Result Module::CalculatePResPayloadLimit()
+{
+	return Result();
+}
+
+std::uint32_t Module::GetAddress() const
+{
+	return this->address;
+}
+
+void Module::SetAddress(std::uint32_t address)
+{
+	this->address = address;
+}
+
+std::uint32_t Module::GetPosition() const
+{
+	return this->position;
+}
+
+void Module::SetPosition(std::uint32_t position)
+{
+	this->position = position;
+}
+
+const std::map<std::string, std::string>& Module::GetParameterNameMapping() const
+{
+	return this->parameterNameMapping;
+}
+
+Result Module::CreateParamMapping(const std::string& paramName, const std::string& mappedParamName)
+{
+	if (!this->parameterNameMapping.empty())
+	{
+		if (this->parameterNameMapping.find(paramName) != this->parameterNameMapping.end())
+		{
+			boost::format formatter(kMsgParameterAlreadyExist);
+			formatter
+			% paramName;
+			LOG_ERROR() << formatter.str();
+			return Result(ErrorCode::PARAMETER_EXISTS);
+		}
+	}
+	this->parameterNameMapping.insert(std::pair<std::string, std::string>(paramName, mappedParamName));
+	return Result();
+}
+
+Result Module::GetMappedParameterName(const std::string& parameterName, std::string& mappedParameterName)
+{
+	if (!this->parameterNameMapping.empty())
+	{
+		if (this->parameterNameMapping.find(parameterName) == this->parameterNameMapping.end())
+		{
+			boost::format formatter(kMsgParameterNotFound);
+			formatter
+			% parameterName;
+			LOG_ERROR() << formatter.str();
+			return Result(ErrorCode::PARAMETER_NOT_FOUND, formatter.str());
+		}
+	}
+	else
+	{
+		boost::format formatter(kMsgParameterNotFound);
+		formatter
+		% parameterName;
+		LOG_ERROR() << formatter.str();
+		return Result(ErrorCode::PARAMETER_NOT_FOUND, formatter.str());
+	}
+	mappedParameterName = this->parameterNameMapping.find(parameterName)->second;
+	return Result();
+}
+
+std::map<std::pair<std::uint32_t, std::uint32_t>, std::shared_ptr<SubObject>>& Module::GetDisabledSubindices()
+{
+	return this->disabledSubindices;
 }

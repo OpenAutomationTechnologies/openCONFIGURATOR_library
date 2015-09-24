@@ -115,15 +115,15 @@ namespace IndustrialNetwork
 						template<typename T>
 						T GetTypedDefaultValue();
 
-						std::uint8_t GetContainingNode();
+						std::uint8_t GetContainingNode() const;
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetTypedObjectActualValue(const std::string& actualValueToSet, bool validateOnly = false);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetTypedObjectDefaultValue(const std::string& defaultValueToSet);
 
 						void SetComplexDataType(std::shared_ptr<Parameter>& parameter);
 						void SetComplexDataType(std::shared_ptr<ParameterGroup>& parameterGrp);
 
-						const std::shared_ptr<Parameter>& GetReferencedParameter();
-						const std::shared_ptr<ParameterGroup>& GetReferencedParameterGroup();
+						const std::shared_ptr<Parameter>& GetReferencedParameter() const;
+						const std::shared_ptr<ParameterGroup>& GetReferencedParameterGroup() const;
 
 						std::uint32_t GetBitSize();
 
@@ -131,6 +131,9 @@ namespace IndustrialNetwork
 						bool HasDefaultValue() const;
 
 						void ClearActualValue();
+
+						const boost::optional<std::string>& GetRangeSelector() const;
+						void SetRangeSelector(const std::string& name);
 
 					private:
 						enum class ValueType : std::uint8_t
@@ -157,6 +160,7 @@ namespace IndustrialNetwork
 						boost::optional<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping> pdoMapping;
 						std::uint8_t containingNode;
 						bool actualValueNotDefaultValue;
+						boost::optional<std::string> rangeSelector;
 				};
 			}
 		}

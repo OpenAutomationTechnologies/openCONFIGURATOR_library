@@ -41,6 +41,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 
 #include <boost/algorithm/string.hpp>
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_io.hpp>
+#include <boost/uuid/string_generator.hpp>
 
 #include "IEC_Datatype.h"
 #include "PlkDataType.h"
@@ -85,10 +88,10 @@ namespace IndustrialNetwork
 
 				bool StringToBool(const std::string& str);
 
-				std::uint32_t GetIECDataTypeBitSize(const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType);
+				std::uint32_t GetIECDataTypeBitSize(const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype& dataType);
 
-				IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype GetIECDataType(const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType);
-				IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType GetPlkDataType(const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType);
+				IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype GetIECDataType(const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType& dataType);
+				IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType GetPlkDataType(const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype& dataType);
 
 				int32_t FloatToSinglePrecisisionHex(float value);
 				int64_t DoubleToDoublePrecisisionHex(double value);
@@ -100,9 +103,11 @@ namespace IndustrialNetwork
 
 				std::uint8_t AsciiToHex(std::uint8_t input);
 				void ConfigurationToAscii(const std::stringstream& inputConfig, std::vector<std::uint8_t>& output);
-				const std::string GetNetDatatypeFromIEC(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype iecDataType);
-				IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType GetAccessTypeFromParameterAccessType(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess paramAccess);
+				const std::string GetNetDatatypeFromIEC(const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype& iecDataType);
+				IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType GetAccessTypeFromParameterAccessType(const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess& paramAccess);
 				bool IsIPAddress(const std::string& ipaddr);
+				std::string ClearModuleParameterUuid(const std::string& parameterName);
+				bool IsValidUuid(const std::string& maybe_uuid);
 			}
 		}
 	}

@@ -52,7 +52,7 @@ ControlledNode::ControlledNode(std::uint8_t nodeID, const std::string& nodeName)
 ControlledNode::~ControlledNode()
 {}
 
-Result ControlledNode::AddNodeAssignment(NodeAssignment assign)
+Result ControlledNode::AddNodeAssignment(const NodeAssignment& assign)
 {
 	if (assign == NodeAssignment::NMT_NODEASSIGN_MN_PRES)
 	{
@@ -79,7 +79,7 @@ Result ControlledNode::AddNodeAssignment(NodeAssignment assign)
 	return Result();
 }
 
-Result ControlledNode::RemoveNodeAssignment(NodeAssignment assign)
+Result ControlledNode::RemoveNodeAssignment(const NodeAssignment& assign)
 {
 	this->GetNodeAssignment().erase(remove(this->GetNodeAssignment().begin(), this->GetNodeAssignment().end(), assign), this->GetNodeAssignment().end());
 	return Result();
@@ -99,7 +99,7 @@ std::uint32_t ControlledNode::GetNodeAssignmentValue()
 	return static_cast<std::underlying_type<NodeAssignment>::type>(assign);
 }
 
-Result ControlledNode::MapObject(std::uint32_t index, const Direction dir, std::uint16_t channelNr, std::uint32_t position, std::uint16_t fromNode, bool updateNrOfEntries)
+Result ControlledNode::MapObject(std::uint32_t index, const Direction& dir, std::uint16_t channelNr, std::uint32_t position, std::uint16_t fromNode, bool updateNrOfEntries)
 {
 	//Retrieve object to be mapped
 	std::shared_ptr<Object> objToMap;
@@ -111,7 +111,7 @@ Result ControlledNode::MapObject(std::uint32_t index, const Direction dir, std::
 	return this->MapBaseObject(objToMap, index, 0, dir, updateNrOfEntries, channelNr, position, fromNode);
 }
 
-Result ControlledNode::MapSubObject(std::uint32_t index, std::uint16_t subindex, const Direction dir,  std::uint16_t channelNr, std::uint32_t position, std::uint16_t fromNode, bool updateNrOfEntries)
+Result ControlledNode::MapSubObject(std::uint32_t index, std::uint16_t subindex, const Direction& dir,  std::uint16_t channelNr, std::uint32_t position, std::uint16_t fromNode, bool updateNrOfEntries)
 {
 	//retrieve sub object to be mapped
 	std::shared_ptr<SubObject> objToMap;
@@ -123,7 +123,7 @@ Result ControlledNode::MapSubObject(std::uint32_t index, std::uint16_t subindex,
 	return this->MapBaseObject(objToMap, index, subindex, dir, updateNrOfEntries, channelNr, position, fromNode);
 }
 
-Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap, std::uint32_t index, std::uint16_t subindex, const Direction dir, bool updateNrOfEntries, std::uint16_t channelNr, std::uint32_t position, std::uint16_t fromNode)
+Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap, std::uint32_t index, std::uint16_t subindex, const Direction& dir, bool updateNrOfEntries, std::uint16_t channelNr, std::uint32_t position, std::uint16_t fromNode)
 {
 	//Set fromNode for PresChained nodes
 	if (dir == Direction::RX
@@ -509,7 +509,7 @@ Result ControlledNode::MapAllRxObjects(std::uint16_t channelNr, bool updateNrOfE
 	return Result();
 }
 
-Result ControlledNode::MapAllTxObjects(std::uint16_t channelNr,  bool updateNrOfEntries)
+Result ControlledNode::MapAllTxObjects(std::uint16_t channelNr, bool updateNrOfEntries)
 {
 	//start on position 1
 	std::uint32_t position = 1;
@@ -644,7 +644,7 @@ std::uint32_t ControlledNode::GetConfigurationObjectSize()
 	return size;
 }
 
-Result ControlledNode::SetOperationMode(PlkOperationMode operationMode)
+Result ControlledNode::SetOperationMode(const PlkOperationMode& operationMode)
 {
 	if (operationMode == this->operationMode)
 		return Result();
@@ -700,7 +700,7 @@ Result ControlledNode::SetOperationMode(PlkOperationMode operationMode)
 	return Result();
 }
 
-PlkOperationMode ControlledNode::GetOperationMode()
+const PlkOperationMode& ControlledNode::GetOperationMode() const
 {
 	return this->operationMode;
 }
@@ -838,7 +838,7 @@ Result ControlledNode::GetDataObjectFromMapping(const std::shared_ptr<BaseProces
 	return Result();
 }
 
-Result ControlledNode::UpdateProcessImage(Direction dir)
+Result ControlledNode::UpdateProcessImage(const Direction& dir)
 {
 	Result res = this->UpdateProcessDataMapping(dir);
 	if (!res.IsSuccessful())
@@ -940,6 +940,7 @@ Result ControlledNode::UpdateProcessImage(Direction dir)
 			boost::trim(piName);
 			boost::remove_erase_if(piName, boost::is_any_of("!\\/(){}[],*'"));
 			std::replace(piName.begin(), piName.end(), ' ', '_');
+			std::replace(piName.begin(), piName.end(), '.', '_');
 			std::shared_ptr<BaseProcessImageObject> piObj = std::make_shared<BaseProcessImageObject>(
 			            piName,
 			            GetIECDataType(dataObject->GetDataType().get()),
@@ -1025,7 +1026,8 @@ Result ControlledNode::UpdateProcessImage(Direction dir)
 					            i,
 					            8);
 					it = piCollection->insert(it + 1, piObj);
-					it++;
+					if (it + 1 != piCollection->end())
+						it++;
 				}
 			}
 		}
@@ -1058,7 +1060,7 @@ Result ControlledNode::UpdateProcessImage(Direction dir)
 	return Result();
 }
 
-IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::UpdateProcessDataMapping(Direction dir)
+IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::UpdateProcessDataMapping(const Direction& dir)
 {
 	std::uint32_t mappingParameterIndex = 0;
 	std::uint32_t mappingObjectIndex = 0;
@@ -1234,7 +1236,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 	return Result();
 }
 
-Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcessDataMapping>& mapping, std::uint32_t expectedOffset, Direction dir)
+Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcessDataMapping>& mapping, std::uint32_t expectedOffset, const Direction& dir)
 {
 	std::uint32_t dataIndex = mapping->GetMappingIndex();
 	std::uint16_t dataSubindex = mapping->GetMappingSubIndex();
@@ -1479,17 +1481,17 @@ void ControlledNode::SetNodeDataPresMnOffset(std::uint32_t offset)
 	this->receivesPResMN = true;
 }
 
-std::uint32_t ControlledNode::GetNodeDataPresMnOffset()
+std::uint32_t ControlledNode::GetNodeDataPresMnOffset() const
 {
 	return this->nodeDataPresMnOffset;
 }
 
-std::uint32_t ControlledNode::GetNodeDataPresMnCurrentOffset()
+std::uint32_t ControlledNode::GetNodeDataPresMnCurrentOffset() const
 {
 	return this->nodeDataPresMnCurrentOffset;
 }
 
-Result ControlledNode::MoveMappingObject(const Direction dir, std::uint16_t channelNr, std::uint16_t oldPosition, std::uint16_t newPosition)
+Result ControlledNode::MoveMappingObject(const Direction& dir, std::uint16_t channelNr, std::uint16_t oldPosition, std::uint16_t newPosition)
 {
 	if (oldPosition == newPosition)
 		return Result();
@@ -1583,12 +1585,12 @@ Result ControlledNode::MoveMappingObject(const Direction dir, std::uint16_t chan
 	return this->UpdateProcessImage(dir);
 }
 
-bool ControlledNode::ReceivesPResMN()
+bool ControlledNode::ReceivesPResMN() const
 {
 	return this->receivesPResMN;
 }
 
-Result ControlledNode::ProcessParameterGroup(const std::shared_ptr<ParameterGroup>& grp, const std::string& dataName, Direction dir, std::uint32_t& piOffset, std::uint32_t domainCount)
+Result ControlledNode::ProcessParameterGroup(const std::shared_ptr<ParameterGroup>& grp, const std::string& dataName, const Direction& dir, std::uint32_t& piOffset, std::uint32_t domainCount)
 {
 	std::uint32_t bitOffset = 0;
 	for (auto& paramGrpEntry : grp->GetParameterGroupEntries())
@@ -1634,7 +1636,7 @@ Result ControlledNode::ProcessParameterGroup(const std::shared_ptr<ParameterGrou
 	return Result();
 }
 
-void ControlledNode::ProcessComplexDatatype(const std::shared_ptr<Parameter>& param, const std::string& dataName, Direction dir, std::uint32_t& piOffset, std::uint32_t& bitOffset, std::uint32_t domainCount)
+void ControlledNode::ProcessComplexDatatype(const std::shared_ptr<Parameter>& param, const std::string& dataName, const Direction& dir, std::uint32_t& piOffset, std::uint32_t& bitOffset, std::uint32_t domainCount)
 {
 	std::stringstream nameBuilder;
 	nameBuilder << "CN" << (std::uint32_t) this->GetNodeId();
@@ -1650,6 +1652,7 @@ void ControlledNode::ProcessComplexDatatype(const std::shared_ptr<Parameter>& pa
 	boost::trim(piName);
 	boost::remove_erase_if(piName, boost::is_any_of("!\\/(){}[],*'"));
 	std::replace(piName.begin(), piName.end(), ' ', '_');
+	std::replace(piName.begin(), piName.end(), '.', '_');
 
 	if (bitOffset == 8)
 	{
@@ -1694,7 +1697,7 @@ void ControlledNode::ProcessComplexDatatype(const std::shared_ptr<Parameter>& pa
 	}
 }
 
-void ControlledNode::ProcessComplexDatatype(const std::shared_ptr<StructDataType>& structDt, const std::string& dataName, Direction dir, std::uint32_t& piOffset, std::uint32_t domainCount)
+void ControlledNode::ProcessComplexDatatype(const std::shared_ptr<StructDataType>& structDt, const std::string& dataName, const Direction& dir, std::uint32_t& piOffset, std::uint32_t domainCount)
 {
 	std::uint32_t bitOffset = 0;
 	for (auto& varDecl : structDt->GetVarDeclarations())
@@ -1715,6 +1718,7 @@ void ControlledNode::ProcessComplexDatatype(const std::shared_ptr<StructDataType
 		boost::trim(piName);
 		boost::remove_erase_if(piName, boost::is_any_of("!\\/(){}[],*'"));
 		std::replace(piName.begin(), piName.end(), ' ', '_');
+		std::replace(piName.begin(), piName.end(), '.', '_');
 		if (varDecl->GetDataType() == IEC_Datatype::BITSTRING || varDecl->GetDataType() == IEC_Datatype::BOOL)
 		{
 			std::shared_ptr<BaseProcessImageObject> piObj = std::make_shared<BaseProcessImageObject>(
@@ -1751,7 +1755,7 @@ void ControlledNode::ProcessComplexDatatype(const std::shared_ptr<StructDataType
 	}
 }
 
-void ControlledNode::ProcessComplexDatatype(const std::shared_ptr<ArrayDataType>& arrayDt, const std::string& dataName, Direction dir, std::uint32_t& piOffset, std::uint32_t domainCount)
+void ControlledNode::ProcessComplexDatatype(const std::shared_ptr<ArrayDataType>& arrayDt, const std::string& dataName, const Direction& dir, std::uint32_t& piOffset, std::uint32_t domainCount)
 {
 	std::uint32_t bitOffset = 0;
 	for (std::uint32_t i = arrayDt->GetLowerLimit(); i < arrayDt->GetUpperLimit(); i++)
@@ -1770,6 +1774,7 @@ void ControlledNode::ProcessComplexDatatype(const std::shared_ptr<ArrayDataType>
 		boost::trim(piName);
 		boost::remove_erase_if(piName, boost::is_any_of("!\\/(){}[],*'"));
 		std::replace(piName.begin(), piName.end(), ' ', '_');
+		std::replace(piName.begin(), piName.end(), '.', '_');
 		if (arrayDt->GetDataType() == IEC_Datatype::BITSTRING || arrayDt->GetDataType() == IEC_Datatype::BOOL)
 		{
 			std::shared_ptr<BaseProcessImageObject> piObj = std::make_shared<BaseProcessImageObject>(
@@ -1804,7 +1809,7 @@ void ControlledNode::ProcessComplexDatatype(const std::shared_ptr<ArrayDataType>
 }
 
 /*
-void ControlledNode::ProcessComplexDatatype(const std::shared_ptr<EnumDataType>& enumDT, const std::string& dataName, Direction dir, std::uint32_t& piOffset, std::uint32_t domainCount)
+void ControlledNode::ProcessComplexDatatype(const std::shared_ptr<EnumDataType>& enumDT, const std::string& dataName, const Direction& dir, std::uint32_t& piOffset, std::uint32_t domainCount)
 {
 
 }

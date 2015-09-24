@@ -62,9 +62,6 @@ namespace IndustrialNetwork
 						ParameterTemplate(const std::string& uniqueID, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess parameterAccess, const std::string& dataTypeUniqueIDRef = "");
 						ParameterTemplate(const std::string& uniqueID, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess parameterAccess, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype datatype);
 						virtual ~ParameterTemplate();
-
-					private:
-
 				};
 			}
 		}

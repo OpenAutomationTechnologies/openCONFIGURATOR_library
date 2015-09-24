@@ -76,7 +76,7 @@ const std::string NetProcessImageGenerator::Generate(std::uint8_t nodeid, std::s
 	return fullProcessImage.str();
 }
 
-std::uint32_t NetProcessImageGenerator::WriteNETProcessImage(const Direction dir, const std::shared_ptr<BaseNode>& node)
+std::uint32_t NetProcessImageGenerator::WriteNETProcessImage(const Direction& dir, const std::shared_ptr<BaseNode>& node)
 {
 	this->processImageStream.str(std::string());
 	std::vector<std::shared_ptr<BaseProcessImageObject>> processImage;
@@ -118,12 +118,12 @@ std::uint32_t NetProcessImageGenerator::WriteNETProcessImage(const Direction dir
 			if (piEntry->GetDataType() == IEC_Datatype::BITSTRING || piEntry->GetDataType() == IEC_Datatype::BOOL)
 			{
 				if (bitCount == 0)
-					startName = piEntry->GetName();
+					startName = Utilities::ClearModuleParameterUuid(piEntry->GetName());
 				bitCount += piEntry->GetSize();
 
 				if (bitCount == 8)
 				{
-					startName = startName + "_to_" + piEntry->GetName();
+					startName = startName + "_to_" + Utilities::ClearModuleParameterUuid(piEntry->GetName());
 					this->processImageStream << "\t\t[FieldOffset(" << piSize / 8 << ")]" << std::endl;
 					this->processImageStream << PrintChannel(startName, piEntry->GetDataType(), piEntry->GetSize(), piSize / 8, piEntry->GetBitOffset());
 					bitCount = 0;
@@ -155,10 +155,10 @@ std::uint32_t NetProcessImageGenerator::WriteNETProcessImage(const Direction dir
 	return piSize;
 }
 
-const std::string NetProcessImageGenerator::PrintChannel(const std::string& name, const IEC_Datatype dt, const std::uint32_t, const std::uint32_t, const boost::optional<std::uint32_t>&)
+const std::string NetProcessImageGenerator::PrintChannel(const std::string& name, const IEC_Datatype& dt, const std::uint32_t, const std::uint32_t, const boost::optional<std::uint32_t>&)
 {
 	std::stringstream channel;
-	channel << "\t\tpublic " << GetNetDatatypeFromIEC(dt) << " " << name << ";" << std::endl;
+	channel << "\t\tpublic " << GetNetDatatypeFromIEC(dt) << " " << Utilities::ClearModuleParameterUuid(name) << ";" << std::endl;
 	return channel.str();
 }
 

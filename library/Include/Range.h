@@ -32,8 +32,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined MODULE_RANGE_H
 #define MODULE_RANGE_H
 
-#include "Module.h"
+#include <string>
+#include <cstdint>
+#include <map>
+#include <set>
+
 #include "SortEnums.h"
+#include "PDOMapping.h"
+#include "Result.h"
+#include "LoggingConfiguration.h"
 
 namespace IndustrialNetwork
 {
@@ -51,17 +58,35 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						Range();
+						Range(const std::string& name, std::uint32_t baseIndex, std::uint32_t maxIndex, std::uint32_t maxSubIndex, std::uint32_t sortStep = 1, SortMode sortMode = SortMode::INDEX, SortNumber sortNumber = SortNumber::CONTINUOUS, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping pdoMapping = IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping::UNDEFINED);
 						virtual ~Range();
 
+						const std::string& GetName() const;
+						std::uint32_t GetBaseIndex() const;
+						std::uint32_t GetMaxIndex() const;
+						std::uint32_t GetMaxSubIndex() const;
+						const SortMode& GetSortMode() const;
+						const SortNumber& GetSortNumber() const;
+						const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping& GetPdoMpapping() const;
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetNextIndex(std::uint32_t& index, std::uint32_t address);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetNextSubIndex(std::uint32_t& index, std::uint16_t& subindex, std::uint32_t address);
+						void Reset();
+
 					private:
-						std::string supportedModuleType;
-						std::vector<std::shared_ptr<Module>> moduleCollection;
+						std::string name;
 						std::uint32_t baseIndex;
 						std::uint32_t maxIndex;
 						std::uint32_t maxSubIndex;
+						std::uint32_t sortStep;
 						SortMode sortMode;
 						SortNumber sortNumber;
+						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping pdoMapping;
+
+						std::uint32_t currentIndex;
+						std::uint32_t currentSubIndex;
+						std::map<std::uint32_t, std::int64_t> takenIndices;
+						std::set<std::uint32_t> takenAddresses;
 				};
 			}
 		}

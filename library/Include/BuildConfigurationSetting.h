@@ -65,14 +65,15 @@ namespace IndustrialNetwork
 				{
 					public:
 						BuildConfigurationSetting();
-						virtual ~BuildConfigurationSetting();
-
 						/**
 						\brief Constructor for the BuildConfigurationHandler class.
 						\param[in] name Name for the setting.
 						\param[in] value String value of the setting. Default value is empty.
 						*/
 						BuildConfigurationSetting(const std::string& name, const std::string& value = "");
+						virtual ~BuildConfigurationSetting();
+
+						
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GenerateConfiguration(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
 

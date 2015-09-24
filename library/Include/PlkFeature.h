@@ -63,17 +63,17 @@ namespace IndustrialNetwork
 						virtual ~PlkFeature()
 						{}
 
-						const I GetFeatureId()
+						const I GetFeatureId() const
 						{
 							return this->featureId;
 						}
 
-						const boost::any GetUntypedDefaultValue()
+						const boost::any GetUntypedDefaultValue() const
 						{
 							return this->defaultValue;
 						}
 
-						const boost::any GetUntypedActualValue()
+						const boost::any GetUntypedActualValue() const
 						{
 							return this->actualValue;
 						}

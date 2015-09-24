@@ -79,7 +79,7 @@ namespace IndustrialNetwork
 						const std::shared_ptr<ComplexDataType>& GetComplexDataType() const;
 						void SetComplexDataType(const std::shared_ptr<ComplexDataType>& complexType);
 
-						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess GetParameterAccess() const;
+						const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess& GetParameterAccess() const;
 						void SetParameterAccess(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess access);
 						std::uint32_t GetBitSize() const;
 

@@ -32,11 +32,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined MODULE_H
 #define MODULE_H
 
+#include <cstdint>
 #include <iostream>
+#include <memory>
+#include <map>
 
 #include "BaseNode.h"
 #include "BaseObject.h"
 #include "SortEnums.h"
+#include "NodeAssignment.h"
+#include "Result.h"
+#include "ModuleInterface.h"
+#include "SubObject.h"
 
 namespace IndustrialNetwork
 {
@@ -50,23 +57,44 @@ namespace IndustrialNetwork
 				\brief Represents a module in the POWERLINK network.
 				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
-				class Module
+				class Module : public IndustrialNetwork::POWERLINK::Core::Node::BaseNode
 				{
-
 					public:
-						Module();
+						Module(std::uint8_t containingNode, const std::string& moduleId, const std::string& moduleType, ModuleAddressing addressing, std::uint32_t address, std::uint32_t position, const std::string& moduleName);
+						Module(std::uint8_t containingNode, const std::string& moduleId, const std::string& moduleType, ModuleAddressing addressing, std::uint32_t address, std::uint32_t position, const std::string& moduleName, std::uint16_t minPosition, std::uint16_t maxPosition, std::uint16_t minAddress, std::uint16_t maxAddress, std::uint16_t maxCount);
 						virtual ~Module();
 
-					private:
-						std::string moduleType;
+						const std::string& GetModuleId() const;
+						const std::string& GetModuleType() const;
 
-						/**
-						\param baseIndex
-						\param sortMode
-						\param sortNumber
-						\return boolean
-						*/
-						bool UpdateModuleOd(std::uint32_t baseIndex, SortMode sortMode, SortNumber sortNumber);
+						std::uint32_t GetAddress() const;
+						void SetAddress(std::uint32_t address);
+
+						std::uint32_t GetPosition() const;
+						void SetPosition(std::uint32_t position);
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNodeAssignment(const IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment& assign);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveNodeAssignment(const IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment& assign);
+						std::uint32_t GetNodeAssignmentValue();
+
+						std::uint32_t GetConfigurationObjectCount();
+						std::uint32_t GetConfigurationObjectSize();
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CalculatePReqPayloadLimit();
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CalculatePResPayloadLimit();
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateParamMapping(const std::string& paramName, const std::string& mappedParamName);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetMappedParameterName(const std::string& parameterName, std::string& mappedParameterName);
+						const std::map<std::string, std::string>& GetParameterNameMapping() const;
+
+						std::map<std::pair<std::uint32_t, std::uint32_t>, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::SubObject>>& GetDisabledSubindices();
+
+					private:
+						std::uint32_t position;
+						std::uint32_t address;
+						std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ModularNode::ModuleInterface> moduleInterface;
+						std::map<std::string, std::string> parameterNameMapping;
+						std::map<std::pair<std::uint32_t, std::uint32_t>, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::SubObject>> disabledSubindices;
 				};
 			}
 		}

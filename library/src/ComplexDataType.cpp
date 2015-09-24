@@ -42,17 +42,17 @@ ComplexDataType::ComplexDataType(const std::string& uniqueID, const std::string&
 ComplexDataType::~ComplexDataType()
 {}
 
-const std::string& ComplexDataType::GetName()
+const std::string& ComplexDataType::GetName() const
 {
 	return this->name;
 }
 
-const std::string& ComplexDataType::GetUniqueID()
+const std::string& ComplexDataType::GetUniqueID() const
 {
 	return this->uniqueID;
 }
 
-std::uint32_t ComplexDataType::GetSize()
+std::uint32_t ComplexDataType::GetSize() const
 {
 	return this->size;
 }

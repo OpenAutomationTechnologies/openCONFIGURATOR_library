@@ -57,6 +57,13 @@ namespace IndustrialNetwork
 					INDEX = 0,
 					SUBINDEX
 				};
+
+				enum class ModuleAddressing : std::uint8_t
+				{
+					POSITION = 0,
+					MANUAL,
+					NEXT
+				};
 			}
 		}
 	}

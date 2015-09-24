@@ -60,13 +60,13 @@ namespace IndustrialNetwork
 						DynamicChannel(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::DynamicChannelAccessType accessType, std::uint32_t startIndex, std::uint32_t endIndex, std::uint32_t maxNumber, std::uint32_t addressOffset, std::uint8_t bitAlignment = 0);
 						virtual ~DynamicChannel();
 
-						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType GetDataType();
-						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::DynamicChannelAccessType GetAccessType();
-						std::uint32_t GetStartIndex();
-						std::uint32_t GetEndIndex();
-						std::uint32_t GetMaxNumber();
-						std::uint32_t GetAddressOffset();
-						const boost::optional<std::uint32_t> GetBitAlignment();
+						const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType& GetDataType() const;
+						const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::DynamicChannelAccessType& GetAccessType() const;
+						std::uint32_t GetStartIndex() const;
+						std::uint32_t GetEndIndex() const;
+						std::uint32_t GetMaxNumber() const;
+						std::uint32_t GetAddressOffset() const;
+						const boost::optional<std::uint32_t>& GetBitAlignment() const;
 
 					private:
 						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType;

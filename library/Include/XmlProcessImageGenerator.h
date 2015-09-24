@@ -69,13 +69,13 @@ namespace IndustrialNetwork
 
 					private:
 						XmlProcessImageGenerator();
-						const std::string PrintChannel(const std::string& name, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype datatype, const std::uint32_t size, const std::uint32_t piOffset, const boost::optional<std::uint32_t>& bitOffset);
+						const std::string PrintChannel(const std::string& name, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype& datatype, const std::uint32_t size, const std::uint32_t piOffset, const boost::optional<std::uint32_t>& bitOffset);
 						const std::string WriteXMLHeader();
 						const std::string WriteXMLOutputSizeHeader(std::uint32_t size);
 						const std::string WriteXMLInputSizeHeader(std::uint32_t size);
 						std::stringstream processImageStream;
 
-						std::uint32_t WriteXMLProcessImage(const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node);
+						std::uint32_t WriteXMLProcessImage(const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node);
 				};
 			}
 		}

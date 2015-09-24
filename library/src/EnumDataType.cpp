@@ -45,7 +45,7 @@ EnumDataType::~EnumDataType()
 	this->enumValues.clear();
 }
 
-IEC_Datatype EnumDataType::GetDataType()
+const IEC_Datatype& EnumDataType::GetDataType() const
 {
 	return this->dataType;
 }
@@ -59,7 +59,7 @@ Result EnumDataType::AddEnumValue(const std::string& name, const std::string& va
 	return Result();
 }
 
-std::uint32_t EnumDataType::GetBitSize()
+std::uint32_t EnumDataType::GetBitSize() const
 {
 	return GetIECDataTypeBitSize(this->dataType);
 }

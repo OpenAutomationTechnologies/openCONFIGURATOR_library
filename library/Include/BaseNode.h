@@ -76,12 +76,11 @@ namespace IndustrialNetwork
 						BaseNode(std::uint8_t nodeId, const std::string& nodeName = "");
 						virtual ~BaseNode();
 
-						const std::string& GetName();
+						const std::string& GetName() const;
 						void SetName(const std::string& name);
-						std::uint8_t GetNodeId();
+						std::uint8_t GetNodeId() const;
 						void SetNodeId(std::uint8_t nodeId);
-						const std::map<std::uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>>& GetObjectDictionary();
-						void SetObjectDictionary(const std::map<uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>>& od);
+						std::map<std::uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>>& GetObjectDictionary();
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddObject(std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>& objRef);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddSubObject(std::uint32_t objectId, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::SubObject>& subObjRef);
@@ -94,8 +93,8 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetSubObjectActualValue(std::uint32_t objectId, std::uint32_t subObjectId, const std::string& actualValue);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetSubObject(std::uint32_t objectId, std::uint32_t subObjectId, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::SubObject>& subObjRef, bool enableLog = true);
 
-						virtual IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNodeAssignment(NodeAssignment) = 0;
-						virtual IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveNodeAssignment(NodeAssignment) = 0;
+						virtual IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNodeAssignment(const NodeAssignment& assign) = 0;
+						virtual IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveNodeAssignment(const NodeAssignment& assign) = 0;
 						virtual std::uint32_t GetNodeAssignmentValue() = 0;
 
 						std::vector<IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment>& GetNodeAssignment();
@@ -106,7 +105,7 @@ namespace IndustrialNetwork
 						virtual std::uint32_t GetConfigurationObjectCount() = 0;
 						virtual std::uint32_t GetConfigurationObjectSize() = 0;
 
-						bool IsEnabled();
+						bool IsEnabled() const;
 						void SetEnabled(bool enabled);
 
 						virtual IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CalculatePReqPayloadLimit() = 0;
@@ -118,8 +117,8 @@ namespace IndustrialNetwork
 						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseProcessImageObject>>& GetTransmitProcessImage();
 						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseProcessImageObject>>& GetReceiveProcessImage();
 
-						std::uint32_t GetTransmitProcessImageSize();
-						std::uint32_t GetReceiveProcessImageSize();
+						std::uint32_t GetTransmitProcessImageSize() const;
+						std::uint32_t GetReceiveProcessImageSize() const;
 
 						void ChangeMappingChannelNodeId(const std::uint8_t nodeId, const std::uint8_t newNodeId);
 						void ClearMappingChannelforNode(const std::uint8_t nodeId);

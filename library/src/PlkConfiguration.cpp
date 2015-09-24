@@ -141,7 +141,7 @@ Result PlkConfiguration::GenerateConfiguration(const std::map<std::uint8_t, std:
 	return SyncRedundantManagingNodes(nodeCollection);
 }
 
-const std::string& PlkConfiguration::GetConfigurationName()
+const std::string& PlkConfiguration::GetConfigurationName() const
 {
 	return this->configurationName;
 }

@@ -70,7 +70,7 @@ namespace IndustrialNetwork
 
 						std::uint32_t GetBitSize();
 
-						bool CheckParameterGroupCondition();
+						bool CheckParameterGroupCondition() const;
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetParameterGroupAccess(ParameterAccess& access);
 						const std::vector<std::shared_ptr<IParameterGroupEntry>>& GetParameterGroupEntries();
 

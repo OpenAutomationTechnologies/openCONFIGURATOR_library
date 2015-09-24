@@ -42,22 +42,22 @@ ParameterReference::ParameterReference(const std::string& uniqueId, const std::s
 ParameterReference::~ParameterReference()
 {}
 
-const std::string& ParameterReference::GetActualValue()
+const std::string& ParameterReference::GetActualValue() const
 {
 	return this->actualValue;
 }
 
-std::uint32_t ParameterReference::GetBitSize()
+std::uint32_t ParameterReference::GetBitSize() const
 {
 	return this->referencedParameter->GetBitSize();
 }
 
-const boost::dynamic_bitset<>& ParameterReference::GetActualValueBitSet()
+const boost::dynamic_bitset<>& ParameterReference::GetActualValueBitSet() const
 {
 	return this->referencedParameter->GetParameterActualValueBitSet(this->GetActualValue());
 }
 
-const std::shared_ptr<Parameter>& ParameterReference::GetReferencedParameter()
+const std::shared_ptr<Parameter>& ParameterReference::GetReferencedParameter() const
 {
 	return this->referencedParameter;
 }

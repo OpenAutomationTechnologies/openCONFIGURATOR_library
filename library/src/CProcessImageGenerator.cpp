@@ -74,10 +74,14 @@ const std::string CProcessImageGenerator::Generate(std::uint8_t nodeid, std::sha
 	return fullProcessImage.str();
 }
 
-const std::string CProcessImageGenerator::PrintChannel(const std::string& name, const IEC_Datatype, const std::uint32_t size, const std::uint32_t, const boost::optional<std::uint32_t>&)
+const std::string CProcessImageGenerator::PrintChannel(const std::string& name, const IEC_Datatype& type, const std::uint32_t size, const std::uint32_t, const boost::optional<std::uint32_t>&)
 {
 	std::stringstream channel;
-	channel << "\tunsigned " << name << ":";
+	if (type == IEC_Datatype::SINT || type == IEC_Datatype::INT || type == IEC_Datatype::DINT || type == IEC_Datatype::LINT)
+		channel << "\tsigned ";
+	else
+		channel << "\tunsigned ";
+	channel << Utilities::ClearModuleParameterUuid(name) << ":";
 	channel << std::dec << size;
 	channel << ";" << std::endl;
 	return channel.str();
@@ -123,7 +127,7 @@ const std::string CProcessImageGenerator::WriteCInputSizeHeader(std::uint32_t si
 	return inputHeader.str();
 }
 
-std::uint32_t CProcessImageGenerator::WriteCProcessImage(const Direction dir, const std::shared_ptr<BaseNode>& node)
+std::uint32_t CProcessImageGenerator::WriteCProcessImage(const Direction& dir, const std::shared_ptr<BaseNode>& node)
 {
 	this->processImageStream.str(std::string());
 	std::vector<std::shared_ptr<BaseProcessImageObject>> processImage;

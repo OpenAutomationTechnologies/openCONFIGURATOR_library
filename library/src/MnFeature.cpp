@@ -51,7 +51,7 @@ namespace IndustrialNetwork
 				MnFeature::~MnFeature()
 				{}
 
-				const std::string& MnFeature::GetName()
+				const std::string& MnFeature::GetName() const
 				{
 					return PlkFeatureStrings[this->GetFeatureId()];
 				}

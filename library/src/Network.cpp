@@ -38,6 +38,7 @@ using namespace IndustrialNetwork::POWERLINK::Core::Configuration;
 using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
+using namespace IndustrialNetwork::POWERLINK::Core::ModularNode;
 
 Network::Network() :
 	networkId(""),
@@ -67,6 +68,40 @@ Network::~Network()
 {
 	this->buildConfigurations.clear();
 	this->nodeCollection.clear();
+}
+
+Result Network::AddNode(std::shared_ptr<ModularControlledNode>& node)
+{
+	//Managing Node has to be added first
+	std::shared_ptr<ManagingNode> mn;
+	Result res = this->GetManagingNode(mn);
+	if (!res.IsSuccessful())
+		return res;
+
+	for (auto& var : this->nodeCollection)
+	{
+		if (var.first == node->GetNodeId())
+		{
+			//Node already exists
+			boost::format formatter(kMsgExistingNode);
+			formatter
+			% (std::uint32_t) var.first;
+			LOG_ERROR() << "[" + networkId + "] " + formatter.str();
+			return Result(ErrorCode::NODE_EXISTS, formatter.str());
+		}
+	}
+
+	//Log info node created
+	boost::format formatter(kMsgNodeCreated);
+	formatter
+	% (std::uint32_t) node->GetNodeId();
+	LOG_INFO() << "[" + networkId + "] " + formatter.str();
+	this->nodeCollection.insert(std::pair<std::uint8_t, std::shared_ptr<BaseNode>>(node->GetNodeId(), node));
+
+	//Set Node Assignement with actual value "0"
+	mn->SetSubObjectActualValue(0x1F81, node->GetNodeId(), "0");
+
+	return Result();
 }
 
 Result Network::AddNode(std::shared_ptr<ControlledNode>& node)
@@ -359,32 +394,32 @@ Result Network::GetAvailableNodeIds(std::vector<std::uint8_t>& nodeIdCollection)
 	return Result();
 }
 
-const std::string& Network::GetNetworkId()
+const std::string& Network::GetNetworkId() const
 {
 	return this->networkId;
 }
 
-std::uint32_t Network::GetCycleTime()
+std::uint32_t Network::GetCycleTime() const
 {
 	return this->cycleTime;
 }
 
-std::uint16_t Network::GetAsyncMTU()
+std::uint16_t Network::GetAsyncMTU() const
 {
 	return this->asyncMTU;
 }
 
-std::uint16_t Network::GetMultiplexedCycleCount()
+std::uint16_t Network::GetMultiplexedCycleCount() const
 {
 	return this->multiplexedCycleCount;
 }
 
-std::uint16_t Network::GetPrescaler()
+std::uint16_t Network::GetPrescaler() const
 {
 	return this->prescaler;
 }
 
-std::uint32_t Network::GetLossOfSoCTolerance()
+std::uint32_t Network::GetLossOfSoCTolerance() const
 {
 	return this->lossOfSoCTolerance;
 }
@@ -677,7 +712,7 @@ Result Network::GetBuildConfigurations(std::vector<std::shared_ptr<PlkConfigurat
 	return Result();
 }
 
-const std::string& Network::GetActiveConfiguration()
+const std::string& Network::GetActiveConfiguration() const
 {
 	return this->activeConfiguration;
 }
@@ -796,7 +831,7 @@ Result Network::GenerateConfiguration()
 	return res;
 }
 
-Result Network::SetOperationMode(const std::uint8_t nodeID, const PlkOperationMode mode, const std::uint8_t multiplexedCycle)
+Result Network::SetOperationMode(const std::uint8_t nodeID, const PlkOperationMode& mode, const std::uint8_t multiplexedCycle)
 {
 	std::shared_ptr<BaseNode> node;
 	Result res = this->GetBaseNode(nodeID, node);
@@ -985,7 +1020,7 @@ Result Network::EnableNode(const std::uint8_t nodeID, bool enable)
 	return Result();
 }
 
-bool Network::HasControlledNodes()
+bool Network::HasControlledNodes() const
 {
 	if (this->nodeCollection.empty())
 		return false;

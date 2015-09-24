@@ -59,9 +59,9 @@ namespace IndustrialNetwork
 						StructDataType(const std::string& name, const std::string& uniqueID);
 						virtual ~StructDataType();
 
-						virtual std::uint32_t GetBitSize();
+						virtual std::uint32_t GetBitSize() const;
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddVarDeclaration(std::shared_ptr<VarDeclaration>& varDecl);
-						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::VarDeclaration>>& GetVarDeclarations();
+						const std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::VarDeclaration>>& GetVarDeclarations() const;
 
 					private:
 						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::VarDeclaration>> varDeclarationList;

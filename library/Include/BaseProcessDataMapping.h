@@ -88,10 +88,10 @@ namespace IndustrialNetwork
 
 						std::uint64_t GetValue();
 
-						std::uint32_t GetObject();
-						std::uint32_t GetSubObject();
+						std::uint32_t GetObject() const;
+						std::uint32_t GetSubObject() const;
 
-						std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject>& GetRelatedObject();
+						const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject>& GetRelatedObject() const;
 						void SetRelatedObject(std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject>& object);
 
 					private:

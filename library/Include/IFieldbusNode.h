@@ -50,17 +50,15 @@ namespace IndustrialNetwork
 			public:
 				virtual ~IFieldbusNode() {};
 
-				virtual const std::string& GetName() = 0;
+				virtual const std::string& GetName() const = 0;
 
 				virtual void SetName(const std::string& name) = 0;
 
-				virtual T GetNodeId() = 0;
+				virtual T GetNodeId() const = 0;
 
 				virtual void SetNodeId(T id) = 0;
 
-				virtual const std::map<K, std::shared_ptr<V>>& GetObjectDictionary() = 0;
-
-				virtual void SetObjectDictionary(const std::map<K, std::shared_ptr<V>>& od) = 0;
+				virtual std::map<K, std::shared_ptr<V>>& GetObjectDictionary() = 0;
 		};
 	}
 }

@@ -57,8 +57,8 @@ namespace IndustrialNetwork
 						VarDeclaration(const std::string& uniqueID, const std::string& name, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType, std::uint32_t size = 1, const std::string& initialValue = "");
 						virtual ~VarDeclaration();
 
-						virtual std::uint32_t GetBitSize();
-						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype GetDataType();
+						virtual std::uint32_t GetBitSize() const;
+						const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype& GetDataType() const;
 
 					private:
 						std::string initialValue;

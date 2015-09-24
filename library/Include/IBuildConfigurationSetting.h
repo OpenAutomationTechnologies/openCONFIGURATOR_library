@@ -57,7 +57,7 @@ namespace IndustrialNetwork
 				virtual ~IBuildConfigurationSetting()
 				{}
 
-				bool IsEnabled()
+				bool IsEnabled() const
 				{
 					return this->enabled;
 				}
@@ -67,7 +67,7 @@ namespace IndustrialNetwork
 					this->enabled = enable;
 				}
 
-				const std::string& GetDescription()
+				const std::string& GetDescription() const
 				{
 					return this->description;
 				}
@@ -77,7 +77,7 @@ namespace IndustrialNetwork
 					this->description = description;
 				}
 
-				const std::string& GetName()
+				const std::string& GetName() const
 				{
 					return this->name;
 				}
@@ -87,7 +87,7 @@ namespace IndustrialNetwork
 					this->name = name;
 				}
 
-				const std::string& GetValue()
+				const std::string& GetValue() const
 				{
 					return this->value;
 				}

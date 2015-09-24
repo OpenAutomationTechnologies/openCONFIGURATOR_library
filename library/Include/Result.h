@@ -130,7 +130,7 @@ namespace IndustrialNetwork
 				const std::string kMsgParameterGroupAlreadyExist = "ParameterGroup with uniqueID \"%s\" already exists.";
 				const std::string kMsgParameterTemplateAlreadyExist = "ParameterTemplate with uniqueID \"%s\" already exists.";
 				const std::string kMsgParameterGroupNonExisting = "ParameterGroup with uniqueID \"%s\" does not exist.";
-				const std::string kMsgParameterTemplateNonExisting = "ParameterTemplate with uniqueID \"%s\" does not exist.";				
+				const std::string kMsgParameterTemplateNonExisting = "ParameterTemplate with uniqueID \"%s\" does not exist.";
 
 				const std::string kMsgNodeIdInvalid = "NodeId \"%d\" invalid.";
 				const std::string kMsgSubIndexInvalid = "Subindex 0x%X/0x%X invalid for node %d.";
@@ -190,6 +190,19 @@ namespace IndustrialNetwork
 				const std::string kMsgCycleTimeGran = "Cycle time \"%d\" does not fit to the cycle time granularity \"%d\" of node \"%s\" (%d).";
 				const std::string kMsgIsochronousMaxPayloadExceeded = "Node %d: No. of %s-bytes mapped (%d) exceeds limit (1490, C_DLL_ISOCHR_MAX_PAYL).";
 				const std::string kMsgChainingRmnNotSupported = "PRes Chaining is not supported in combination with Redundant Managing Nodes.";
+
+				const std::string kMsgNodeIsNotAModularControlledNode = "Node with id %d is not a modular head node.";
+				const std::string kMsgInterfaceDoesNotExists = "Interface \"%s\" does not exist.";
+				const std::string kMsgInterfaceAlreadyExists = "Interface \"%s\" already exists.";
+				const std::string kMsgRangeAlreadyExists = "Range \"%s\" already exists.";
+				const std::string kMsgRangeDoesNotExists = "Range \"%s\" does not exist.";
+				const std::string kMsgRangeInvalid = "Range \"%s\" cannot be added because it has invalid attributes.";
+				const std::string kMsgRangeHasNoFreeObjects = "Range \"%s\" has no free objects.";
+				const std::string kMsgRangeIndexAlreadyTaken = "The index 0x%X  is already taken in range \"%s\".";
+				const std::string kMsgModuleDoesNotExists = "Module \"%s\" does not exist on position \"%d\".";
+				const std::string kMsgModuleAlreadyExists = "Module \"%s\" already exists on position \"%d\".";
+				const std::string kMsgModuleDoesNotMatch = "Module \"%s\" does not match module \"%s\" on position \"%d\".";
+				const std::string kMsgModulePositionOccupied = "Module \"%s\" cannot be added to the position \"%d\" because it is already occupied.";
 
 				/** \addtogroup apireturn
 				* @{

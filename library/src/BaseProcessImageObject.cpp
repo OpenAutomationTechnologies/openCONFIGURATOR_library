@@ -59,27 +59,27 @@ BaseProcessImageObject::BaseProcessImageObject(const std::string& name, IEC_Data
 BaseProcessImageObject::~BaseProcessImageObject()
 {}
 
-const std::string& BaseProcessImageObject::GetName()
+const std::string& BaseProcessImageObject::GetName() const
 {
 	return this->name;
 }
 
-IEC_Datatype BaseProcessImageObject::GetDataType()
+const IEC_Datatype& BaseProcessImageObject::GetDataType() const
 {
 	return this->dataType;
 }
 
-std::uint32_t BaseProcessImageObject::GetSize()
+std::uint32_t BaseProcessImageObject::GetSize() const
 {
 	return this->size;
 }
 
-std::uint32_t BaseProcessImageObject::GetPiOffset()
+std::uint32_t BaseProcessImageObject::GetPiOffset() const
 {
 	return this->piOffset;
 }
 
-const boost::optional<std::uint32_t>& BaseProcessImageObject::GetBitOffset()
+const boost::optional<std::uint32_t>& BaseProcessImageObject::GetBitOffset() const
 {
 	return this->bitOffset;
 }

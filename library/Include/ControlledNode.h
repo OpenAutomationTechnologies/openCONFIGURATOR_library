@@ -74,18 +74,18 @@ namespace IndustrialNetwork
 						ControlledNode(std::uint8_t nodeID, const std::string& nodeName = "");
 						virtual ~ControlledNode();
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNodeAssignment(NodeAssignment);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveNodeAssignment(NodeAssignment);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNodeAssignment(const NodeAssignment& assign);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveNodeAssignment(const NodeAssignment& assign);
 						std::uint32_t GetNodeAssignmentValue();
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetOperationMode(IndustrialNetwork::POWERLINK::Core::Node::PlkOperationMode operationMode);
-						IndustrialNetwork::POWERLINK::Core::Node::PlkOperationMode GetOperationMode();
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetOperationMode(const IndustrialNetwork::POWERLINK::Core::Node::PlkOperationMode& operationMode);
+						const IndustrialNetwork::POWERLINK::Core::Node::PlkOperationMode& GetOperationMode() const;
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapObject(std::uint32_t index, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr = 0, std::uint32_t position = 0, std::uint16_t fromNode = 0, bool updateNrOfEntries = false);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapSubObject(std::uint32_t index, std::uint16_t subindex, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir,  std::uint16_t channelNr = 0, uint32_t position = 0, std::uint16_t fromNode = 0, bool updateNrOfEntries = false);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapObject(std::uint32_t index, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir, std::uint16_t channelNr = 0, std::uint32_t position = 0, std::uint16_t fromNode = 0, bool updateNrOfEntries = false);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapSubObject(std::uint32_t index, std::uint16_t subindex, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir,  std::uint16_t channelNr = 0, uint32_t position = 0, std::uint16_t fromNode = 0, bool updateNrOfEntries = false);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapAllRxObjects(std::uint16_t channelNr, bool updateNrOfEntries);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapAllTxObjects(std::uint16_t channelNr, bool updateNrOfEntries);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MoveMappingObject(const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr, std::uint16_t oldPosition, std::uint16_t newPosition);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MoveMappingObject(const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir, std::uint16_t channelNr, std::uint16_t oldPosition, std::uint16_t newPosition);
 
 						std::uint32_t GetConfigurationObjectCount();
 						std::uint32_t GetConfigurationObjectSize();
@@ -93,25 +93,25 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CalculatePReqPayloadLimit();
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CalculatePResPayloadLimit();
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result UpdateProcessImage(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result UpdateProcessImage(const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir);
 
 						void SetNodeDataPresMnOffset(std::uint32_t offset);
-						std::uint32_t GetNodeDataPresMnOffset();
-						std::uint32_t GetNodeDataPresMnCurrentOffset();
+						std::uint32_t GetNodeDataPresMnOffset() const;
+						std::uint32_t GetNodeDataPresMnCurrentOffset() const;
 
-						bool ReceivesPResMN();
+						bool ReceivesPResMN() const;
 
 					private:
 						IndustrialNetwork::POWERLINK::Core::Node::PlkOperationMode operationMode;
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetDataObjectFromMapping(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseProcessDataMapping>& mapping, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject>& dataObject, std::string& retName);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result UpdateProcessDataMapping(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CheckProcessDataMapping(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseProcessDataMapping>& mapping, std::uint32_t expectedOffset, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapBaseObject(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject>& obj, std::uint32_t index, std::uint16_t subindex, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, bool updateNrOfEntries, std::uint16_t channelNr = 0, std::uint32_t position = 0, std::uint16_t fromNode = 0);
-						void ProcessComplexDatatype(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Parameter>& obj, const std::string& dataName, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint32_t& piOffset, std::uint32_t& bitOffset, std::uint32_t domainCount);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProcessParameterGroup(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterGroup>& grp, const std::string& dataName, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint32_t& piOffset, std::uint32_t domainCount);
-						void ProcessComplexDatatype(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::StructDataType>& obj, const std::string& dataName, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint32_t& piOffset, std::uint32_t domainCount);
-						void ProcessComplexDatatype(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ArrayDataType>& obj, const std::string& dataName, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint32_t& piOffset, std::uint32_t domainCount);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result UpdateProcessDataMapping(const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CheckProcessDataMapping(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseProcessDataMapping>& mapping, std::uint32_t expectedOffset, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapBaseObject(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject>& obj, std::uint32_t index, std::uint16_t subindex, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir, bool updateNrOfEntries, std::uint16_t channelNr = 0, std::uint32_t position = 0, std::uint16_t fromNode = 0);
+						void ProcessComplexDatatype(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Parameter>& obj, const std::string& dataName, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir, std::uint32_t& piOffset, std::uint32_t& bitOffset, std::uint32_t domainCount);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProcessParameterGroup(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterGroup>& grp, const std::string& dataName, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir, std::uint32_t& piOffset, std::uint32_t domainCount);
+						void ProcessComplexDatatype(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::StructDataType>& obj, const std::string& dataName, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir, std::uint32_t& piOffset, std::uint32_t domainCount);
+						void ProcessComplexDatatype(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ArrayDataType>& obj, const std::string& dataName, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir, std::uint32_t& piOffset, std::uint32_t domainCount);
 						//void ProcessComplexDatatype(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::EnumDataType>& obj, const std::string& dataName, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint32_t& piOffset, std::uint32_t domainCount);
 						std::uint32_t nodeDataPresMnOffset;
 						std::uint32_t nodeDataPresMnCurrentOffset;

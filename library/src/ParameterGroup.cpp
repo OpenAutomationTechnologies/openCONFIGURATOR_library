@@ -196,7 +196,7 @@ Result ParameterGroup::GetParameterGroupAccess(ParameterAccess& access)
 	}
 }
 
-bool ParameterGroup::CheckParameterGroupCondition()
+bool ParameterGroup::CheckParameterGroupCondition() const
 {
 	//if conditon is met return true
 	if (this->conditionalParameter->HasActualValue())

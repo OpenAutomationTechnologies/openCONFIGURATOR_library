@@ -69,7 +69,7 @@ namespace IndustrialNetwork
 						~PlkConfiguration();
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GenerateConfiguration(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
 
-						const std::string& GetConfigurationName();
+						const std::string& GetConfigurationName() const;
 						void SetConfigurationName(const std::string& config);
 					private:
 						std::string configurationName;

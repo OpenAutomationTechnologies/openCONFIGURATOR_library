@@ -205,17 +205,17 @@ std::uint64_t BaseProcessDataMapping::GetValue()
 	return HexToInt<uint64_t>(this->ToString(true));
 }
 
-std::uint32_t BaseProcessDataMapping::GetObject()
+std::uint32_t BaseProcessDataMapping::GetObject() const
 {
 	return this->object;
 }
 
-std::uint32_t BaseProcessDataMapping::GetSubObject()
+std::uint32_t BaseProcessDataMapping::GetSubObject() const
 {
 	return this->subobject;
 }
 
-std::shared_ptr<BaseObject>& BaseProcessDataMapping::GetRelatedObject()
+const std::shared_ptr<BaseObject>& BaseProcessDataMapping::GetRelatedObject() const
 {
 	return this->relatedObject;
 }

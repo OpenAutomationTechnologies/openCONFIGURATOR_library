@@ -62,7 +62,7 @@ BaseNode::~BaseNode()
 	this->receiveMapping.clear();
 }
 
-const std::string& BaseNode::GetName()
+const std::string& BaseNode::GetName() const
 {
 	return this->name;
 }
@@ -72,7 +72,7 @@ void BaseNode::SetName(const std::string& name)
 	this->name = name;
 }
 
-std::uint8_t BaseNode::GetNodeId()
+std::uint8_t BaseNode::GetNodeId() const
 {
 	return this->nodeId;
 }
@@ -82,14 +82,9 @@ void BaseNode::SetNodeId(std::uint8_t nodeId)
 	this->nodeId = nodeId;
 }
 
-const std::map<std::uint32_t, std::shared_ptr<Object>>& BaseNode::GetObjectDictionary()
+std::map<std::uint32_t, std::shared_ptr<Object>>& BaseNode::GetObjectDictionary()
 {
 	return objectDictionary;
-}
-
-void BaseNode::SetObjectDictionary(const std::map<std::uint32_t, std::shared_ptr<Object>>& od)
-{
-	objectDictionary = od;
 }
 
 std::vector<NodeAssignment>& BaseNode::GetNodeAssignment()
@@ -126,7 +121,7 @@ Result BaseNode::AddObject(std::shared_ptr<Object>& objRef)
 		formatter
 		% objRef->GetObjectId()
 		% (std::uint32_t) nodeId;
-		LOG_ERROR() << formatter.str();
+		//LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::OBJECT_EXISTS, formatter.str());
 	}
 
@@ -474,7 +469,7 @@ Result BaseNode::GetSubObject(std::uint32_t objectId, std::uint32_t subObjectId,
 	return iter->second->GetSubObject(subObjectId, subObjRef, enableLog);
 }
 
-bool BaseNode::IsEnabled()
+bool BaseNode::IsEnabled() const
 {
 	return this->enabled;
 }
@@ -499,7 +494,7 @@ std::vector<std::shared_ptr<BaseProcessImageObject>>& BaseNode::GetReceiveProces
 	return this->receiveProcessImage;
 }
 
-std::uint32_t BaseNode::GetTransmitProcessImageSize()
+std::uint32_t BaseNode::GetTransmitProcessImageSize() const
 {
 	std::uint32_t size = 0;
 	for (auto& transPI : this->transmitProcessImage)
@@ -509,7 +504,7 @@ std::uint32_t BaseNode::GetTransmitProcessImageSize()
 	return size;
 }
 
-std::uint32_t BaseNode::GetReceiveProcessImageSize()
+std::uint32_t BaseNode::GetReceiveProcessImageSize() const
 {
 	std::uint32_t size = 0;
 	for (auto& recPI : this->receiveProcessImage)

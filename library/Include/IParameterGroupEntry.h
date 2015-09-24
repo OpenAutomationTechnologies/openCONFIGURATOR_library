@@ -53,12 +53,12 @@ namespace IndustrialNetwork
 
 						virtual ~IParameterGroupEntry() {};
 
-						std::uint16_t GetBitOffset()
+						std::uint16_t GetBitOffset() const
 						{
 							return this->bitOffset;
 						}
 
-						const std::string& GetUniqueId()
+						const std::string& GetUniqueId() const
 						{
 							return this->uniqueId;
 						}

@@ -1,6 +1,6 @@
 /************************************************************************
-\file SubObject.h
-\brief Implementation of the Class SubObject
+\file ModuleInterface.cpp
+\brief Implementation of the Class Range
 \author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 \date 01-May-2015 12:00:00
 ************************************************************************/
@@ -29,61 +29,51 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
-#if !defined SUBOBJECT_H
-#define SUBOBJECT_H
+#include "ModuleInterface.h"
 
-#include <memory>
+using namespace IndustrialNetwork::POWERLINK::Core::ModularNode;
+using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 
-#include "BaseObject.h"
-#include "Utilities.h"
+ModuleInterface::ModuleInterface(const std::string& childId, const std::string& type, ModuleAddressing moduleAddressing, std::uint16_t minPosition, std::uint16_t maxPosition, std::uint16_t minAddress, std::uint16_t maxAddress, std::uint16_t maxCount) :
+	IBaseInterface(childId, type, moduleAddressing),
+	minPosition(minPosition),
+	maxPosition(maxPosition),
+	minAddress(minAddress),
+	maxAddress(maxAddress),
+	maxCount(maxCount)
+{}
 
-namespace IndustrialNetwork
+ModuleInterface::~ModuleInterface()
+{}
+
+std::uint16_t ModuleInterface::GetMinPosition() const
 {
-	namespace POWERLINK
-	{
-		namespace Core
-		{
-			namespace ObjectDictionary
-			{
-				class Object;
-			}
-		}
-	}
+	return this->minPosition;
 }
 
-namespace IndustrialNetwork
+std::uint16_t ModuleInterface::GetMaxPosition() const
 {
-	namespace POWERLINK
-	{
-		namespace Core
-		{
-			namespace ObjectDictionary
-			{
-				/**
-				\brief Represents the sub object in the POWERLINK node object dictionary.
-				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
-				*/
-				class DLLEXPORT SubObject : public IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject
-				{
-
-					public:
-						SubObject(std::uint32_t id, const ObjectType& objectType, const std::string& name, std::uint8_t containingNode);
-						SubObject(std::uint32_t id, const ObjectType& objectType, const std::string& name, std::uint8_t containingNode, const PlkDataType& dataType, const AccessType& accessType, const PDOMapping& pdoMapping);
-						SubObject(std::uint32_t id, const ObjectType& objectType, const std::string& name, std::uint8_t containingNode, const std::string& uniqueIdRef);
-
-						virtual ~SubObject();
-
-						std::uint32_t GetOriginalId() const;
-						std::uint32_t GetModulePosition() const;
-						void SetModulePosition(std::uint32_t position);
-
-					private:
-						std::uint32_t originalId;
-						std::uint32_t modulePosition;
-
-				};
-			}
-		}
-	}
+	return this->maxPosition;
 }
-#endif
+
+std::uint16_t ModuleInterface::GetMinAddress() const
+{
+	return this->minAddress;
+}
+
+std::uint16_t ModuleInterface::GetMaxAddress() const
+{
+	return this->maxAddress;
+}
+
+std::uint16_t ModuleInterface::GetMaxCount() const
+{
+	return this->maxCount;
+}
+
+bool ModuleInterface::ValidateModuleType(const std::string& type) const
+{
+	if (this->GetType() == type)
+		return true;
+	return false;
+}

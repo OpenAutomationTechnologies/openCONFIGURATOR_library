@@ -104,7 +104,7 @@ namespace IndustrialNetwork
 					return Result();
 				}
 
-				const std::map<std::uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::SubObject>>& Object::GetSubObjectDictionary()
+				std::map<std::uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::SubObject>>& Object::GetSubObjectDictionary()
 				{
 					return this->subIndexCollection;
 				}

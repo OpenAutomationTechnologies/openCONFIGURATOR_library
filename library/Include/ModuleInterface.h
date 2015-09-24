@@ -1,6 +1,6 @@
 /************************************************************************
-\file SubObject.h
-\brief Implementation of the Class SubObject
+\file ModuleInterface.h
+\brief Implementation of the Class ModuleInterface
 \author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 \date 01-May-2015 12:00:00
 ************************************************************************/
@@ -29,27 +29,17 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
-#if !defined SUBOBJECT_H
-#define SUBOBJECT_H
+#if !defined MODULE_INTERFACE_H
+#define MODULE_INTERFACE_H
 
-#include <memory>
+#include <cstdint>
+#include <set>
+#include <string>
 
-#include "BaseObject.h"
-#include "Utilities.h"
-
-namespace IndustrialNetwork
-{
-	namespace POWERLINK
-	{
-		namespace Core
-		{
-			namespace ObjectDictionary
-			{
-				class Object;
-			}
-		}
-	}
-}
+#include "SortEnums.h"
+#include "Range.h"
+#include "ErrorCode.h"
+#include "IBaseInterface.h"
 
 namespace IndustrialNetwork
 {
@@ -57,30 +47,32 @@ namespace IndustrialNetwork
 	{
 		namespace Core
 		{
-			namespace ObjectDictionary
+			namespace ModularNode
 			{
 				/**
-				\brief Represents the sub object in the POWERLINK node object dictionary.
+				\brief Represents a module interface in the modular controlled node.
 				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
-				class DLLEXPORT SubObject : public IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject
+				class ModuleInterface : public IBaseInterface
 				{
 
 					public:
-						SubObject(std::uint32_t id, const ObjectType& objectType, const std::string& name, std::uint8_t containingNode);
-						SubObject(std::uint32_t id, const ObjectType& objectType, const std::string& name, std::uint8_t containingNode, const PlkDataType& dataType, const AccessType& accessType, const PDOMapping& pdoMapping);
-						SubObject(std::uint32_t id, const ObjectType& objectType, const std::string& name, std::uint8_t containingNode, const std::string& uniqueIdRef);
+						ModuleInterface(const std::string& childId, const std::string& type, ModuleAddressing moduleAddressing, std::uint16_t minPosition, std::uint16_t maxPosition, std::uint16_t minAddress, std::uint16_t maxAddress, std::uint16_t maxCount);
+						virtual ~ModuleInterface();
 
-						virtual ~SubObject();
-
-						std::uint32_t GetOriginalId() const;
-						std::uint32_t GetModulePosition() const;
-						void SetModulePosition(std::uint32_t position);
+						std::uint16_t GetMinPosition() const;
+						std::uint16_t GetMaxPosition() const;
+						std::uint16_t GetMinAddress() const;
+						std::uint16_t GetMaxAddress() const;
+						std::uint16_t GetMaxCount() const;
+						bool ValidateModuleType(const std::string& type) const;
 
 					private:
-						std::uint32_t originalId;
-						std::uint32_t modulePosition;
-
+						std::uint16_t minPosition;
+						std::uint16_t maxPosition;
+						std::uint16_t minAddress;
+						std::uint16_t maxAddress;
+						std::uint16_t maxCount;
 				};
 			}
 		}

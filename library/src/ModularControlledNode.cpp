@@ -34,39 +34,492 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace IndustrialNetwork::POWERLINK::Core::Node;
 using namespace IndustrialNetwork::POWERLINK::Core::ModularNode;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
+using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
+using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 
 ModularControlledNode::ModularControlledNode(std::uint8_t nodeID, const std::string& nodeName) : ControlledNode(nodeID, nodeName),
-	maxChildren(),
-	unusedSlots(false),
-	multipleChildren(false),
-	rangeList(std::vector<std::shared_ptr<Range>>()),
-	moduleCollection(std::vector<std::shared_ptr<Module>>())
+	interfaceList(std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ModularNode::Interface>>())
 {}
 
 ModularControlledNode::~ModularControlledNode()
 {}
 
-Result AddModule(const Module&)
+Result ModularControlledNode::AddInterface(const std::string& uniqueId, const std::string& type, ModuleAddressing moduleAddressing, std::uint32_t maxModules, bool unusedSlots, bool multipleModules)
 {
+	for (auto& interf : this->interfaceList)
+	{
+		if (interf->GetUniqueId() == uniqueId)
+		{
+			boost::format formatter(kMsgInterfaceAlreadyExists);
+			formatter
+			% uniqueId;
+			LOG_ERROR() << formatter.str();
+			return Result(ErrorCode::INTERFACE_ALREADY_EXISTS, formatter.str());
+		}
+	}
+	this->interfaceList.push_back(std::shared_ptr<Interface>(new Interface(uniqueId, type, moduleAddressing, maxModules, unusedSlots, multipleModules)));
 	return Result();
 }
 
-Result ChangeModuleOrder(const Module&, std::uint32_t, bool)
+Result ModularControlledNode::GetModule(const std::string& interfaceId, const std::string& moduleId, std::uint32_t modulePosition, std::shared_ptr<Module>& moduleRet)
 {
+	for (auto& interf : this->interfaceList)
+	{
+		if (interf->GetUniqueId() == interfaceId)
+		{
+			return interf->GetModule(moduleId, modulePosition, moduleRet);
+		}
+	}
+	boost::format formatter(kMsgInterfaceDoesNotExists);
+	formatter
+	% interfaceId;
+	LOG_ERROR() << formatter.str();
+	return Result(ErrorCode::INTERFACE_DOES_NOT_EXIST, formatter.str());
+}
+
+Result ModularControlledNode::AddModule(const std::string& interfaceId, const std::string& moduleId, const std::string& moduleType, ModuleAddressing addressing, std::uint32_t modulePosition, std::uint32_t moduleAddress, const std::string& moduleName, std::uint16_t minPosition, std::uint16_t maxPosition, std::uint16_t minAddress, std::uint16_t maxAddress, std::uint16_t maxCount)
+{
+	for (auto& interf : this->interfaceList)
+	{
+		if (interf->GetUniqueId() == interfaceId)
+		{
+			return interf->AddModule(modulePosition, std::shared_ptr<Module>(new Module(this->GetNodeId(), moduleId, moduleType, addressing, moduleAddress, modulePosition, moduleName, minPosition, maxPosition, minAddress, maxAddress, maxCount)));
+		}
+	}
+	boost::format formatter(kMsgInterfaceDoesNotExists);
+	formatter
+	% interfaceId;
+	LOG_ERROR() << formatter.str();
+	return Result(ErrorCode::INTERFACE_DOES_NOT_EXIST, formatter.str());
+}
+
+Result ModularControlledNode::AddRange(const std::string& interfaceId, const std::string& name, std::uint32_t baseIndex, std::uint32_t maxIndex, std::uint32_t maxSubIndex, std::uint32_t sortStep, SortMode sortMode, SortNumber sortNumber, PDOMapping pdoMapping)
+{
+	for (auto& interf : this->interfaceList)
+	{
+		if (interf->GetUniqueId() == interfaceId)
+		{
+			if (sortNumber == SortNumber::ADDRESS && sortMode == SortMode::SUBINDEX)
+			{
+				boost::format formatter(kMsgRangeInvalid);
+				formatter
+				% name;
+				LOG_ERROR() << formatter.str();
+				return Result(ErrorCode::RANGE_INVALID);
+			}
+			std::shared_ptr<Range> range = std::shared_ptr<Range>(new Range(name, baseIndex, maxIndex, maxSubIndex, sortStep, sortMode, sortNumber, pdoMapping));
+			return interf->AddRange(range);
+		}
+	}
+	boost::format formatter(kMsgInterfaceDoesNotExists);
+	formatter
+	% interfaceId;
+	LOG_ERROR() << formatter.str();
+	return Result(ErrorCode::INTERFACE_DOES_NOT_EXIST, formatter.str());
+}
+
+Result ModularControlledNode::ChangeModuleOrderOnInterface(const std::string& interfaceId, const std::string& moduleId, std::uint32_t oldPos, std::uint32_t newPos)
+{
+	for (auto& interf : this->interfaceList)
+	{
+		if (interf->GetUniqueId() == interfaceId)
+		{
+			Result res = interf->ChangeModulePosition(moduleId, oldPos, newPos);
+			if (!res.IsSuccessful())
+				return res;
+			return this->UpdateControlledNodeOd();
+		}
+	}
+	boost::format formatter(kMsgInterfaceDoesNotExists);
+	formatter
+	% interfaceId;
+	LOG_ERROR() << formatter.str();
+	return Result(ErrorCode::INTERFACE_DOES_NOT_EXIST, formatter.str());
+}
+
+Result ModularControlledNode::RemoveModule(const std::string& interfaceId, const std::string& moduleId, std::uint32_t position)
+{
+	for (auto& interf : this->interfaceList)
+	{
+		if (interf->GetUniqueId() == interfaceId)
+		{
+			if (interf->GetModuleCollection().find(position) != interf->GetModuleCollection().end())
+			{
+				for (auto param : interf->GetModuleCollection().find(position)->second->GetParameterNameMapping())
+				{
+					Result res = this->GetApplicationProcess()->RemoveParameter(param.second);
+					if (!res.IsSuccessful())
+						return res;
+				}
+			}
+			else
+			{
+				boost::format formatter(kMsgModuleDoesNotExists);
+				formatter
+				% moduleId
+				% position;
+				LOG_ERROR() << formatter.str();
+				return Result(ErrorCode::MODULE_DOES_NOT_EXIST, formatter.str());
+			}
+
+			std::shared_ptr<Module> module;
+			Result res = this->GetModule(interfaceId, moduleId, position, module);
+			if (!res.IsSuccessful())
+				return res;
+
+			if (module->GetObjectDictionary().size() != 0)
+			{
+				std::shared_ptr<Range> range;
+				Result res = interf->GetRange(module->GetObjectDictionary().begin()->second->GetRangeSelector().get(), range);
+				if (!res.IsSuccessful())
+					return res;
+
+				for (auto& obj : module->GetObjectDictionary())
+				{
+					if (range->GetSortMode() == SortMode::INDEX)
+						this->RemoveObjectFromOd(obj.second->GetObjectId());
+					if (range->GetSortMode() == SortMode::SUBINDEX)
+						this->RemoveSubObjectsFromOd(obj.second->GetObjectId(), module->GetPosition());
+				}
+			}
+			res = interf->RemoveModule(moduleId, position);
+			if (!res.IsSuccessful())
+				return res;
+
+			return this->UpdateControlledNodeOd();
+		}
+	}
+	boost::format formatter(kMsgInterfaceDoesNotExists);
+	formatter
+	% interfaceId;
+	LOG_ERROR() << formatter.str();
+	return Result(ErrorCode::INTERFACE_DOES_NOT_EXIST, formatter.str());
+}
+
+Result ModularControlledNode::AddObjectToModule(const std::string& interfaceId, std::uint32_t modulePosition, const std::string& moduleId, const std::string& rangeSelector, std::uint32_t& objectId, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object> obj, bool createNew)
+{
+	for (auto& inter : this->interfaceList)
+	{
+		if (inter->GetUniqueId() == interfaceId)
+		{
+			std::shared_ptr<Module> module;
+			Result res = inter->GetModule(moduleId, modulePosition, module);
+			if (!res.IsSuccessful())
+				return res;
+
+			std::shared_ptr<Range> range;
+			res = inter->GetRange(rangeSelector, range);
+			if (!res.IsSuccessful())
+				return res;
+
+			std::uint32_t originalId = objectId;
+			res = range->GetNextIndex(objectId, module->GetAddress());
+			if (!res.IsSuccessful())
+				return res;
+
+			std::shared_ptr<Object> existingObj;
+			res = this->GetObject(objectId, existingObj, false);
+			if (res.IsSuccessful() && range->GetSortMode() == SortMode::SUBINDEX)
+			{
+				existingObj->SetId(originalId);
+				res = module->AddObject(existingObj);
+				if (!res.IsSuccessful())
+					return res;
+				existingObj->SetId(objectId);
+				return Result();
+			}
+			else
+			{
+				obj->SetRangeSelector(rangeSelector);
+
+				if (createNew)
+				{
+					res = module->AddObject(obj);
+					if (!res.IsSuccessful())
+						return res;
+				}
+
+				//Change object Id before adding to nodes od
+				obj->SetId(objectId);
+
+				if (range->GetPdoMpapping() != PDOMapping::UNDEFINED)
+					obj->SetPDOMapping(range->GetPdoMpapping());
+
+				if (module->IsEnabled())
+				{
+					res = this->AddObject(obj);
+					if (!res.IsSuccessful())
+						return res;
+				}
+				return Result();
+			}
+		}
+	}
+	boost::format formatter(kMsgInterfaceDoesNotExists);
+	formatter
+	% interfaceId;
+	LOG_ERROR() << formatter.str();
+	return Result(ErrorCode::INTERFACE_DOES_NOT_EXIST, formatter.str());
+}
+
+Result ModularControlledNode::AddSubObjectToModule(const std::string& interfaceId, std::uint32_t modulePosition, const std::string& moduleId, std::uint32_t& objectId, std::uint16_t& subObjectId, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::SubObject> subObj, bool createNew)
+{
+	for (auto& inter : this->interfaceList)
+	{
+		if (inter->GetUniqueId() == interfaceId)
+		{
+			std::shared_ptr<Module> module;
+			Result res = inter->GetModule(moduleId, modulePosition, module);
+			if (!res.IsSuccessful())
+				return res;
+
+			std::shared_ptr<Object> object;
+			res = module->GetObject(objectId, object);
+			if (!res.IsSuccessful())
+				return res;
+
+			std::shared_ptr<Range> range;
+			res = inter->GetRange(object->GetRangeSelector().get(), range);
+			if (!res.IsSuccessful())
+				return res;
+
+			std::uint32_t objectCurrentId = object->GetObjectId();
+			res = range->GetNextSubIndex(objectCurrentId, subObjectId, module->GetAddress());
+			if (!res.IsSuccessful())
+				return res;
+
+			subObj->SetId(subObjectId);
+			subObj->SetModulePosition(module->GetPosition());
+
+			if (createNew)
+			{
+				res = module->AddSubObject(objectId, subObj);
+				if (!res.IsSuccessful())
+					return res;
+			}
+			objectId = objectCurrentId;
+
+			if (range->GetPdoMpapping() != PDOMapping::UNDEFINED)
+				subObj->SetPDOMapping(range->GetPdoMpapping());
+
+			return Result();
+		}
+	}
+	boost::format formatter(kMsgInterfaceDoesNotExists);
+	formatter
+	% interfaceId;
+	LOG_ERROR() << formatter.str();
+	return Result(ErrorCode::INTERFACE_DOES_NOT_EXIST, formatter.str());
+}
+
+Result ModularControlledNode::EnableModule(const std::string& interfaceId, const std::string& moduleId, std::uint32_t modulePosition, bool enable)
+{
+	for (auto& interf : this->interfaceList)
+	{
+		if (interf->GetUniqueId() == interfaceId)
+		{
+			Result res = interf->EnableModule(moduleId, modulePosition, enable);
+			if (!res.IsSuccessful())
+				return res;
+			return this->UpdateControlledNodeOd();
+		}
+	}
+	boost::format formatter(kMsgInterfaceDoesNotExists);
+	formatter
+	% interfaceId;
+	LOG_ERROR() << formatter.str();
+	return Result(ErrorCode::INTERFACE_DOES_NOT_EXIST, formatter.str());
+}
+
+Result ModularControlledNode::RemoveObjectFromOd(std::uint32_t objectId)
+{
+	if (this->GetObjectDictionary().find(objectId) != this->GetObjectDictionary().end())
+	{
+		auto obj = this->GetObjectDictionary().find(objectId);
+		if (obj->second->GetRangeSelector().is_initialized())
+			this->GetObjectDictionary().erase(objectId);
+		return Result();
+	}
+	boost::format formatter(kMsgNonExistingObject);
+	formatter
+	% objectId
+	% (std::uint32_t) this->GetNodeId();
+	return Result(ErrorCode::OBJECT_DOES_NOT_EXIST, formatter.str());
+}
+
+Result ModularControlledNode::RemoveSubObjectsFromOd(std::uint32_t objectId, std::uint32_t subObjectId)
+{
+	if (this->GetObjectDictionary().find(objectId) != this->GetObjectDictionary().end())
+	{
+		auto obj = this->GetObjectDictionary().find(objectId);
+		if (obj->second->GetSubObjectDictionary().find(subObjectId) != obj->second->GetSubObjectDictionary().end())
+		{
+			obj->second->GetSubObjectDictionary().erase(obj->second->GetSubObjectDictionary().find(subObjectId));
+		}
+		return Result();
+	}
+	boost::format formatter(kMsgNonExistingObject);
+	formatter
+	% objectId
+	% (std::uint32_t) this->GetNodeId();
+	return Result(ErrorCode::OBJECT_DOES_NOT_EXIST, formatter.str());
+}
+
+Result ModularControlledNode::UpdateControlledNodeOd()
+{
+	for (auto& inter : this->interfaceList)
+	{
+		for (auto& range : inter->GetRangeList())
+		{
+			range->Reset();
+		}
+
+		for (auto& module : inter->GetModuleCollection())
+		{
+			for (auto& obj : module.second->GetObjectDictionary())
+			{
+				std::shared_ptr<Range> range;
+				Result res = inter->GetRange(obj.second->GetRangeSelector().get(), range);
+				if (!res.IsSuccessful())
+					return res;
+
+				if (range->GetSortMode() == SortMode::SUBINDEX && inter->GetModuleAddressing() == ModuleAddressing::POSITION)
+				{
+					for (auto it = obj.second->GetSubObjectDictionary().begin(); it != obj.second->GetSubObjectDictionary().end(); ++it)
+					{
+						bool moduleDisabled = false;
+
+						for (auto& mod : inter->GetModuleCollection())
+						{
+							if (mod.first == it->first && mod.second->IsEnabled() == false)
+								moduleDisabled = true;
+						}
+
+						//Module has been disabled
+						if (moduleDisabled == true)
+						{
+							inter->GetModuleCollection().at(it->first)->GetDisabledSubindices().clear();
+							if (inter->GetModuleCollection().find(it->first) != inter->GetModuleCollection().end())
+							{
+								std::pair<std::uint32_t, std::uint32_t> position = std::pair<std::uint32_t, std::uint32_t>(obj.first, it->first);
+								inter->GetModuleCollection().at(it->first)->GetDisabledSubindices().insert(std::pair<std::pair<std::uint32_t, std::uint32_t>, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::SubObject>>(position, it->second));
+
+								it = obj.second->GetSubObjectDictionary().erase(it);
+							}
+						}
+
+						if (it == obj.second->GetSubObjectDictionary().end())
+							break;
+					}
+				}
+
+				if (range->GetSortMode() == SortMode::INDEX)
+				{
+					this->RemoveObjectFromOd(obj.second->GetObjectId());
+				}
+				//if module is not enable do not add the object to the head node od
+				if (module.second->IsEnabled() == false)
+					continue;
+
+				std::uint32_t objectId = obj.first;
+				if (range->GetSortMode() == SortMode::INDEX)
+				{
+					res = this->AddObjectToModule(inter->GetUniqueId(), module.first, module.second->GetModuleId(), obj.second->GetRangeSelector().get(), objectId, obj.second, false);
+					if (!res.IsSuccessful())
+						return res;
+				}
+
+				for (auto& subObj : module.second->GetDisabledSubindices())
+				{
+					if (subObj.first.first == obj.first)
+					{
+						objectId = obj.first;
+						std::uint16_t subObjectId = (std::uint16_t) subObj.second->GetOriginalId();
+						res = this->AddSubObjectToModule(inter->GetUniqueId(), module.first, module.second->GetModuleId(), objectId, subObjectId, subObj.second, true);
+						if (!res.IsSuccessful())
+							return res;
+					}
+				}
+
+			}
+		}
+	}
 	return Result();
 }
 
-Result RemoveModule(const Module&, bool)
+Result ModularControlledNode::GetModuleObjectCurrentIndex(const std::string& interfaceId, const std::string& moduleId, std::uint32_t modulePosition, std::uint32_t originalObjectId, std::int32_t originalSubObjectId, std::uint32_t& objectId, std::int32_t& subObjectId)
 {
-	return Result();
+	for (auto& interf : this->interfaceList)
+	{
+		if (interf->GetUniqueId() == interfaceId)
+		{
+			std::shared_ptr<Module> module;
+			Result res = interf->GetModule(moduleId, modulePosition, module);
+			if (!res.IsSuccessful())
+				return res;
+
+			auto& moduleOd = module->GetObjectDictionary();
+			if (moduleOd.find(originalObjectId) != moduleOd.end())
+			{
+				if (originalSubObjectId == -1)
+				{
+					objectId = moduleOd.find(originalObjectId)->second->GetObjectId();
+					return Result();
+				}
+				else
+				{
+					for (auto& subObj : moduleOd.find(originalObjectId)->second->GetSubObjectDictionary())
+					{
+						if ((std::int32_t) subObj.second->GetOriginalId() == originalSubObjectId && subObj.second->GetModulePosition() == module->GetPosition())
+						{
+							subObjectId = subObj.first;
+							objectId = moduleOd.find(originalObjectId)->second->GetObjectId();
+							return Result();
+						}
+					}
+					boost::format formatter(kMsgNonExistingSubObject);
+					formatter
+					% originalObjectId
+					% originalSubObjectId
+					% (std::uint32_t) this->GetNodeId();
+					return Result(ErrorCode::SUBOBJECT_DOES_NOT_EXIST, formatter.str());
+				}
+			}
+			else
+			{
+				boost::format formatter(kMsgNonExistingObject);
+				formatter
+				% originalObjectId
+				% (std::uint32_t) this->GetNodeId();
+				LOG_ERROR() << formatter.str();
+				return Result(ErrorCode::OBJECT_DOES_NOT_EXIST, formatter.str());
+			}
+		}
+	}
+	boost::format formatter(kMsgInterfaceDoesNotExists);
+	formatter
+	% interfaceId;
+	LOG_ERROR() << formatter.str();
+	return Result(ErrorCode::INTERFACE_DOES_NOT_EXIST, formatter.str());
 }
 
-bool ModularControlledNode::RecalculateModularNodeOd()
+Result ModularControlledNode::GetParameterCurrentName(const std::string& interfaceId, const std::string& moduleId, std::uint32_t modulePosition, const std::string& originalParamName, std::string& parameterName)
 {
-	return false;
-}
+	for (auto& interf : this->interfaceList)
+	{
+		if (interf->GetUniqueId() == interfaceId)
+		{
+			std::shared_ptr<Module> module;
+			Result res = interf->GetModule(moduleId, modulePosition, module);
+			if (!res.IsSuccessful())
+				return res;
 
-std::uint32_t ModularControlledNode::GetModuleCount()
-{
-	return 0;
+			return module->GetMappedParameterName(originalParamName, parameterName);
+		}
+	}
+	boost::format formatter(kMsgInterfaceDoesNotExists);
+	formatter
+	% interfaceId;
+	LOG_ERROR() << formatter.str();
+	return Result(ErrorCode::INTERFACE_DOES_NOT_EXIST, formatter.str());
 }

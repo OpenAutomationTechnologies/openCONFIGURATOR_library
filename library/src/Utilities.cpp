@@ -108,7 +108,7 @@ namespace IndustrialNetwork
 					return b;
 				}
 
-				std::uint32_t GetIECDataTypeBitSize(const IEC_Datatype dataType)
+				std::uint32_t GetIECDataTypeBitSize(const IEC_Datatype& dataType)
 				{
 					switch (dataType)
 					{
@@ -237,8 +237,7 @@ namespace IndustrialNetwork
 						splitString.push_back(tempStr.substr(start, 2));
 					}
 
-					for (std::vector<std::string>::reverse_iterator i = splitString.rbegin();
-					        i != splitString.rend(); ++i)
+					for (std::vector<std::string>::reverse_iterator i = splitString.rbegin(); i != splitString.rend(); ++i)
 					{
 						reverseStr << *i;
 					}
@@ -256,8 +255,7 @@ namespace IndustrialNetwork
 						splitString.push_back(number.substr(start, 2));
 					}
 
-					for (std::vector<std::string>::reverse_iterator i = splitString.rbegin();
-					        i != splitString.rend(); ++i)
+					for (std::vector<std::string>::reverse_iterator i = splitString.rbegin(); i != splitString.rend(); ++i)
 					{
 						reverseStr << *i;
 					}
@@ -309,7 +307,7 @@ namespace IndustrialNetwork
 					return input;
 				}
 
-				IEC_Datatype GetIECDataType(const PlkDataType dataType)
+				IEC_Datatype GetIECDataType(const PlkDataType& dataType)
 				{
 					switch (dataType)
 					{
@@ -358,7 +356,7 @@ namespace IndustrialNetwork
 					}
 				}
 
-				PlkDataType GetPlkDataType(const IEC_Datatype dataType)
+				PlkDataType GetPlkDataType(const IEC_Datatype& dataType)
 				{
 					switch (dataType)
 					{
@@ -400,7 +398,7 @@ namespace IndustrialNetwork
 					return PlkDataType::UNDEFINED;
 				}
 
-				const std::string GetNetDatatypeFromIEC(IEC_Datatype iecDataType)
+				const std::string GetNetDatatypeFromIEC(const IEC_Datatype& iecDataType)
 				{
 					switch (iecDataType)
 					{
@@ -463,7 +461,7 @@ namespace IndustrialNetwork
 					}
 				}
 
-				AccessType GetAccessTypeFromParameterAccessType(ParameterAccess paramAccess)
+				AccessType GetAccessTypeFromParameterAccessType(const ParameterAccess& paramAccess)
 				{
 					switch (paramAccess)
 					{
@@ -484,6 +482,32 @@ namespace IndustrialNetwork
 							break;
 					}
 					return AccessType::UNDEFINED;
+				}
+
+				std::string ClearModuleParameterUuid(const std::string& parameterName)
+				{
+					std::string cleanedName = parameterName;
+					std::vector<std::string> strs;
+					boost::split(strs, parameterName, boost::is_any_of("_"));
+					if (IsValidUuid(strs.back()))
+					{
+						strs.pop_back();
+						cleanedName = boost::algorithm::join(strs, "_");
+					}
+					return cleanedName;
+				}
+
+				bool IsValidUuid(const std::string& maybe_uuid)
+				{
+					try
+					{
+						boost::uuids::uuid result = boost::uuids::string_generator()(maybe_uuid);
+						return result.version() != boost::uuids::uuid::version_unknown;
+					}
+					catch (const boost::exception&)
+					{
+						return false;
+					}
 				}
 			}
 		}

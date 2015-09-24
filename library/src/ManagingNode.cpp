@@ -55,7 +55,7 @@ ManagingNode::~ManagingNode()
 	this->dynamicChannelList.clear();
 }
 
-Result ManagingNode::AddNodeAssignment(NodeAssignment assign)
+Result ManagingNode::AddNodeAssignment(const NodeAssignment& assign)
 {
 	switch (assign)
 	{
@@ -104,7 +104,7 @@ Result ManagingNode::AddNodeAssignment(NodeAssignment assign)
 	return Result();
 }
 
-Result ManagingNode::RemoveNodeAssignment(NodeAssignment assign)
+Result ManagingNode::RemoveNodeAssignment(const NodeAssignment& assign)
 {
 	this->GetNodeAssignment().erase(std::remove(this->GetNodeAssignment().begin(), this->GetNodeAssignment().end(), assign), this->GetNodeAssignment().end());
 	return SetSubObjectActualValue(0x1F81, (std::uint32_t) this->GetNodeId(), IntToHex<std::uint32_t>(this->GetNodeAssignmentValue(), 0, "0x"));
@@ -317,7 +317,7 @@ std::uint32_t ManagingNode::GetConfigurationObjectSize()
 	return size;
 }
 
-std::uint16_t ManagingNode::GetRmnCount()
+std::uint16_t ManagingNode::GetRmnCount() const
 {
 	return (std::uint16_t) this->rmnList.size();
 }
@@ -892,4 +892,3 @@ void ManagingNode::ClearMappingObjects()
 		}
 	}
 }
-

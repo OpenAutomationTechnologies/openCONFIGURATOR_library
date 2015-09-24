@@ -61,10 +61,10 @@ namespace IndustrialNetwork
 					public:
 						ParameterReference(const std::string& uniqueId, const std::shared_ptr<Parameter>& param, const std::string& actualValue = "", std::uint16_t bitOffset = 0);
 						virtual ~ParameterReference();
-						const std::string& GetActualValue();
-						const boost::dynamic_bitset<>& GetActualValueBitSet();
-						const std::shared_ptr<Parameter>& GetReferencedParameter();
-						std::uint32_t GetBitSize();
+						const std::string& GetActualValue() const;
+						const boost::dynamic_bitset<>& GetActualValueBitSet() const;
+						const std::shared_ptr<Parameter>& GetReferencedParameter() const;
+						std::uint32_t GetBitSize() const;
 
 					private:
 						std::string actualValue;

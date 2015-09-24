@@ -50,16 +50,6 @@ ApplicationProcess::~ApplicationProcess()
 	this->parameterTemplateList.clear();
 }
 
-const std::vector<std::shared_ptr<Parameter>>& ApplicationProcess::GetParameterList()
-{
-	return this->parameterList;
-}
-
-const std::vector<std::shared_ptr<ComplexDataType>>& ApplicationProcess::GetDataTypeList()
-{
-	return this->datatypeList;
-}
-
 Result ApplicationProcess::AddComplexDataType(std::shared_ptr<ComplexDataType>& dt)
 {
 	for (auto& currentDt : this->datatypeList)
@@ -77,7 +67,7 @@ Result ApplicationProcess::AddComplexDataType(std::shared_ptr<ComplexDataType>& 
 	return Result();
 }
 
-Result ApplicationProcess::GetComplexDataType(const std::string& uniqueId, std::shared_ptr<ComplexDataType>& dt)
+Result ApplicationProcess::GetComplexDataType(const std::string& uniqueId, std::shared_ptr<ComplexDataType>& dt) const
 {
 	for (auto& currentDt : this->datatypeList)
 	{
@@ -151,7 +141,7 @@ Result ApplicationProcess::AddParameterTemplate(std::shared_ptr<ParameterTemplat
 	return Result();
 }
 
-Result ApplicationProcess::GetParameter(const std::string& uniqueId, std::shared_ptr<Parameter>& returnParam)
+Result ApplicationProcess::GetParameter(const std::string& uniqueId, std::shared_ptr<Parameter>& returnParam) const
 {
 	for (auto& param : this->parameterList)
 	{
@@ -174,7 +164,7 @@ Result ApplicationProcess::GetParameter(const std::string& uniqueId, std::shared
 	return Result(ErrorCode::PARAMETER_NOT_FOUND, formatter.str());
 }
 
-Result ApplicationProcess::GetParameterGroup(const std::string& uniqueId, std::shared_ptr<ParameterGroup>& returnParam)
+Result ApplicationProcess::GetParameterGroup(const std::string& uniqueId, std::shared_ptr<ParameterGroup>& returnParam) const
 {
 	for (auto& paramGrp : this->parameterGroupList)
 	{
@@ -191,7 +181,7 @@ Result ApplicationProcess::GetParameterGroup(const std::string& uniqueId, std::s
 	//LOG_ERROR() << formatter.str();
 	return Result(ErrorCode::PARAMETER_GROUP_DOES_NOT_EXIST, formatter.str());
 }
-Result ApplicationProcess::GetParameterTemplate(const std::string& uniqueId, std::shared_ptr<ParameterTemplate>& returnParam)
+Result ApplicationProcess::GetParameterTemplate(const std::string& uniqueId, std::shared_ptr<ParameterTemplate>& returnParam) const
 {
 	for (auto& paramTempl : this->parameterTemplateList)
 	{
@@ -223,7 +213,7 @@ Result ApplicationProcess::SetParameterActualValue(const std::string& uniqueId, 
 	return Result(ErrorCode::PARAMETER_NOT_FOUND, formatter.str());
 }
 
-Result ApplicationProcess::GetParameterActualValue(const std::string& uniqueId, std::string& actualValue)
+Result ApplicationProcess::GetParameterActualValue(const std::string& uniqueId, std::string& actualValue) const
 {
 	for (auto& currentParam : this->parameterList)
 	{
@@ -251,7 +241,7 @@ Result ApplicationProcess::GetParameterActualValue(const std::string& uniqueId, 
 	return Result(ErrorCode::PARAMETER_NOT_FOUND, formatter.str());
 }
 
-std::uint32_t ApplicationProcess::GetBitSize(const std::string& uniqueId)
+std::uint32_t ApplicationProcess::GetBitSize(const std::string& uniqueId) const
 {
 	for (auto& param : this->parameterList)
 	{
@@ -264,4 +254,49 @@ std::uint32_t ApplicationProcess::GetBitSize(const std::string& uniqueId)
 	% uniqueId;
 	LOG_ERROR() << formatter.str();
 	return 0;
+}
+
+Result ApplicationProcess::RemoveParameter(const std::string& uniqueId)
+{
+	for (auto it = this->datatypeList.begin(); it != this->datatypeList.end(); ++it)
+	{
+		if (it->get()->GetUniqueID() == uniqueId)
+		{
+			this->datatypeList.erase(it);
+			return Result();
+		}
+	}
+
+	for (auto it = this->parameterList.begin(); it != this->parameterList.end(); ++it)
+	{
+		if (it->get()->GetUniqueID() == uniqueId)
+		{
+			this->parameterList.erase(it);
+			return Result();
+		}
+	}
+
+	for (auto it = this->parameterGroupList.begin(); it != this->parameterGroupList.end(); ++it)
+	{
+		if (it->get()->GetUniqueId() == uniqueId)
+		{
+			this->parameterGroupList.erase(it);
+			return Result();
+		}
+	}
+
+	for (auto it = this->parameterTemplateList.begin(); it != this->parameterTemplateList.end(); ++it)
+	{
+		if (it->get()->GetUniqueID() == uniqueId)
+		{
+			this->parameterTemplateList.erase(it);
+			return Result();
+		}
+	}
+
+	boost::format formatter(kMsgParameterNotFound);
+	formatter
+	% uniqueId;
+	LOG_ERROR() << formatter.str();
+	return Result(ErrorCode::PARAMETER_NOT_FOUND, formatter.str());
 }

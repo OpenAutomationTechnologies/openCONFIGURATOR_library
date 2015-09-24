@@ -43,7 +43,7 @@ StructDataType::~StructDataType()
 	this->varDeclarationList.clear();
 }
 
-std::uint32_t StructDataType::GetBitSize()
+std::uint32_t StructDataType::GetBitSize() const
 {
 	std::uint32_t bitSize = 0;
 	for (auto& var : this->varDeclarationList)
@@ -66,7 +66,7 @@ Result StructDataType::AddVarDeclaration(std::shared_ptr<VarDeclaration>& varDec
 	return Result();
 }
 
-std::vector<std::shared_ptr<VarDeclaration>>& StructDataType::GetVarDeclarations()
+const std::vector<std::shared_ptr<VarDeclaration>>& StructDataType::GetVarDeclarations() const
 {
 	return this->varDeclarationList;
 }

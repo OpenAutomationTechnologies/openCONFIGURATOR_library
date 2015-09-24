@@ -53,6 +53,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Utilities.h"
 #include "Direction.h"
 #include "GeneralFeature.h"
+#include "ModularControlledNode.h"
 
 namespace IndustrialNetwork
 {
@@ -80,6 +81,7 @@ namespace IndustrialNetwork
 						/return Result
 						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNode(std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::ControlledNode>& node);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNode(std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ModularNode::ModularControlledNode>& node);
 
 						/**
 						/brief Adds a managing node to the network.
@@ -187,7 +189,7 @@ namespace IndustrialNetwork
 						\brief Get the active configuration.
 						\retval std::string active configuration.
 						*/
-						const std::string& GetActiveConfiguration();
+						const std::string& GetActiveConfiguration() const;
 
 						/**
 						\brief Set the active configuration.
@@ -205,21 +207,21 @@ namespace IndustrialNetwork
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GenerateConfiguration();
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetOperationMode(const std::uint8_t nodeID, const IndustrialNetwork::POWERLINK::Core::Node::PlkOperationMode mode, const std::uint8_t multiplexedCycle = 0);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetOperationMode(const std::uint8_t nodeID, const IndustrialNetwork::POWERLINK::Core::Node::PlkOperationMode& mode, const std::uint8_t multiplexedCycle = 0);
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result EnableNode(const std::uint8_t nodeID, bool enable);
 
-						bool HasControlledNodes();
+						bool HasControlledNodes() const;
 
 						/**
 						* Getter & Setter
 						*/
-						const std::string& GetNetworkId();
-						std::uint32_t GetCycleTime();
-						std::uint16_t GetAsyncMTU();
-						std::uint16_t GetMultiplexedCycleCount();
-						std::uint16_t GetPrescaler();
-						std::uint32_t GetLossOfSoCTolerance();
+						const std::string& GetNetworkId() const;
+						std::uint32_t GetCycleTime() const;
+						std::uint16_t GetAsyncMTU() const;
+						std::uint16_t GetMultiplexedCycleCount() const;
+						std::uint16_t GetPrescaler() const;
+						std::uint32_t GetLossOfSoCTolerance() const;
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetCycleTime(const std::uint32_t cycleTime);
 						void SetAsyncMTU(const std::uint16_t asyncMTU);

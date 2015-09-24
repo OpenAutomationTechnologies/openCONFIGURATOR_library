@@ -58,10 +58,10 @@ namespace IndustrialNetwork
 						EnumDataType(const std::string& uniqueID, const std::string& name, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype datatType, std::uint32_t size = 0);
 						virtual ~EnumDataType();
 
-						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype GetDataType();
+						const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype& GetDataType() const;
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddEnumValue(const std::string& name, const std::string& value);
 
-						virtual std::uint32_t GetBitSize();
+						virtual std::uint32_t GetBitSize() const;
 
 					private:
 						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType;

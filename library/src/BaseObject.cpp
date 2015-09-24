@@ -54,7 +54,8 @@ namespace IndustrialNetwork
 					dataType(boost::optional<PlkDataType>()),
 					pdoMapping(boost::optional<PDOMapping>()),
 					containingNode(containingNode),
-					actualValueNotDefaultValue(false)
+					actualValueNotDefaultValue(false),
+					rangeSelector(boost::optional<std::string>())
 				{}
 
 				BaseObject::BaseObject(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping) : IBaseObject(id, objectType, name),
@@ -68,7 +69,8 @@ namespace IndustrialNetwork
 					dataType(dataType),
 					pdoMapping(pdoMapping),
 					containingNode(containingNode),
-					actualValueNotDefaultValue(false)
+					actualValueNotDefaultValue(false),
+					rangeSelector(boost::optional<std::string>())
 				{}
 
 				BaseObject::BaseObject(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode, const std::string& uniqueIdRef) : IBaseObject(id, objectType, name),
@@ -82,7 +84,8 @@ namespace IndustrialNetwork
 					dataType(PlkDataType::Domain),
 					pdoMapping(boost::optional<PDOMapping>()),
 					containingNode(containingNode),
-					actualValueNotDefaultValue(false)
+					actualValueNotDefaultValue(false),
+					rangeSelector(boost::optional<std::string>())
 				{}
 
 				BaseObject::~BaseObject()
@@ -153,12 +156,12 @@ namespace IndustrialNetwork
 					return this->lowLimit;
 				}
 
-				const std::shared_ptr<Parameter>& BaseObject::GetReferencedParameter()
+				const std::shared_ptr<Parameter>& BaseObject::GetReferencedParameter() const
 				{
 					return this->referencedParameter;
 				}
 
-				const std::shared_ptr<ParameterGroup>& BaseObject::GetReferencedParameterGroup()
+				const std::shared_ptr<ParameterGroup>& BaseObject::GetReferencedParameterGroup() const
 				{
 					return this->referencedParameterGrp;
 				}
@@ -1410,7 +1413,7 @@ namespace IndustrialNetwork
 					return Result();
 				}
 
-				uint8_t BaseObject::GetContainingNode()
+				uint8_t BaseObject::GetContainingNode() const
 				{
 					return this->containingNode;
 				}
@@ -1565,6 +1568,16 @@ namespace IndustrialNetwork
 					this->SetActualValue(boost::any());
 					this->actualValueNotDefaultValue = false;
 					this->forceToCDC = false;
+				}
+
+				const boost::optional<std::string>& BaseObject::GetRangeSelector() const
+				{
+					return this->rangeSelector;
+				}
+
+				void BaseObject::SetRangeSelector(const std::string& rangeSelector)
+				{
+					this->rangeSelector = rangeSelector;
 				}
 			}
 		}

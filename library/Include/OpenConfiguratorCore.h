@@ -38,6 +38,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <fstream>
 
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_generators.hpp>
+#include <boost/uuid/uuid_io.hpp>
+
 #include "BaseNode.h"
 #include "Constants.h"
 #include "ProjectManager.h"
@@ -58,6 +62,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "NetProcessImageGenerator.h"
 #include "CProcessImageGenerator.h"
 #include "Direction.h"
+#include "SortEnums.h"
+#include "ModularControlledNode.h"
 
 /**
 \brief Industrial network root namespace
@@ -333,7 +339,7 @@ namespace IndustrialNetwork
 						\param assignment NodeAssignment to add to the node.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNodeAssignment(const std::string& networkId, const std::uint8_t nodeID, const IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment assignment);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNodeAssignment(const std::string& networkId, const std::uint8_t nodeID, const IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment& assignment);
 						//! Member to remove a node assignement from a specific node.
 						/*!
 						\param networkId Specifies the identifier for the new network.
@@ -341,7 +347,7 @@ namespace IndustrialNetwork
 						\param assignment NodeAssignment to be removed from a node.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveNodeAssignment(const std::string& networkId, const std::uint8_t nodeID, const IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment assignment);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveNodeAssignment(const std::string& networkId, const std::uint8_t nodeID, const IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment& assignment);
 						//! Member to return a vector of all the node assignement values of a specific node.
 						/*!
 						\param networkId Specifies the identifier for the new network.
@@ -441,15 +447,6 @@ namespace IndustrialNetwork
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result EnableNode(const std::string& networkId, const std::uint8_t nodeId, const bool enable);
-
-						//Modular Node API
-						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateModularHeadNode();
-						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateModule();
-						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetModularHeadNode();
-						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetModule();
-						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ReorderModules();
-						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DeleteModule();
-
 						//! Member to reset the operation mode of a node in the network.
 						/*!
 						\param networkId Specifies the identifier for the new network.
@@ -793,7 +790,7 @@ namespace IndustrialNetwork
 						\param fromNode Defines the cross traffic node for receive mapping.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapObjectToChannel(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr, std::uint16_t position, std::uint32_t objectIdToBeMapped, std::uint16_t fromNode, bool updateNrEntries);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapObjectToChannel(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir, std::uint16_t channelNr, std::uint16_t position, std::uint32_t objectIdToBeMapped, std::uint16_t fromNode, bool updateNrEntries);
 
 						//! Member to map a nodes data subobject within the %POWERLINK network.
 						/*!
@@ -806,7 +803,7 @@ namespace IndustrialNetwork
 						\param fromNode Defines the cross traffic node for receive mapping.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapSubObjectToChannel(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr, std::uint16_t position, std::uint32_t objectIdToBeMapped, std::uint16_t suObjectIdToBeMapped, std::uint16_t fromNode, bool updateNrEntries);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapSubObjectToChannel(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir, std::uint16_t channelNr, std::uint16_t position, std::uint32_t objectIdToBeMapped, std::uint16_t suObjectIdToBeMapped, std::uint16_t fromNode, bool updateNrEntries);
 						//! Member to map all data objects and subobjects on a node in default direction to the managing node.
 						/*!
 						\param networkId Specifies the identifier for the new network.
@@ -815,7 +812,7 @@ namespace IndustrialNetwork
 						\param updateNrOfEntries Specifies if the number of valid mapping entries should be updated to enable the generated mapping.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapAllObjectsToChannel(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr, bool updateNrEntries);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapAllObjectsToChannel(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir, std::uint16_t channelNr, bool updateNrEntries);
 						//! Member to retrieve the channel data size in bytes.
 						/*!
 						\param networkId Specifies the identifier for the new network.
@@ -824,7 +821,7 @@ namespace IndustrialNetwork
 						\param channelNr Specifies the number XX of the channel (16XX for Rx channels, 1AXX for Tx channels)
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetChannelSize(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr, std::uint32_t& size);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetChannelSize(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir, std::uint16_t channelNr, std::uint32_t& size);
 						//! Member to retrieve the channel object actual values.
 						/*!
 						\param networkId Specifies the identifier for the new network.
@@ -834,7 +831,7 @@ namespace IndustrialNetwork
 						\param objects Return map for the actual values.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetChannelActualValues(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr, std::map<std::pair<std::uint32_t, std::int32_t> , std::string>& objects);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetChannelActualValues(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir, std::uint16_t channelNr, std::map<std::pair<std::uint32_t, std::int32_t> , std::string>& objects);
 						//! Member to retrieve to move a mapping up or down in the channel.
 						/*!
 						\param networkId Specifies the identifier for the new network.
@@ -845,7 +842,7 @@ namespace IndustrialNetwork
 						\param newPosition Position to be moved to.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MoveMappingObject(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr, std::uint16_t oldPosition, std::uint16_t newPosition);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MoveMappingObject(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir, std::uint16_t channelNr, std::uint16_t oldPosition, std::uint16_t newPosition);
 						//! Member to clear a mapping actual value by its channel position.
 						/*!
 						\param networkId Specifies the identifier for the new network.
@@ -855,7 +852,7 @@ namespace IndustrialNetwork
 						\param position Position of the mapping to be cleared.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ClearMappingObject(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr, std::uint16_t position);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ClearMappingObject(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir, std::uint16_t channelNr, std::uint16_t position);
 						//! Member to clear all actual values of a channel.
 						/*!
 						\param networkId Specifies the identifier for the new network.
@@ -864,11 +861,11 @@ namespace IndustrialNetwork
 						\param channelNr Specifies the number XX of the channel (16XX for Rx channels, 1AXX for Tx channels)
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ClearMappingChannel(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ClearMappingChannel(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir, std::uint16_t channelNr);
 
-						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateOffsetGap(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr, std::uint16_t position, std::uint32_t gapSize);
+						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateOffsetGap(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir, std::uint16_t channelNr, std::uint16_t position, std::uint32_t gapSize);
 
-						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetOffsetGapSize(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr, std::uint16_t position, std::uint8_t mappingSubObjectId, std::uint32_t& gapSize);
+						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetOffsetGapSize(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir, std::uint16_t channelNr, std::uint16_t position, std::uint8_t mappingSubObjectId, std::uint32_t& gapSize);
 						/** @} */
 
 						/** \addtogroup applicationprocess
@@ -883,7 +880,7 @@ namespace IndustrialNetwork
 						\param access Specifies the parameter access type.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateParameter(const std::string& networkId, const std::uint8_t nodeId, const std::string& uniqueID, const std::string& dataTypeUniqueIDRef, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess access, bool createTemplate = false);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateParameter(const std::string& networkId, const std::uint8_t nodeId, const std::string& uniqueID, const std::string& dataTypeUniqueIDRef, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess access, bool createTemplate = false, const std::string& interfaceId = "", const std::string& moduleId = "", std::uint32_t modulePosition = 0);
 						//! Member to create a parameter with a normal datatype within a controlled nodes application process.
 						/*!
 						\param networkId Specifies the identifier for the new network.
@@ -893,9 +890,9 @@ namespace IndustrialNetwork
 						\param dataType Specifies the normal %POWERLINK datatype.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateParameter(const std::string& networkId, const std::uint8_t nodeId, const std::string& uniqueId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess access, const std::string& parameterTemplateUniqueIdRef);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateParameter(const std::string& networkId, const std::uint8_t nodeId, const std::string& uniqueId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess access, const std::string& parameterTemplateUniqueIdRef, const std::string& interfaceId = "", const std::string& moduleId = "", std::uint32_t modulePosition = 0);
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateParameter(const std::string& networkId, const std::uint8_t nodeId, const std::string& uniqueId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess access, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType, bool createTemplate = false);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateParameter(const std::string& networkId, const std::uint8_t nodeId, const std::string& uniqueId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess access, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType, bool createTemplate = false, const std::string& interfaceId = "", const std::string& moduleId = "", std::uint32_t modulePosition = 0);
 						//! Member to create a struct datatype within a controlled nodes application process.
 						/*!
 						\param networkId Specifies the identifier for the new network.
@@ -904,7 +901,7 @@ namespace IndustrialNetwork
 						\param name Specifies the name of the struct datatype.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateStructDatatype(const std::string& networkId, const std::uint8_t nodeId, const std::string& uniqueID, const std::string& name);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateStructDatatype(const std::string& networkId, const std::uint8_t nodeId, const std::string& uniqueID, const std::string& name, const std::string& interfaceId = "", const std::string& moduleId = "", std::uint32_t modulePosition = 0);
 						//! Member to create a var declaration within a controlled nodes application process.
 						/*!
 						\param networkId Specifies the identifier for the new network.
@@ -917,7 +914,7 @@ namespace IndustrialNetwork
 						\param initialValue Specifies the initial value for the var declaration.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateVarDeclaration(const std::string& networkId, const std::uint8_t nodeId, const std::string& structUniqueId, const std::string& uniqueId, const std::string& name, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype datatype, std::uint32_t size = 1, const std::string& initialValue = "");
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateVarDeclaration(const std::string& networkId, const std::uint8_t nodeId, const std::string& structUniqueId, const std::string& uniqueId, const std::string& name, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype datatype, std::uint32_t size = 1, const std::string& initialValue = "", const std::string& interfaceId = "", const std::string& moduleId = "", std::uint32_t modulePosition = 0);
 						//! Member to create an array datatype within a controlled nodes application process.
 						/*!
 						\param networkId Specifies the identifier for the new network.
@@ -929,7 +926,7 @@ namespace IndustrialNetwork
 						\param dataType Specifies the datatype of the array datatype.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateArrayDatatype(const std::string& networkId, const std::uint8_t nodeId, const std::string& uniqueID, const std::string& name, std::uint32_t lowerLimit, std::uint32_t upperLimit, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateArrayDatatype(const std::string& networkId, const std::uint8_t nodeId, const std::string& uniqueID, const std::string& name, std::uint32_t lowerLimit, std::uint32_t upperLimit, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType, const std::string& interfaceId = "", const std::string& moduleId = "", std::uint32_t modulePosition = 0);
 						//! Member to create an enum datatype within a controlled nodes application process.
 						/*!
 						\param networkId Specifies the identifier for the new network.
@@ -940,7 +937,7 @@ namespace IndustrialNetwork
 						\param size Specifies the size of the enum datatype.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateEnumDatatype(const std::string& networkId, const std::uint8_t nodeId, const std::string& uniqueID, const std::string& name, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType, std::uint32_t size = 0);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateEnumDatatype(const std::string& networkId, const std::uint8_t nodeId, const std::string& uniqueID, const std::string& name, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType, std::uint32_t size = 0, const std::string& interfaceId = "", const std::string& moduleId = "", std::uint32_t modulePosition = 0);
 						//! Member to create an enum value within a controlled nodes application process.
 						/*!
 						\param networkId Specifies the identifier for the new network.
@@ -950,7 +947,7 @@ namespace IndustrialNetwork
 						\param value Specifies the enum value.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateEnumValue(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterUniqueId, const std::string& name, const std::string& value);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateEnumValue(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterUniqueId, const std::string& name, const std::string& value, const std::string& interfaceId = "", const std::string& moduleId = "", std::uint32_t modulePosition = 0);
 						//! Member to retrieve the datatype size of a complex datatype.
 						/*!
 						\param networkId Specifies the identifier for the new network.
@@ -965,12 +962,35 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetParameterDefaultValue(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterUniqueId, const std::string& paramDefaultValue);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetParameterActualValue(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterUniqueId, const std::string& paramActualValue);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetParameterAllowedRange(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterUniqueId, const std::string& minValue, const std::string& maxValue);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateParameterGroup(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterGroupUniqueId);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateParameterGroup(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterGroupUniqueId, const std::string& parentParameterGroupUniqueId, std::uint16_t bitOffset = 0);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateParameterGroup(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterGroupUniqueId, const std::string& parentParameterGroupUniqueId, const std::string& conditionalUniqueId, const std::string& conditionalValue, std::uint16_t bitOffset = 0);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateParameterReference(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterGroupUniqueId, const std::string& parameterUniqueIdRef, const std::string& actualValue = "", std::uint16_t bitOffset = 0);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateParameterGroup(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterGroupUniqueId, const std::string& interfaceId, const std::string& moduleId, std::uint32_t modulePosition);
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateParameterGroup(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterGroupUniqueId, const std::string& parentParameterGroupUniqueId, std::uint16_t bitOffset, const std::string& interfaceId, const std::string& moduleId, std::uint32_t modulePosition);
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateParameterGroup(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterGroupUniqueId, const std::string& parentParameterGroupUniqueId, const std::string& conditionalUniqueId, const std::string& conditionalValue, std::uint16_t bitOffset, const std::string& interfaceId, const std::string& moduleId, std::uint32_t modulePosition);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateParameterReference(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterGroupUniqueId, const std::string& parameterUniqueIdRef, const std::string& actualValue, std::uint16_t bitOffset, const std::string& interfaceId, const std::string& moduleId, std::uint32_t modulePosition);
 
 						/** @} */
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateModularHeadNode(const std::string& networkId, const std::uint8_t nodeId, const std::string& nodeName);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateModuleObject(const std::string& networkId, const std::uint8_t nodeId, const std::string& interfaceId, const std::string& moduleId, std::uint32_t modulePosition, std::uint32_t objectId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ObjectType objectType, const std::string& name, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType accessType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping pdoMapping, const std::string& defaultValueToSet, const std::string& actualValueToSet, const std::string& rangeSelector);
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateModuleParameterObject(const std::string& networkId, const std::uint8_t nodeId, const std::string& interfaceId, const std::string& moduleId, std::uint32_t modulePosition, std::uint32_t objectId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ObjectType objectType, const std::string& name, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType accessType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping pdoMapping, const std::string& uniqueIdRef, const std::string& defaultValueToSet, const std::string& actualValueToSet, const std::string& rangeSelector);
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateModuleSubObject(const std::string& networkId, const std::uint8_t nodeId, const std::string& interfaceId, const std::string& moduleId, std::uint32_t modulePosition, std::uint32_t objectId, std::uint16_t subObjectId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ObjectType objectType, const std::string& name, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType accessType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping pdoMapping, const std::string& defaultValueToSet, const std::string& actualValueToSet);
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateModuleParameterSubObject(const std::string& networkId, const std::uint8_t nodeId, const std::string& interfaceId, const std::string& moduleId, std::uint32_t modulePosition, std::uint32_t objectId, std::uint16_t subObjectId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ObjectType objectType, const std::string& name, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType accessType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping pdoMapping, const std::string& uniqueIdRef, const std::string& defaultValueToSet, const std::string& actualValueToSet);
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateInterface(const std::string& networkId, const std::uint8_t nodeId, const std::string& uniqueId, const std::string& type, IndustrialNetwork::POWERLINK::Core::ModularNode::ModuleAddressing moduleAddressing, std::uint32_t maxModules, bool unusedSlots, bool multipleModules);
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateModule(const std::string& networkId, const std::uint8_t nodeId, const std::string& interfaceId, const std::string& moduleId, std::uint32_t modulePosition, std::uint32_t moduleAddress, const std::string& moduleType, const std::string& moduleName, IndustrialNetwork::POWERLINK::Core::ModularNode::ModuleAddressing moduleAddressing, std::uint16_t minPosition, std::uint16_t maxPosition, std::uint16_t minAddress, std::uint16_t maxAddress, std::uint16_t maxCount);
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateRange(const std::string& networkId, const std::uint8_t nodeId, const std::string& interfaceId, const std::string& name, std::uint32_t baseIndex, std::uint32_t maxIndex, std::uint32_t maxSubIndex, std::uint32_t sortStep, IndustrialNetwork::POWERLINK::Core::ModularNode::SortMode sortMode, IndustrialNetwork::POWERLINK::Core::ModularNode::SortNumber sortNumber, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping pdoMapping);
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveModule(const std::string& networkId, const std::uint8_t nodeId, const std::string& interfaceId, const std::string& moduleId, std::uint32_t modulePosition);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result EnableModule(const std::string& networkId, const std::uint8_t nodeId, const std::string& interfaceId, const std::string& moduleId, std::uint32_t modulePosition, bool enable);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MoveModule(const std::string& networkId, const std::uint8_t nodeId, const std::string& interfaceId, const std::string& moduleId, std::uint32_t oldPosition, std::uint32_t newPosition);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetModuleObjectCurrentIndex(const std::string& networkId, const std::uint8_t nodeId, const std::string& interfaceId, const std::string& moduleId, std::uint32_t position, std::uint32_t originalIndex, std::int32_t originalSubIndex, std::uint32_t& returnIndex, std::int32_t& returnSubIndex);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetModuleParameterCurrentName(const std::string& networkId, const std::uint8_t nodeId, const std::string& interfaceId, const std::string& moduleId, std::uint32_t position, const std::string& originalParamName, std::string& parameterName);
+
 
 					private:
 						//singleton

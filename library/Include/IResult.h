@@ -54,11 +54,11 @@ namespace IndustrialNetwork
 
 				virtual ~IResult() {};
 
-				const std::string& GetErrorMessage()
+				const std::string& GetErrorMessage() const
 				{
 					return this->errorMessage;
 				}
-				const T GetErrorType()
+				const T GetErrorType() const
 				{
 					return this->errorType;
 				}

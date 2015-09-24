@@ -70,8 +70,8 @@ namespace IndustrialNetwork
 						ManagingNode(std::uint8_t nodeID = 240, const std::string& nodeName = "");
 						virtual ~ManagingNode();
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNodeAssignment(NodeAssignment assign);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveNodeAssignment(NodeAssignment assign);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNodeAssignment(const NodeAssignment& assign);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveNodeAssignment(const NodeAssignment& assign);
 						std::uint32_t GetNodeAssignmentValue();
 
 						void AddDynamicChannel(std::shared_ptr<DynamicChannel>& channelRef);
@@ -81,7 +81,7 @@ namespace IndustrialNetwork
 						std::uint32_t GetConfigurationObjectCount();
 						std::uint32_t GetConfigurationObjectSize();
 
-						std::uint16_t GetRmnCount();
+						std::uint16_t GetRmnCount() const;
 						void AddRmnId(std::uint16_t nodeId);
 						void RemoveRmnId(std::uint16_t nodeId);
 						void ClearRmnList();

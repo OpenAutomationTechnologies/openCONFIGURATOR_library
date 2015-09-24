@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 
-ArrayDataType::ArrayDataType(const std::string& uniqueID, const std::string& name, std::uint32_t lowerLimit, std::uint32_t upperLimit, const IEC_Datatype dataType) : ComplexDataType(uniqueID, name),
+ArrayDataType::ArrayDataType(const std::string& uniqueID, const std::string& name, std::uint32_t lowerLimit, std::uint32_t upperLimit, const IEC_Datatype& dataType) : ComplexDataType(uniqueID, name),
 	lowerLimit(lowerLimit),
 	upperLimit(upperLimit),
 	dataType(dataType)
@@ -43,22 +43,22 @@ ArrayDataType::ArrayDataType(const std::string& uniqueID, const std::string& nam
 ArrayDataType::~ArrayDataType()
 {}
 
-std::uint32_t ArrayDataType::GetLowerLimit()
+std::uint32_t ArrayDataType::GetLowerLimit() const
 {
 	return this->lowerLimit;
 }
 
-std::uint32_t ArrayDataType::GetUpperLimit()
+std::uint32_t ArrayDataType::GetUpperLimit() const
 {
 	return this->upperLimit;
 }
 
-IEC_Datatype ArrayDataType::GetDataType()
+const IEC_Datatype& ArrayDataType::GetDataType() const
 {
 	return this->dataType;
 }
 
-std::uint32_t ArrayDataType::GetBitSize()
+std::uint32_t ArrayDataType::GetBitSize() const
 {
 	return (this->upperLimit - this->lowerLimit) * GetIECDataTypeBitSize(this->dataType);
 }

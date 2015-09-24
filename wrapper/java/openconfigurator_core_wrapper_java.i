@@ -73,6 +73,7 @@
 %apply std::string &INOUT { std::string & defaultValue };
 %apply std::string &INOUT { std::string & configurationOutput };
 %apply std::string &INOUT { std::string & actualValueReturn };
+%apply std::string &INOUT { std::string & parameterName };
 %apply std::string &INOUT { std::string & processImageCOutput };
 %apply std::string &INOUT { std::string & processImageXMLOutput };
 %apply std::string &INOUT { std::string & processImageNETOutput };
@@ -90,6 +91,10 @@
 %apply unsigned int& OUTPUT { unsigned int& waitNotActive };
 %apply unsigned int& OUTPUT { unsigned int& priority };
 %apply unsigned int& OUTPUT { unsigned int& gapSize };
+%apply unsigned int& OUTPUT { unsigned int& objectId };
+%apply unsigned short& OUTPUT { unsigned short& subObjectId };
+%apply unsigned int& OUTPUT { unsigned int& returnIndex };
+%apply int& OUTPUT { int& returnSubIndex };
 
 %ignore GetNetworkManagement();
 %ignore PlkFeatureDefaultValues;
@@ -98,8 +103,8 @@
 %ignore PlkFeatureStrings;
 %ignore SetComplexDataType(std::shared_ptr<Parameter>& parameter);
 %ignore SetComplexDataType(std::shared_ptr<ParameterGroup>& parameterGrp);
-%ignore GetReferencedParameter();
-%ignore GetReferencedParameterGroup();
+%ignore GetReferencedParameter() const;
+%ignore GetReferencedParameterGroup() const;
 %ignore GetRmnIds();
 %ignore IECDatatypeValues;
 %ignore ParameterAccessValues;
@@ -131,6 +136,7 @@
 #include "ManagingNode.h"
 #include "PlkFeatureEnum.h"
 #include "PlkOperationMode.h"
+#include "SortEnums.h"
 #include "OpenConfiguratorCore.h"
 
 %}
@@ -172,6 +178,7 @@
 %include "ManagingNode.h"
 %include "PlkFeatureEnum.h"
 %include "PlkOperationMode.h"
+%include "SortEnums.h"
 %include "OpenConfiguratorCore.h"
 
 namespace std {

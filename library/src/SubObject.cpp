@@ -41,17 +41,38 @@ namespace IndustrialNetwork
 		{
 			namespace ObjectDictionary
 			{
-				SubObject::SubObject(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode) : BaseObject(id, objectType, name, containingNode)
+				SubObject::SubObject(std::uint32_t id, const ObjectType& objectType, const std::string& name, std::uint8_t containingNode) : BaseObject(id, objectType, name, containingNode),
+					originalId(id),
+					modulePosition(0)
 				{}
 
-				SubObject::SubObject(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping) : BaseObject(id, objectType, name, containingNode, dataType, accessType, pdoMapping)
+				SubObject::SubObject(std::uint32_t id, const ObjectType& objectType, const std::string& name, std::uint8_t containingNode, const PlkDataType& dataType, const AccessType& accessType, const PDOMapping& pdoMapping) : BaseObject(id, objectType, name, containingNode, dataType, accessType, pdoMapping),
+					originalId(id),
+					modulePosition(0)
 				{}
 
-				SubObject::SubObject(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode, const std::string& uniqueIdRef) : BaseObject(id, objectType, name, containingNode, uniqueIdRef)
+				SubObject::SubObject(std::uint32_t id, const ObjectType& objectType, const std::string& name, std::uint8_t containingNode, const std::string& uniqueIdRef) : BaseObject(id, objectType, name, containingNode, uniqueIdRef),
+					originalId(id),
+					modulePosition(0)
 				{}
 
 				SubObject::~SubObject()
 				{}
+
+				std::uint32_t SubObject::GetOriginalId() const
+				{
+					return this->originalId;
+				}
+
+				std::uint32_t SubObject::GetModulePosition() const
+				{
+					return this->modulePosition;
+				}
+
+				void SubObject::SetModulePosition(std::uint32_t position)
+				{
+					this->modulePosition = position;
+				}
 			}
 		}
 	}

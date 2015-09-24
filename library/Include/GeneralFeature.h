@@ -61,7 +61,7 @@ namespace IndustrialNetwork
 						explicit GeneralFeature(GeneralFeatureEnum type);
 						virtual ~GeneralFeature();
 
-						const std::string& GetName();
+						const std::string& GetName() const;
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetTypedValues(const std::string& defaultValue, const std::string& actualValue);
 
 						template<class T>

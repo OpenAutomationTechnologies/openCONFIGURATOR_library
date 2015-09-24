@@ -79,8 +79,8 @@
 %ignore PlkFeatureStrings;
 %ignore SetComplexDataType(std::shared_ptr<Parameter>& parameter);
 %ignore SetComplexDataType(std::shared_ptr<ParameterGroup>& parameterGrp);
-%ignore GetReferencedParameter();
-%ignore GetReferencedParameterGroup();
+%ignore GetReferencedParameter() const;
+%ignore GetReferencedParameterGroup() const;
 %ignore ParameterAccessValues;
 %ignore PDOMappingValues;
 %ignore AccessTypeValues;
@@ -98,6 +98,11 @@
 %apply unsigned int& OUTPUT { unsigned int& waitNotActive };
 %apply unsigned int& OUTPUT { unsigned int& priority };
 %apply unsigned int& OUTPUT { unsigned int& gapSize };
+%apply unsigned int& OUTPUT { unsigned int& objectId };
+%apply unsigned short& OUTPUT { unsigned short& subObjectId };
+%apply unsigned int& OUTPUT { unsigned int& returnIndex };
+%apply int& OUTPUT { int& returnSubIndex };
+
 
 %{
 
@@ -124,6 +129,7 @@
 #include "ManagingNode.h"
 #include "PlkFeatureEnum.h"
 #include "PlkOperationMode.h"
+#include "SortEnums.h"
 #include "OpenConfiguratorCore.h"
 
 %}
@@ -168,10 +174,10 @@
 %include "ManagingNode.h"
 %include "PlkFeatureEnum.h"
 %include "PlkOperationMode.h"
+%include "SortEnums.h"
 
 %include "BaseProcessDataMapping.h"
 %include "BaseProcessImageObject.h"
-
 %include "OpenConfiguratorCore.h"
 
 

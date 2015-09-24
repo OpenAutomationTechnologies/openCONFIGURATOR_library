@@ -76,6 +76,7 @@
     <Compile Include="intResult.cs" />
     <Compile Include="ManagingNode.cs" />
     <Compile Include="MNFeatureEnum.cs" />
+    <Compile Include="ModuleAddressing.cs" />
     <Compile Include="Network.cs" />
     <Compile Include="NodeAssignment.cs" />
     <Compile Include="Object.cs" />
@@ -94,6 +95,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Result.cs" />
     <Compile Include="SettingsCollection.cs" />
+    <Compile Include="SortMode.cs" />
+    <Compile Include="SortNumber.cs" />
     <Compile Include="StringCollection.cs" />
     <Compile Include="SubObject.cs" />
     <Compile Include="SWIGTYPE_p_boost__any.cs" />
@@ -107,6 +110,7 @@
     <Compile Include="SWIGTYPE_p_std__mapT_unsigned_int_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__ObjectDictionary__Object_t_std__lessT_unsigned_int_t_t.cs" />
     <Compile Include="SWIGTYPE_p_std__mapT_unsigned_int_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__ObjectDictionary__SubObject_t_std__lessT_unsigned_int_t_t.cs" />
     <Compile Include="SWIGTYPE_p_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__Configuration__BuildConfigurationSetting_t.cs" />
+    <Compile Include="SWIGTYPE_p_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__ModularNode__ModularControlledNode_t.cs" />
     <Compile Include="SWIGTYPE_p_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__Node__BaseNode_t.cs" />
     <Compile Include="SWIGTYPE_p_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__Node__ControlledNode_t.cs" />
     <Compile Include="SWIGTYPE_p_std__shared_ptrT_IndustrialNetwork__POWERLINK__Core__Node__DynamicChannel_t.cs" />

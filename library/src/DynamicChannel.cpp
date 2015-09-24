@@ -48,37 +48,37 @@ DynamicChannel::DynamicChannel(PlkDataType dataType, DynamicChannelAccessType ac
 DynamicChannel::~DynamicChannel()
 {}
 
-PlkDataType DynamicChannel::GetDataType()
+const PlkDataType& DynamicChannel::GetDataType() const
 {
 	return this->dataType;
 }
 
-DynamicChannelAccessType DynamicChannel::GetAccessType()
+const DynamicChannelAccessType& DynamicChannel::GetAccessType() const
 {
 	return this->accessType;
 }
 
-std::uint32_t DynamicChannel::GetStartIndex()
+std::uint32_t DynamicChannel::GetStartIndex() const
 {
 	return this->startIndex;
 }
 
-std::uint32_t DynamicChannel::GetEndIndex()
+std::uint32_t DynamicChannel::GetEndIndex() const
 {
 	return this->endIndex;
 }
 
-std::uint32_t DynamicChannel::GetMaxNumber()
+std::uint32_t DynamicChannel::GetMaxNumber() const
 {
 	return this->maxNumber;
 }
 
-std::uint32_t DynamicChannel::GetAddressOffset()
+std::uint32_t DynamicChannel::GetAddressOffset() const
 {
 	return this->addressOffset;
 }
 
-const boost::optional<std::uint32_t> DynamicChannel::GetBitAlignment()
+const boost::optional<std::uint32_t>& DynamicChannel::GetBitAlignment() const
 {
 	return this->bitAlignment;
 }

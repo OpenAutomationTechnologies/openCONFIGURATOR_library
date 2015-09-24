@@ -165,7 +165,19 @@ namespace IndustrialNetwork
 					PARAMETER_TEMPLATE_EXISTS, //<! Parameter template already exists
 					PARAMETER_GROUP_DOES_NOT_EXIST, //<! Parameter group does not exist
 					PARAMETER_TEMPLATE_DOES_NOT_EXIST, //<! Parameter template does not exist
-					COMPLEX_DATATYPE_ALREADY_EXIST //!< A complex datatype already exists on a node.
+					COMPLEX_DATATYPE_ALREADY_EXIST, //!< A complex datatype already exists on a node.
+					NODE_IS_NOT_MODULAR_CONTROLLED_NODE, //!< Node is not a modular head node
+					INTERFACE_ALREADY_EXISTS, //!< Interface already exists on modular head node
+					INTERFACE_DOES_NOT_EXIST, //!< Inteface does not exist on modular head node
+					MODULE_ALREADY_EXISTS, //!< Module already exists on interface position
+					MODULE_DOES_NOT_EXIST, //!< Module does not exist on interface position
+					MODULE_ID_DOES_NOT_MATCH, //!< Module Id does not match id of existing module
+					RANGE_ALREADY_EXISTS, //!< Range already exists on interface
+					RANGE_DOES_NOT_EXIST, //!< Range does not exist on interface
+					RANGE_HAS_NO_FREE_OBJECTS, //!< A range has no free objects for any module indices or subindices
+					RANGE_INVALID, //!< Range is invalid
+					RANGE_INDEX_ALREADY_TAKEN, //!< The range index is already taken.
+					POSITION_OCCUPIED //!< Position on the interface is already occupied
 				};
 				/** @} */
 			}

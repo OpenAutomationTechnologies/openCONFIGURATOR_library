@@ -64,22 +64,22 @@ namespace IndustrialNetwork
 					public:
 						ApplicationProcess();
 						virtual ~ApplicationProcess();
-						const std::vector<std::shared_ptr<Parameter>>& GetParameterList();
-						const std::vector<std::shared_ptr<ComplexDataType>>& GetDataTypeList();
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddComplexDataType(std::shared_ptr<ComplexDataType>& dt);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetComplexDataType(const std::string& uniqueId, std::shared_ptr<ComplexDataType>& dt);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetComplexDataType(const std::string& uniqueId, std::shared_ptr<ComplexDataType>& dt) const;
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddParameter(std::shared_ptr<Parameter>& param);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddParameterGroup(std::shared_ptr<ParameterGroup>& paramGrp);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddParameterTemplate(std::shared_ptr<ParameterTemplate>& paramTempl);
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetParameter(const std::string& uniqueId, std::shared_ptr<Parameter>& returnParam);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetParameterGroup(const std::string& uniqueId, std::shared_ptr<ParameterGroup>& returnParam);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetParameterTemplate(const std::string& uniqueId, std::shared_ptr<ParameterTemplate>& returnParam);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetParameter(const std::string& uniqueId, std::shared_ptr<Parameter>& returnParam) const;
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetParameterGroup(const std::string& uniqueId, std::shared_ptr<ParameterGroup>& returnParam) const;
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetParameterTemplate(const std::string& uniqueId, std::shared_ptr<ParameterTemplate>& returnParam) const;
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetParameterActualValue(const std::string& uniqueId, const std::string& actualValue);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetParameterActualValue(const std::string& uniqueId, std::string& actualValue);
-						std::uint32_t GetBitSize(const std::string& uniqueIdRef);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetParameterActualValue(const std::string& uniqueId, std::string& actualValue) const;
+						std::uint32_t GetBitSize(const std::string& uniqueIdRef) const;
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveParameter(const std::string& uniqueId);
 
 					private:
 						std::vector<std::shared_ptr<ComplexDataType>> datatypeList;

@@ -117,7 +117,7 @@ namespace IndustrialNetwork
 					this->complexDataType = complexType;
 				}
 
-				ParameterAccess BaseParameter::GetParameterAccess() const
+				const ParameterAccess& BaseParameter::GetParameterAccess() const
 				{
 					return this->parameterAccess;
 				}

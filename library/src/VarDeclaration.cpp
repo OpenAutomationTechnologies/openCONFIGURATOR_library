@@ -42,7 +42,7 @@ VarDeclaration::VarDeclaration(const std::string& uniqueID, const std::string& n
 VarDeclaration::~VarDeclaration()
 {}
 
-std::uint32_t VarDeclaration::GetBitSize()
+std::uint32_t VarDeclaration::GetBitSize() const
 {
 	if (this->GetSize() == 0)
 		return GetIECDataTypeBitSize(this->dataType);
@@ -50,7 +50,7 @@ std::uint32_t VarDeclaration::GetBitSize()
 		return this->GetSize() * GetIECDataTypeBitSize(this->dataType);
 }
 
-IEC_Datatype VarDeclaration::GetDataType()
+const IEC_Datatype& VarDeclaration::GetDataType() const
 {
 	return this->dataType;
 }
