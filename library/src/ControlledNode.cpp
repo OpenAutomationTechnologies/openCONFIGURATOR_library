@@ -97,7 +97,7 @@ std::uint32_t ControlledNode::GetNodeAssignmentValue()
 	return static_cast<std::underlying_type<NodeAssignment>::type>(assign);
 }
 
-Result ControlledNode::MapObject(std::uint32_t index, const Direction dir, std::uint32_t position, std::uint16_t fromNode)
+Result ControlledNode::MapObject(std::uint32_t index, const Direction dir, std::uint16_t channelNr, std::uint32_t position, std::uint16_t fromNode, bool updateNrOfEntries)
 {
 	//Retrieve object to be mapped
 	std::shared_ptr<Object> objToMap;
@@ -106,10 +106,10 @@ Result ControlledNode::MapObject(std::uint32_t index, const Direction dir, std::
 		return res;
 
 	//Map object
-	return this->MapBaseObject(objToMap, index, 0, dir, false, position, fromNode);
+	return this->MapBaseObject(objToMap, index, 0, dir, updateNrOfEntries, channelNr, position, fromNode);
 }
 
-Result ControlledNode::MapSubObject(std::uint32_t index, std::uint16_t subindex, const Direction dir, std::uint32_t position, std::uint16_t fromNode)
+Result ControlledNode::MapSubObject(std::uint32_t index, std::uint16_t subindex, const Direction dir,  std::uint16_t channelNr, std::uint32_t position, std::uint16_t fromNode, bool updateNrOfEntries)
 {
 	//retrieve sub object to be mapped
 	std::shared_ptr<SubObject> objToMap;
@@ -118,10 +118,10 @@ Result ControlledNode::MapSubObject(std::uint32_t index, std::uint16_t subindex,
 		return res;
 
 	//Map subobject
-	return this->MapBaseObject(objToMap, index, subindex, dir, false, position, fromNode);
+	return this->MapBaseObject(objToMap, index, subindex, dir, updateNrOfEntries, channelNr, position, fromNode);
 }
 
-Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap, std::uint32_t index, std::uint16_t subindex, const Direction dir, bool updateNrOfEntries, std::uint32_t position, std::uint16_t fromNode)
+Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap, std::uint32_t index, std::uint16_t subindex, const Direction dir, bool updateNrOfEntries, std::uint16_t channelNr, std::uint32_t position, std::uint16_t fromNode)
 {
 	//Set fromNode for PresChained nodes
 	if (dir == Direction::RX
@@ -283,66 +283,16 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 
 	if (dir == Direction::RX)
 	{
-		bool mappingParameterFound = false;
-		//Find appropriate index for the node
-		//default mapping from managing node
-		bool writeNewMappingParameterObject = false;
-		std::shared_ptr<SubObject> mappingParameter;
-		//Traverse 0x1400 - 0x14FF
-		for (; mappingParameterIndex < 0x1500; mappingParameterIndex++)
-		{
-			//Get SubObject 0x1 "NodeID"
-			std::shared_ptr<SubObject> subObj;
-			Result res = this->GetSubObject(mappingParameterIndex, 0x1, subObj, false);
-			if (!res.IsSuccessful())
-				continue;
+		mappingObjectIndex = 0x1600 + channelNr;
+		mappingParameterIndex = 0x1400 + channelNr;
 
-			//Has actual node id value
-			if (subObj->WriteToConfiguration())
-			{
-				//Get node is value
-				std::uint16_t nodeId = subObj->GetTypedActualValue<uint16_t>();
-				//If node ids match calculate mapping object index
-				if (fromNode == nodeId)
-				{
-					mappingObjectIndex = (mappingParameterIndex - 0x1400) + 0x1600;
-					writeNewMappingParameterObject = false; //Correct
-					mappingParameterFound = true;
-					break;
-				}
-			}
-			//Take the first available mapping index usually 0x1600 for default TPDO mapping
-			else if (subObj->WriteToConfiguration() == false && fromNode == 0)
-			{
-				mappingObjectIndex = (mappingParameterIndex - 0x1400) + 0x1600;
-				writeNewMappingParameterObject = false;
-				mappingParameterFound = true;
-				break;
-			}
-			//Find and store the first available if no appropriate mapping parameter object found
-			else if (subObj->WriteToConfiguration() == false
-			         && fromNode != 0
-			         && writeNewMappingParameterObject == false) //Take the first available mapping index for a node
-			{
-				mappingObjectIndex = (mappingParameterIndex - 0x1400) + 0x1600; //Store this index if no appropriate one is found
-				writeNewMappingParameterObject = true;
-				mappingParameterFound = true;
-				mappingParameter = subObj;
-			}
-		}
-
-		//Set node id for new mapping parameter
-		if (writeNewMappingParameterObject)
-		{
-			mappingParameter->SetTypedObjectActualValue(IntToHex(fromNode, 2, "0x"));
-			mappingParameterFound = true;
-		}
-
-		//No mapping parameter has been found or is available
-		if (!mappingParameterFound)
-		{
-			return Result(ErrorCode::INSUFFICIENT_MAPPING_OBJECTS);
-		}
+		//Get SubObject 0x1 "NodeID" for the mapping parameter
+		std::shared_ptr<SubObject> subObj;
+		Result res = this->GetSubObject(mappingParameterIndex, 0x1, subObj, false);
+		if (!res.IsSuccessful())
+			return res;
+		//Set Mapping Channel
+		subObj->SetTypedObjectActualValue(IntToHex(fromNode, 2, "0x"));
 	}
 	else if (dir == Direction::TX)
 	{
@@ -475,7 +425,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 	return res;
 }
 
-Result ControlledNode::MapAllRxObjects(bool updateNrOfEntries)
+Result ControlledNode::MapAllRxObjects(std::uint16_t channelNr, bool updateNrOfEntries)
 {
 	//start on position 1
 	std::uint32_t position = 1;
@@ -486,7 +436,7 @@ Result ControlledNode::MapAllRxObjects(bool updateNrOfEntries)
 		{
 			if (obj.second->GetPDOMapping() == PDOMapping::RPDO)
 			{
-				Result res = this->MapBaseObject(obj.second, obj.first, 0, Direction::RX, updateNrOfEntries, position, 0);
+				Result res = this->MapBaseObject(obj.second, obj.first, 0, Direction::RX, updateNrOfEntries, channelNr, position, 0);
 				if (!res.IsSuccessful())
 					return res;
 				position++;
@@ -500,7 +450,7 @@ Result ControlledNode::MapAllRxObjects(bool updateNrOfEntries)
 
 			if (subobj.second->GetPDOMapping() == PDOMapping::RPDO)
 			{
-				Result res = this->MapBaseObject(subobj.second, obj.first, (std::uint16_t) subobj.first, Direction::RX, updateNrOfEntries, position, 0);
+				Result res = this->MapBaseObject(subobj.second, obj.first, (std::uint16_t) subobj.first, Direction::RX, updateNrOfEntries, channelNr, position, 0);
 				if (!res.IsSuccessful())
 					return res;
 				position++;
@@ -510,7 +460,7 @@ Result ControlledNode::MapAllRxObjects(bool updateNrOfEntries)
 	return Result();
 }
 
-Result ControlledNode::MapAllTxObjects(bool updateNrOfEntries)
+Result ControlledNode::MapAllTxObjects(std::uint16_t channelNr,  bool updateNrOfEntries)
 {
 	//start on position 1
 	std::uint32_t position = 1;
@@ -521,7 +471,7 @@ Result ControlledNode::MapAllTxObjects(bool updateNrOfEntries)
 		{
 			if (obj.second->GetPDOMapping() == PDOMapping::TPDO)
 			{
-				Result res = this->MapBaseObject(obj.second, obj.first, 0, Direction::TX, updateNrOfEntries, position, 0);
+				Result res = this->MapBaseObject(obj.second, obj.first, 0, Direction::TX, updateNrOfEntries, channelNr, position, 0);
 				if (!res.IsSuccessful())
 					return res;
 				position++;
@@ -535,7 +485,7 @@ Result ControlledNode::MapAllTxObjects(bool updateNrOfEntries)
 
 			if (subobj.second->GetPDOMapping() == PDOMapping::TPDO)
 			{
-				Result res = this->MapBaseObject(subobj.second, obj.first, (std::uint16_t) subobj.first, Direction::TX, updateNrOfEntries, position, 0);
+				Result res = this->MapBaseObject(subobj.second, obj.first, (std::uint16_t) subobj.first, Direction::TX, updateNrOfEntries, channelNr, position, 0);
 				if (!res.IsSuccessful())
 					return res;
 				position ++;

@@ -211,7 +211,7 @@ Result OpenConfiguratorCore::BuildXMLProcessImage(const std::string& networkId, 
 	return res;
 }
 
-IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result OpenConfiguratorCore::BuildNETProcessImage(const std::string& networkId, const std::uint8_t nodeid, std::string& processImageOutput)
+Result OpenConfiguratorCore::BuildNETProcessImage(const std::string& networkId, const std::uint8_t nodeid, std::string& processImageOutput)
 {
 	std::shared_ptr<Network> networkPtr;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
@@ -230,7 +230,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result OpenConfiguratorCore::
 	return res;
 }
 
-IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result OpenConfiguratorCore::BuildCProcessImage(const std::string& networkId, const std::uint8_t nodeid, std::string& processImageOutput)
+Result OpenConfiguratorCore::BuildCProcessImage(const std::string& networkId, const std::uint8_t nodeid, std::string& processImageOutput)
 {
 	std::shared_ptr<Network> networkPtr;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
@@ -1752,7 +1752,7 @@ Result OpenConfiguratorCore::GetLossOfSocTolerance(const std::string& networkId,
 	return res;
 }
 
-Result OpenConfiguratorCore::MapObject(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, const Direction dir, std::uint32_t position, std::uint16_t fromNode)
+Result OpenConfiguratorCore::MapAllObjectsToChannel(const std::string& networkId, const std::uint8_t nodeId, const Direction dir, std::uint16_t channelNr, bool updateNrEntries)
 {
 	std::shared_ptr<Network> networkPtr;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
@@ -1765,46 +1765,169 @@ Result OpenConfiguratorCore::MapObject(const std::string& networkId, const std::
 		return res;
 
 	auto cn = std::dynamic_pointer_cast<ControlledNode>(nodePtr);
-	auto mn = std::dynamic_pointer_cast<ManagingNode>(nodePtr);
 	if (cn)
 	{
-		return cn->MapObject(objectId, dir, position, fromNode);
+		if (dir == Direction::RX)
+		{
+			res =  cn->MapAllRxObjects(channelNr, updateNrEntries);
+			if (!res.IsSuccessful())
+				return cn->UpdateProcessImage(dir);
+		}
+		else if (dir == Direction::TX)
+		{
+			res =  cn->MapAllTxObjects(channelNr, updateNrEntries);
+			if (!res.IsSuccessful())
+				return cn->UpdateProcessImage(dir);
+		}
 	}
-	else if (mn)
+	return res;
+}
+
+Result OpenConfiguratorCore::MapObjectToChannel(const std::string& networkId, const std::uint8_t nodeId, const Direction dir, std::uint16_t channelNr, std::uint16_t position, std::uint32_t objectIdToBeMapped, std::uint16_t fromNode, bool updateNrEntries)
+{
+	std::shared_ptr<Network> networkPtr;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::shared_ptr<BaseNode> nodePtr;
+	res = networkPtr->GetBaseNode(nodeId, nodePtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	auto cn = std::dynamic_pointer_cast<ControlledNode>(nodePtr);
+	if (cn)
 	{
-		return mn->MapObject(objectId, dir, position, fromNode);
+		res =  cn->MapObject(objectIdToBeMapped, dir, channelNr, position, fromNode, updateNrEntries);
+		if (!res.IsSuccessful())
+			return cn->UpdateProcessImage(dir);
+	}
+	return res;
+}
+
+Result OpenConfiguratorCore::MapSubObjectToChannel(const std::string& networkId, const std::uint8_t nodeId, const Direction dir, std::uint16_t channelNr, std::uint16_t position, std::uint32_t objectIdToBeMapped, std::uint16_t suObjectIdToBeMapped, std::uint16_t fromNode, bool updateNrEntries)
+{
+	std::shared_ptr<Network> networkPtr;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::shared_ptr<BaseNode> nodePtr;
+	res = networkPtr->GetBaseNode(nodeId, nodePtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	auto cn = std::dynamic_pointer_cast<ControlledNode>(nodePtr);
+	if (cn)
+	{
+		res =  cn->MapSubObject(objectIdToBeMapped, suObjectIdToBeMapped, dir, channelNr, position, fromNode, updateNrEntries);
+		if (!res.IsSuccessful())
+			return cn->UpdateProcessImage(dir);
+	}
+	return res;
+}
+
+Result OpenConfiguratorCore::GetChannelSize(const std::string& networkId, const std::uint8_t nodeId, const Direction dir, std::uint16_t channelNr, std::uint32_t& size)
+{
+	std::shared_ptr<Network> networkPtr;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::shared_ptr<BaseNode> nodePtr;
+	res = networkPtr->GetBaseNode(nodeId, nodePtr);
+	if (!res.IsSuccessful())
+		return res;
+	std::vector<std::shared_ptr<BaseProcessDataMapping>> pi;
+	std::uint32_t channelObjectId = 0;
+
+	if (dir == Direction::RX)
+	{
+		pi = nodePtr->GetReceiveMapping();
+		channelObjectId = 0x1600 + channelNr;
+	}
+	else if (dir == Direction::TX)
+	{
+		pi = nodePtr->GetTransmitMapping();
+		channelObjectId = 0x1A00 + channelNr;
+	}
+
+	std::shared_ptr<Object> mappingChannel;
+	res = nodePtr->GetObject(channelObjectId, mappingChannel);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::uint16_t nrOfEntries = 0;
+	for (auto& channelObj : mappingChannel->GetSubObjectDictionary())
+	{
+		if (channelObj.first == 0 && channelObj.second->WriteToConfiguration())
+		{
+			nrOfEntries = channelObj.second->GetTypedActualValue<std::uint16_t>();
+			continue;
+		}
+
+		if (nrOfEntries != 0 && channelObj.second->WriteToConfiguration())
+		{
+			std::uint64_t mappingValue = channelObj.second->GetTypedActualValue<std::uint64_t>();
+			if (mappingValue != 0)
+			{
+				BaseProcessDataMapping mapping = BaseProcessDataMapping(channelObj.second->GetTypedActualValue<std::string>(), 0);
+				size += mapping.GetMappingLength() / 8;
+				nrOfEntries--;
+			}
+		}
+		else
+			break;
 	}
 
 	return res;
 }
 
-Result OpenConfiguratorCore::MapSubObject(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::uint8_t subObjectId, const Direction dir, std::uint32_t position, std::uint16_t fromNode)
+Result OpenConfiguratorCore::GetChannelActualValues(const std::string& networkId, const std::uint8_t nodeId, const Direction dir, std::uint16_t channelNr, std::map<std::pair<std::uint32_t, std::int32_t> , std::string>& objects)
 {
+	//Get the network
 	std::shared_ptr<Network> networkPtr;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
 	if (!res.IsSuccessful())
 		return res;
 
+	//Get the node
 	std::shared_ptr<BaseNode> nodePtr;
 	res = networkPtr->GetBaseNode(nodeId, nodePtr);
 	if (!res.IsSuccessful())
 		return res;
 
-	auto cn = std::dynamic_pointer_cast<ControlledNode>(nodePtr);
-	auto mn = std::dynamic_pointer_cast<ManagingNode>(nodePtr);
-	if (cn)
+	//Calculate the channel object index
+	std::uint32_t channelObjectId = 0;
+
+	if (dir == Direction::RX)
+		channelObjectId = 0x1600 + channelNr;
+	else if (dir == Direction::TX)
+		channelObjectId = 0x1A00 + channelNr;
+
+	std::shared_ptr<Object> mappingChannel;
+	res = nodePtr->GetObject(channelObjectId, mappingChannel);
+	if (!res.IsSuccessful())
+		return res;
+
+	for (auto& subobj : mappingChannel->GetSubObjectDictionary())
 	{
-		return cn->MapSubObject(objectId, subObjectId, dir, position, fromNode);
-	}
-	else if (mn)
-	{
-		return mn->MapSubObject(objectId, subObjectId, dir, position, fromNode);
+		if (subobj.second->WriteToConfiguration())
+		{
+			auto pair = std::pair<std::uint32_t, std::int32_t>(channelObjectId, subobj.first);
+			objects.insert(std::pair<std::pair<std::uint32_t, std::int32_t> , std::string>(pair, "0x" + subobj.second->GetTypedActualValue<std::string>()));
+		}
 	}
 
 	return res;
 }
 
-Result OpenConfiguratorCore::MapAllObjects(const std::string& networkId, const std::uint8_t nodeId, const Direction dir, bool updateNrOfEntries)
+Result OpenConfiguratorCore::MoveMappingObject(const std::string& networkId, const std::uint8_t nodeId, const Direction dir, std::uint16_t channelNr, std::uint16_t oldPosition, std::uint16_t newPosition)
+{
+	return Result();
+}
+
+Result OpenConfiguratorCore::ClearMappingObject(const std::string& networkId, const std::uint8_t nodeId, const Direction dir, std::uint16_t channelNr, std::uint16_t position)
 {
 	std::shared_ptr<Network> networkPtr;
 	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
@@ -1816,30 +1939,89 @@ Result OpenConfiguratorCore::MapAllObjects(const std::string& networkId, const s
 	if (!res.IsSuccessful())
 		return res;
 
-	auto cn = std::dynamic_pointer_cast<ControlledNode>(nodePtr);
-	auto mn = std::dynamic_pointer_cast<ManagingNode>(nodePtr);
-	if (cn)
-	{
-		if (dir == Direction::RX)
-		{
-			return cn->MapAllRxObjects(updateNrOfEntries);
-		}
-		else if (dir == Direction::TX)
-		{
-			return cn->MapAllTxObjects(updateNrOfEntries);
-		}
+	std::uint32_t channelObjectId = 0;
 
-	}
-	else if (mn)
+	if (dir == Direction::RX)
+		channelObjectId = 0x1600 + channelNr;
+	else if (dir == Direction::TX)
+		channelObjectId = 0x1A00 + channelNr;
+
+
+	std::shared_ptr<Object> mappingChannel;
+	res = nodePtr->GetObject(channelObjectId, mappingChannel);
+	if (!res.IsSuccessful())
+		return res;
+
+	for (auto& channelObj : mappingChannel->GetSubObjectDictionary())
 	{
-		if (dir == Direction::RX)
+		if (channelObj.first == position)
 		{
-			return mn->MapAllRxObjects(updateNrOfEntries);
-		}
-		else if (dir == Direction::TX)
-		{
-			return mn->MapAllTxObjects(updateNrOfEntries);
+			channelObj.second->SetTypedObjectActualValue("0x0");
+			break;
 		}
 	}
+
+	auto cn = std::dynamic_pointer_cast<ControlledNode>(nodePtr);
+	if (cn)
+		return cn->UpdateProcessImage(dir);
+
 	return res;
+}
+
+Result OpenConfiguratorCore::ClearMappingChannel(const std::string& networkId, const std::uint8_t nodeId, const Direction dir, std::uint16_t channelNr)
+{
+	std::shared_ptr<Network> networkPtr;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::shared_ptr<BaseNode> nodePtr;
+	res = networkPtr->GetBaseNode(nodeId, nodePtr);
+	if (!res.IsSuccessful())
+		return res;
+	std::vector<std::shared_ptr<BaseProcessDataMapping>> pi;
+	std::uint32_t channelObjectId = 0;
+
+	if (dir == Direction::RX)
+	{
+		pi = nodePtr->GetReceiveMapping();
+		channelObjectId = 0x1600 + channelNr;
+	}
+	else if (dir == Direction::TX)
+	{
+		pi = nodePtr->GetTransmitMapping();
+		channelObjectId = 0x1A00 + channelNr;
+	}
+
+	std::shared_ptr<Object> mappingChannel;
+	res = nodePtr->GetObject(channelObjectId, mappingChannel);
+	if (!res.IsSuccessful())
+		return res;
+
+	for (auto& channelObj : mappingChannel->GetSubObjectDictionary())
+	{
+		if (channelObj.first == 0)
+		{
+			channelObj.second->SetTypedObjectActualValue("0x0");
+			continue;
+		}
+		channelObj.second->SetTypedObjectActualValue("0x0");
+	}
+
+	auto cn = std::dynamic_pointer_cast<ControlledNode>(nodePtr);
+	if (cn)
+		return cn->UpdateProcessImage(dir);
+
+	return res;
+}
+
+Result OpenConfiguratorCore::CreateOffsetGap(const std::string& networkId, const std::uint8_t nodeId, const Direction dir, std::uint16_t channelNr,
+        std::uint16_t position, std::uint32_t gapSize)
+{
+	return Result();
+}
+
+Result OpenConfiguratorCore::GetOffsetGapSize(const std::string& networkId, const std::uint8_t nodeId, const Direction dir, std::uint16_t channelNr, std::uint16_t position, std::uint8_t mappingSubObjectId, std::uint32_t& gapSize)
+{
+	return Result();
 }

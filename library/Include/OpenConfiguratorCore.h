@@ -784,7 +784,8 @@ namespace IndustrialNetwork
 						\param fromNode Defines the cross traffic node for receive mapping.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapObject(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint32_t position = 0, std::uint16_t fromNode = 0);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapObjectToChannel(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr, std::uint16_t position, std::uint32_t objectIdToBeMapped, std::uint16_t fromNode, bool updateNrEntries);
+
 						//! Member to map a nodes data subobject within the %POWERLINK network.
 						/*!
 						\param networkId Specifies the identifier for the new network.
@@ -796,7 +797,7 @@ namespace IndustrialNetwork
 						\param fromNode Defines the cross traffic node for receive mapping.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapSubObject(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::uint8_t subObjectId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint32_t position = 0, std::uint16_t fromNode = 0);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapSubObjectToChannel(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr, std::uint16_t position, std::uint32_t objectIdToBeMapped, std::uint16_t suObjectIdToBeMapped, std::uint16_t fromNode, bool updateNrEntries);
 						//! Member to map all data objects and subobjects on a node in default direction to the managing node.
 						/*!
 						\param networkId Specifies the identifier for the new network.
@@ -805,7 +806,21 @@ namespace IndustrialNetwork
 						\param updateNrOfEntries Specifies if the number of valid mapping entries should be updated to enable the generated mapping.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapAllObjects(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, bool updateNrOfEntries);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapAllObjectsToChannel(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr, bool updateNrEntries);
+						
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetChannelSize(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr, std::uint32_t& size);
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetChannelActualValues(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr, std::map<std::pair<std::uint32_t, std::int32_t> , std::string>& objects);
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MoveMappingObject(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr, std::uint16_t oldPosition, std::uint16_t newPosition);
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ClearMappingObject(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr, std::uint16_t position);
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ClearMappingChannel(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr);
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateOffsetGap(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr, std::uint16_t position, std::uint32_t gapSize);
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetOffsetGapSize(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr, std::uint16_t position, std::uint8_t mappingSubObjectId, std::uint32_t& gapSize);
 						/** @} */
 
 						/** \addtogroup applicationprocess

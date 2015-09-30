@@ -79,10 +79,10 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetOperationMode(IndustrialNetwork::POWERLINK::Core::Node::PlkOperationMode operationMode);
 						IndustrialNetwork::POWERLINK::Core::Node::PlkOperationMode GetOperationMode();
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapObject(std::uint32_t index, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint32_t position = 0, uint16_t fromNode = 0);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapSubObject(std::uint32_t index, std::uint16_t subindex, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, uint32_t position = 0, std::uint16_t fromNode = 0);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapAllRxObjects(bool updateNrOfEntries);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapAllTxObjects(bool updateNrOfEntries);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapObject(std::uint32_t index, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr = 0, std::uint32_t position = 0, std::uint16_t fromNode = 0, bool updateNrOfEntries = false);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapSubObject(std::uint32_t index, std::uint16_t subindex, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir,  std::uint16_t channelNr = 0, uint32_t position = 0, std::uint16_t fromNode = 0, bool updateNrOfEntries = false);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapAllRxObjects(std::uint16_t channelNr, bool updateNrOfEntries);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapAllTxObjects(std::uint16_t channelNr, bool updateNrOfEntries);
 
 						std::uint32_t GetConfigurationObjectCount();
 						std::uint32_t GetConfigurationObjectSize();
@@ -100,7 +100,7 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetDataObjectFromMapping(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseProcessDataMapping>& mapping, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject>& returnObject);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result UpdateProcessDataMapping(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CheckProcessDataMapping(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseProcessDataMapping>& mapping, std::uint32_t expectedOffset, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapBaseObject(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject>& obj, std::uint32_t index, std::uint16_t subindex, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, bool updateNrOfEntries, std::uint32_t position = 0, std::uint16_t fromNode = 0);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapBaseObject(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject>& obj, std::uint32_t index, std::uint16_t subindex, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, bool updateNrOfEntries, std::uint16_t channelNr = 0, std::uint32_t position = 0, std::uint16_t fromNode = 0);
 						std::uint32_t nodeDataPresMnOffset;
 
 				};

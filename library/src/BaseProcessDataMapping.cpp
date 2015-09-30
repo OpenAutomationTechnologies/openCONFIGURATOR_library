@@ -43,7 +43,8 @@ BaseProcessDataMapping::BaseProcessDataMapping(std::uint32_t object, std::uint32
 	subindex(subindex),
 	offset(offset),
 	length(length),
-	staticMapping(staticMapping)
+	staticMapping(staticMapping),
+	offsetGap(0)
 {}
 
 BaseProcessDataMapping::BaseProcessDataMapping(std::uint32_t object, std::uint32_t subobject, const std::shared_ptr<BaseObject>& obj, std::uint64_t actualValue, std::uint16_t nodeId, bool staticMapping) :
@@ -55,7 +56,8 @@ BaseProcessDataMapping::BaseProcessDataMapping(std::uint32_t object, std::uint32
 	subindex(0),
 	offset(0),
 	length(0),
-	staticMapping(staticMapping)
+	staticMapping(staticMapping),
+	offsetGap(0)
 {
 	InitMappingObject(actualValue);
 }
@@ -69,7 +71,8 @@ BaseProcessDataMapping::BaseProcessDataMapping(std::uint32_t object, std::uint32
 	subindex(0),
 	offset(0),
 	length(0),
-	staticMapping(staticMapping)
+	staticMapping(staticMapping),
+	offsetGap(0)
 {
 	InitMappingObject(actualValue);
 }
@@ -83,7 +86,8 @@ BaseProcessDataMapping::BaseProcessDataMapping(const std::string& actualValue, s
 	subindex(0),
 	offset(0),
 	length(0),
-	staticMapping(staticMapping)
+	staticMapping(staticMapping),
+	offsetGap(0)
 {
 	InitMappingObject(actualValue);
 }
@@ -109,6 +113,16 @@ void BaseProcessDataMapping::InitMappingObject(const std::string& actualValue)
 	this->offset = HexToInt<std::uint16_t>(splitVector.at(1));
 	this->subindex = HexToInt<std::uint16_t>(splitVector.at(2));
 	this->index = HexToInt<std::uint32_t>(splitVector.at(3));
+}
+
+std::uint32_t BaseProcessDataMapping::GetOffsetGap() const
+{
+	return this->offsetGap;
+}
+
+void BaseProcessDataMapping::SetOffsetGap(std::uint32_t offsetGap)
+{
+	this->offsetGap = offsetGap;
 }
 
 std::uint16_t BaseProcessDataMapping::GetDestinationNode() const

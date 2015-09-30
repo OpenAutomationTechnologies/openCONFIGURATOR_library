@@ -504,22 +504,22 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::Calculat
 	return Result();
 }
 
-Result ManagingNode::MapObject(std::uint32_t, Direction, std::uint32_t, std::uint16_t)
+Result ManagingNode::MapObject(std::uint32_t, Direction, std::uint16_t, std::uint32_t, std::uint16_t, bool)
 {
 	return Result();
 }
 
-Result ManagingNode::MapSubObject(std::uint32_t, std::uint16_t, Direction, std::uint32_t, std::uint16_t)
+Result ManagingNode::MapSubObject(std::uint32_t, std::uint16_t, Direction, std::uint16_t, std::uint32_t, std::uint16_t, bool)
 {
 	return Result();
 }
 
-Result ManagingNode::MapAllRxObjects(bool)
+Result ManagingNode::MapAllRxObjects(std::uint16_t, bool)
 {
 	return Result();
 }
 
-Result ManagingNode::MapAllTxObjects(bool)
+Result ManagingNode::MapAllTxObjects(std::uint16_t, bool)
 {
 	return Result();
 }

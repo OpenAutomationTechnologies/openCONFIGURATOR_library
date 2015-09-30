@@ -66,6 +66,9 @@ namespace IndustrialNetwork
 						void InitMappingObject(std::uint64_t actualValue);
 						void InitMappingObject(const std::string& actualValue);
 
+						std::uint32_t GetOffsetGap() const;
+						void SetOffsetGap(std::uint32_t offsetGap);
+
 						std::uint16_t GetDestinationNode() const;
 						void SetDestinationNode(std::uint16_t nodeId);
 
@@ -103,6 +106,7 @@ namespace IndustrialNetwork
 						std::uint32_t length;
 
 						bool staticMapping;
+						std::uint32_t offsetGap;
 
 				};
 			}

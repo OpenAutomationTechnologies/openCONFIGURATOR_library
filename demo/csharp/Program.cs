@@ -409,7 +409,7 @@ namespace openconfigurator_core_net_app
             core.CreateObject("test", 241, 0x1800, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
             core.CreateSubObject("test", 241, 0x1800, 0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "2", "2");
             core.CreateSubObject("test", 241, 0x1800, 1, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "0");
-            core.CreateSubObject("test", 241, 0x1800, 2, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "");
+            core.CreateSubObject("test", 241, 0x1800, 2, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "2");
 
             core.CreateObject("test", 241, 0x1A00, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
             core.CreateSubObject("test", 241, 0x1A00, 0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "1");
@@ -795,14 +795,15 @@ namespace openconfigurator_core_net_app
             core.CreateObject("test", 1, 0x1400, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
             core.CreateSubObject("test", 1, 0x1400, 0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "2", "2");
             core.CreateSubObject("test", 1, 0x1400, 1, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "");
-            core.CreateSubObject("test", 1, 0x1400, 2, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "");
+            core.CreateSubObject("test", 1, 0x1400, 2, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "0", "2");
 
             core.CreateObject("test", 1, 0x1600, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
             core.CreateSubObject("test", 1, 0x1600, 0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED8, AccessType.RW, PDOMapping.DEFAULT, "2", "");
             core.CreateSubObject("test", 1, 0x1600, 1, ObjectType.VAR, "testName", PlkDataType.UNSIGNED64, AccessType.RW, PDOMapping.DEFAULT, "0x0120000000002000", "0");
             core.CreateSubObject("test", 1, 0x1600, 2, ObjectType.VAR, "testName", PlkDataType.UNSIGNED64, AccessType.RW, PDOMapping.DEFAULT, "0x0040012000012000", "0");
 
-            core.SetObjectActualValue("test", 1, 0x1006, "100000", true);
+            core.SetObjectActualValue("test", 1, 0x1006, "0", true);
+            core.SetSubObjectActualValue("test", 1, 0x1F8D, 20, "0", true);
             //Console.ReadLine();
 
             core.CreateObject("test", 1, 0x1F98, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");
@@ -1151,22 +1152,22 @@ namespace openconfigurator_core_net_app
             //Console.WriteLine(res.GetErrorMessage());
             //Console.ReadLine();
 
-            res = core.MapAllObjects("test", 10, Direction.RX, true);
+            res = core.MapAllObjectsToChannel("test", 10, Direction.RX, 1, true);
             Console.WriteLine(res.GetErrorType());
             Console.WriteLine(res.GetErrorMessage());
             Console.ReadLine();
 
-            res = core.MapAllObjects("test", 10, Direction.TX, true);
+            res = core.MapAllObjectsToChannel("test", 10, Direction.TX, 0, true);
             Console.WriteLine(res.GetErrorType());
             Console.WriteLine(res.GetErrorMessage());
             Console.ReadLine();
 
-            res = core.MapAllObjects("test", 20, Direction.TX, true);
+            res = core.MapAllObjectsToChannel("test", 20, Direction.TX, 0, true);
             Console.WriteLine(res.GetErrorType());
             Console.WriteLine(res.GetErrorMessage());
             Console.ReadLine();
 
-            res = core.MapAllObjects("test", 20, Direction.RX, true);
+            res = core.MapAllObjectsToChannel("test", 20, Direction.RX, 0, true);
             Console.WriteLine(res.GetErrorType());
             Console.WriteLine(res.GetErrorMessage());
             Console.ReadLine();
@@ -1272,8 +1273,7 @@ namespace openconfigurator_core_net_app
             core.GetSubObjectActualValue("test", 240, 0x1f81, 0x5, out assign);
             Console.WriteLine(assign);
             //Console.ReadLine();
-            
-            
+        
             res = core.RemoveNode("test", 1);
             Console.WriteLine(res.IsSuccessful());
             core.EnableNode("test", 10, false);
@@ -1288,7 +1288,19 @@ namespace openconfigurator_core_net_app
 
             res = core.BuildConfiguration("test", out tempString, binString);
             Console.WriteLine(tempString);
-            Console.WriteLine(res.IsSuccessful());
+            Console.WriteLine(res.IsSuccessful());    
+            
+            uint channelSize = 0;
+            core.GetChannelSize("test", 10, Direction.RX, 1, out channelSize);
+            Console.WriteLine(channelSize);
+
+            channelSize = 0;
+            core.GetChannelSize("test", 10, Direction.TX, 1, out channelSize);
+            Console.WriteLine(channelSize);
+
+            channelSize = 0;
+            core.GetChannelSize("test", 10, Direction.TX, 0, out channelSize);
+            Console.WriteLine(channelSize);
 
             //Console.ReadLine();
             res = core.RemoveNetwork("test");

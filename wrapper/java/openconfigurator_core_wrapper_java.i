@@ -89,6 +89,7 @@
 %apply unsigned int& OUTPUT { unsigned int& lossOfSocTolerance };
 %apply unsigned int& OUTPUT { unsigned int& waitNotActive };
 %apply unsigned int& OUTPUT { unsigned int& priority };
+%apply unsigned int& OUTPUT { unsigned int& gapSize };
 
 %ignore GetNetworkManagement();
 %ignore PlkFeatureDefaultValues;

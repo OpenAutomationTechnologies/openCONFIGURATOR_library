@@ -368,7 +368,7 @@ Result ConfigurationGenerator::WriteMappingObjects(const std::shared_ptr<BaseNod
 		{
 			for (auto& subobject : object.second->GetSubObjectDictionary())
 			{
-				if (subobject.second->WriteToConfiguration() && subobject.first == 1)
+				if (subobject.second->WriteToConfiguration() && (subobject.first == 0x1 || subobject.first == 0x2))
 				{
 					configurationOutput << std::hex << std::uppercase << object.first;
 					configurationOutput << "\t";
