@@ -888,15 +888,15 @@ Result ControlledNode::UpdateProcessImage(Direction dir)
 				{
 					std::stringstream nameBuilder;
 					nameBuilder << "CN" << IntToHex<std::uint32_t>((std::uint32_t) this->GetNodeId(), 2);
-					nameBuilder << ".";
+					nameBuilder << "_";
 					nameBuilder << "DOM";
 					nameBuilder << IntToHex<std::uint32_t>(domainCount, 2);
-					nameBuilder	<< ".";
+					nameBuilder	<< "_";
 					nameBuilder << "VAR";
 					nameBuilder << IntToHex<std::uint32_t>(varCount, 2);
-					nameBuilder	<< ".";
+					nameBuilder	<< "_";
 					nameBuilder << structDt->GetName();
-					nameBuilder << ".";
+					nameBuilder << "_";
 					nameBuilder << varDecl->GetName();
 
 					if (varDecl->GetDataType() == IEC_Datatype::BITSTRING)
@@ -942,13 +942,13 @@ Result ControlledNode::UpdateProcessImage(Direction dir)
 				{
 					std::stringstream nameBuilder;
 					nameBuilder << "CN" << IntToHex<std::uint32_t>((std::uint32_t) this->GetNodeId(), 2);
-					nameBuilder << ".";
+					nameBuilder << "_";
 					nameBuilder << "DOM";
 					nameBuilder << IntToHex<std::uint32_t>(domainCount, 2);
-					nameBuilder	<< ".";
+					nameBuilder	<< "_";
 					nameBuilder << "VAR";
 					nameBuilder << IntToHex<std::uint32_t>(i, 2);
-					nameBuilder	<< ".";
+					nameBuilder	<< "_";
 					nameBuilder << arrayDt->GetName();
 
 					if (arrayDt->GetDataType() == IEC_Datatype::BITSTRING)
