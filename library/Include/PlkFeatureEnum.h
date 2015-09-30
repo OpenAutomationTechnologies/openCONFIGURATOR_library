@@ -134,7 +134,8 @@ namespace IndustrialNetwork
 					NMTNetTimeIsRealTime,
 					NMTRelativeTime,
 					NMTSimpleBoot,
-					PDOTPDOChannels
+					PDOTPDOChannels,
+					NMTMNRedundancy
 				};
 
 				enum CNFeatureEnum
@@ -229,6 +230,7 @@ namespace IndustrialNetwork
 					"NMTRelativeTime",
 					"NMTSimpleBoot",
 					"PDOTPDOChannels",
+					"NMTMNRedundancy",
 					"DLLCNFeatureMultiplex",
 					"DLLCNPResChaining",
 					"NMTCNSoC2PReq"
@@ -318,6 +320,7 @@ namespace IndustrialNetwork
 					"false",
 					"",
 					"256",
+					"false",
 					"false",
 					"false",
 					""

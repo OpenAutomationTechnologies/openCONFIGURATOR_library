@@ -783,6 +783,9 @@ Result PlkConfiguration::SyncRedundantManagingNodes(const std::map<std::uint8_t,
 		std::shared_ptr<ManagingNode> rmn = std::dynamic_pointer_cast<ManagingNode>(node.second);
 		if (rmn)
 		{
+			//Set RMN support on MN and distribute to all RMNs
+			mn->SetObjectActualValue(0x1F80, "0x4800");
+
 			rmn->ClearMappingObjects();
 
 			for (auto& obj : mn->GetObjectDictionary())
