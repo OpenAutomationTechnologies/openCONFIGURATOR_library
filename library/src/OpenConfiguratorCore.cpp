@@ -1192,6 +1192,16 @@ Result OpenConfiguratorCore::GetObjectsWithActualValue(const std::string& networ
 	return res;
 }
 
+Result OpenConfiguratorCore::SetNodeId(const std::string& networkId, const std::uint8_t nodeId, const std::uint8_t newNodeId)
+{
+	std::shared_ptr<Network> network;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+	if (!res.IsSuccessful())
+		return res;
+
+	return network->SetNodeId(nodeId, newNodeId);
+}
+
 Result OpenConfiguratorCore::SetNodeName(const std::string& networkId, const std::uint8_t nodeId, const std::string& nodeName)
 {
 	std::shared_ptr<Network> network;

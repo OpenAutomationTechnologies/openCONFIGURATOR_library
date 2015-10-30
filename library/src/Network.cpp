@@ -242,6 +242,89 @@ Result Network::RemoveNode(const std::uint8_t nodeID)
 	return Result();
 }
 
+Result Network::SetNodeId(const std::uint8_t nodeId, const std::uint8_t newNodeId)
+{
+	if (nodeId == 240)
+		return Result(ErrorCode::NODEID_INVALID);
+
+	auto it = this->nodeCollection.find(nodeId);
+	if (it == this->nodeCollection.end())
+	{
+		//Node does not exist
+		boost::format formatter(kMsgNonExistingNode);
+		formatter
+		% (std::uint32_t) nodeId;
+		LOG_FATAL() << formatter.str();
+		return Result(ErrorCode::NODE_DOES_NOT_EXIST, formatter.str());
+	}
+
+	auto ite = this->nodeCollection.find(newNodeId);
+	if (ite != this->nodeCollection.end())
+	{
+		//Node does not exist
+		boost::format formatter(kMsgExistingNode);
+		formatter
+		% (std::uint32_t) newNodeId;
+		LOG_FATAL() << formatter.str();
+		return Result(ErrorCode::NODE_EXISTS, formatter.str());
+	}
+
+	if (std::dynamic_pointer_cast<ManagingNode>(it->second))//if RMN nodeId is changed
+	{
+		std::shared_ptr<ManagingNode> mn;
+		Result res = this->GetManagingNode(mn);
+		if (!res.IsSuccessful())
+			return res;
+		mn->RemoveRmnId((std::uint16_t) nodeId); //Remove the old RMN Id from MN
+		mn->AddRmnId((std::uint16_t) newNodeId); //Add the new RMN id to MN
+
+	}
+
+	it->second->SetNodeId(newNodeId);
+	this->nodeCollection.insert(std::pair<std::uint8_t, std::shared_ptr<BaseNode>>(newNodeId, it->second));
+	this->nodeCollection.erase(nodeId);
+
+	//Remove CN related MN and RMN objects
+	for (auto& node : this->nodeCollection)
+	{
+		if(node.first == newNodeId)
+			continue;
+
+		if (std::dynamic_pointer_cast<ManagingNode>(node.second))
+		{
+			//Reset 0x1F26 / nodeID
+			node.second->ForceSubObject(0x1F26, nodeId, false, "");
+			//Reset 0x1F27 / nodeID
+			node.second->ForceSubObject(0x1F27, nodeId, false, "");
+			//Reset 0x1F81 / nodeID
+			node.second->ForceSubObject(0x1F81, nodeId, false, "");
+			//Reset 0x1F9B / nodeID
+			node.second->ForceSubObject(0x1F9B, nodeId, false, "", false);
+			//Reset 0x1F92 / nodeID
+			node.second->ForceSubObject(0x1F92, nodeId, false, "");
+			//Reset 0x1F8B / nodeID
+			node.second->ForceSubObject(0x1F8B, nodeId, false, "");
+			//Reset 0x1C09 / nodeID
+			node.second->ForceSubObject(0x1C09, nodeId, false, "");
+			//Reset 0x1F8D / nodeID from all CNs
+			node.second->ForceSubObject(0x1F8D, nodeId, false, "");
+		}
+		else
+		{
+			//Reset 0x1F8D / nodeID from all CNs
+			node.second->ForceSubObject(0x1F8D, nodeId, false, "");
+			//Reset 0x1F8B / nodeID
+			node.second->ForceSubObject(0x1F8B, nodeId, false, "", false);
+			//Reset 0x1F9B / nodeID from all CNs
+			node.second->ForceSubObject(0x1F9B, nodeId, false, "", false);
+		}
+
+		node.second->ChangeMappingChannelNodeId(nodeId, newNodeId);
+	}
+
+	return Result();
+}
+
 Result Network::GetNodes(std::map<std::uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
 	nodeCollection = this->nodeCollection;

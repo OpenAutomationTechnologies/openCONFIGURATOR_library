@@ -102,6 +102,8 @@ namespace IndustrialNetwork
 						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetBaseNode(const std::uint8_t nodeID, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node);
 
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetNodeId(const std::uint8_t nodeId, const std::uint8_t newNodeId);
+
 						/**
 						/brief Retrieve the current managing node from the network.
 						/param[in] node reference.

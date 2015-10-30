@@ -450,3 +450,97 @@ std::uint32_t BaseNode::GetReceiveProcessImageSize()
 	}
 	return size;
 }
+
+void BaseNode::ChangeMappingChannelNodeId(const std::uint8_t nodeId, const std::uint8_t newNodeId)
+{
+	for (auto obj : this->GetObjectDictionary())
+	{
+		if (obj.first >= 0x1400 && obj.first <= 0x14FF
+		        || obj.first >= 0x1800 && obj.first <= 0x18FF)
+		{
+			std::shared_ptr<SubObject> subObj;
+			Result res = obj.second->GetSubObject(0x1, subObj);
+			if (!res.IsSuccessful())
+				continue;
+
+			if (subObj->HasActualValue())
+			{
+				if (subObj->GetTypedActualValue<std::uint16_t>() == nodeId)
+				{
+					subObj->SetTypedObjectActualValue(IntToHex((std::uint16_t)newNodeId, 2, "0x"));
+				}
+			}
+		}
+	}
+
+	for (auto map : this->GetReceiveMapping())
+	{
+		if (map->GetDestinationNode() == nodeId)
+			map->SetDestinationNode(newNodeId);
+	}
+
+	for (auto map : this->GetTransmitMapping())
+	{
+		if (map->GetDestinationNode() == nodeId)
+			map->SetDestinationNode(newNodeId);
+	}
+}
+
+void BaseNode::ClearMappingChannelforNode(const std::uint8_t nodeId)
+{
+	for (auto obj : this->GetObjectDictionary())
+	{
+		if ((obj.first >= 0x1400) && (obj.first <= 0x14FF))
+		{
+			std::shared_ptr<SubObject> subObj;
+			Result res = obj.second->GetSubObject(0x1, subObj);
+			if (!res.IsSuccessful())
+				continue;
+
+			if (subObj->HasActualValue())
+			{
+				if (subObj->GetTypedActualValue<std::uint16_t>() == nodeId)
+				{
+					subObj->ClearActualValue();
+
+					std::uint32_t mappingIndex = (obj.first - 0x1400) + 0x1600;
+					std::shared_ptr<Object> mappingObj;
+					Result res = this->GetObject(mappingIndex, mappingObj);
+					if (!res.IsSuccessful())
+						continue;
+
+					for (auto map : mappingObj->GetSubObjectDictionary())
+					{
+						map.second->SetTypedObjectActualValue("0x0");
+					}
+				}
+			}
+		}
+		else if ((obj.first >= 0x1800) && (obj.first <= 0x18FF))
+		{
+			std::shared_ptr<SubObject> subObj;
+			Result res = obj.second->GetSubObject(0x1, subObj);
+			if (!res.IsSuccessful())
+				continue;
+
+			if (subObj->HasActualValue())
+			{
+				if (subObj->GetTypedActualValue<std::uint16_t>() == nodeId)
+				{
+					subObj->ClearActualValue();
+
+					std::uint32_t mappingIndex = (obj.first - 0x1800) + 0x1A00;
+					std::shared_ptr<Object> mappingObj;
+					Result res = this->GetObject(mappingIndex, mappingObj);
+					if (!res.IsSuccessful())
+						continue;
+
+					for (auto map : mappingObj->GetSubObjectDictionary())
+					{
+						map.second->SetTypedObjectActualValue("0x0");
+					}
+				}
+			}
+		}
+	}
+}

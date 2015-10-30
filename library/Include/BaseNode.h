@@ -121,6 +121,9 @@ namespace IndustrialNetwork
 						std::uint32_t GetTransmitProcessImageSize();
 						std::uint32_t GetReceiveProcessImageSize();
 
+						void ChangeMappingChannelNodeId(const std::uint8_t nodeId, const std::uint8_t newNodeId); 
+						void ClearMappingChannelforNode(const std::uint8_t nodeId); 
+
 					private:
 						std::uint8_t nodeId;
 						std::string name;

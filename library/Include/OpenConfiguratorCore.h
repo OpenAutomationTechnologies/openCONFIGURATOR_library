@@ -215,6 +215,7 @@ namespace IndustrialNetwork
 						/** \addtogroup prop
 						* @{
 						*/
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetNodeId(const std::string& networkId, const std::uint8_t nodeId, const std::uint8_t newNodeId);
 						//! Member to set the name of a specific node.
 						/*!
 						\param networkId Specifies the identifier for the new network.
