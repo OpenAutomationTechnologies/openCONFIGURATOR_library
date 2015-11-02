@@ -819,9 +819,9 @@ namespace IndustrialNetwork
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ClearMappingChannel(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr);
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateOffsetGap(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr, std::uint16_t position, std::uint32_t gapSize);
+						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateOffsetGap(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr, std::uint16_t position, std::uint32_t gapSize);
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetOffsetGapSize(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr, std::uint16_t position, std::uint8_t mappingSubObjectId, std::uint32_t& gapSize);
+						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetOffsetGapSize(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr, std::uint16_t position, std::uint8_t mappingSubObjectId, std::uint32_t& gapSize);
 						/** @} */
 
 						/** \addtogroup applicationprocess

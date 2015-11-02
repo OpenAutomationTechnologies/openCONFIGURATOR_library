@@ -1304,8 +1304,10 @@ namespace openconfigurator_core_net_app
             core.EnableNode("test", 10, true);
             Console.WriteLine(res.IsSuccessful());
 
-            core.SetNodeId("test", 10, 11);
-            Console.WriteLine(res.IsSuccessful());    
+            //core.SetNodeId("test", 10, 11);
+            //Console.WriteLine(res.IsSuccessful());    
+
+            core.MoveMappingObject("test", 10, Direction.TX, 0, 1, 2);
 
             res = core.BuildConfiguration("test", out tempString, binString);
             Console.WriteLine(tempString);

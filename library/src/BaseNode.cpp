@@ -455,8 +455,8 @@ void BaseNode::ChangeMappingChannelNodeId(const std::uint8_t nodeId, const std::
 {
 	for (auto obj : this->GetObjectDictionary())
 	{
-		if (obj.first >= 0x1400 && obj.first <= 0x14FF
-		        || obj.first >= 0x1800 && obj.first <= 0x18FF)
+		if ((obj.first >= 0x1400 && obj.first <= 0x14FF)
+		        || (obj.first >= 0x1800 && obj.first <= 0x18FF))
 		{
 			std::shared_ptr<SubObject> subObj;
 			Result res = obj.second->GetSubObject(0x1, subObj);
@@ -511,7 +511,7 @@ void BaseNode::ClearMappingChannelforNode(const std::uint8_t nodeId)
 
 					for (auto map : mappingObj->GetSubObjectDictionary())
 					{
-						map.second->SetTypedObjectActualValue("0x0");
+						map.second->ClearActualValue();
 					}
 				}
 			}
@@ -537,7 +537,7 @@ void BaseNode::ClearMappingChannelforNode(const std::uint8_t nodeId)
 
 					for (auto map : mappingObj->GetSubObjectDictionary())
 					{
-						map.second->SetTypedObjectActualValue("0x0");
+						map.second->ClearActualValue();
 					}
 				}
 			}

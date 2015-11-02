@@ -279,7 +279,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 
 	//Calculate mapping parameter
 	std::uint32_t mappingObjectIndex = 0;
-	std::uint32_t mappingParameterIndex = 0x1400;
+	std::uint32_t mappingParameterIndex = 0;
 
 	if (dir == Direction::RX)
 	{
@@ -341,7 +341,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 		if (nrOfEntries == position)
 		{
 			//there is an existing mapping retrieve the offset
-			if (tMapping.second->WriteToConfiguration())
+			if (tMapping.second->WriteToConfiguration() && tMapping.second->GetTypedActualValue<std::uint64_t>() != 0)
 			{
 				BaseProcessDataMapping object = BaseProcessDataMapping(tMapping.second->GetTypedActualValue<std::string>(), this->GetNodeId(), false);
 				offset = object.GetMappingOffset();
@@ -1316,4 +1316,78 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 void ControlledNode::SetNodeDataPresMnOffset(std::uint32_t offset)
 {
 	this->nodeDataPresMnOffset = offset;
+}
+
+Result ControlledNode::MoveMappingObject(const Direction dir, std::uint16_t channelNr, std::uint16_t oldPosition, std::uint16_t newPosition)
+{
+	if (oldPosition == newPosition)
+		return Result();
+
+	std::uint32_t channelObjectId = 0;
+	bool foundOldValue = false;
+	bool foundNewValue = false;
+	std::shared_ptr<SubObject> oldValue;
+	std::shared_ptr<SubObject> newValue;
+
+	if (dir == Direction::RX)
+		channelObjectId = 0x1600 + channelNr;
+	else if (dir == Direction::TX)
+		channelObjectId = 0x1A00 + channelNr;
+
+
+	std::shared_ptr<Object> mappingChannel;
+	Result res = this->GetObject(channelObjectId, mappingChannel);
+	if (!res.IsSuccessful())
+		return res;
+
+	for (auto& channelObj : mappingChannel->GetSubObjectDictionary())
+	{
+		if (channelObj.first == oldPosition && foundOldValue == false)
+		{
+			oldValue = channelObj.second;
+			foundOldValue = true;
+			continue;
+		}
+		else if (channelObj.first == newPosition && foundNewValue == false)
+		{
+			newValue = channelObj.second;
+			foundNewValue = true;
+			continue;
+		}
+
+		if (foundNewValue && foundOldValue)
+			break;
+	}
+
+	std::string newValueStr = "0x" + newValue->GetTypedActualValue<std::string>();
+	std::string oldValueStr = "0x" + oldValue->GetTypedActualValue<std::string>();
+
+	//Switch the mappings
+	if (newValue->HasActualValue())
+		oldValue->SetTypedObjectActualValue(newValueStr); //prefix otherwise the it will assume dec value
+	if (oldValue->HasActualValue())
+		newValue->SetTypedObjectActualValue(oldValueStr);
+
+	//Recalculate Offset
+	std::uint32_t mappingOffset = 0;
+	std::uint32_t mappingSize = 0;
+	for (auto& channelObj : mappingChannel->GetSubObjectDictionary())
+	{
+		if (channelObj.first == 0)
+			continue;
+
+		if (channelObj.second->HasActualValue())
+		{
+			if (channelObj.second->GetTypedActualValue<std::uint64_t>() != 0)
+			{
+				BaseProcessDataMapping mappingValue = BaseProcessDataMapping(channelObj.second->GetTypedActualValue<std::string>(), 0);
+				mappingValue.SetMappingOffset(mappingOffset + mappingSize);
+				mappingOffset = mappingValue.GetMappingOffset();
+				mappingSize = mappingValue.GetMappingLength();
+
+				channelObj.second->SetTypedObjectActualValue(mappingValue.ToString(true));
+			}
+		}
+	}
+	return this->UpdateProcessImage(dir);
 }

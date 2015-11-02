@@ -1848,19 +1848,12 @@ Result OpenConfiguratorCore::GetChannelSize(const std::string& networkId, const 
 	res = networkPtr->GetBaseNode(nodeId, nodePtr);
 	if (!res.IsSuccessful())
 		return res;
-	std::vector<std::shared_ptr<BaseProcessDataMapping>> pi;
 	std::uint32_t channelObjectId = 0;
 
 	if (dir == Direction::RX)
-	{
-		pi = nodePtr->GetReceiveMapping();
 		channelObjectId = 0x1600 + channelNr;
-	}
 	else if (dir == Direction::TX)
-	{
-		pi = nodePtr->GetTransmitMapping();
 		channelObjectId = 0x1A00 + channelNr;
-	}
 
 	std::shared_ptr<Object> mappingChannel;
 	res = nodePtr->GetObject(channelObjectId, mappingChannel);
@@ -1922,7 +1915,7 @@ Result OpenConfiguratorCore::GetChannelActualValues(const std::string& networkId
 
 	for (auto& subobj : mappingChannel->GetSubObjectDictionary())
 	{
-		if (subobj.second->WriteToConfiguration())
+		if (subobj.second->WriteToConfiguration() || subobj.second->HasActualValue())
 		{
 			auto pair = std::pair<std::uint32_t, std::int32_t>(channelObjectId, subobj.first);
 			objects.insert(std::pair<std::pair<std::uint32_t, std::int32_t> , std::string>(pair, "0x" + subobj.second->GetTypedActualValue<std::string>()));
@@ -1934,7 +1927,21 @@ Result OpenConfiguratorCore::GetChannelActualValues(const std::string& networkId
 
 Result OpenConfiguratorCore::MoveMappingObject(const std::string& networkId, const std::uint8_t nodeId, const Direction dir, std::uint16_t channelNr, std::uint16_t oldPosition, std::uint16_t newPosition)
 {
-	return Result();
+	std::shared_ptr<Network> networkPtr;
+	Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::shared_ptr<BaseNode> nodePtr;
+	res = networkPtr->GetBaseNode(nodeId, nodePtr);
+	if (!res.IsSuccessful())
+		return res;
+
+	auto cn = std::dynamic_pointer_cast<ControlledNode>(nodePtr);
+	if (cn)
+		return cn->MoveMappingObject(dir, channelNr, oldPosition, newPosition);
+
+	return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE);
 }
 
 Result OpenConfiguratorCore::ClearMappingObject(const std::string& networkId, const std::uint8_t nodeId, const Direction dir, std::uint16_t channelNr, std::uint16_t position)
@@ -1989,19 +1996,13 @@ Result OpenConfiguratorCore::ClearMappingChannel(const std::string& networkId, c
 	res = networkPtr->GetBaseNode(nodeId, nodePtr);
 	if (!res.IsSuccessful())
 		return res;
-	std::vector<std::shared_ptr<BaseProcessDataMapping>> pi;
+	
 	std::uint32_t channelObjectId = 0;
 
 	if (dir == Direction::RX)
-	{
-		pi = nodePtr->GetReceiveMapping();
 		channelObjectId = 0x1600 + channelNr;
-	}
 	else if (dir == Direction::TX)
-	{
-		pi = nodePtr->GetTransmitMapping();
 		channelObjectId = 0x1A00 + channelNr;
-	}
 
 	std::shared_ptr<Object> mappingChannel;
 	res = nodePtr->GetObject(channelObjectId, mappingChannel);
@@ -2025,13 +2026,13 @@ Result OpenConfiguratorCore::ClearMappingChannel(const std::string& networkId, c
 	return res;
 }
 
-Result OpenConfiguratorCore::CreateOffsetGap(const std::string& networkId, const std::uint8_t nodeId, const Direction dir, std::uint16_t channelNr,
-        std::uint16_t position, std::uint32_t gapSize)
-{
-	return Result();
-}
-
-Result OpenConfiguratorCore::GetOffsetGapSize(const std::string& networkId, const std::uint8_t nodeId, const Direction dir, std::uint16_t channelNr, std::uint16_t position, std::uint8_t mappingSubObjectId, std::uint32_t& gapSize)
-{
-	return Result();
-}
+//Result OpenConfiguratorCore::CreateOffsetGap(const std::string& networkId, const std::uint8_t nodeId, const Direction dir, std::uint16_t channelNr,
+//        std::uint16_t position, std::uint32_t gapSize)
+//{
+//	return Result();
+//}
+//
+//Result OpenConfiguratorCore::GetOffsetGapSize(const std::string& networkId, const std::uint8_t nodeId, const Direction dir, std::uint16_t channelNr, std::uint16_t position, std::uint8_t mappingSubObjectId, std::uint32_t& gapSize)
+//{
+//	return Result();
+//}

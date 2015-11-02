@@ -238,6 +238,8 @@ Result Network::RemoveNode(const std::uint8_t nodeID)
 			//Reset 0x1F9B / nodeID from all CNs
 			node.second->ForceSubObject(0x1F9B, nodeID, false, "");
 		}
+
+		node.second->ClearMappingChannelforNode(nodeID);
 	}
 	return Result();
 }

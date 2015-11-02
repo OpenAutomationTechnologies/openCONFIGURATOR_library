@@ -102,11 +102,16 @@ void BaseProcessDataMapping::InitMappingObject(std::uint64_t actualValue)
 
 void BaseProcessDataMapping::InitMappingObject(const std::string& actualValue)
 {
+	// Strip prefix if necessary
+	std::string valueStr = (actualValue.substr(0, 2) == "0x")
+	                       ? actualValue.substr(2)
+	                       : actualValue;
+
 	//Split into 4 octets pieces
 	std::vector<std::string> splitVector;
-	for (std::uint32_t i = 0; i < actualValue.size();)
+	for (std::uint32_t i = 0; i < valueStr.size();)
 	{
-		splitVector.push_back(actualValue.substr(i, 4).insert(0, "0x"));
+		splitVector.push_back(valueStr.substr(i, 4).insert(0, "0x"));
 		i += 4;
 	}
 	this->length = HexToInt<std::uint16_t>(splitVector.at(0));
