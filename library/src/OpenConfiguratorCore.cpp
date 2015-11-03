@@ -1279,23 +1279,12 @@ Result OpenConfiguratorCore::SetPResTimeOut(const std::string& networkId, const 
 	if (!res.IsSuccessful())
 		return res;
 
-	std::shared_ptr<BaseNode> node;
-	res = network->GetBaseNode(nodeId, node);
+	std::shared_ptr<ManagingNode> mnPtr;
+	res = network->GetManagingNode(mnPtr);
 	if (!res.IsSuccessful())
 		return res;
 
-	auto ptr = std::dynamic_pointer_cast<ControlledNode>(node);
-	if (ptr)
-		res = ptr->ForceSubObject(0x1F92, (std::uint32_t) nodeId, false, IntToHex(presTimeout, 8, "0x"));
-	else
-	{
-		boost::format formatter(kMsgNonControlledNode);
-		formatter
-		% nodeId;
-		LOG_FATAL() << formatter.str();
-		return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE, formatter.str());
-	}
-	return res;
+	return mnPtr->ForceSubObject(0x1F92, (std::uint32_t) nodeId, false, IntToHex(presTimeout, 8, "0x"));
 }
 
 Result OpenConfiguratorCore::SetRedundantManagingNodeWaitNotActive(const std::string& networkId, const std::uint8_t nodeId, const std::uint32_t waitNotActive)
@@ -1996,7 +1985,7 @@ Result OpenConfiguratorCore::ClearMappingChannel(const std::string& networkId, c
 	res = networkPtr->GetBaseNode(nodeId, nodePtr);
 	if (!res.IsSuccessful())
 		return res;
-	
+
 	std::uint32_t channelObjectId = 0;
 
 	if (dir == Direction::RX)
