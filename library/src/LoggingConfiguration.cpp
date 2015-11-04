@@ -164,23 +164,29 @@ namespace IndustrialNetwork
 						    keywords::format =
 						        (
 						            expr::stream
-						            << "!ENTRY org.epsg.openconfigurator.core "
+						            /* << "!ENTRY org.epsg.openconfigurator.core " */
+						            << "["
+						            << expr::format_date_time(timestamp, "%Y-%m-%d %H:%M:%S")
+						            << "] "
 						            << expr::if_(logging::trivial::severity == logging::trivial::info)
 						            [
-						                expr::stream << "1"
+						                expr::stream <<  "[INFO] "
 						            ]
 						            << expr::if_(logging::trivial::severity == logging::trivial::warning)
 						            [
-						                expr::stream << "2"
+						                expr::stream << "[WARNING] "
+						            ]
+						            << expr::if_(logging::trivial::severity == logging::trivial::error)
+						            [
+						                expr::stream << "[ERROR] "
 						            ]
 						            << expr::if_(logging::trivial::severity == logging::trivial::fatal)
 						            [
-						                expr::stream << "4"
+						                expr::stream << "[FATAL] "
 						            ]
-						            << " 0 "
-						            << expr::format_date_time(timestamp, "%Y-%m-%d %H:%M:%S.%f")
-						            << std::endl
-						            << "!MESSAGE " << expr::smessage << std::endl
+						            /*<< " 0 "*/
+						            /*<< "!MESSAGE " */
+						            << expr::smessage
 						        ),
 						    keywords::auto_flush = "true",
 						    keywords::filter = logging::trivial::severity >= logging::trivial::warning
