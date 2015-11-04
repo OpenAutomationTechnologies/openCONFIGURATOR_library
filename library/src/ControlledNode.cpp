@@ -381,31 +381,34 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 		// skip empty mapping objects
 		if (tMapping.second->HasActualValue())
 		{
-			BaseProcessDataMapping object = BaseProcessDataMapping(tMapping.second->GetTypedActualValue<std::string>(), this->GetNodeId(), false);
-
-			//offset is ok go on
-			if (expectedOffset >= object.GetMappingOffset())
+			if (tMapping.second->GetTypedActualValue<std::uint64_t>() != 0)
 			{
-				//offset is ok write current mapping offset
-				offset = object.GetMappingOffset();
-				//expected offset equals current + length
-				expectedOffset = offset + object.GetMappingLength();
-				//nr of mapping entries increased
-				nrOfEntries++;
-			}
-			else
-			{
-				//offset wrong use expected offset
-				object.SetMappingOffset(expectedOffset);
-				//set offset as expected
-				offset = expectedOffset;
-				//calculate new expected offset
-				expectedOffset = offset + object.GetMappingLength();
+				BaseProcessDataMapping object = BaseProcessDataMapping(tMapping.second->GetTypedActualValue<std::string>(), this->GetNodeId(), false);
 
-				//write mapping object
-				tMapping.second->SetTypedObjectActualValue(object.ToString(true));
-				//nr of mapping entries increased
-				nrOfEntries++;
+				//offset is ok go on
+				if (expectedOffset >= object.GetMappingOffset())
+				{
+					//offset is ok write current mapping offset
+					offset = object.GetMappingOffset();
+					//expected offset equals current + length
+					expectedOffset = offset + object.GetMappingLength();
+					//nr of mapping entries increased
+					nrOfEntries++;
+				}
+				else
+				{
+					//offset wrong use expected offset
+					object.SetMappingOffset(expectedOffset);
+					//set offset as expected
+					offset = expectedOffset;
+					//calculate new expected offset
+					expectedOffset = offset + object.GetMappingLength();
+
+					//write mapping object
+					tMapping.second->SetTypedObjectActualValue(object.ToString(true));
+					//nr of mapping entries increased
+					nrOfEntries++;
+				}
 			}
 		}
 	}
@@ -425,7 +428,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 		nrOfEntriesObj->SetTypedObjectActualValue(IntToHex((std::uint16_t)(nrOfEntries - 1), 2, "0x")); //reduce because of sub index 0
 	}
 
-	return res;
+	return this->UpdateProcessImage(dir);
 }
 
 Result ControlledNode::MapAllRxObjects(std::uint16_t channelNr, bool updateNrOfEntries)
@@ -992,7 +995,6 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 
 		if (obj.first >= mappingParameterIndex && obj.first < (mappingParameterIndex + 0x100))
 		{
-			bool updateOffset = false;
 			//Get mapping parameter object
 			std::shared_ptr<SubObject> nodeID;
 			Result res = obj.second->GetSubObject(0x1, nodeID);
@@ -1006,7 +1008,6 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 			        && mappedFromNode == 240)
 			{
 				expectedOffset = this->nodeDataPresMnOffset;
-				updateOffset = true;
 			}
 
 			//Get according mapping object
@@ -1030,67 +1031,66 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 				nrOfEntries = nrOfEntriesObj->GetTypedDefaultValue<std::uint16_t>();
 			}
 
+			if (nrOfEntries == 0)
+				return Result();
+
+			std::uint16_t countNrOfEntries = 0;
 			for (auto& mapping : mappingObject->GetSubObjectDictionary())
 			{
 				if (mapping.first == 0)
 					continue;
 
-				if (nrOfEntries == 0)
+				if (countNrOfEntries > nrOfEntries)
 					break;
 
-				if (mapping.second->WriteToConfiguration()
-				        && mapping.second->GetTypedActualValue<std::uint64_t>() != 0)
+				if (mapping.second->HasActualValue())
 				{
-					std::shared_ptr<BaseProcessDataMapping> mappingPtr = std::shared_ptr<BaseProcessDataMapping>(new BaseProcessDataMapping(mappingObject->GetObjectId(),
-					        mapping.second->GetObjectId(), mapping.second, mapping.second->GetTypedActualValue<std::string>(), mappedFromNode, false));
-
-					if (updateOffset)
+					if (mapping.second->GetTypedActualValue<std::uint64_t>() != 0)
 					{
+						std::shared_ptr<BaseProcessDataMapping> mappingPtr = std::shared_ptr<BaseProcessDataMapping>(new BaseProcessDataMapping(mappingObject->GetObjectId(),
+						        mapping.second->GetObjectId(), mapping.second, mapping.second->GetTypedActualValue<std::string>(), mappedFromNode, false));
+
 						mappingPtr->SetMappingOffset(expectedOffset);
 						mapping.second->SetTypedObjectActualValue(IntToHex<std::uint64_t>(mappingPtr->GetValue(), 16, "0x"));
+
+						res = CheckProcessDataMapping(mappingPtr, expectedOffset, dir);
+						if (!res.IsSuccessful())
+							return res;
+
+						if (dir == Direction::RX)
+							this->GetReceiveMapping().push_back(mappingPtr);
+						else if (dir == Direction::TX)
+							this->GetTransmitMapping().push_back(mappingPtr);
+
+						countNrOfEntries++;
+						expectedOffset += mappingPtr->GetMappingLength();
 					}
 
-					res = CheckProcessDataMapping(mappingPtr, expectedOffset, dir);
-					if (!res.IsSuccessful())
-						return res;
-
-					if (dir == Direction::RX)
-						this->GetReceiveMapping().push_back(mappingPtr);
-					else if (dir == Direction::TX)
-						this->GetTransmitMapping().push_back(mappingPtr);
-
-					nrOfEntries--;
-					expectedOffset += mappingPtr->GetMappingLength();
 				}
-				else if (mapping.second->HasDefaultValue()
-				         && mapping.second->GetTypedDefaultValue<std::uint64_t>() != 0)
+				else if (mapping.second->HasDefaultValue())
 				{
-					std::shared_ptr<BaseProcessDataMapping> mappingPtr = std::shared_ptr<BaseProcessDataMapping>(new BaseProcessDataMapping(mappingObject->GetObjectId(),
-					        mapping.second->GetObjectId(), mapping.second, mapping.second->GetTypedDefaultValue<std::string>(), mappedFromNode, true));
-
-					if (updateOffset)
+					if (mapping.second->GetTypedDefaultValue<std::uint64_t>() != 0)
 					{
-						mappingPtr->SetMappingOffset(expectedOffset);
-						mapping.second->SetTypedObjectActualValue(IntToHex<std::uint64_t>(mappingPtr->GetValue(), 16, "0x"));
+						std::shared_ptr<BaseProcessDataMapping> mappingPtr = std::shared_ptr<BaseProcessDataMapping>(new BaseProcessDataMapping(mappingObject->GetObjectId(),
+						        mapping.second->GetObjectId(), mapping.second, mapping.second->GetTypedDefaultValue<std::string>(), mappedFromNode, true));
+
+						res = CheckProcessDataMapping(mappingPtr, expectedOffset, dir);
+						if (!res.IsSuccessful())
+							return res;
+
+						if (dir == Direction::RX)
+							this->GetReceiveMapping().push_back(mappingPtr);
+						else if (dir == Direction::TX)
+							this->GetTransmitMapping().push_back(mappingPtr);
+
+						countNrOfEntries++;
+						expectedOffset += mappingPtr->GetMappingLength();
 					}
-
-					res = CheckProcessDataMapping(mappingPtr, expectedOffset, dir);
-					if (!res.IsSuccessful())
-						return res;
-
-					if (dir == Direction::RX)
-						this->GetReceiveMapping().push_back(mappingPtr);
-					else if (dir == Direction::TX)
-						this->GetTransmitMapping().push_back(mappingPtr);
-
-					nrOfEntries--;
-					expectedOffset += mappingPtr->GetMappingLength();
-				}
-				else
-				{
-					return Result(ErrorCode::MAPPING_INVALID);
 				}
 			}
+			//correct NrOfEntries if there are too much mappings validated
+			if (nrOfEntries > countNrOfEntries)
+				nrOfEntriesObj->SetTypedObjectActualValue(IntToHex<std::uint16_t>(countNrOfEntries, 2, "0x"));
 		}
 	}
 	return Result();
@@ -1361,6 +1361,21 @@ Result ControlledNode::MoveMappingObject(const Direction dir, std::uint16_t chan
 		if (foundNewValue && foundOldValue)
 			break;
 	}
+
+	if (oldValue->HasActualValue() == false)
+	{
+		boost::format formatter(kMsgSubObjectNoActualValue);
+		formatter
+		% mappingChannel->GetObjectId()
+		% oldValue->GetObjectId()
+		% (std::uint32_t) this->GetNodeId();
+		LOG_ERROR() << formatter.str();
+		return Result(ErrorCode::SUB_OBJECT_HAS_NO_ACTUAL_VALUE, formatter.str());
+	}
+
+	//Move to empty object is allowed add "0x0" as actual value
+	if (newValue->HasActualValue() == false)
+		newValue->SetTypedObjectActualValue("0x0");
 
 	std::string newValueStr = "0x" + newValue->GetTypedActualValue<std::string>();
 	std::string oldValueStr = "0x" + oldValue->GetTypedActualValue<std::string>();

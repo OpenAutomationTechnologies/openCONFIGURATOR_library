@@ -79,6 +79,10 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 	//Traverse all controlled nodes
 	for (auto& node : nodeCollection)
 	{
+		//Continue if node is disabled
+		if (node.second->IsEnabled() == false)
+			continue;
+
 		//Reset channel bit offset
 		channelBitOffset = 0;
 

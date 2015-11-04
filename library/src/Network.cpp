@@ -880,7 +880,7 @@ bool Network::HasControlledNodes()
 
 	for (auto& node : this->nodeCollection)
 	{
-		if (std::dynamic_pointer_cast<ControlledNode>(node.second))
+		if (std::dynamic_pointer_cast<ControlledNode>(node.second) && node.second->IsEnabled() != false)
 			return true;
 	}
 	return false;

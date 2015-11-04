@@ -1769,17 +1769,16 @@ Result OpenConfiguratorCore::MapAllObjectsToChannel(const std::string& networkId
 		if (dir == Direction::RX)
 		{
 			res =  cn->MapAllRxObjects(channelNr, updateNrEntries);
-			if (!res.IsSuccessful())
-				return cn->UpdateProcessImage(dir);
+			return Result(res.GetErrorType(), "Insufficient mapping objects available : " + res.GetErrorMessage());
 		}
 		else if (dir == Direction::TX)
 		{
 			res =  cn->MapAllTxObjects(channelNr, updateNrEntries);
-			if (!res.IsSuccessful())
-				return cn->UpdateProcessImage(dir);
+			return Result(res.GetErrorType(), "Insufficient mapping objects available : " + res.GetErrorMessage());
 		}
 	}
-	return res;
+
+	return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE);
 }
 
 Result OpenConfiguratorCore::MapObjectToChannel(const std::string& networkId, const std::uint8_t nodeId, const Direction dir, std::uint16_t channelNr, std::uint16_t position, std::uint32_t objectIdToBeMapped, std::uint16_t fromNode, bool updateNrEntries)
@@ -1796,12 +1795,9 @@ Result OpenConfiguratorCore::MapObjectToChannel(const std::string& networkId, co
 
 	auto cn = std::dynamic_pointer_cast<ControlledNode>(nodePtr);
 	if (cn)
-	{
-		res =  cn->MapObject(objectIdToBeMapped, dir, channelNr, position, fromNode, updateNrEntries);
-		if (!res.IsSuccessful())
-			return cn->UpdateProcessImage(dir);
-	}
-	return res;
+		return cn->MapObject(objectIdToBeMapped, dir, channelNr, position, fromNode, updateNrEntries);
+	else
+		return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE);
 }
 
 Result OpenConfiguratorCore::MapSubObjectToChannel(const std::string& networkId, const std::uint8_t nodeId, const Direction dir, std::uint16_t channelNr, std::uint16_t position, std::uint32_t objectIdToBeMapped, std::uint16_t suObjectIdToBeMapped, std::uint16_t fromNode, bool updateNrEntries)
@@ -1818,12 +1814,9 @@ Result OpenConfiguratorCore::MapSubObjectToChannel(const std::string& networkId,
 
 	auto cn = std::dynamic_pointer_cast<ControlledNode>(nodePtr);
 	if (cn)
-	{
-		res =  cn->MapSubObject(objectIdToBeMapped, suObjectIdToBeMapped, dir, channelNr, position, fromNode, updateNrEntries);
-		if (!res.IsSuccessful())
-			return cn->UpdateProcessImage(dir);
-	}
-	return res;
+		return cn->MapSubObject(objectIdToBeMapped, suObjectIdToBeMapped, dir, channelNr, position, fromNode, updateNrEntries);
+	else
+		return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE);
 }
 
 Result OpenConfiguratorCore::GetChannelSize(const std::string& networkId, const std::uint8_t nodeId, const Direction dir, std::uint16_t channelNr, std::uint32_t& size)
@@ -1852,13 +1845,23 @@ Result OpenConfiguratorCore::GetChannelSize(const std::string& networkId, const 
 	std::uint16_t nrOfEntries = 0;
 	for (auto& channelObj : mappingChannel->GetSubObjectDictionary())
 	{
-		if (channelObj.first == 0 && channelObj.second->WriteToConfiguration())
+		if (channelObj.first == 0)
 		{
-			nrOfEntries = channelObj.second->GetTypedActualValue<std::uint16_t>();
+			if (channelObj.second->HasActualValue())
+			{
+				nrOfEntries = channelObj.second->GetTypedActualValue<std::uint16_t>();
+			}
+			else if (channelObj.second->HasDefaultValue())
+			{
+				nrOfEntries = channelObj.second->GetTypedDefaultValue<std::uint16_t>();
+			}
 			continue;
 		}
 
-		if (nrOfEntries != 0 && channelObj.second->WriteToConfiguration())
+		if (nrOfEntries == 0)
+			return Result();
+
+		if (channelObj.second->HasActualValue())
 		{
 			std::uint64_t mappingValue = channelObj.second->GetTypedActualValue<std::uint64_t>();
 			if (mappingValue != 0)
@@ -1868,8 +1871,18 @@ Result OpenConfiguratorCore::GetChannelSize(const std::string& networkId, const 
 				nrOfEntries--;
 			}
 		}
+		else if (channelObj.second->HasDefaultValue())
+		{
+			std::uint64_t mappingValue = channelObj.second->GetTypedDefaultValue<std::uint64_t>();
+			if (mappingValue != 0)
+			{
+				BaseProcessDataMapping mapping = BaseProcessDataMapping(channelObj.second->GetTypedDefaultValue<std::string>(), 0);
+				size += mapping.GetMappingLength() / 8;
+				nrOfEntries--;
+			}
+		}
 		else
-			break;
+			continue;
 	}
 
 	return res;
@@ -1904,13 +1917,12 @@ Result OpenConfiguratorCore::GetChannelActualValues(const std::string& networkId
 
 	for (auto& subobj : mappingChannel->GetSubObjectDictionary())
 	{
-		if (subobj.second->WriteToConfiguration() || subobj.second->HasActualValue())
+		if (subobj.second->HasActualValue())
 		{
 			auto pair = std::pair<std::uint32_t, std::int32_t>(channelObjectId, subobj.first);
 			objects.insert(std::pair<std::pair<std::uint32_t, std::int32_t> , std::string>(pair, "0x" + subobj.second->GetTypedActualValue<std::string>()));
 		}
 	}
-
 	return res;
 }
 
@@ -1929,8 +1941,8 @@ Result OpenConfiguratorCore::MoveMappingObject(const std::string& networkId, con
 	auto cn = std::dynamic_pointer_cast<ControlledNode>(nodePtr);
 	if (cn)
 		return cn->MoveMappingObject(dir, channelNr, oldPosition, newPosition);
-
-	return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE);
+	else
+		return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE);
 }
 
 Result OpenConfiguratorCore::ClearMappingObject(const std::string& networkId, const std::uint8_t nodeId, const Direction dir, std::uint16_t channelNr, std::uint16_t position)
@@ -1970,8 +1982,8 @@ Result OpenConfiguratorCore::ClearMappingObject(const std::string& networkId, co
 	auto cn = std::dynamic_pointer_cast<ControlledNode>(nodePtr);
 	if (cn)
 		return cn->UpdateProcessImage(dir);
-
-	return res;
+	else
+		return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE);
 }
 
 Result OpenConfiguratorCore::ClearMappingChannel(const std::string& networkId, const std::uint8_t nodeId, const Direction dir, std::uint16_t channelNr)
@@ -2011,8 +2023,8 @@ Result OpenConfiguratorCore::ClearMappingChannel(const std::string& networkId, c
 	auto cn = std::dynamic_pointer_cast<ControlledNode>(nodePtr);
 	if (cn)
 		return cn->UpdateProcessImage(dir);
-
-	return res;
+	else
+		return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE);
 }
 
 //Result OpenConfiguratorCore::CreateOffsetGap(const std::string& networkId, const std::uint8_t nodeId, const Direction dir, std::uint16_t channelNr,
