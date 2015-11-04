@@ -702,7 +702,7 @@ Result ManagingNode::CheckProcessDataMapping(const std::shared_ptr<BaseNode>& no
 	//Add node id prefix to the PI name to be unique
 	std::stringstream nodeIdPrefix;
 	if ((std::uint16_t) node->GetNodeId() != 240)
-		nodeIdPrefix << "CN" << IntToHex<std::uint16_t>((std::uint16_t) node->GetNodeId(), 2) << ".";
+		nodeIdPrefix << "CN" << IntToHex<std::uint16_t>((std::uint16_t) node->GetNodeId(), 2) << "_";
 
 	std::uint32_t size = mnMappingObject->GetMappingLength();
 

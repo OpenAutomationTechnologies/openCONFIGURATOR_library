@@ -341,10 +341,13 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 		if (nrOfEntries == position)
 		{
 			//there is an existing mapping retrieve the offset
-			if (tMapping.second->WriteToConfiguration() && tMapping.second->GetTypedActualValue<std::uint64_t>() != 0)
+			if (tMapping.second->HasActualValue())
 			{
-				BaseProcessDataMapping object = BaseProcessDataMapping(tMapping.second->GetTypedActualValue<std::string>(), this->GetNodeId(), false);
-				offset = object.GetMappingOffset();
+				if (tMapping.second->GetTypedActualValue<std::uint64_t>() != 0)
+				{
+					BaseProcessDataMapping object = BaseProcessDataMapping(tMapping.second->GetTypedActualValue<std::string>(), this->GetNodeId(), false);
+					offset = object.GetMappingOffset();
+				}
 			}
 
 			if (offset < expectedOffset)
@@ -376,7 +379,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 
 		// position not reached calculate the offsets
 		// skip empty mapping objects
-		if (tMapping.second->WriteToConfiguration())
+		if (tMapping.second->HasActualValue())
 		{
 			BaseProcessDataMapping object = BaseProcessDataMapping(tMapping.second->GetTypedActualValue<std::string>(), this->GetNodeId(), false);
 
