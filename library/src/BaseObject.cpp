@@ -1471,6 +1471,7 @@ namespace IndustrialNetwork
 				{
 					this->SetActualValue(boost::any());
 					this->actualValueNotDefaultValue = false;
+					this->forceToCDC = false;
 				}
 			}
 		}

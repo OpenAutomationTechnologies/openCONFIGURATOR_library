@@ -46,7 +46,7 @@ ManagingNode::ManagingNode(std::uint8_t nodeID, const std::string& nodeName) : B
 
 	//if (nodeID != 240) //Add assignments for RMNs only
 	//{
-		//AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_NODE_IS_CN);
+	//AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_NODE_IS_CN);
 	//}
 }
 
@@ -445,55 +445,69 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::Calculat
 	}
 
 	if (preqPayloadLimit <= 36)
-	{
 		return this->SetSubObjectActualValue(0x1F98, 0x4, "36"); //Set to default value
-	}
 	else
-	{
 		return this->SetSubObjectActualValue(0x1F98, 0x4, IntToHex(preqPayloadLimit, 4, "0x"));
-	}
 }
 
 IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::CalculatePResPayloadLimit()
 {
-	//Calculate only if managing node transmits PRes
-	if (std::find(this->GetNodeAssignment().begin(), this->GetNodeAssignment().end(), NodeAssignment::NMT_NODEASSIGN_MN_PRES) != this->GetNodeAssignment().end())
+	std::uint32_t presPayloadLimit = 0;
+	std::uint32_t mappingObjectIndex = 0x1A00;
+	std::uint32_t mappingParameterIndex = 0x1800;
+	std::uint16_t mappedFromNode = 0;
+
+	for (auto& obj : this->GetObjectDictionary())
 	{
-		std::uint32_t presPayloadLimit = 0;
-		for (auto& object : this->GetObjectDictionary())
+		if (obj.first >= mappingParameterIndex && obj.first < (mappingParameterIndex + 0x100))
 		{
+			//Get mapping parameter object
+			std::shared_ptr<SubObject> nodeID;
+			Result res = obj.second->GetSubObject(0x1, nodeID);
+			if (!res.IsSuccessful())
+				continue;
 
-			if (object.first >= 0x1A00 && object.first < 0x1B00)
+			if (nodeID->WriteToConfiguration())
+				mappedFromNode = nodeID->GetTypedActualValue<std::uint16_t>();
+			else
+				continue;
+
+			if (mappedFromNode != this->GetNodeId())
+				continue;
+
+			//Get according mapping object
+			std::shared_ptr<Object> mappingObject;
+			res = this->GetObject(((obj.first - mappingParameterIndex) + mappingObjectIndex), mappingObject);
+			if (!res.IsSuccessful())
+				return res;
+
+			//Get mapping nrOfEntries
+			std::shared_ptr<SubObject> nrOfEntriesObj;
+			res = mappingObject->GetSubObject(0x0, nrOfEntriesObj);
+			if (!res.IsSuccessful())
+				return res;
+
+			std::uint16_t numberOfIndicesToWrite = 0;
+			if (nrOfEntriesObj->WriteToConfiguration())
+				numberOfIndicesToWrite = nrOfEntriesObj->GetTypedActualValue<std::uint16_t>();
+			else if (nrOfEntriesObj->HasDefaultValue())
+				numberOfIndicesToWrite = nrOfEntriesObj->GetTypedDefaultValue<std::uint16_t>();
+
+			for (auto& subobject : mappingObject->GetSubObjectDictionary())
 			{
-				std::uint16_t numberOfIndicesToWrite = 0;
-				auto& nrOfEntriesObj = object.second->GetSubObjectDictionary().at((std::uint8_t) 0);
-				if (nrOfEntriesObj->WriteToConfiguration())
-					numberOfIndicesToWrite = nrOfEntriesObj->GetTypedActualValue<std::uint16_t>();
-
-				std::uint16_t count = 0;
-
-				for (auto& subobject : object.second->GetSubObjectDictionary())
+				if (subobject.second->WriteToConfiguration() && subobject.first != 0 && numberOfIndicesToWrite != 0)
 				{
-					if (subobject.second->WriteToConfiguration() && subobject.first != 0 && count < numberOfIndicesToWrite)
-					{
-						BaseProcessDataMapping mapping = BaseProcessDataMapping(subobject.second->GetTypedActualValue<std::string>(), this->GetNodeId());
-						presPayloadLimit += mapping.GetMappingLength() / 8;
-						count++;
-					}
+					BaseProcessDataMapping mapping = BaseProcessDataMapping(subobject.second->GetTypedActualValue<std::string>(), this->GetNodeId());
+					presPayloadLimit += mapping.GetMappingLength() / 8;
+					numberOfIndicesToWrite--;
 				}
 			}
 		}
-
-		if (presPayloadLimit <= 36)
-		{
-			return this->SetSubObjectActualValue(0x1F98, 0x5, "36");
-		}
-		else
-		{
-			return this->SetSubObjectActualValue(0x1F98, 0x5, IntToHex(presPayloadLimit, 4, "0x"));
-		}
 	}
-	return Result();
+	if (presPayloadLimit <= 36)
+		return this->SetSubObjectActualValue(0x1F98, 0x5, "36");
+	else
+		return this->SetSubObjectActualValue(0x1F98, 0x5, IntToHex(presPayloadLimit, 4, "0x"));
 }
 
 Result ManagingNode::MapObject(std::uint32_t, Direction, std::uint16_t, std::uint32_t, std::uint16_t, bool)

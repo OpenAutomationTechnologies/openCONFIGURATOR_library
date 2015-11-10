@@ -624,7 +624,7 @@ Result PlkConfiguration::DistributePReqPayloadLimit(const std::map<std::uint8_t,
 			return res;
 
 		std::stringstream preqActPayloadLimitValue;
-		if (preqActPayloadLimitObj->WriteToConfiguration())
+		if (preqActPayloadLimitObj->HasActualValue())
 			preqActPayloadLimitValue << preqActPayloadLimitObj->GetTypedActualValue<std::uint16_t>();
 		else
 			continue;
@@ -672,7 +672,7 @@ Result PlkConfiguration::DistributePResPayloadLimit(const std::map<std::uint8_t,
 			return res;
 
 		std::stringstream presActPayloadLimitValue;
-		if (presActPayloadLimitObj->WriteToConfiguration())
+		if (presActPayloadLimitObj->HasActualValue())
 			presActPayloadLimitValue << presActPayloadLimitObj->GetTypedActualValue<std::uint16_t>();
 		else
 			continue;
@@ -686,10 +686,6 @@ Result PlkConfiguration::DistributePResPayloadLimit(const std::map<std::uint8_t,
 
 		for (auto& cn : nodeCollection)
 		{
-			//Skip the MN and the current node itself
-			if (node.first == cn.first)
-				continue;
-
 			//Always distribute for RMNs
 			if (std::dynamic_pointer_cast<ManagingNode>(cn.second))
 			{
@@ -698,6 +694,7 @@ Result PlkConfiguration::DistributePResPayloadLimit(const std::map<std::uint8_t,
 					return res;
 			}
 
+			bool crossTrafficForNode = false;
 			for (auto& object : cn.second->GetObjectDictionary())
 			{
 				if (object.first >= 0x1400 && object.first < 0x1500)
@@ -714,11 +711,16 @@ Result PlkConfiguration::DistributePResPayloadLimit(const std::map<std::uint8_t,
 					//Only distribute the PresPayloadLimit for nodes that have cross traffic with the current node
 					if (paramObj->GetTypedActualValue<std::uint16_t>() == node.first)
 					{
-						res = cn.second->SetSubObjectActualValue(0x1F8D, node.first, presActPayloadLimitValue.str());
-						if (!res.IsSuccessful())
-							return res; // this is optional return success
+						cn.second->SetSubObjectActualValue(0x1F8D, node.first, presActPayloadLimitValue.str());
+						crossTrafficForNode = true;
 					}
 				}
+			}
+			if (crossTrafficForNode == false)
+			{
+				std::shared_ptr<SubObject> presActValueObj;
+				cn.second->GetSubObject(0x1F8D, node.first, presActValueObj);
+				presActValueObj->ClearActualValue();
 			}
 		}
 	}
@@ -798,7 +800,7 @@ Result PlkConfiguration::SyncRedundantManagingNodes(const std::map<std::uint8_t,
 				if (obj.first == 0x1F81) //Skip node assignments
 					continue;
 
-				if (obj.second->WriteToConfiguration())
+				if (obj.second->HasActualValue())
 				{
 					Result res = node.second->SetObjectActualValue(obj.first, "0x" + obj.second->GetTypedActualValue<std::string>());
 					if (!res.IsSuccessful())
@@ -806,7 +808,7 @@ Result PlkConfiguration::SyncRedundantManagingNodes(const std::map<std::uint8_t,
 				}
 				for (auto& subObj : obj.second->GetSubObjectDictionary())
 				{
-					if (subObj.second->WriteToConfiguration())
+					if (subObj.second->HasActualValue())
 					{
 						Result res = node.second->SetSubObjectActualValue(obj.first, subObj.first, "0x" + subObj.second->GetTypedActualValue<std::string>());
 						if (!res.IsSuccessful())

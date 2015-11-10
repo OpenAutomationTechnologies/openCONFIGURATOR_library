@@ -1173,7 +1173,7 @@ Result OpenConfiguratorCore::GetObjectsWithActualValue(const std::string& networ
 
 	for (auto& obj : node->GetObjectDictionary())
 	{
-		if (obj.second->WriteToConfiguration())
+		if (obj.second->HasActualValue())
 		{
 			auto pair = std::pair<std::uint32_t, std::int32_t>(obj.first, -1);
 			objects.insert(std::pair<std::pair<std::uint32_t, std::int32_t> , std::string>(pair, "0x" + obj.second->GetTypedActualValue<std::string>()));
@@ -1182,7 +1182,7 @@ Result OpenConfiguratorCore::GetObjectsWithActualValue(const std::string& networ
 		auto& subod = obj.second->GetSubObjectDictionary();
 		for (auto& subobj : subod)
 		{
-			if (subobj.second->WriteToConfiguration())
+			if (subobj.second->HasActualValue())
 			{
 				auto pair = std::pair<std::uint32_t, std::int32_t>(obj.first, subobj.first);
 				objects.insert(std::pair<std::pair<std::uint32_t, std::int32_t> , std::string>(pair, "0x" + subobj.second->GetTypedActualValue<std::string>()));
