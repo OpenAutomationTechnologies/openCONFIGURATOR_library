@@ -125,8 +125,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 {
 	//Set fromNode for PresChained nodes
 	if (dir == Direction::RX
-	        && this->GetOperationMode() == PlkOperationMode::CHAINED
-	        && fromNode == 0)
+	        && this->GetOperationMode() == PlkOperationMode::CHAINED)
 	{
 		fromNode = 240;
 	}
@@ -310,8 +309,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 	std::uint32_t expectedOffset = 0; //calculated mapping offset with object + datasize
 
 	if (dir == Direction::RX
-	        && this->GetOperationMode() == PlkOperationMode::CHAINED
-	        && fromNode == 0)
+	        && this->GetOperationMode() == PlkOperationMode::CHAINED)
 	{
 		offset = this->nodeDataPresMnOffset; // start with Offset from the MN
 		expectedOffset = this->nodeDataPresMnOffset;
@@ -394,6 +392,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 					expectedOffset = offset + object.GetMappingLength();
 					//nr of mapping entries increased
 					nrOfEntries++;
+					continue;
 				}
 				else
 				{
@@ -408,9 +407,11 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 					tMapping.second->SetTypedObjectActualValue(object.ToString(true));
 					//nr of mapping entries increased
 					nrOfEntries++;
+					continue;
 				}
 			}
 		}
+		nrOfEntries++;
 	}
 
 	//update nr of entries of the mapping object
@@ -618,16 +619,38 @@ Result ControlledNode::SetOperationMode(PlkOperationMode operationMode)
 
 	if (operationMode == PlkOperationMode::NORMAL)
 	{
-		this->operationMode = operationMode;
+
 		this->RemoveNodeAssignment(NodeAssignment::NMT_NODEASSIGN_MULTIPLEXED_CN);
 		this->RemoveNodeAssignment(NodeAssignment::NMT_NODEASSIGN_PRES_CHAINING);
+
+		//Reset PResMN receive data
+		if (this->operationMode == PlkOperationMode::CHAINED)
+		{
+			for (auto& obj : this->GetObjectDictionary())
+			{
+				if (obj.first >= 0x1400 && obj.first < 0x1500)
+				{
+					//Get mapping parameter object
+					std::shared_ptr<SubObject> nodeID;
+					Result res = obj.second->GetSubObject(0x1, nodeID);
+					if (!res.IsSuccessful())
+						return res;
+
+					if (nodeID->WriteToConfiguration())
+					{
+						if (nodeID->GetTypedActualValue<std::uint16_t>() == 240)
+							nodeID->SetTypedObjectActualValue("0");
+					}
+				}
+			}
+		}
+
+		this->operationMode = operationMode;
 	}
 	else if (operationMode == PlkOperationMode::MULTIPLEXED)
 	{
 		bool operationModeSupported = false;
-		Result res = this->GetNetworkManagement()->GetFeatureActualValue<bool>(CNFeatureEnum::DLLCNFeatureMultiplex, operationModeSupported);
-		if (!res.IsSuccessful())
-			return res;
+		this->GetNetworkManagement()->GetFeatureActualValue<bool>(CNFeatureEnum::DLLCNFeatureMultiplex, operationModeSupported);
 
 		if (operationModeSupported)
 		{
@@ -647,14 +670,13 @@ Result ControlledNode::SetOperationMode(PlkOperationMode operationMode)
 	else if (operationMode == PlkOperationMode::CHAINED)
 	{
 		bool operationModeSupported = false;
-		Result res = this->GetNetworkManagement()->GetFeatureActualValue<bool>(CNFeatureEnum::DLLCNPResChaining, operationModeSupported);
-		if (!res.IsSuccessful())
-			return res;
+		this->GetNetworkManagement()->GetFeatureActualValue<bool>(CNFeatureEnum::DLLCNPResChaining, operationModeSupported);
 
 		if (operationModeSupported)
 		{
 			this->operationMode = operationMode;
 			this->AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_PRES_CHAINING);
+			this->UpdateProcessImage(Direction::RX);
 		}
 		else
 		{
@@ -1005,8 +1027,10 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 				mappedFromNode = nodeID->GetTypedActualValue<std::uint16_t>();
 
 			if (this->GetOperationMode() == PlkOperationMode::CHAINED
-			        && mappedFromNode == 240)
+			        && dir == Direction::RX
+			        && mappedFromNode == 0)
 			{
+				mappedFromNode = 240;
 				expectedOffset = this->nodeDataPresMnOffset;
 			}
 
@@ -1031,8 +1055,16 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 				nrOfEntries = nrOfEntriesObj->GetTypedDefaultValue<std::uint16_t>();
 			}
 
+			//If NrOfEntries is zero continue with next channel
 			if (nrOfEntries == 0)
-				return Result();
+				continue;
+			//correct receive from for chained nodes
+			else if (nrOfEntries != 0
+			         && mappedFromNode == 240)
+			{
+				nodeID->SetTypedObjectActualValue("240");
+			}
+
 
 			std::uint16_t countNrOfEntries = 0;
 			for (auto& mapping : mappingObject->GetSubObjectDictionary())
@@ -1362,20 +1394,23 @@ Result ControlledNode::MoveMappingObject(const Direction dir, std::uint16_t chan
 			break;
 	}
 
-	if (oldValue->HasActualValue() == false)
+	//Both values are empty - no operation needed
+	if (oldValue->HasActualValue() == false
+	        && newValue->HasActualValue() == false)
 	{
-		boost::format formatter(kMsgSubObjectNoActualValue);
-		formatter
-		% mappingChannel->GetObjectId()
-		% oldValue->GetObjectId()
-		% (std::uint32_t) this->GetNodeId();
-		LOG_ERROR() << formatter.str();
-		return Result(ErrorCode::SUB_OBJECT_HAS_NO_ACTUAL_VALUE, formatter.str());
+		oldValue->SetTypedObjectActualValue("0x0");
+		newValue->SetTypedObjectActualValue("0x0");
+		return Result();
 	}
+
+	//Move to empty object is allowed to empty object
+	if (oldValue->HasActualValue() == false)
+		oldValue->SetTypedObjectActualValue("0x0");
 
 	//Move to empty object is allowed add "0x0" as actual value
 	if (newValue->HasActualValue() == false)
 		newValue->SetTypedObjectActualValue("0x0");
+
 
 	std::string newValueStr = "0x" + newValue->GetTypedActualValue<std::string>();
 	std::string oldValueStr = "0x" + oldValue->GetTypedActualValue<std::string>();

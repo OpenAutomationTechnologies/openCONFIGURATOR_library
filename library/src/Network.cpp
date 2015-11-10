@@ -221,7 +221,7 @@ Result Network::RemoveNode(const std::uint8_t nodeID)
 			//Reset 0x1F82 / nodeID
 			node.second->ForceSubObject(0x1F81, nodeID, false, "");
 			//Reset 0x1F9B / nodeID
-			node.second->ForceSubObject(0x1F9B, nodeID, false, "");
+			node.second->ForceSubObject(0x1F9B, nodeID, false, "", false);
 			//Reset 0x1F92 / nodeID
 			node.second->ForceSubObject(0x1F92, nodeID, false, "");
 			//Reset 0x1F8B / nodeID
@@ -235,8 +235,10 @@ Result Network::RemoveNode(const std::uint8_t nodeID)
 		{
 			//Reset 0x1F8D / nodeID from all CNs
 			node.second->ForceSubObject(0x1F8D, nodeID, false, "");
+			//Reset 0x1F8B / nodeID
+			node.second->ForceSubObject(0x1F8B, nodeID, false, "", false);
 			//Reset 0x1F9B / nodeID from all CNs
-			node.second->ForceSubObject(0x1F9B, nodeID, false, "");
+			node.second->ForceSubObject(0x1F9B, nodeID, false, "", false);
 		}
 
 		node.second->ClearMappingChannelforNode(nodeID);
@@ -289,7 +291,7 @@ Result Network::SetNodeId(const std::uint8_t nodeId, const std::uint8_t newNodeI
 	//Remove CN related MN and RMN objects
 	for (auto& node : this->nodeCollection)
 	{
-		if(node.first == newNodeId)
+		if (node.first == newNodeId)
 			continue;
 
 		if (std::dynamic_pointer_cast<ManagingNode>(node.second))
@@ -704,26 +706,20 @@ Result Network::SetOperationMode(const std::uint8_t nodeID, const PlkOperationMo
 		if (!res.IsSuccessful())
 			return res;
 
+		//default value is always false
 		bool operationModeSupported = false;
 		if (mode == PlkOperationMode::CHAINED)
 		{
-			res = mn->GetNetworkManagement()->GetFeatureActualValue<bool>(MNFeatureEnum::DLLMNPResChaining, operationModeSupported);
-			if (!res.IsSuccessful())
-				return res;
+			mn->GetNetworkManagement()->GetFeatureActualValue<bool>(MNFeatureEnum::DLLMNPResChaining, operationModeSupported);
 			if (!operationModeSupported)
 				return Result(ErrorCode::CHAINING_NOT_SUPPORTED);
 		}
 		else if (mode == PlkOperationMode::MULTIPLEXED)
 		{
-			res = mn->GetNetworkManagement()->GetFeatureActualValue<bool>(MNFeatureEnum::DLLMNFeatureMultiplex, operationModeSupported);
-			if (!res.IsSuccessful())
-				return res;
+			mn->GetNetworkManagement()->GetFeatureActualValue<bool>(MNFeatureEnum::DLLMNFeatureMultiplex, operationModeSupported);
 			if (!operationModeSupported)
 				return Result(ErrorCode::MULTIPLEXING_NOT_SUPPORTED);
 		}
-
-		if (cn->GetOperationMode() == mode)
-			return Result();
 
 		res = cn->SetOperationMode(mode);
 		if (!res.IsSuccessful())
@@ -733,10 +729,22 @@ Result Network::SetOperationMode(const std::uint8_t nodeID, const PlkOperationMo
 		{
 			case PlkOperationMode::NORMAL:
 				{
-					res = mn->ResetMultiplexedCycle(nodeID);
+					//Check if multiplexing supported
+					bool featureMultiplex = false;
+					mn->GetNetworkManagement()->GetFeatureActualValue(MNFeatureEnum::DLLMNFeatureMultiplex, featureMultiplex);
+					if (featureMultiplex)
+					{
+						res = mn->ResetMultiplexedCycle(nodeID);
+						if (!res.IsSuccessful())
+							return res;
+					}
+					//Clear MN node assignment on CN
+					std::shared_ptr<SubObject> mnNodeAssignment;
+					res = cn->GetSubObject(0x1F81, 240, mnNodeAssignment);
 					if (!res.IsSuccessful())
 						return res;
-					res = cn->SetSubObjectActualValue(0x1F81, 240, "0");
+					mnNodeAssignment->ClearActualValue();
+
 					break;
 				}
 			case PlkOperationMode::MULTIPLEXED:
@@ -746,7 +754,13 @@ Result Network::SetOperationMode(const std::uint8_t nodeID, const PlkOperationMo
 						res = mn->SetMultiplexedCycle(nodeID, multiplexedCycle);
 						if (!res.IsSuccessful())
 							return res;
-						res = cn->SetSubObjectActualValue(0x1F81, 240, "0");
+
+						//Clear MN node assignment on CN
+						std::shared_ptr<SubObject> mnNodeAssignment;
+						res = cn->GetSubObject(0x1F81, 240, mnNodeAssignment);
+						if (!res.IsSuccessful())
+							return res;
+						mnNodeAssignment->ClearActualValue();
 					}
 					break;
 				}
@@ -755,11 +769,8 @@ Result Network::SetOperationMode(const std::uint8_t nodeID, const PlkOperationMo
 					//Add PresMN on managing node
 					mn->AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_MN_PRES);
 					std::uint32_t mnAssignValue = mn->GetNodeAssignmentValue();
+
 					res = cn->SetSubObjectActualValue(0x1F81, 240, IntToHex<std::uint32_t>(mnAssignValue, 0, "0x"));
-					if (!res.IsSuccessful())
-						return res;
-					//Set 1F81 / 240 on managing node
-					res = mn->SetSubObjectActualValue(0x1F81, 240, IntToHex<std::uint32_t>(mnAssignValue, 0, "0x"));
 					if (!res.IsSuccessful())
 						return res;
 
@@ -774,8 +785,11 @@ Result Network::SetOperationMode(const std::uint8_t nodeID, const PlkOperationMo
 								return res;
 						}
 					}
-
-					res = mn->ResetMultiplexedCycle(nodeID);
+					//Check if multiplexing supported
+					bool featureMultiplex = false;
+					mn->GetNetworkManagement()->GetFeatureActualValue(MNFeatureEnum::DLLMNFeatureMultiplex, featureMultiplex);
+					if (featureMultiplex)
+						res = mn->ResetMultiplexedCycle(nodeID);
 
 					break;
 				}
@@ -868,6 +882,8 @@ Result Network::EnableNode(const std::uint8_t nodeID, bool enable)
 				//Reset 0x1F9B / nodeID from all CNs
 				node.second->ForceSubObject(0x1F9B, nodeID, false, "", false);
 			}
+
+			node.second->ClearMappingChannelforNode(nodeID);
 		}
 	}
 	return Result();

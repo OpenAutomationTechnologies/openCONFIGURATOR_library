@@ -133,8 +133,7 @@ Result PlkConfiguration::GenerateConfiguration(const std::map<std::uint8_t, std:
 		return res;
 
 	//Sync all needed MN object actual values with the RMN objects
-	res = SyncRedundantManagingNodes(nodeCollection);
-	return res;
+	return SyncRedundantManagingNodes(nodeCollection);
 }
 
 const std::string& PlkConfiguration::GetConfigurationName()
@@ -437,6 +436,12 @@ Result PlkConfiguration::DistributeMultiplCycleAssign(const std::map<std::uint8_
 {
 	//Get managing node
 	auto& mn = nodeCollection.at(240);
+	//Check if multiplexing supported
+	bool featureMultiplex = false;
+	mn->GetNetworkManagement()->GetFeatureActualValue(MNFeatureEnum::DLLMNFeatureMultiplex, featureMultiplex);
+	if (featureMultiplex == false)
+		return Result();
+
 	for (auto& node : nodeCollection)
 	{
 		if (node.first == 240)

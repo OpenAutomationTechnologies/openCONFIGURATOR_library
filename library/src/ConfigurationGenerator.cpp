@@ -487,6 +487,17 @@ Result ConfigurationGenerator::WriteCommunicationProfileArea(const std::shared_p
 
 			for (auto& subobject : object.second->GetSubObjectDictionary())
 			{
+				//Write MN node assignment only when PResMN is set
+				if (object.first == 0x1F81 && subobject.first == 240 && node->GetNodeId() == 240)
+				{
+					std::shared_ptr<ManagingNode> mn = std::dynamic_pointer_cast<ManagingNode>(node);
+					if (mn)
+					{
+						if (std::find(mn->GetNodeAssignment().begin(), mn->GetNodeAssignment().end(), NodeAssignment::NMT_NODEASSIGN_MN_PRES) == mn->GetNodeAssignment().end())
+							continue;
+					}
+				}
+
 				//Write MN node assignement for PResChaining
 				if (object.first == 0x1F81 && subobject.first != 240)
 					continue;

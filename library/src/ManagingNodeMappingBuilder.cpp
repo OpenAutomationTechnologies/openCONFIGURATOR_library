@@ -62,7 +62,6 @@ Result ManagingNodeMappingBuilder::GenerateConfiguration(const std::string& valu
 Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, Direction dir, const std::map<std::uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
 	//Get Managing Node (this must not fail)
-
 	const std::shared_ptr<ManagingNode>& mn = std::dynamic_pointer_cast<ManagingNode>(nodeCollection.at(240));
 
 	//Direction from node point of view
@@ -75,6 +74,7 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 	std::uint32_t presMnOffset = 0;
 	std::uint32_t index = 0;
 	std::uint32_t subindex = 1;
+	bool cnReceivePresMN = false;
 
 	//Traverse all controlled nodes
 	for (auto& node : nodeCollection)
@@ -108,6 +108,8 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 			receiveFromNode = 240;
 			//Set correct offset for CN receive PDO form MN
 			cn->SetNodeDataPresMnOffset(presMnOffset);
+			mn->AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_MN_PRES);
+			cnReceivePresMN = true;
 		}
 
 		//Update CN Mapping
@@ -136,7 +138,12 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 		{
 			if (dir == Direction::TX)
 			{
-				if (mapping->GetDestinationNode() != receiveFromNode) //Cross traffic mapping not from MN
+				if (mapping->GetDestinationNode() == 240 && cn->GetOperationMode() != PlkOperationMode::CHAINED) //CN receive PResMN
+				{
+					receiveFromNode = 240;
+					cnReceivePresMN = true;
+				}
+				else if (mapping->GetDestinationNode() != receiveFromNode) //Cross traffic mapping not from MN
 					continue;
 			}
 
@@ -322,6 +329,12 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 				}
 			}
 		}
+	}
+	if (dir == Direction::TX
+	        && cnReceivePresMN == false
+	        && std::find(mn->GetNodeAssignment().begin(), mn->GetNodeAssignment().end(), NodeAssignment::NMT_NODEASSIGN_MN_PRES) != mn->GetNodeAssignment().end())
+	{
+		LOG_WARN() << kMsgManagingNodeTransmitPres;
 	}
 	return Result();
 }

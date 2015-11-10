@@ -81,15 +81,11 @@ Result ManagingNode::AddNodeAssignement(NodeAssignment assign)
 		case NodeAssignment::NMT_NODEASSIGN_RT2:
 		case NodeAssignment::NMT_NODEASSIGN_MN_PRES:
 			{
-				auto it = find(this->GetNodeAssignment().begin(), this->GetNodeAssignment().end(), assign);
+				auto it = std::find(this->GetNodeAssignment().begin(), this->GetNodeAssignment().end(), assign);
 				if (it == this->GetNodeAssignment().end())
 				{
 					this->GetNodeAssignment().push_back(assign);
-					if (assign == NodeAssignment::NMT_NODEASSIGN_MN_PRES)
-					{
-						this->SetSubObjectActualValue(0x1F81, 240, IntToHex<std::uint32_t>(this->GetNodeAssignmentValue(), 0, "0x"));
-					}
-					return Result();
+					return SetSubObjectActualValue(0x1F81, 240, IntToHex<std::uint32_t>(this->GetNodeAssignmentValue(), 0, "0x"));
 				}
 				else
 				{
@@ -110,12 +106,8 @@ Result ManagingNode::AddNodeAssignement(NodeAssignment assign)
 
 Result ManagingNode::RemoveNodeAssignment(NodeAssignment assign)
 {
-	this->GetNodeAssignment().erase(remove(this->GetNodeAssignment().begin(), this->GetNodeAssignment().end(), assign), this->GetNodeAssignment().end());
-	if (assign == NodeAssignment::NMT_NODEASSIGN_MN_PRES) //Reset the node assignement on the managing node
-	{
-		this->SetSubObjectActualValue(0x1F81, 240, "");
-	}
-	return Result();
+	this->GetNodeAssignment().erase(std::remove(this->GetNodeAssignment().begin(), this->GetNodeAssignment().end(), assign), this->GetNodeAssignment().end());
+	return SetSubObjectActualValue(0x1F81, 240, IntToHex<std::uint32_t>(this->GetNodeAssignmentValue(), 0, "0x"));
 }
 
 std::uint32_t ManagingNode::GetNodeAssignmentValue()

@@ -142,6 +142,7 @@ namespace openconfigurator_core_net_app
             core.CreateSubObject("test", 240, 0x1F8D, 10, ObjectType.VAR, "testName", PlkDataType.UNSIGNED16, AccessType.RW, PDOMapping.DEFAULT, "0", "");
             core.CreateSubObject("test", 240, 0x1F8D, 11, ObjectType.VAR, "testName", PlkDataType.UNSIGNED16, AccessType.RW, PDOMapping.DEFAULT, "0", "");
             core.CreateSubObject("test", 240, 0x1F8D, 20, ObjectType.VAR, "testName", PlkDataType.UNSIGNED16, AccessType.RW, PDOMapping.DEFAULT, "0", "");
+            core.CreateSubObject("test", 240, 0x1F8D, 0xF0, ObjectType.VAR, "testName", PlkDataType.UNSIGNED16, AccessType.RW, PDOMapping.DEFAULT, "0", "");
             core.CreateSubObject("test", 240, 0x1F8D, 0xF1, ObjectType.VAR, "testName", PlkDataType.UNSIGNED16, AccessType.RW, PDOMapping.DEFAULT, "0", "");
 
             core.CreateObject("test", 240, 0x1F9B, ObjectType.RECORD, "objectName", PlkDataType.UNDEFINED, AccessType.UNDEFINED, PDOMapping.UNDEFINED, "", "");

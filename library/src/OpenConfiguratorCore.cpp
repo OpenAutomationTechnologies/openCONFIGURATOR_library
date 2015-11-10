@@ -1769,12 +1769,18 @@ Result OpenConfiguratorCore::MapAllObjectsToChannel(const std::string& networkId
 		if (dir == Direction::RX)
 		{
 			res =  cn->MapAllRxObjects(channelNr, updateNrEntries);
-			return Result(res.GetErrorType(), "Insufficient mapping objects available : " + res.GetErrorMessage());
+			if (!res.IsSuccessful())
+				return Result(res.GetErrorType(), "Insufficient mapping objects available : " + res.GetErrorMessage());
+			else
+				return res;
 		}
 		else if (dir == Direction::TX)
 		{
 			res =  cn->MapAllTxObjects(channelNr, updateNrEntries);
-			return Result(res.GetErrorType(), "Insufficient mapping objects available : " + res.GetErrorMessage());
+			if (!res.IsSuccessful())
+				return Result(res.GetErrorType(), "Insufficient mapping objects available : " + res.GetErrorMessage());
+			else
+				return res;
 		}
 	}
 
@@ -1942,7 +1948,7 @@ Result OpenConfiguratorCore::MoveMappingObject(const std::string& networkId, con
 	if (cn)
 		return cn->MoveMappingObject(dir, channelNr, oldPosition, newPosition);
 	else
-		return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE);
+		return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE, kMsgMappingOperationNotSupported);
 }
 
 Result OpenConfiguratorCore::ClearMappingObject(const std::string& networkId, const std::uint8_t nodeId, const Direction dir, std::uint16_t channelNr, std::uint16_t position)
