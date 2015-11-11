@@ -65,7 +65,7 @@ void BuildConfigurationSetting::InitConfigurationSetting(const std::string& id)
 		boost::format formatter(kMsgConfigurationSettingNotSupported);
 		formatter
 		% id;
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 	}
 }
 

@@ -392,7 +392,7 @@ Result ManagingNodeMappingBuilder::FindMappedObject(const std::shared_ptr<BaseNo
 				formatter
 				% dataIndex
 				% (std::uint32_t) node->GetNodeId();
-				LOG_FATAL() << formatter.str();
+				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::MAPPED_OBJECT_DOES_NOT_EXIST, formatter.str());
 			}
 			else
@@ -412,7 +412,7 @@ Result ManagingNodeMappingBuilder::FindMappedObject(const std::shared_ptr<BaseNo
 			% dataIndex
 			% dataSubindex
 			% (std::uint32_t) node->GetNodeId();
-			LOG_FATAL() << formatter.str();
+			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::MAPPED_SUBOBJECT_DOES_NOT_EXIST, formatter.str());
 		}
 		foundObject = dataSubObject; //SubObject found

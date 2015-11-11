@@ -58,7 +58,7 @@ Result ControlledNode::AddNodeAssignement(NodeAssignment assign)
 		formatter
 		% (std::uint32_t) assign
 		% (std::uint32_t) this->GetNodeId();
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::NODE_ASSIGNMENT_NOT_SUPPORTED, formatter.str());
 	}
 
@@ -155,7 +155,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 				% subindex
 				% (std::uint32_t) this->GetNodeId()
 				% ParameterAccessValues[(std::uint8_t) param->GetParameterAccess()];
-				LOG_FATAL() << formatter.str();
+				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::PARAMETER_ACCESS_INVALID, formatter.str());
 			}
 		}
@@ -172,7 +172,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 				% subindex
 				% (std::uint32_t) this->GetNodeId()
 				% ParameterAccessValues[(std::uint8_t) param->GetParameterAccess()];
-				LOG_FATAL() << formatter.str();
+				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::PARAMETER_ACCESS_INVALID, formatter.str());
 			}
 		}
@@ -193,7 +193,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 				% subindex
 				% (std::uint32_t) this->GetNodeId()
 				% PDOMappingValues[(std::uint8_t) objToMap->GetPDOMapping().get()];
-				LOG_FATAL() << formatter.str();
+				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::MAPPING_TYPE_FOR_PDO_INVALID, formatter.str());
 			}
 		}
@@ -209,7 +209,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 				% subindex
 				% (std::uint32_t) this->GetNodeId()
 				% PDOMappingValues[(std::uint8_t) objToMap->GetPDOMapping().get()];
-				LOG_FATAL() << formatter.str();
+				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::MAPPING_TYPE_FOR_PDO_INVALID, formatter.str());
 			}
 		}
@@ -223,7 +223,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 		% subindex
 		% (std::uint32_t) this->GetNodeId()
 		% "Not defined";
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::MAPPING_TYPE_FOR_PDO_INVALID, formatter.str());
 	}
 
@@ -242,7 +242,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 				% subindex
 				% (std::uint32_t) this->GetNodeId()
 				% AccessTypeValues[(std::uint8_t) objToMap->GetAccessType().get()];
-				LOG_FATAL() << formatter.str();
+				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::ACCESS_TYPE_FOR_PDO_INVALID, formatter.str());
 			}
 		}
@@ -258,7 +258,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 				% subindex
 				% (std::uint32_t) this->GetNodeId()
 				% AccessTypeValues[(std::uint8_t) objToMap->GetAccessType().get()];
-				LOG_FATAL() << formatter.str();
+				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::ACCESS_TYPE_FOR_PDO_INVALID, formatter.str());
 			}
 		}
@@ -272,7 +272,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 		% subindex
 		% (std::uint32_t) this->GetNodeId()
 		% PDOMappingValues[(std::uint8_t) objToMap->GetPDOMapping().get()];
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::MAPPING_TYPE_FOR_PDO_INVALID, formatter.str());
 	}
 
@@ -662,7 +662,7 @@ Result ControlledNode::SetOperationMode(PlkOperationMode operationMode)
 			boost::format formatter(kMsgMultiplexingNotSupported);
 			formatter
 			% (std::uint32_t) this->GetNodeId();
-			LOG_FATAL() << formatter.str();
+			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::MULTIPLEXING_NOT_SUPPORTED, formatter.str());
 		}
 
@@ -683,7 +683,7 @@ Result ControlledNode::SetOperationMode(PlkOperationMode operationMode)
 			boost::format formatter(kMsgChainingNotSupported);
 			formatter
 			% (std::uint32_t) this->GetNodeId();
-			LOG_FATAL() << formatter.str();
+			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::CHAINING_NOT_SUPPORTED, formatter.str());
 		}
 	}
@@ -795,7 +795,7 @@ Result ControlledNode::GetDataObjectFromMapping(const std::shared_ptr<BaseProces
 				formatter
 				% dataIndex
 				% (std::uint32_t) this->GetNodeId();
-				LOG_FATAL() << formatter.str();
+				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::MAPPED_OBJECT_DOES_NOT_EXIST, formatter.str());
 			}
 			else
@@ -814,7 +814,7 @@ Result ControlledNode::GetDataObjectFromMapping(const std::shared_ptr<BaseProces
 			% dataIndex
 			% dataSubindex
 			% (std::uint32_t) this->GetNodeId();
-			LOG_FATAL() << formatter.str();
+			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::MAPPED_SUBOBJECT_DOES_NOT_EXIST, formatter.str());
 		}
 		else
@@ -1152,7 +1152,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 				formatter
 				% dataIndex
 				% (std::uint32_t) this->GetNodeId();
-				LOG_FATAL() << formatter.str();
+				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::MAPPED_OBJECT_DOES_NOT_EXIST, formatter.str());
 			}
 			else
@@ -1171,7 +1171,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 			% dataIndex
 			% dataSubindex
 			% (std::uint32_t) this->GetNodeId();
-			LOG_FATAL() << formatter.str();
+			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::MAPPED_SUBOBJECT_DOES_NOT_EXIST, formatter.str());
 		}
 		foundObject = dataSubObject;
@@ -1213,7 +1213,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 				% dataSubindex
 				% (std::uint32_t) this->GetNodeId()
 				% ParameterAccessValues[(std::uint8_t) param->GetParameterAccess()];
-				LOG_FATAL() << formatter.str();
+				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::PARAMETER_ACCESS_INVALID, formatter.str());
 			}
 		}
@@ -1230,7 +1230,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 				% dataSubindex
 				% (std::uint32_t) this->GetNodeId()
 				% ParameterAccessValues[(std::uint8_t) param->GetParameterAccess()];
-				LOG_FATAL() << formatter.str();
+				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::PARAMETER_ACCESS_INVALID, formatter.str());
 			}
 		}
@@ -1246,7 +1246,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 		% (std::uint32_t) this->GetNodeId()
 		% mapping->GetMappingOffset()
 		% expectedOffset;
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::PDO_OFFSET_INVALID, formatter.str());
 	}
 
@@ -1265,7 +1265,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 				% dataSubindex
 				% (std::uint32_t) this->GetNodeId()
 				% PDOMappingValues[(std::uint8_t) foundObject->GetPDOMapping().get()];
-				LOG_FATAL() << formatter.str();
+				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::MAPPING_TYPE_FOR_PDO_INVALID, formatter.str());
 			}
 		}
@@ -1281,7 +1281,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 				% dataSubindex
 				% (std::uint32_t) this->GetNodeId()
 				% PDOMappingValues[(std::uint8_t) foundObject->GetPDOMapping().get()];
-				LOG_FATAL() << formatter.str();
+				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::MAPPING_TYPE_FOR_PDO_INVALID, formatter.str());
 			}
 		}
@@ -1294,7 +1294,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 		% dataSubindex
 		% (std::uint32_t) this->GetNodeId()
 		% "Not defined";
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::MAPPING_TYPE_FOR_PDO_INVALID, formatter.str());
 	}
 
@@ -1313,7 +1313,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 				% dataSubindex
 				% (std::uint32_t) this->GetNodeId()
 				% AccessTypeValues[(std::uint8_t) foundObject->GetAccessType().get()];
-				LOG_FATAL() << formatter.str();
+				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::ACCESS_TYPE_FOR_PDO_INVALID, formatter.str());
 			}
 		}
@@ -1329,7 +1329,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 				% dataSubindex
 				% (std::uint32_t) this->GetNodeId()
 				% AccessTypeValues[(std::uint8_t) foundObject->GetAccessType().get()];
-				LOG_FATAL() << formatter.str();
+				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::ACCESS_TYPE_FOR_PDO_INVALID, formatter.str());
 			}
 		}
@@ -1342,7 +1342,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 		% dataSubindex
 		% (std::uint32_t) this->GetNodeId()
 		% AccessTypeValues[(std::uint8_t) foundObject->GetAccessType().get()];
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::ACCESS_TYPE_FOR_PDO_INVALID, formatter.str());
 	}
 	return Result();

@@ -83,7 +83,7 @@ Result Network::AddNode(std::shared_ptr<ControlledNode>& node)
 			boost::format formatter(kMsgExistingNode);
 			formatter
 			% (std::uint32_t) var.first;
-			LOG_FATAL() << formatter.str();
+			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::NODE_EXISTS, formatter.str());
 		}
 	}
@@ -111,7 +111,7 @@ Result Network::AddNode(std::shared_ptr<ManagingNode>& node)
 			boost::format formatter(kMsgExistingNode);
 			formatter
 			% (std::uint32_t) node->GetNodeId();
-			LOG_FATAL() << formatter.str();
+			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::NODE_EXISTS, formatter.str());
 		}
 	}
@@ -154,7 +154,7 @@ Result Network::GetBaseNode(const std::uint8_t nodeID, std::shared_ptr<BaseNode>
 	boost::format formatter(kMsgNonExistingNode);
 	formatter
 	% (std::uint32_t) nodeID;
-	LOG_FATAL() << formatter.str();
+	LOG_ERROR() << formatter.str();
 	return Result(ErrorCode::NODE_DOES_NOT_EXIST, formatter.str());
 }
 
@@ -173,7 +173,7 @@ Result Network::GetManagingNode(std::shared_ptr<ManagingNode>& node)
 	boost::format formatter(kMsgNonExistingNode);
 	formatter
 	% 240;
-	LOG_FATAL() << formatter.str();
+	LOG_ERROR() << formatter.str();
 	return Result(ErrorCode::NODE_DOES_NOT_EXIST, formatter.str());
 }
 
@@ -189,7 +189,7 @@ Result Network::RemoveNode(const std::uint8_t nodeID)
 		boost::format formatter(kMsgNonExistingNode);
 		formatter
 		% (std::uint32_t) nodeID;
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::NODE_DOES_NOT_EXIST, formatter.str());
 	}
 
@@ -258,7 +258,7 @@ Result Network::SetNodeId(const std::uint8_t nodeId, const std::uint8_t newNodeI
 		boost::format formatter(kMsgNonExistingNode);
 		formatter
 		% (std::uint32_t) nodeId;
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::NODE_DOES_NOT_EXIST, formatter.str());
 	}
 
@@ -269,7 +269,7 @@ Result Network::SetNodeId(const std::uint8_t nodeId, const std::uint8_t newNodeI
 		boost::format formatter(kMsgExistingNode);
 		formatter
 		% (std::uint32_t) newNodeId;
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::NODE_EXISTS, formatter.str());
 	}
 
@@ -420,7 +420,7 @@ Result Network::SetConfigurationSettingEnabled(const std::string& configID, cons
 			% configID
 			% settingName
 			% this->networkId;
-			LOG_FATAL() << formatter.str();
+			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::BUILD_SETTING_DOES_NOT_EXIST, formatter.str());
 		}
 	}
@@ -429,7 +429,7 @@ Result Network::SetConfigurationSettingEnabled(const std::string& configID, cons
 	formatter
 	% configID
 	% this->networkId;
-	LOG_FATAL() << formatter.str();
+	LOG_ERROR() << formatter.str();
 	return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST, formatter.str());
 }
 
@@ -449,7 +449,7 @@ Result Network::AddConfigurationSetting(const std::string& configID, std::shared
 					% newSetting->GetName()
 					% configID
 					% this->networkId;
-					LOG_FATAL() << formatter.str();
+					LOG_ERROR() << formatter.str();
 					return Result(ErrorCode::BUILD_SETTING_EXISTS, formatter.str());
 				}
 			}
@@ -470,7 +470,7 @@ Result Network::AddConfigurationSetting(const std::string& configID, std::shared
 	formatter
 	% configID
 	% this->networkId;
-	LOG_FATAL() << formatter.str();
+	LOG_ERROR() << formatter.str();
 	return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST, formatter.str());
 }
 
@@ -494,7 +494,7 @@ Result Network::RemoveConfigurationSetting(const std::string& configID, const st
 				% configID
 				% settingName
 				% this->networkId;
-				LOG_FATAL() << formatter.str();
+				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::BUILD_SETTING_DOES_NOT_EXIST, formatter.str());
 			}
 
@@ -514,7 +514,7 @@ Result Network::RemoveConfigurationSetting(const std::string& configID, const st
 	formatter
 	% configID
 	% this->networkId;
-	LOG_FATAL() << formatter.str();
+	LOG_ERROR() << formatter.str();
 	return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST, formatter.str());
 }
 
@@ -529,7 +529,7 @@ Result Network::AddConfiguration(const std::string& configID)
 			formatter
 			% configID
 			% this->networkId;
-			LOG_FATAL() << formatter.str();
+			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::BUILD_CONFIGURATION_EXISTS, formatter.str());
 		}
 	}
@@ -567,7 +567,7 @@ Result Network::RemoveConfiguration(const std::string& configID)
 		formatter
 		% configID
 		% this->networkId;
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST);
 	}
 
@@ -603,7 +603,7 @@ Result Network::ReplaceConfigurationName(const std::string& oldConfigID, const s
 	formatter
 	% oldConfigID
 	% this->networkId;
-	LOG_FATAL() << formatter.str();
+	LOG_ERROR() << formatter.str();
 	return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST);
 }
 
@@ -622,7 +622,7 @@ Result Network::GetConfigurationSettings(const std::string& configID, std::vecto
 	formatter
 	% configID
 	% this->networkId;
-	LOG_FATAL() << formatter.str();
+	LOG_ERROR() << formatter.str();
 	return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST);
 }
 
@@ -658,7 +658,7 @@ Result Network::SetActiveConfiguration(const std::string& configID)
 	formatter
 	% configID
 	% this->networkId;
-	LOG_FATAL() << formatter.str();
+	LOG_ERROR() << formatter.str();
 	return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST);
 }
 
@@ -810,7 +810,7 @@ Result Network::EnableNode(const std::uint8_t nodeID, bool enable)
 		boost::format formatter(kMsgManagingNodeDisable);
 		formatter
 		% this->networkId;
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::MANAGING_NODE_DISABLE_INVALID, formatter.str());
 	}
 
@@ -821,7 +821,7 @@ Result Network::EnableNode(const std::uint8_t nodeID, bool enable)
 		boost::format formatter(kMsgNonExistingNode);
 		formatter
 		% (std::uint32_t) nodeID;
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::NODE_DOES_NOT_EXIST, formatter.str());
 	}
 

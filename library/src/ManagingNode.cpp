@@ -70,7 +70,7 @@ Result ManagingNode::AddNodeAssignement(NodeAssignment assign)
 				formatter
 				% (std::uint32_t) assign
 				% (std::uint32_t) this->GetNodeId();
-				LOG_FATAL() << formatter.str();
+				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::NODE_ASSIGNMENT_NOT_SUPPORTED, formatter.str());
 			}
 		case NodeAssignment::MNT_NODEASSIGN_VALID:
@@ -156,7 +156,7 @@ Result ManagingNode::GetDynamicChannel(PlkDataType dataType, Direction dir, std:
 	formatter
 	% GetPlkDataTypeName(dataType)
 	% DirectionTypeValues[(std::uint8_t) dir];
-	LOG_FATAL() << formatter.str();
+	LOG_ERROR() << formatter.str();
 	return Result(ErrorCode::DYNAMIC_CHANNEL_NOT_FOUND, formatter.str());
 }
 
@@ -354,7 +354,7 @@ Result ManagingNode::SetMultiplexedCycle(const std::uint8_t nodeID, const std::u
 		% (std::uint32_t) multiplexedCycle
 		% (std::uint32_t) nodeID
 		% cycle_count;
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::MULTIPLEX_CYCLE_ASSIGN_INVALID, formatter.str());
 	}
 
@@ -368,7 +368,7 @@ Result ManagingNode::SetMultiplexedCycle(const std::uint8_t nodeID, const std::u
 		boost::format formatter(kMsgMultiplexCycleAlreadyAssigned);
 		formatter
 		% (std::uint32_t) multiplexedCycle;
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::MULTIPLEX_CYCLE_ASSIGN_INVALID, formatter.str());
 	}
 	return multplCycleAssign->SetTypedObjectActualValue(IntToHex((std::uint32_t) multiplexedCycle, 2, "0x"));

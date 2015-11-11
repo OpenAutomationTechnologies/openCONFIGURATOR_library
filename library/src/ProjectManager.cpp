@@ -57,7 +57,7 @@ Result ProjectManager::AddNetwork(const std::string& networkId, std::shared_ptr<
 		boost::format formatter(kMsgExistingNetwork);
 		formatter
 		% networkId;
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::NETWORK_EXISTS, formatter.str());
 	}
 	this->networkList.insert(make_pair(networkId, network));
@@ -78,7 +78,7 @@ Result ProjectManager::GetNetwork(const std::string& networkId, std::shared_ptr<
 		boost::format formatter(kMsgNonExistingNetwork);
 		formatter
 		% networkId;
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::NETWORK_DOES_NOT_EXIST, formatter.str());
 	}
 	else
@@ -97,7 +97,7 @@ Result ProjectManager::RemoveNetwork(const std::string& networkId)
 		boost::format formatter(kMsgNonExistingNetwork);
 		formatter
 		% networkId;
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::NETWORK_DOES_NOT_EXIST, formatter.str());
 	}
 	else

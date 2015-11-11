@@ -68,7 +68,7 @@ namespace IndustrialNetwork
 						% this->GetObjectId()
 						% ref->GetObjectId()
 						% (std::uint32_t) this->GetContainingNode();
-						LOG_FATAL() << formatter.str();
+						LOG_ERROR() << formatter.str();
 						return Result(ErrorCode::SUBOBJECT_EXISTS, formatter.str());
 					}
 
@@ -96,7 +96,7 @@ namespace IndustrialNetwork
 						% (std::uint32_t) this->GetContainingNode();
 						if (enableLog)
 						{
-							LOG_FATAL() << formatter.str();
+							LOG_ERROR() << formatter.str();
 						}
 						return Result(ErrorCode::SUBOBJECT_DOES_NOT_EXIST, formatter.str());
 					}

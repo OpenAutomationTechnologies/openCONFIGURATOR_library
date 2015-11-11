@@ -809,7 +809,7 @@ Result OpenConfiguratorCore::CreateStructDatatype(const std::string& networkId, 
 	formatter
 	% uniqueId
 	% (std::uint32_t) node->GetNodeId();
-	LOG_FATAL() << formatter.str();
+	LOG_ERROR() << formatter.str();
 	return Result(ErrorCode::PARAMETER_NOT_FOUND, formatter.str());
 }
 
@@ -840,7 +840,7 @@ Result OpenConfiguratorCore::CreateVarDeclaration(const std::string& networkId, 
 	formatter
 	% structUniqueId
 	% (std::uint32_t) node->GetNodeId();
-	LOG_FATAL() << formatter.str();
+	LOG_ERROR() << formatter.str();
 	return Result(ErrorCode::PARAMETER_NOT_FOUND, formatter.str());
 }
 
@@ -872,7 +872,7 @@ Result OpenConfiguratorCore::CreateArrayDatatype(const std::string& networkId, c
 	formatter
 	% uniqueId
 	% (std::uint32_t) node->GetNodeId();
-	LOG_FATAL() << formatter.str();
+	LOG_ERROR() << formatter.str();
 	return Result(ErrorCode::PARAMETER_NOT_FOUND, formatter.str());
 }
 
@@ -903,7 +903,7 @@ Result OpenConfiguratorCore::CreateEnumDatatype(const std::string& networkId, co
 	formatter
 	% uniqueId
 	% (std::uint32_t) node->GetNodeId();
-	LOG_FATAL() << formatter.str();
+	LOG_ERROR() << formatter.str();
 	return Result(ErrorCode::PARAMETER_NOT_FOUND, formatter.str());
 }
 
@@ -933,7 +933,7 @@ Result OpenConfiguratorCore::CreateEnumValue(const std::string& networkId, const
 	formatter
 	% uniqueId
 	% (std::uint32_t) node->GetNodeId();
-	LOG_FATAL() << formatter.str();
+	LOG_ERROR() << formatter.str();
 	return Result(ErrorCode::PARAMETER_NOT_FOUND, formatter.str());
 
 }
@@ -964,7 +964,7 @@ Result OpenConfiguratorCore::GetDatatypeSize(const std::string& networkId, const
 	formatter
 	% dataTypeUniqueId
 	% (std::uint32_t) node->GetNodeId();
-	LOG_FATAL() << formatter.str();
+	LOG_ERROR() << formatter.str();
 	return Result(ErrorCode::COMPLEX_DATATYPE_NOT_FOUND, formatter.str());
 }
 
@@ -1121,7 +1121,7 @@ Result OpenConfiguratorCore::GetObjectActualValue(const std::string& networkId, 
 	formatter
 	% objectId
 	% (std::uint32_t) nodeId;
-	LOG_FATAL() << formatter.str();
+	LOG_ERROR() << formatter.str();
 	return Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, formatter.str());
 }
 
@@ -1155,7 +1155,7 @@ Result OpenConfiguratorCore::GetSubObjectActualValue(const std::string& networkI
 	% objectId
 	% (std::uint32_t) subObjectId
 	% (std::uint32_t) nodeId;
-	LOG_FATAL() << formatter.str();
+	LOG_ERROR() << formatter.str();
 	return Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, formatter.str());
 }
 
@@ -1240,7 +1240,7 @@ Result OpenConfiguratorCore::SetAsyncSlotTimeout(const std::string& networkId, c
 		boost::format formatter(kMsgNonManagingNode);
 		formatter
 		% nodeId;
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::NODE_IS_NOT_MANAGING_NODE, formatter.str());
 	}
 	return res;
@@ -1266,7 +1266,7 @@ Result OpenConfiguratorCore::SetAsndMaxNr(const std::string& networkId, const st
 		boost::format formatter(kMsgNonManagingNode);
 		formatter
 		% nodeId;
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::NODE_IS_NOT_MANAGING_NODE, formatter.str());
 	}
 	return res;
@@ -1307,7 +1307,7 @@ Result OpenConfiguratorCore::SetRedundantManagingNodeWaitNotActive(const std::st
 		boost::format formatter(kMsgNonRedundantManagingNode);
 		formatter
 		% nodeId;
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::NODE_IS_NOT_REDUNDANT_MANAGING_NODE, formatter.str());
 	}
 	return res;
@@ -1333,7 +1333,7 @@ Result OpenConfiguratorCore::SetRedundantManagingNodePriority(const std::string&
 		boost::format formatter(kMsgNonRedundantManagingNode);
 		formatter
 		% nodeId;
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::NODE_IS_NOT_REDUNDANT_MANAGING_NODE, formatter.str());
 	}
 	return res;
@@ -1363,7 +1363,7 @@ Result OpenConfiguratorCore::GetCycleTime(const std::string& networkId, std::uin
 		formatter
 		% (std::uint32_t) 0x1006
 		% (std::uint32_t) 240;
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, formatter.str());
 	}
 	return res;
@@ -1395,7 +1395,7 @@ Result OpenConfiguratorCore::GetAsyncMtu(const std::string& networkId, std::uint
 		% (std::uint32_t) 0x1F98
 		% (std::uint32_t) 0x8
 		% (std::uint32_t) 240;
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, formatter.str());
 	}
 	return res;
@@ -1427,7 +1427,7 @@ Result OpenConfiguratorCore::GetMultiplexedCycleCount(const std::string& network
 		% (std::uint32_t) 0x1F98
 		% (std::uint32_t) 0x7
 		% (std::uint32_t) 240;
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, formatter.str());
 	}
 	return res;
@@ -1458,7 +1458,7 @@ Result OpenConfiguratorCore::GetPrescaler(const std::string& networkId, std::uin
 		% (std::uint32_t) 0x1F98
 		% (std::uint32_t) 0x9
 		% (std::uint32_t) 240;
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, formatter.str());
 	}
 	return res;
@@ -1493,7 +1493,7 @@ Result OpenConfiguratorCore::GetAsyncSlotTimeout(const std::string& networkId, c
 			% (std::uint32_t) 0x1F8A
 			% (std::uint32_t) 0x2
 			% (std::uint32_t) 240;
-			LOG_FATAL() << formatter.str();
+			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, formatter.str());
 		}
 	}
@@ -1502,7 +1502,7 @@ Result OpenConfiguratorCore::GetAsyncSlotTimeout(const std::string& networkId, c
 		boost::format formatter(kMsgNonManagingNode);
 		formatter
 		% nodeId;
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::NODE_IS_NOT_MANAGING_NODE, formatter.str());
 	}
 	return res;
@@ -1537,7 +1537,7 @@ Result OpenConfiguratorCore::GetAsndMaxNr(const std::string& networkId, const st
 			% (std::uint32_t) 0x1F8A
 			% (std::uint32_t) 0x3
 			% (std::uint32_t) 240;
-			LOG_FATAL() << formatter.str();
+			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, formatter.str());
 		}
 	}
@@ -1546,7 +1546,7 @@ Result OpenConfiguratorCore::GetAsndMaxNr(const std::string& networkId, const st
 		boost::format formatter(kMsgNonManagingNode);
 		formatter
 		% nodeId;
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::NODE_IS_NOT_MANAGING_NODE, formatter.str());
 	}
 	return res;
@@ -1578,7 +1578,7 @@ Result OpenConfiguratorCore::GetPResTimeOut(const std::string& networkId, const 
 		% (std::uint32_t) 0x1F92
 		% (std::uint32_t) nodeId
 		% (std::uint32_t) 240;
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, formatter.str());
 	}
 
@@ -1615,7 +1615,7 @@ Result OpenConfiguratorCore::GetRedundantManagingNodeWaitNotActive(const std::st
 			% (std::uint32_t) 0x1F89
 			% (std::uint32_t) 0x1
 			% (std::uint32_t) 240;
-			LOG_FATAL() << formatter.str();
+			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, formatter.str());
 		}
 	}
@@ -1624,7 +1624,7 @@ Result OpenConfiguratorCore::GetRedundantManagingNodeWaitNotActive(const std::st
 		boost::format formatter(kMsgNonRedundantManagingNode);
 		formatter
 		% nodeId;
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::NODE_IS_NOT_REDUNDANT_MANAGING_NODE, formatter.str());
 	}
 	return res;
@@ -1659,7 +1659,7 @@ Result OpenConfiguratorCore::GetRedundantManagingNodePriority(const std::string&
 			% (std::uint32_t) 0x1F89
 			% (std::uint32_t) 0xA
 			% (std::uint32_t) 240;
-			LOG_FATAL() << formatter.str();
+			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, formatter.str());
 		}
 	}
@@ -1668,7 +1668,7 @@ Result OpenConfiguratorCore::GetRedundantManagingNodePriority(const std::string&
 		boost::format formatter(kMsgNonRedundantManagingNode);
 		formatter
 		% nodeId;
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::NODE_IS_NOT_REDUNDANT_MANAGING_NODE, formatter.str());
 	}
 	return res;
@@ -1736,7 +1736,7 @@ Result OpenConfiguratorCore::GetLossOfSocTolerance(const std::string& networkId,
 			formatter
 			% (std::uint32_t) 0x1C14
 			% (std::uint32_t) 240;
-			LOG_FATAL() << formatter.str();
+			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, formatter.str());
 		}
 	}
@@ -1745,7 +1745,7 @@ Result OpenConfiguratorCore::GetLossOfSocTolerance(const std::string& networkId,
 		boost::format formatter(kMsgNonControlledNode);
 		formatter
 		% nodeId;
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE, formatter.str());
 	}
 	return res;
@@ -1784,7 +1784,7 @@ Result OpenConfiguratorCore::MapAllObjectsToChannel(const std::string& networkId
 		}
 	}
 
-	return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE);
+	return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE, kMsgMappingOperationNotSupported);
 }
 
 Result OpenConfiguratorCore::MapObjectToChannel(const std::string& networkId, const std::uint8_t nodeId, const Direction dir, std::uint16_t channelNr, std::uint16_t position, std::uint32_t objectIdToBeMapped, std::uint16_t fromNode, bool updateNrEntries)
@@ -1803,7 +1803,7 @@ Result OpenConfiguratorCore::MapObjectToChannel(const std::string& networkId, co
 	if (cn)
 		return cn->MapObject(objectIdToBeMapped, dir, channelNr, position, fromNode, updateNrEntries);
 	else
-		return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE);
+		return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE, kMsgMappingOperationNotSupported);
 }
 
 Result OpenConfiguratorCore::MapSubObjectToChannel(const std::string& networkId, const std::uint8_t nodeId, const Direction dir, std::uint16_t channelNr, std::uint16_t position, std::uint32_t objectIdToBeMapped, std::uint16_t suObjectIdToBeMapped, std::uint16_t fromNode, bool updateNrEntries)
@@ -1822,7 +1822,7 @@ Result OpenConfiguratorCore::MapSubObjectToChannel(const std::string& networkId,
 	if (cn)
 		return cn->MapSubObject(objectIdToBeMapped, suObjectIdToBeMapped, dir, channelNr, position, fromNode, updateNrEntries);
 	else
-		return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE);
+		return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE, kMsgMappingOperationNotSupported);
 }
 
 Result OpenConfiguratorCore::GetChannelSize(const std::string& networkId, const std::uint8_t nodeId, const Direction dir, std::uint16_t channelNr, std::uint32_t& size)
@@ -1988,8 +1988,8 @@ Result OpenConfiguratorCore::ClearMappingObject(const std::string& networkId, co
 	auto cn = std::dynamic_pointer_cast<ControlledNode>(nodePtr);
 	if (cn)
 		return cn->UpdateProcessImage(dir);
-	else
-		return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE);
+
+	return Result();
 }
 
 Result OpenConfiguratorCore::ClearMappingChannel(const std::string& networkId, const std::uint8_t nodeId, const Direction dir, std::uint16_t channelNr)
@@ -2029,8 +2029,8 @@ Result OpenConfiguratorCore::ClearMappingChannel(const std::string& networkId, c
 	auto cn = std::dynamic_pointer_cast<ControlledNode>(nodePtr);
 	if (cn)
 		return cn->UpdateProcessImage(dir);
-	else
-		return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE);
+
+	return Result();
 }
 
 //Result OpenConfiguratorCore::CreateOffsetGap(const std::string& networkId, const std::uint8_t nodeId, const Direction dir, std::uint16_t channelNr,

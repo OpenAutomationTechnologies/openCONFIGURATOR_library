@@ -126,7 +126,7 @@ Result BaseNode::AddObject(std::shared_ptr<Object>& objRef)
 		formatter
 		% objRef->GetObjectId()
 		% (std::uint32_t) nodeId;
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::OBJECT_EXISTS, formatter.str());
 	}
 
@@ -150,7 +150,7 @@ Result BaseNode::AddSubObject(std::uint32_t objectId, std::shared_ptr<SubObject>
 		formatter
 		% objectId
 		% (std::uint32_t) nodeId;
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::OBJECT_DOES_NOT_EXIST, formatter.str());
 	}
 	return this->objectDictionary.find(objectId)->second->AddSubobject(objRef);
@@ -168,7 +168,7 @@ Result BaseNode::ForceObject(std::uint32_t objectId, bool force, const std::stri
 		% (std::uint32_t) nodeId;
 		if (enableLog)
 		{
-			LOG_FATAL() << formatter.str();
+			LOG_ERROR() << formatter.str();
 		}
 		return Result(ErrorCode::OBJECT_DOES_NOT_EXIST, formatter.str());
 	}
@@ -179,7 +179,7 @@ Result BaseNode::ForceObject(std::uint32_t objectId, bool force, const std::stri
 		formatter
 		% objectId
 		% (std::uint32_t) nodeId;
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::OBJECT_TYPE_DOES_NOT_SUPPORT_VALUES);
 	}
 
@@ -292,7 +292,7 @@ Result BaseNode::ForceSubObject(std::uint32_t objectId, std::uint32_t subObjectI
 		% (std::uint32_t) nodeId;
 		if (enableLog)
 		{
-			LOG_FATAL() << formatter.str();
+			LOG_ERROR() << formatter.str();
 		}
 		return Result(ErrorCode::OBJECT_DOES_NOT_EXIST, formatter.str());
 	}
@@ -344,7 +344,7 @@ Result BaseNode::SetSubObjectActualValue(std::uint32_t objectId, std::uint32_t s
 		formatter
 		% objectId
 		% (std::uint32_t) nodeId;
-		LOG_FATAL() << formatter.str();
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::OBJECT_DOES_NOT_EXIST, formatter.str());
 	}
 
@@ -399,7 +399,7 @@ Result BaseNode::GetSubObject(std::uint32_t objectId, std::uint32_t subObjectId,
 		% (std::uint32_t) nodeId;
 		if (enableLog)
 		{
-			LOG_FATAL() << formatter.str();
+			LOG_ERROR() << formatter.str();
 		}
 		return Result(ErrorCode::OBJECT_DOES_NOT_EXIST, formatter.str());
 	}
