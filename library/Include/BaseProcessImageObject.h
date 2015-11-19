@@ -62,6 +62,7 @@ namespace IndustrialNetwork
 						virtual ~BaseProcessImageObject();
 
 						const std::string& GetName();
+						void SetName(const std::string& name);
 						IEC_Datatype GetDataType();
 						std::uint32_t GetSize();
 						std::uint32_t GetPiOffset();

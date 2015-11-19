@@ -305,6 +305,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 		return res;
 
 	std::uint16_t nrOfEntries = 0; //mapping object NrOfEntries
+	std::uint16_t validMappings = 0;
 	std::uint32_t offset = 0; // Mapping offset
 	std::uint32_t expectedOffset = 0; //calculated mapping offset with object + datasize
 
@@ -371,6 +372,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 
 			expectedOffset = offset + objToMap->GetBitSize();
 			nrOfEntries++;
+			validMappings++;
 			continue;
 
 		}
@@ -392,6 +394,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 					expectedOffset = offset + object.GetMappingLength();
 					//nr of mapping entries increased
 					nrOfEntries++;
+					validMappings++;
 					continue;
 				}
 				else
@@ -407,6 +410,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 					tMapping.second->SetTypedObjectActualValue(object.ToString(true));
 					//nr of mapping entries increased
 					nrOfEntries++;
+					validMappings++;
 					continue;
 				}
 			}
@@ -422,11 +426,22 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 		if (!res.IsSuccessful())
 			return res;
 
-		//this should not happen because a mapping object has to have at least a NrOfEntries subindex
-		if (nrOfEntries == 0)
-			nrOfEntries++;
+		if (nrOfEntriesObj->HasActualValue())
+		{
+			std::uint16_t enabledMappingEntries = nrOfEntriesObj->GetTypedActualValue<std::uint16_t>();
+			if (enabledMappingEntries > validMappings)
+			{
+				boost::format formatter(kMsgNrOfEntriesInvalid);
+				formatter
+				% mappingObj->GetObjectId()
+				% (std::uint32_t) this->GetNodeId()
+				% enabledMappingEntries
+				% nrOfEntries;
+				LOG_WARN() << formatter.str();
+			}
+		}
 
-		nrOfEntriesObj->SetTypedObjectActualValue(IntToHex((std::uint16_t)(nrOfEntries - 1), 2, "0x")); //reduce because of sub index 0
+		nrOfEntriesObj->SetTypedObjectActualValue(IntToHex((std::uint16_t) validMappings, 2, "0x"));
 	}
 
 	return this->UpdateProcessImage(dir);
@@ -987,6 +1002,38 @@ Result ControlledNode::UpdateProcessImage(Direction dir)
 			piOffset += GetIECDataTypeBitSize(GetIECDataType(dataObject->GetDataType().get())) / 8 ;
 		}
 	}
+
+	//Search for equal names in the PI and add a count number
+	std::vector<std::shared_ptr<BaseProcessImageObject>> piCollection;
+	if (dir == Direction::RX)
+		piCollection = this->GetReceiveProcessImage();
+	else if (dir == Direction::TX)
+		piCollection = this->GetTransmitProcessImage();
+
+	for (auto& pi : piCollection)
+	{
+		std::uint16_t findCount = 0;
+		for (auto& pi_count : piCollection)
+		{
+			if (pi->GetName() == pi_count->GetName())
+				findCount++;
+		}
+		if (findCount != 1)
+		{
+			std::uint16_t varCount = 1;
+			std::string originalName = pi->GetName();
+			for (auto& pi_change : piCollection)
+			{
+				if (pi_change->GetName() == originalName)
+				{
+					std::stringstream varName;
+					varName << originalName << "_" << varCount;
+					pi_change->SetName(varName.str());
+					varCount++;
+				}
+			}
+		}
+	}
 	return Result();
 }
 
@@ -1121,8 +1168,18 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 				}
 			}
 			//correct NrOfEntries if there are too much mappings validated
-			if (nrOfEntries > countNrOfEntries)
+			if (nrOfEntries  > countNrOfEntries)
+			{
 				nrOfEntriesObj->SetTypedObjectActualValue(IntToHex<std::uint16_t>(countNrOfEntries, 2, "0x"));
+
+				boost::format formatter(kMsgNrOfEntriesInvalid);
+				formatter
+				% mappingObject->GetObjectId()
+				% (std::uint32_t) this->GetNodeId()
+				% countNrOfEntries
+				% nrOfEntries;
+				LOG_WARN() << formatter.str();
+			}
 		}
 	}
 	return Result();
@@ -1136,7 +1193,6 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 
 	std::shared_ptr<Object> dataObject;
 	std::shared_ptr<SubObject> dataSubObject;
-
 	std::shared_ptr<BaseObject> foundObject;
 
 	//Check that mapped object exist

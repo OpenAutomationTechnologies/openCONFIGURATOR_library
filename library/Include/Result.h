@@ -90,6 +90,8 @@ namespace IndustrialNetwork
 				const std::string kMsgHighLimitDatatypeError = "Highlimit '%s' with datatype '%d' does exceed the datatype limits.";
 				const std::string kMsgLowLimitDatatypeError = "Lowlimit '%s' with datatype '%d' does exceed the datatype limits.";
 				const std::string kMsgBaseObjectLowLimitError = "BaseObject '%s' with id '0x%X' on node '%d' deceeds lowlimit '%d'.";
+				const std::string kMsgBaseObjectHighLimitSubObjectError = "Object '%s' '0x%X/0x%X' on node '%d' with actual value '%s' exceeds the highlimit.";
+				const std::string kMsgBaseObjectLowLimitSubObjectError = "Object '%s' '0x%X/0x%X' on node '%d' with actual value '%s' deceeds the lowlimit.";
 				const std::string kMsgBaseObjectHighLimitError = "BaseObject '%s' with id '0x%X' on node '%d' exceeds highlimit '%d'.";
 				const std::string kMsgBaseObjectDataTypeError = "BaseObject '%s' with id '0x%X' on node '%d' does not have a specified datatype.";
 				const std::string kMsgBaseObjectDefaultValue = "BaseObject '%s' with id '0x%X' on node '%d' does not have a default value datatype.";
@@ -134,7 +136,7 @@ namespace IndustrialNetwork
 				const std::string kMsgSubObjectActualValueNotSet = "Object 0x%X on node %d does not have a defined actual value.";
 				const std::string kMsgSubObjectDataTypeMismatch = "Object 0x%X datatype on node %d does not match the datatype to be retrieved.";
 
-				const std::string kMsgForcedValueOverwriteObject = "Overwrite actual value: %s on object 0x%X on node %d failed because value has been forced. ";
+				const std::string kMsgForcedValueOverwriteObject = "Overwrite actual value: %s on object 0x%X on node %d failed because value has been forced.";
 				const std::string kMsgForcedValueOverwriteSubObject = "Overwrite actual value: %s on subobject 0x%X/0x%X on node %d failed because value has been forced.";
 
 				const std::string kMsgWriteManagingNodeObjectCount = "Managing node object count configuration write successful.";
@@ -167,6 +169,8 @@ namespace IndustrialNetwork
 
 				const std::string kMsgManagingNodeTransmitPres = "Managing node transmits PRes but no controlled node is receiving any data.";
 				const std::string kMsgMappingOperationNotSupported = "Mapping operation is not supported for managing or redundant managing node.";
+
+				const std::string kMsgNrOfEntriesInvalid = "Channel 0x%X on node %d: NrOfEntries invalid. Valid mapping entries: %d, Mapping entries enabled: %d.";
 
 				//Unused
 				const std::string kMsgNoControlledNodesConfigured = "Configuration does not contain any POWERLINK-CNs.";

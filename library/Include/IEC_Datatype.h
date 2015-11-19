@@ -70,6 +70,7 @@ namespace IndustrialNetwork
 					WSTRING //!< WSTRING to hold multi byte string
 				};
 
+				/*
 				static const std::string IECDatatypeValues[] =
 				{
 					"BITSTRING",
@@ -87,6 +88,31 @@ namespace IndustrialNetwork
 					"UINT",
 					"UDINT",
 					"ULINT",
+					"REAL",
+					"LREAL",
+					"STRING",
+					"WSTRING"
+				};
+				*/
+
+				//To be downcompatible with the old openCONFIGURATOR
+				static const std::string IECDatatypeValues[] =
+				{
+					"BITSTRING",
+					"BOOL",
+					"BYTE",
+					"CHAR",
+					"WORD",
+					"DWORD",
+					"LWORD",
+					"Integer8",
+					"Integer16",
+					"Integer32",
+					"Integer64",
+					"Unsigned8",
+					"Unsigned16",
+					"Unsigned32",
+					"Unsigned64",
 					"REAL",
 					"LREAL",
 					"STRING",

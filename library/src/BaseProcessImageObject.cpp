@@ -89,3 +89,7 @@ void BaseProcessImageObject::SetPIOffset(std::uint32_t piOffset)
 	this->piOffset = piOffset;
 }
 
+void BaseProcessImageObject::SetName(const std::string& name)
+{
+	this->name = name;
+}

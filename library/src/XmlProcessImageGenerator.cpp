@@ -94,7 +94,7 @@ const std::string XmlProcessImageGenerator::PrintChannel(const std::string& name
 	std::stringstream channel;
 
 	channel << "\t\t<Channel";
-	channel << " name=\"" + name + "\"";
+	channel << " Name=\"" + name + "\"";
 	channel << " dataType=\"" + IECDatatypeValues[(std::int8_t) datatype] + "\"";
 	channel << " dataSize=\"";
 	channel << std::dec << size;

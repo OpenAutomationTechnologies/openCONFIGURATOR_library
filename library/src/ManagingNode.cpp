@@ -211,7 +211,10 @@ std::uint32_t ManagingNode::GetConfigurationObjectCount()
 				{
 					if (subobject.first == 240)
 					{
-						count++; //For managing node assignement on MN or RMN calculate only one object
+						if (std::find(this->GetNodeAssignment().begin(), this->GetNodeAssignment().end(), NodeAssignment::NMT_NODEASSIGN_MN_PRES) != this->GetNodeAssignment().end())
+						{
+							count++; //For managing node assignement on MN or RMN calculate only one object
+						}
 					}
 					else
 					{
@@ -284,7 +287,10 @@ std::uint32_t ManagingNode::GetConfigurationObjectSize()
 				{
 					if (subobject.first == 240)
 					{
-						size += subobject.second->GetBitSize(); //For managing node assignement on MN or RMN calculate only one object
+						if (std::find(this->GetNodeAssignment().begin(), this->GetNodeAssignment().end(), NodeAssignment::NMT_NODEASSIGN_MN_PRES) != this->GetNodeAssignment().end())
+						{
+							size += subobject.second->GetBitSize(); //For managing node assignement on MN or RMN calculate only one object
+						}
 					}
 					else
 					{

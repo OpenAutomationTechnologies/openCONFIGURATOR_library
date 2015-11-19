@@ -93,6 +93,7 @@ namespace IndustrialNetwork
 							case MNFeatureEnum::NMTNetTimeIsRealTime:
 							case MNFeatureEnum::NMTRelativeTime:
 							case MNFeatureEnum::NMTSimpleBoot:
+							case MNFeatureEnum::NMTMNRedundancy:
 								{
 									if (!defaultValue.empty())
 									{

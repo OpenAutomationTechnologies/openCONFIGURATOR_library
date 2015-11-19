@@ -140,8 +140,8 @@ namespace IndustrialNetwork
 
 				enum CNFeatureEnum
 				{
-					//POWERLINK CN features >= 82
-					DLLCNFeatureMultiplex = 82,
+					//POWERLINK CN features >= 83
+					DLLCNFeatureMultiplex = 83,
 					DLLCNPResChaining,
 					NMTCNSoC2PReq
 				};

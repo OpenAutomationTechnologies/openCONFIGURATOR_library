@@ -367,7 +367,31 @@ Result BaseNode::SetSubObjectActualValue(std::uint32_t objectId, std::uint32_t s
 		if (!actualValue.empty())
 		{
 			res = subObject->SetTypedObjectActualValue(actualValue);
-			if (!res.IsSuccessful())
+			if (res.GetErrorType() == ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT)
+			{
+				boost::format formatter(kMsgBaseObjectHighLimitSubObjectError);
+				formatter
+				% subObject->GetName()
+				% objectId
+				% subObjectId
+				% (std::uint32_t) subObject->GetContainingNode()
+				% actualValue;
+				LOG_ERROR() << formatter.str();
+				return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT, formatter.str());
+			}
+			else if (res.GetErrorType() == ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT)
+			{
+				boost::format formatter(kMsgBaseObjectLowLimitSubObjectError);
+				formatter
+				% subObject->GetName()
+				% objectId
+				% subObjectId
+				% (std::uint32_t) subObject->GetContainingNode()
+				% actualValue;
+				LOG_ERROR() << formatter.str();
+				return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
+			}
+			else if(!res.IsSuccessful())
 				return res;
 
 			//Log info actual value set
