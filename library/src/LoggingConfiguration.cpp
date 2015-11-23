@@ -189,6 +189,7 @@ namespace IndustrialNetwork
 						            << expr::smessage
 						        ),
 						    keywords::auto_flush = "true",
+						    keywords::open_mode = std::ios_base::trunc,
 						    keywords::filter = logging::trivial::severity >= logging::trivial::warning
 
 						);

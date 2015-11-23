@@ -288,9 +288,12 @@ Result PlkConfiguration::DistributeCycleTime(const std::map<std::uint8_t, std::s
 		return Result(ErrorCode::CYCLE_TIME_NOT_SET, kMsgCycleTimeOnMnNotSet);
 
 	//Warn if cycle time has a default value on MN
-	if (!cycleTimeObject->GetDefaultValue().empty())
+	if (cycleTimeObject->HasDefaultValue())
 	{
-		LOG_WARN() << kMsgCycleTimeDefaultValue;
+		if(cycleTimeObject->GetTypedActualValue<std::uint32_t>() == cycleTimeObject->GetTypedDefaultValue<std::uint32_t>())
+		{
+			LOG_WARN() << kMsgCycleTimeDefaultValue;
+		}
 	}
 
 	for (auto& node : nodeCollection)

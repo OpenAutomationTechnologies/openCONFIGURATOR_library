@@ -94,6 +94,7 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result UpdateProcessImage(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir);
 
 						void SetNodeDataPresMnOffset(std::uint32_t offset);
+						std::uint32_t GetNodeDataPresMnOffset();
 
 					private:
 						IndustrialNetwork::POWERLINK::Core::Node::PlkOperationMode operationMode;

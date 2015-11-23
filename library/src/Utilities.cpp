@@ -62,21 +62,27 @@ namespace IndustrialNetwork
 					stream.exceptions(std::ios::failbit);
 
 					T value = 0;
-					if (hexString.substr(0, 2) == "0x")
+					if (((hexString.substr(0, 2) == "0x")
+					        || (hexString.substr(0, 2) == "0X"))
+					        && (hexString.find_first_not_of("0123456789abcdefABCDEF", 2) == std::string::npos
+					            && hexString.size() > 2))
 					{
 						// Strip prefix if necessary
-						std::string valueStr = (hexString.substr(0, 2) == "0x")
+						std::string valueStr = (hexString.substr(0, 2) == "0x" || hexString.substr(0, 2) == "0X")
 						                       ? hexString.substr(2)
 						                       : hexString;
 
 						stream << std::hex << valueStr;
 						stream >> value;
 					}
-					else
+					else if ((hexString.find_first_not_of("0123456789") == std::string::npos))
 					{
 						stream << std::dec << hexString;
 						stream >> value;
 					}
+					else
+						throw std::range_error("Value format incorrect");
+
 					return value;
 				}
 
@@ -286,10 +292,10 @@ namespace IndustrialNetwork
 						case PlkDataType::INTEGER8:
 							return IEC_Datatype::SINT;
 						case PlkDataType::INTEGER16:
-							return IEC_Datatype::UINT;
+							return IEC_Datatype::INT;
 						case PlkDataType::INTEGER24:
 						case PlkDataType::INTEGER32:
-							return IEC_Datatype::UDINT;
+							return IEC_Datatype::DINT;
 						case PlkDataType::UNSIGNED8:
 							return IEC_Datatype::USINT;
 						case PlkDataType::UNSIGNED16:

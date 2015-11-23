@@ -332,22 +332,29 @@ Result ConfigurationGenerator::WriteMappingNrOfEntriesZero(const std::shared_ptr
 			auto subobject = object.second->GetSubObjectDictionary().find((std::uint32_t) 0);
 			if (subobject != object.second->GetSubObjectDictionary().end())
 			{
-				if (subobject->second->WriteToConfiguration())
+				if (subobject->second->HasActualValue())
 				{
-					configurationOutput << std::hex << std::uppercase << object.first;
-					configurationOutput << "\t";
-					configurationOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << subobject->first;
-					configurationOutput << "\t";
-					configurationOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << (subobject->second->GetBitSize() / 8);
-					configurationOutput << "\t";
-					configurationOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << 0 << std::endl;
-
-					hexOutput << ReverseHex(object.first, 4);
-					hexOutput << ReverseHex(subobject->first, 2);
-					hexOutput << ReverseHex(subobject->second->GetBitSize() / 8, 8);
-					hexOutput << ReverseHex(0x0, 2);
-
+					if (subobject->second->GetTypedActualValue<std::uint16_t>() == 0)
+						continue;
 				}
+				else if (subobject->second->HasDefaultValue())
+				{
+					if (subobject->second->GetTypedDefaultValue<std::uint16_t>() == 0)
+						continue;
+				}
+				configurationOutput << std::hex << std::uppercase << object.first;
+				configurationOutput << "\t";
+				configurationOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << subobject->first;
+				configurationOutput << "\t";
+				configurationOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << (subobject->second->GetBitSize() / 8);
+				configurationOutput << "\t";
+				configurationOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << 0 << std::endl;
+
+				hexOutput << ReverseHex(object.first, 4);
+				hexOutput << ReverseHex(subobject->first, 2);
+				hexOutput << ReverseHex(subobject->second->GetBitSize() / 8, 8);
+				hexOutput << ReverseHex(0x0, 2);
+
 			}
 		}
 	}
@@ -392,11 +399,27 @@ Result ConfigurationGenerator::WriteMappingObjects(const std::shared_ptr<BaseNod
 			auto& nrOfEntriesObj = object.second->GetSubObjectDictionary().at((std::uint8_t) 0);
 			if (nrOfEntriesObj->WriteToConfiguration())
 				numberOfIndicesToWrite = nrOfEntriesObj->GetTypedActualValue<std::uint16_t>();
+			else if (nrOfEntriesObj->HasDefaultValue())
+				numberOfIndicesToWrite = nrOfEntriesObj->GetTypedDefaultValue<std::uint16_t>();
 
 			std::uint16_t count = 0;
 			for (auto& subobject : object.second->GetSubObjectDictionary())
 			{
-				if (subobject.second->WriteToConfiguration() && subobject.first != 0 && count < numberOfIndicesToWrite)
+				if (subobject.first == 0)
+					continue;
+
+				if (subobject.second->HasActualValue())
+				{
+					if (subobject.second->GetTypedActualValue<std::uint64_t>() == 0)
+						continue;
+				}
+				else if (subobject.second->HasDefaultValue())
+				{
+					if (subobject.second->GetTypedDefaultValue<std::uint64_t>() == 0)
+						continue;
+				}
+
+				if (count < numberOfIndicesToWrite)
 				{
 					configurationOutput << std::hex << std::uppercase << object.first;
 					configurationOutput << "\t";
@@ -404,12 +427,18 @@ Result ConfigurationGenerator::WriteMappingObjects(const std::shared_ptr<BaseNod
 					configurationOutput << "\t";
 					configurationOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << (subobject.second->GetBitSize() / 8);
 					configurationOutput << "\t";
-					configurationOutput << subobject.second->GetTypedActualValue<std::string>() << std::endl;
+					if (subobject.second->WriteToConfiguration())
+						configurationOutput << subobject.second->GetTypedActualValue<std::string>() << std::endl;
+					else if (subobject.second->HasDefaultValue())
+						configurationOutput << subobject.second->GetTypedDefaultValue<std::string>() << std::endl;
 
 					hexOutput << ReverseHex(object.first, 4);
 					hexOutput << ReverseHex(subobject.first, 2);
 					hexOutput << ReverseHex(subobject.second->GetBitSize() / 8, 8);
-					hexOutput << ReverseHex(subobject.second->GetTypedActualValue<std::string>());
+					if (subobject.second->WriteToConfiguration())
+						hexOutput << ReverseHex(subobject.second->GetTypedActualValue<std::string>());
+					else if (subobject.second->HasDefaultValue())
+						hexOutput << ReverseHex(subobject.second->GetTypedDefaultValue<std::string>());
 
 					count++;
 				}
@@ -433,21 +462,35 @@ Result ConfigurationGenerator::WriteMappingNrOfEntries(const std::shared_ptr<Bas
 			auto subobject = object.second->GetSubObjectDictionary().find((std::uint32_t) 0);
 			if (subobject != object.second->GetSubObjectDictionary().end())
 			{
-				if (subobject->second->WriteToConfiguration())
+				if (subobject->second->HasActualValue())
 				{
-					configurationOutput << std::hex << std::uppercase << object.first;
-					configurationOutput << "\t";
-					configurationOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << subobject->first;
-					configurationOutput << "\t";
-					configurationOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << (subobject->second->GetBitSize() / 8);
-					configurationOutput << "\t";
-					configurationOutput << std::hex << std::uppercase << subobject->second->GetTypedActualValue<std::string>() << std::endl;
-
-					hexOutput << ReverseHex(object.first, 4);
-					hexOutput << ReverseHex(subobject->first, 2);
-					hexOutput << ReverseHex(subobject->second->GetBitSize() / 8, 8);
-					hexOutput << ReverseHex(subobject->second->GetTypedActualValue<std::string>());
+					if (subobject->second->GetTypedActualValue<std::uint16_t>() == 0)
+						continue;
 				}
+				else if (subobject->second->HasDefaultValue())
+				{
+					if (subobject->second->GetTypedDefaultValue<std::uint16_t>() == 0)
+						continue;
+				}
+
+				configurationOutput << std::hex << std::uppercase << object.first;
+				configurationOutput << "\t";
+				configurationOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << subobject->first;
+				configurationOutput << "\t";
+				configurationOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << (subobject->second->GetBitSize() / 8);
+				configurationOutput << "\t";
+				if (subobject->second->HasActualValue())
+					configurationOutput << std::hex << std::uppercase << subobject->second->GetTypedActualValue<std::string>() << std::endl;
+				else if (subobject->second->HasDefaultValue())
+					configurationOutput << std::hex << std::uppercase << subobject->second->GetTypedDefaultValue<std::string>() << std::endl;
+
+				hexOutput << ReverseHex(object.first, 4);
+				hexOutput << ReverseHex(subobject->first, 2);
+				hexOutput << ReverseHex(subobject->second->GetBitSize() / 8, 8);
+				if (subobject->second->HasActualValue())
+					hexOutput << ReverseHex(subobject->second->GetTypedActualValue<std::string>());
+				else if (subobject->second->HasDefaultValue())
+					hexOutput << ReverseHex(subobject->second->GetTypedDefaultValue<std::string>());
 			}
 		}
 	}
@@ -497,9 +540,7 @@ Result ConfigurationGenerator::WriteCommunicationProfileArea(const std::shared_p
 							continue;
 					}
 				}
-
-				//Write MN node assignement for PResChaining
-				if (object.first == 0x1F81 && subobject.first != 240)
+				else if (object.first == 0x1F81 && subobject.first != 240 && node->GetNodeId() == 240)
 					continue;
 
 				if (subobject.second->WriteToConfiguration())

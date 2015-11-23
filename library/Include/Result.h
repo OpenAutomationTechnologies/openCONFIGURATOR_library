@@ -85,6 +85,7 @@ namespace IndustrialNetwork
 				const std::string kMsgSetSubObjectActualValue = "Set actual value: %s on subobject 0x%X/0x%X on node %d.";
 				const std::string kMsgDatatypeMismatch = "Datatype '%s' does not match expected datatype '%s'.";
 				const std::string kMsgObjectDatatypeMismatch = "BaseObject '%s' datatype '%s' does not match expected datatype '%s'.";
+				const std::string kMsgActualValueFormatError = "Actual value '%s' has invalid format for datatype with datatype '%d'.";
 				const std::string kMsgActualValueDatatypeError = "Actual value '%s' with datatype '%d' does exceed the datatype limits.";
 				const std::string kMsgDefaultValueDatatypeError = "Default value '%s' with datatype '%d' does exceed the datatype limits.";
 				const std::string kMsgHighLimitDatatypeError = "Highlimit '%s' with datatype '%d' does exceed the datatype limits.";
@@ -129,7 +130,7 @@ namespace IndustrialNetwork
 				const std::string kMsgIndexInvalid = "Index 0x%X invalid for node %d.";
 				const std::string kMsgUnsupportedAttributeType = "Attributetype '%d' not supported for this operation.";
 				const std::string kMsgCycleTimeOnMnNotSet = "Cycle time has to be set on the managing node of the POWERLINK network.";
-				const std::string kMsgCycleTimeDefaultValue = "Cycle time should not have a default value on the managing node of the POWERLINK network.";
+				const std::string kMsgCycleTimeDefaultValue = "Cycle time forced to configuration because default and actual value are equal on the managing node.";
 
 				const std::string kMsgObjectActualValueNotSet = "Object 0x%X on node %d does not have a defined actual value.";
 				const std::string kMsgObjectDataTypeMismatch = "Object 0x%X datatype on node %d does not match the datatype to be retrieved.";
@@ -173,6 +174,7 @@ namespace IndustrialNetwork
 				const std::string kMsgNrOfEntriesInvalid = "Channel 0x%X on node %d: NrOfEntries invalid. Valid mapping entries: %d, Mapping entries enabled: %d.";
 
 				//Unused
+				/*
 				const std::string kMsgNoControlledNodesConfigured = "Configuration does not contain any POWERLINK-CNs.";
 				const std::string kMsgObjectDictoryEmpty = "Object dictionary of node %d is empty.";
 				const std::string kMsgIndexContainsNoSubIndices = "Index 0x%X of node %d contains no subIndices.";
@@ -200,7 +202,7 @@ namespace IndustrialNetwork
 				const std::string kMsgObjectSizeMappedInvalid = "Mapping-Object 0x%X/0x%X on node %d: Mapped data-length invalid. Actual: %d bits, expected %d bits.";
 				const std::string kMsgParameterValueInvalid = "Node %d: For parameter '%d' the given value '%s' is invalid.";
 				const std::string kMsgParameterValueNotSet = "Node %d: Parameter '%d' value is not set.";
-				const std::string kMsgMappingInvalid = "Mapping-Object 0x%X/0x%X on node %d: Mapping is enabled (NumberOfEntries != 0) but mapping entry is zero. Expected valid mapping entry.";
+				const std::string kMsgMappingInvalid = "Mapping-Object 0x%X/0x%X on node %d: Mapping is enabled (NumberOfEntries != 0) but mapping entry is zero. Expected valid mapping entry.";*/
 
 				/** \addtogroup apireturn
 				* @{

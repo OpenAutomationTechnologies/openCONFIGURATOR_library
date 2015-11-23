@@ -177,12 +177,6 @@ namespace IndustrialNetwork
 						switch (this->GetDataType().get())
 						{
 							case PlkDataType::INTEGER8:
-								{
-									std::int16_t value = HexToInt<std::int16_t>(highLimit);
-									this->highLimit = value;
-									break;
-								}
-
 							case PlkDataType::INTEGER16:
 								{
 									std::int16_t value = HexToInt<std::int16_t>(highLimit);
@@ -197,11 +191,6 @@ namespace IndustrialNetwork
 									break;
 								}
 							case PlkDataType::UNSIGNED8:
-								{
-									std::uint16_t value = HexToInt<std::uint16_t>(highLimit);
-									this->highLimit = value;
-									break;
-								}
 							case PlkDataType::UNSIGNED16:
 								{
 
@@ -340,11 +329,6 @@ namespace IndustrialNetwork
 						switch (this->GetDataType().get())
 						{
 							case PlkDataType::INTEGER8:
-								{
-									std::int16_t value = HexToInt<std::int16_t>(lowLimit);
-									this->lowLimit = value;
-									break;
-								}
 							case PlkDataType::INTEGER16:
 								{
 									std::int16_t value = HexToInt<std::int16_t>(lowLimit);
@@ -359,11 +343,6 @@ namespace IndustrialNetwork
 									break;
 								}
 							case PlkDataType::UNSIGNED8:
-								{
-									std::uint16_t value = HexToInt<std::uint16_t>(lowLimit);
-									this->lowLimit = value;
-									break;
-								}
 							case PlkDataType::UNSIGNED16:
 								{
 									std::uint16_t value = HexToInt<std::uint16_t>(lowLimit);
@@ -889,6 +868,32 @@ namespace IndustrialNetwork
 									break;
 								}
 							case PlkDataType::INTEGER8:
+								{
+									std::int16_t value = HexToInt<std::int16_t>(actualValue);
+
+									if (value > 127)
+									{
+										boost::format formatter(kMsgBaseObjectHighLimitError);
+										formatter
+										% this->GetName()
+										% this->GetObjectId()
+										% (std::uint32_t) this->GetContainingNode()
+										% 127;
+										LOG_ERROR() << formatter.str();
+										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT, formatter.str());
+									}
+									if (value < -128)
+									{
+										boost::format formatter(kMsgBaseObjectLowLimitError);
+										formatter
+										% this->GetName()
+										% this->GetObjectId()
+										% (std::uint32_t) this->GetContainingNode()
+										% -128;
+										LOG_ERROR() << formatter.str();
+										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
+									}
+								}
 							case PlkDataType::INTEGER16:
 								{
 									std::int16_t value = HexToInt<std::int16_t>(actualValue);
@@ -968,6 +973,20 @@ namespace IndustrialNetwork
 									break;
 								}
 							case PlkDataType::UNSIGNED8:
+								{
+									std::uint16_t value = HexToInt<std::uint16_t>(actualValue);
+									if (value > 255)
+									{
+										boost::format formatter(kMsgBaseObjectHighLimitError);
+										formatter
+										% this->GetName()
+										% this->GetObjectId()
+										% (std::uint32_t) this->GetContainingNode()
+										% 255;
+										LOG_ERROR() << formatter.str();
+										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT, formatter.str());
+									}
+								}
 							case PlkDataType::UNSIGNED16:
 								{
 									uint16_t value = HexToInt<std::uint16_t>(actualValue);
@@ -1225,13 +1244,22 @@ namespace IndustrialNetwork
 								break;
 						}
 					}
-					catch (const std::exception& e)
+					catch (const std::range_error&)
+					{
+						boost::format formatter(kMsgActualValueFormatError);
+						formatter
+						% actualValue
+						% (std::uint32_t) GetDataType().get();
+						LOG_FATAL() << formatter.str(); //<< e.what();
+						return Result(ErrorCode::ACTUAL_VALUE_INVALID, formatter.str());
+					}
+					catch (const std::exception&)
 					{
 						boost::format formatter(kMsgActualValueDatatypeError);
 						formatter
 						% actualValue
 						% (std::uint32_t) GetDataType().get();
-						LOG_FATAL() << formatter.str() << e.what();
+						LOG_FATAL() << formatter.str();// << e.what();
 						return Result(ErrorCode::ACTUAL_VALUE_INVALID, formatter.str());
 					}
 					return Result();

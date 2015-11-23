@@ -101,7 +101,7 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 
 		//TODO: Add RMN Handling
 
-		//Node is PRes Chained set receive from not to 240 (PResMN)
+		//Node is PRes Chained set receive from node to 240 (PResMN)
 		if (cn->GetOperationMode() == PlkOperationMode::CHAINED
 		        && dir == Direction::TX)
 		{
@@ -185,7 +185,7 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 				if (cn->GetOperationMode() == PlkOperationMode::CHAINED
 				        && dir == Direction::TX)
 				{
-					nodeId = 240;
+					nodeId = 0;
 					offsetToWrite = presMnOffset;
 				}
 
@@ -289,7 +289,7 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 							if (cn->GetOperationMode() == PlkOperationMode::CHAINED
 							        && dir == Direction::TX)
 							{
-								nodeId = 240;
+								nodeId = 0;
 								offsetToWrite = presMnOffset;
 							}
 
@@ -452,7 +452,7 @@ Result ManagingNodeMappingBuilder::WriteMappingToForNode(std::uint16_t nodeId, D
 			if (!res.IsSuccessful())
 				return res;
 
-			if (nodeID->WriteToConfiguration()) //actual value exist
+			if (nodeID->HasActualValue()) //actual value exist
 			{
 				if (nodeId == nodeID->GetTypedActualValue<std::uint16_t>())
 				{

@@ -531,30 +531,40 @@ std::uint32_t ControlledNode::GetConfigurationObjectCount()
 		std::uint32_t mappingObjCount = 0;
 		for (auto& subobject : object.second->GetSubObjectDictionary())
 		{
-			if (object.first >= 0x1600 && object.first < 0x1700) //Count for reset and actual NrOfEntries
+			if ((object.first >= 0x1600 && object.first < 0x1700)
+			        || (object.first >= 0x1A00 && object.first < 0x1B00)) //Count for reset and actual NrOfEntries
 			{
-				if (subobject.second->WriteToConfiguration() && subobject.first == 0x0)
+				if (subobject.first == 0x0)
 				{
-					count += 2; //Add count for mapping set and reset
-					mappingObjNrOfEntries = subobject.second->GetTypedActualValue<std::uint16_t>(); //Set actual nr of mapping objects
+					if (subobject.second->WriteToConfiguration())
+					{
+						count += 2; //Add count for mapping set and reset
+						mappingObjNrOfEntries = subobject.second->GetTypedActualValue<std::uint16_t>(); //Set actual nr of mapping objects
+					}
+					else if (subobject.second->HasDefaultValue())
+					{
+						if (subobject.second->GetTypedDefaultValue<std::uint16_t>() != 0)
+						{
+							count += 2; //Add count for mapping set and reset
+							mappingObjNrOfEntries = subobject.second->GetTypedDefaultValue<std::uint16_t>(); //Set actual nr of mapping objects
+						}
+					}
 				}
-				else if (subobject.second->WriteToConfiguration() && mappingObjCount < mappingObjNrOfEntries) //Only count mapping objects of they are activated
+				else if (mappingObjCount < mappingObjNrOfEntries)
 				{
-					count++;
-					mappingObjCount++;
-				}
-			}
-			else if (object.first >= 0x1A00 && object.first < 0x1B00) //Count for reset and actual NrOfEntries
-			{
-				if (subobject.second->WriteToConfiguration() && subobject.first == 0x0)
-				{
-					count += 2; //Add count for mapping set and reset
-					mappingObjNrOfEntries = subobject.second->GetTypedActualValue<std::uint16_t>(); //Set actual nr of mapping objects
-				}
-				else if (subobject.second->WriteToConfiguration() && mappingObjCount < mappingObjNrOfEntries) //Only count mapping objects of they are activated
-				{
-					count++;
-					mappingObjCount++;
+					if (subobject.second->WriteToConfiguration()) //Only count mapping objects of they are activated
+					{
+						count++;
+						mappingObjCount++;
+					}
+					else if (subobject.second->HasDefaultValue())
+					{
+						if (subobject.second->GetTypedDefaultValue<std::uint64_t>() != 0)
+						{
+							count++;
+							mappingObjCount++;
+						}
+					}
 				}
 			}
 			else if (subobject.second->WriteToConfiguration())
@@ -586,30 +596,40 @@ std::uint32_t ControlledNode::GetConfigurationObjectSize()
 		std::uint32_t mappingObjCount = 0;
 		for (auto& subobject : object.second->GetSubObjectDictionary())
 		{
-			if (object.first >= 0x1600 && object.first < 0x1700) //Count for reset and actual NrOfEntries
+			if ((object.first >= 0x1600 && object.first < 0x1700)
+			        || (object.first >= 0x1A00 && object.first < 0x1B00)) //Count for reset and actual NrOfEntries
 			{
-				if (subobject.second->WriteToConfiguration() && subobject.first == 0x0)
+				if (subobject.first == 0x0)
 				{
-					size += 2 * subobject.second->GetBitSize(); //Add size of NrOfEntries set and reset
-					mappingObjNrOfEntries = subobject.second->GetTypedActualValue<uint16_t>(); //Set actual nr of mapping objects
+					if (subobject.second->WriteToConfiguration())
+					{
+						size += 2 * subobject.second->GetBitSize(); //Add size of NrOfEntries set and reset
+						mappingObjNrOfEntries = subobject.second->GetTypedActualValue<uint16_t>(); //Set actual nr of mapping objects
+					}
+					else if (subobject.second->HasDefaultValue())
+					{
+						if (subobject.second->GetTypedDefaultValue<std::uint16_t>() != 0)
+						{
+							size += 2 * subobject.second->GetBitSize(); //Add size of NrOfEntries set and reset
+							mappingObjNrOfEntries = subobject.second->GetTypedDefaultValue<uint16_t>(); //Set actual nr of mapping objects
+						}
+					}
 				}
-				else if (subobject.second->WriteToConfiguration() && mappingObjCount < mappingObjNrOfEntries) //Only count mapping objects of they are activated
+				else if (mappingObjCount < mappingObjNrOfEntries)
 				{
-					size += subobject.second->GetBitSize();
-					mappingObjCount++;
-				}
-			}
-			else if (object.first >= 0x1A00 && object.first < 0x1B00) //Count for reset and actual NrOfEntries
-			{
-				if (subobject.second->WriteToConfiguration() && subobject.first == 0x0)
-				{
-					size += 2 * subobject.second->GetBitSize();//Add size of NrOfEntries
-					mappingObjNrOfEntries = subobject.second->GetTypedActualValue<uint16_t>(); //Set actual nr of mapping objects
-				}
-				else if (subobject.second->WriteToConfiguration() && mappingObjCount < mappingObjNrOfEntries) //Only count mapping objects of they are activated
-				{
-					size += subobject.second->GetBitSize();
-					mappingObjCount++;
+					if (subobject.second->WriteToConfiguration()) //Only count mapping objects of they are activated
+					{
+						size += subobject.second->GetBitSize();
+						mappingObjCount++;
+					}
+					else if (subobject.second->HasDefaultValue())
+					{
+						if (subobject.second->GetTypedDefaultValue<std::uint64_t>() != 0)
+						{
+							size += subobject.second->GetBitSize();
+							mappingObjCount++;
+						}
+					}
 				}
 			}
 			else if (subobject.second->WriteToConfiguration())
@@ -1075,7 +1095,8 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 
 			if (this->GetOperationMode() == PlkOperationMode::CHAINED
 			        && dir == Direction::RX
-			        && mappedFromNode == 0)
+			        && (mappedFromNode == 0
+			            || mappedFromNode == 240)) //Node mode has changed to chaining or is already chained
 			{
 				mappedFromNode = 240;
 				expectedOffset = this->nodeDataPresMnOffset;
@@ -1093,7 +1114,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 			if (!res.IsSuccessful())
 				return res;
 
-			if (nrOfEntriesObj->WriteToConfiguration())
+			if (nrOfEntriesObj->HasActualValue())
 			{
 				nrOfEntries = nrOfEntriesObj->GetTypedActualValue<std::uint16_t>();
 			}
@@ -1105,6 +1126,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 			//If NrOfEntries is zero continue with next channel
 			if (nrOfEntries == 0)
 				continue;
+
 			//correct receive from for chained nodes
 			else if (nrOfEntries != 0
 			         && mappedFromNode == 240)
@@ -1119,7 +1141,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 				if (mapping.first == 0)
 					continue;
 
-				if (countNrOfEntries > nrOfEntries)
+				if (countNrOfEntries == nrOfEntries)
 					break;
 
 				if (mapping.second->HasActualValue())
@@ -1131,7 +1153,6 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 
 						mappingPtr->SetMappingOffset(expectedOffset);
 						mapping.second->SetTypedObjectActualValue(IntToHex<std::uint64_t>(mappingPtr->GetValue(), 16, "0x"));
-
 						res = CheckProcessDataMapping(mappingPtr, expectedOffset, dir);
 						if (!res.IsSuccessful())
 							return res;
@@ -1407,6 +1428,11 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 void ControlledNode::SetNodeDataPresMnOffset(std::uint32_t offset)
 {
 	this->nodeDataPresMnOffset = offset;
+}
+
+std::uint32_t ControlledNode::GetNodeDataPresMnOffset()
+{
+	return this->nodeDataPresMnOffset;
 }
 
 Result ControlledNode::MoveMappingObject(const Direction dir, std::uint16_t channelNr, std::uint16_t oldPosition, std::uint16_t newPosition)

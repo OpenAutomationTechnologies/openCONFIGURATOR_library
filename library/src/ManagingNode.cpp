@@ -473,12 +473,12 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::Calculat
 			if (!res.IsSuccessful())
 				continue;
 
-			if (nodeID->WriteToConfiguration())
-				mappedFromNode = nodeID->GetTypedActualValue<std::uint16_t>();
+			if (nodeID->HasActualValue())
+			{
+				if (nodeID->GetTypedActualValue<std::uint16_t>() != mappedFromNode) //not PResMN
+					continue;
+			}
 			else
-				continue;
-
-			if (mappedFromNode != this->GetNodeId())
 				continue;
 
 			//Get according mapping object
@@ -577,10 +577,12 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::UpdatePr
 			if (!res.IsSuccessful())
 				continue;
 
-			if (nodeID->WriteToConfiguration())
+			if (nodeID->HasActualValue())
 			{
 				mappedFromNode = nodeID->GetTypedActualValue<std::uint16_t>();
 			}
+			else
+				continue;
 
 			//Get according mapping object
 			std::shared_ptr<Object> mappingObject;
@@ -603,66 +605,154 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::UpdatePr
 				nrOfEntries = nrOfEntriesObj->GetTypedDefaultValue<std::uint16_t>();
 			}
 
-			//Node mapped does not longer exist
-			if (nodeCollection.find((std::uint8_t) mappedFromNode) == nodeCollection.end())
+			if (nrOfEntries == 0)
+				continue;
+
+			//PResMN
+			if (mappedFromNode == 0 && dir == Direction::TX)
 			{
+				std::uint16_t startNodeMapping = 0;
+				for (auto& node : nodeCollection)
+				{
+					std::uint16_t mappingFromNodeCount = 0;
+					std::uint16_t mappingCount = 0;
+					const std::shared_ptr<ControlledNode>& cn = std::dynamic_pointer_cast<ControlledNode>(node.second);
+					if (cn == NULL)
+						continue;
+
+					if (cn->GetOperationMode() != PlkOperationMode::CHAINED)
+						continue;
+
+					for (auto& receiveMapping : cn->GetReceiveMapping())
+					{
+						if (receiveMapping->GetDestinationNode() == 240)
+							mappingFromNodeCount++;
+					}
+
+					std::uint16_t endNodeMapping = startNodeMapping + mappingFromNodeCount;
+					for (auto& mapping : mappingObject->GetSubObjectDictionary())
+					{
+						if (mapping.first == 0)
+							continue;
+
+						if (mappingCount < startNodeMapping)
+						{
+							mappingCount++;
+							continue;
+						}
+
+						if (mappingCount == endNodeMapping)
+						{
+							startNodeMapping = endNodeMapping;
+							break;
+						}
+
+						if (mapping.second->HasActualValue())
+						{
+							if (mapping.second->GetTypedActualValue<std::uint64_t>() != 0)
+							{
+								std::shared_ptr<BaseProcessDataMapping> mappingPtr = std::shared_ptr<BaseProcessDataMapping>(new BaseProcessDataMapping(node.first,
+								        mapping.second->GetObjectId(), mapping.second, mapping.second->GetTypedActualValue<std::string>(), this->GetNodeId(), false));
+
+								mappingPtr->SetMappingOffset(mappingPtr->GetMappingOffset() - cn->GetNodeDataPresMnOffset());
+
+								res = CheckProcessDataMapping(nodeCollection.at((std::uint8_t) node.first), mappingPtr, Direction::RX);
+								if (!res.IsSuccessful())
+									return res;
+
+								this->GetTransmitMapping().push_back(mappingPtr);
+								mappingCount++;
+							}
+						}
+						else if (mapping.second->HasDefaultValue())
+						{
+							if (mapping.second->GetTypedDefaultValue<std::uint64_t>() != 0)
+							{
+								std::shared_ptr<BaseProcessDataMapping> mappingPtr = std::shared_ptr<BaseProcessDataMapping>(new BaseProcessDataMapping(node.first,
+								        mapping.second->GetObjectId(), mapping.second, mapping.second->GetTypedDefaultValue<std::string>(), this->GetNodeId(), true));
+
+								res = CheckProcessDataMapping(nodeCollection.at((std::uint8_t) mappedFromNode), mappingPtr, Direction::RX);
+								if (!res.IsSuccessful())
+									return res;
+
+								this->GetTransmitMapping().push_back(mappingPtr);
+								mappingCount++;
+							}
+						}
+					}
+				}
+			}
+			else
+			{
+				//Node mapped does not longer exist
+				if (nodeCollection.find((std::uint8_t) mappedFromNode) == nodeCollection.end())
+				{
+					for (auto& mapping : mappingObject->GetSubObjectDictionary())
+					{
+						mapping.second->ClearActualValue(); //delete mapping actual values
+						nodeID->ClearActualValue(); //clear node id mapping parameter
+					}
+					continue;
+				}
+
 				for (auto& mapping : mappingObject->GetSubObjectDictionary())
 				{
-					mapping.second->ClearActualValue(); //delete mapping actual values
-					nodeID->ClearActualValue(); //clear node id mapping parameter
-				}
-				continue;
-			}
+					if (mapping.first == 0)
+						continue;
 
-			for (auto& mapping : mappingObject->GetSubObjectDictionary())
-			{
-				if (mapping.first == 0)
-					continue;
+					if (nrOfEntries == 0)
+						break;
 
-				if (nrOfEntries == 0)
-					break;
+					if (mapping.second->HasActualValue())
+					{
+						if (mapping.second->GetTypedActualValue<std::uint64_t>() != 0)
+						{
+							std::shared_ptr<BaseProcessDataMapping> mappingPtr = std::shared_ptr<BaseProcessDataMapping>(new BaseProcessDataMapping(mappedFromNode,
+							        mapping.second->GetObjectId(), mapping.second, mapping.second->GetTypedActualValue<std::string>(), this->GetNodeId(), false));
 
-				if (mapping.second->WriteToConfiguration()
-				        && mapping.second->GetTypedActualValue<std::uint64_t>() != 0)
-				{
-					std::shared_ptr<BaseProcessDataMapping> mappingPtr = std::shared_ptr<BaseProcessDataMapping>(new BaseProcessDataMapping(mappedFromNode,
-					        mapping.second->GetObjectId(), mapping.second, mapping.second->GetTypedActualValue<std::string>(), this->GetNodeId(), false));
+							Direction nodeDir = Direction::RX;
+							if (dir == Direction::RX)
+								nodeDir = Direction::TX;
 
-					Direction nodeDir = Direction::RX;
-					if (dir == Direction::RX)
-						nodeDir = Direction::TX;
+							res = CheckProcessDataMapping(nodeCollection.at((std::uint8_t) mappedFromNode), mappingPtr, nodeDir);
+							if (!res.IsSuccessful())
+								return res;
 
-					res = CheckProcessDataMapping(nodeCollection.at((std::uint8_t) mappedFromNode), mappingPtr, nodeDir);
-					if (!res.IsSuccessful())
-						return res;
+							if (dir == Direction::RX)
+								this->GetReceiveMapping().push_back(mappingPtr);
+							else if (dir == Direction::TX)
+								this->GetTransmitMapping().push_back(mappingPtr);
 
-					if (dir == Direction::RX)
-						this->GetReceiveMapping().push_back(mappingPtr);
-					else if (dir == Direction::TX)
-						this->GetTransmitMapping().push_back(mappingPtr);
+							nrOfEntries--;
+						}
+					}
+					else if (mapping.second->HasDefaultValue())
+					{
+						if (mapping.second->GetTypedDefaultValue<std::uint64_t>() != 0)
+						{
+							std::shared_ptr<BaseProcessDataMapping> mappingPtr = std::shared_ptr<BaseProcessDataMapping>(new BaseProcessDataMapping(mappedFromNode,
+							        mapping.second->GetObjectId(), mapping.second, mapping.second->GetTypedDefaultValue<std::string>(), this->GetNodeId(), true));
 
-					nrOfEntries--;
-				}
-				else if (mapping.second->HasDefaultValue()
-				         && mapping.second->GetTypedDefaultValue<std::uint64_t>() != 0)
-				{
-					std::shared_ptr<BaseProcessDataMapping> mappingPtr = std::shared_ptr<BaseProcessDataMapping>(new BaseProcessDataMapping(mappedFromNode,
-					        mapping.second->GetObjectId(), mapping.second, mapping.second->GetTypedDefaultValue<std::string>(), this->GetNodeId(), true));
+							Direction nodeDir = Direction::RX;
+							if (dir == Direction::RX)
+								nodeDir = Direction::TX;
 
-					res = CheckProcessDataMapping(nodeCollection.at((std::uint8_t) mappedFromNode), mappingPtr, dir);
-					if (!res.IsSuccessful())
-						return res;
+							res = CheckProcessDataMapping(nodeCollection.at((std::uint8_t) mappedFromNode), mappingPtr, nodeDir);
+							if (!res.IsSuccessful())
+								return res;
 
-					if (dir == Direction::RX)
-						this->GetReceiveMapping().push_back(mappingPtr);
-					else if (dir == Direction::TX)
-						this->GetTransmitMapping().push_back(mappingPtr);
+							if (dir == Direction::RX)
+								this->GetReceiveMapping().push_back(mappingPtr);
+							else if (dir == Direction::TX)
+								this->GetTransmitMapping().push_back(mappingPtr);
 
-					nrOfEntries--;
-				}
-				else
-				{
-					return Result(ErrorCode::MAPPING_INVALID);
+							nrOfEntries--;
+						}
+					}
+					else
+					{
+						return Result(ErrorCode::MAPPING_INVALID);
+					}
 				}
 			}
 		}
@@ -726,9 +816,6 @@ Result ManagingNode::CheckProcessDataMapping(const std::shared_ptr<BaseNode>& no
 		piCollection = node->GetReceiveProcessImage();
 	else if (dir == Direction::TX)
 		piCollection = node->GetTransmitProcessImage();
-
-	//Check DynamicChannel To Be Done
-	std::shared_ptr<DynamicChannel> dynChannel;
 
 	bool foundMapping = false;
 	std::uint32_t fillSize = 0;
