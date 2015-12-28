@@ -457,7 +457,30 @@ Result ManagingNodeMappingBuilder::WriteMappingToForNode(std::uint16_t nodeId, D
 				if (nodeId == nodeID->GetTypedActualValue<std::uint16_t>())
 				{
 					mappingObjectIndex = (obj.first - mappingParameterIndex) + mappingObjectIndex; //Calculate mapping object index for node
-					useNewMappingParameter = false; // Mapping paramter already exist for node
+
+					//Get according mapping object - Check if mappings are available
+					std::shared_ptr<Object> mappingObject;
+					Result res = mn->GetObject(mappingObjectIndex, mappingObject);
+					if (!res.IsSuccessful())
+						return res;
+
+					//Get mapping nrOfEntries
+					std::shared_ptr<SubObject> nrOfEntriesObj;
+					res = mappingObject->GetSubObject(0x0, nrOfEntriesObj);
+					if (!res.IsSuccessful())
+						return res;
+
+					if (nrOfEntriesObj->HasActualValue())
+					{
+						if (nrOfEntriesObj->GetTypedActualValue<uint16_t>() == mappingObject->GetSubObjectDictionary().size() - 1) //Mapping object already full
+						{
+							if (nodeId == 0) //Overflow only for PResMN
+								continue;
+							else
+								return Result(ErrorCode::INSUFFICIENT_MAPPING_OBJECTS);
+						}
+					}
+					useNewMappingParameter = false; // Mapping parameter already exist for node
 					break; //End traversal
 				}
 				else
