@@ -37,6 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <sstream>
 #include <exception>
+#include <stdexcept>
 
 #include <boost/optional.hpp>
 #include <boost/lexical_cast.hpp>

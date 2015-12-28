@@ -177,6 +177,13 @@ namespace IndustrialNetwork
 						switch (this->GetDataType().get())
 						{
 							case PlkDataType::INTEGER8:
+								{
+									std::int16_t value = HexToInt<std::int16_t>(highLimit);
+									if (value < -128 || value > 127)
+										throw std::range_error("");
+									this->highLimit = value;
+									break;
+								}
 							case PlkDataType::INTEGER16:
 								{
 									std::int16_t value = HexToInt<std::int16_t>(highLimit);
@@ -191,6 +198,13 @@ namespace IndustrialNetwork
 									break;
 								}
 							case PlkDataType::UNSIGNED8:
+								{
+									std::uint16_t value = HexToInt<std::uint16_t>(highLimit);
+									if (value > 255)
+										throw std::range_error("");
+									this->highLimit = value;
+									break;
+								}
 							case PlkDataType::UNSIGNED16:
 								{
 
@@ -329,6 +343,13 @@ namespace IndustrialNetwork
 						switch (this->GetDataType().get())
 						{
 							case PlkDataType::INTEGER8:
+								{
+									std::int16_t value = HexToInt<std::int16_t>(lowLimit);
+									if (value < -128 || value > 127)
+										throw std::range_error("");
+									this->lowLimit = value;
+									break;
+								}
 							case PlkDataType::INTEGER16:
 								{
 									std::int16_t value = HexToInt<std::int16_t>(lowLimit);
@@ -343,6 +364,13 @@ namespace IndustrialNetwork
 									break;
 								}
 							case PlkDataType::UNSIGNED8:
+								{
+									std::uint16_t value = HexToInt<std::uint16_t>(lowLimit);
+									if (value > 255)
+										throw std::range_error("");
+									this->lowLimit = value;
+									break;
+								}
 							case PlkDataType::UNSIGNED16:
 								{
 									std::uint16_t value = HexToInt<std::uint16_t>(lowLimit);
@@ -864,35 +892,50 @@ namespace IndustrialNetwork
 										this->actualValueNotDefaultValue = true;
 									else
 										this->actualValueNotDefaultValue = false;
-
 									break;
 								}
 							case PlkDataType::INTEGER8:
 								{
 									std::int16_t value = HexToInt<std::int16_t>(actualValue);
+									if (value < -128 || value > 127)
+										throw std::range_error("");
 
-									if (value > 127)
+									if (this->highLimit.is_initialized())
 									{
-										boost::format formatter(kMsgBaseObjectHighLimitError);
-										formatter
-										% this->GetName()
-										% this->GetObjectId()
-										% (std::uint32_t) this->GetContainingNode()
-										% 127;
-										LOG_ERROR() << formatter.str();
-										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT, formatter.str());
+										if (value > this->GetTypedHighLimit<std::int16_t>())
+										{
+											boost::format formatter(kMsgBaseObjectHighLimitError);
+											formatter
+											% this->GetName()
+											% this->GetObjectId()
+											% (std::uint32_t) this->GetContainingNode()
+											% this->GetTypedHighLimit<std::int16_t>();
+											LOG_ERROR() << formatter.str();
+											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT, formatter.str());
+										}
 									}
-									if (value < -128)
+									if (this->lowLimit.is_initialized())
 									{
-										boost::format formatter(kMsgBaseObjectLowLimitError);
-										formatter
-										% this->GetName()
-										% this->GetObjectId()
-										% (std::uint32_t) this->GetContainingNode()
-										% -128;
-										LOG_ERROR() << formatter.str();
-										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
+										if (value < this->GetTypedLowLimit<std::int16_t>())
+										{
+											boost::format formatter(kMsgBaseObjectLowLimitError);
+											formatter
+											% this->GetName()
+											% this->GetObjectId()
+											% (std::uint32_t) this->GetContainingNode()
+											% this->GetTypedLowLimit<std::int16_t>();
+											LOG_ERROR() << formatter.str();
+											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
+										}
 									}
+									this->SetActualValue(boost::any(value));
+									if (this->GetDefaultValue().empty())
+										this->actualValueNotDefaultValue = true;
+									else if (this->GetTypedDefaultValue<std::int16_t>() != value)
+										this->actualValueNotDefaultValue = true;
+									else
+										this->actualValueNotDefaultValue = false;
+									break;
 								}
 							case PlkDataType::INTEGER16:
 								{
@@ -976,16 +1019,44 @@ namespace IndustrialNetwork
 								{
 									std::uint16_t value = HexToInt<std::uint16_t>(actualValue);
 									if (value > 255)
+										throw std::range_error("");
+
+									if (this->highLimit.is_initialized())
 									{
-										boost::format formatter(kMsgBaseObjectHighLimitError);
-										formatter
-										% this->GetName()
-										% this->GetObjectId()
-										% (std::uint32_t) this->GetContainingNode()
-										% 255;
-										LOG_ERROR() << formatter.str();
-										return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT, formatter.str());
+										if (value > this->GetTypedHighLimit<std::uint16_t>())
+										{
+											boost::format formatter(kMsgBaseObjectHighLimitError);
+											formatter
+											% this->GetName()
+											% this->GetObjectId()
+											% (std::uint32_t) this->GetContainingNode()
+											% this->GetTypedHighLimit<std::uint16_t>();
+											LOG_ERROR() << formatter.str();
+											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT, formatter.str());
+										}
 									}
+									if (this->lowLimit.is_initialized())
+									{
+										if (value < this->GetTypedLowLimit<std::uint16_t>())
+										{
+											boost::format formatter(kMsgBaseObjectLowLimitError);
+											formatter
+											% this->GetName()
+											% this->GetObjectId()
+											% (std::uint32_t) this->GetContainingNode()
+											% this->GetTypedLowLimit<std::uint16_t>();
+											LOG_ERROR() << formatter.str();
+											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
+										}
+									}
+									this->SetActualValue(boost::any(value));
+									if (this->GetDefaultValue().empty())
+										this->actualValueNotDefaultValue = true;
+									else if (this->GetTypedDefaultValue<std::uint16_t>() != value)
+										this->actualValueNotDefaultValue = true;
+									else
+										this->actualValueNotDefaultValue = false;
+									break;
 								}
 							case PlkDataType::UNSIGNED16:
 								{
