@@ -156,7 +156,7 @@ Result BaseNode::AddSubObject(std::uint32_t objectId, std::shared_ptr<SubObject>
 	return this->objectDictionary.find(objectId)->second->AddSubobject(objRef);
 }
 
-Result BaseNode::ForceObject(std::uint32_t objectId, bool force, const std::string& actualValue, bool enableLog)
+Result BaseNode::ForceObject(std::uint32_t objectId, bool force, bool validateOnly, const std::string& actualValue, bool enableLog)
 {
 	auto iter = this->objectDictionary.find(objectId);
 	if (iter == this->objectDictionary.end())
@@ -183,18 +183,21 @@ Result BaseNode::ForceObject(std::uint32_t objectId, bool force, const std::stri
 		return Result(ErrorCode::OBJECT_TYPE_DOES_NOT_SUPPORT_VALUES);
 	}
 
-	iter->second->SetForceToCDC(force);
-	//Log info forced object
-	boost::format log_format(kMsgForceObject);
-	log_format
-	% objectId
-	% (uint32_t) nodeId
-	% force;
-	LOG_INFO() << log_format.str();
+	if (validateOnly == false)
+	{
+		iter->second->SetForceToCDC(force);
+		//Log info forced object
+		boost::format log_format(kMsgForceObject);
+		log_format
+		% objectId
+		% (uint32_t) nodeId
+		% force;
+		LOG_INFO() << log_format.str();
+	}
 
 	if (!actualValue.empty())
 	{
-		Result res = iter->second->SetTypedObjectActualValue(actualValue);
+		Result res = iter->second->SetTypedObjectActualValue(actualValue, validateOnly);
 		if (!res.IsSuccessful())
 			return res;
 
@@ -208,7 +211,8 @@ Result BaseNode::ForceObject(std::uint32_t objectId, bool force, const std::stri
 	}
 	else
 	{
-		iter->second->ClearActualValue(); //Clear the actual value
+		if (validateOnly == false)
+			iter->second->ClearActualValue(); //Clear the actual value
 	}
 	return Result();
 }
@@ -280,7 +284,7 @@ Result BaseNode::GetObject(std::uint32_t objectId, std::shared_ptr<Object>& objR
 	return Result();
 }
 
-Result BaseNode::ForceSubObject(std::uint32_t objectId, std::uint32_t subObjectId, bool force, const std::string& actualValue, bool enableLog)
+Result BaseNode::ForceSubObject(std::uint32_t objectId, std::uint32_t subObjectId, bool force, bool validateOnly, const std::string& actualValue, bool enableLog)
 {
 	auto iter = this->objectDictionary.find(objectId);
 	if (iter == this->objectDictionary.end())
@@ -301,19 +305,22 @@ Result BaseNode::ForceSubObject(std::uint32_t objectId, std::uint32_t subObjectI
 	Result res = iter->second->GetSubObject(subObjectId, subObject, enableLog);
 	if (res.IsSuccessful())
 	{
-		subObject->SetForceToCDC(force);
-		//Log info forced subobject
-		boost::format log_format(kMsgForceSubObject);
-		log_format
-		% objectId
-		% subObjectId
-		% (std::uint32_t) nodeId
-		% force;
-		LOG_INFO() << log_format.str();
+		if (validateOnly == false)
+		{
+			subObject->SetForceToCDC(force);
+			//Log info forced subobject
+			boost::format log_format(kMsgForceSubObject);
+			log_format
+			% objectId
+			% subObjectId
+			% (std::uint32_t) nodeId
+			% force;
+			LOG_INFO() << log_format.str();
+		}
 
 		if (!actualValue.empty())
 		{
-			res = subObject->SetTypedObjectActualValue(actualValue);
+			res = subObject->SetTypedObjectActualValue(actualValue, validateOnly);
 			if (!res.IsSuccessful())
 				return res;
 
@@ -328,7 +335,8 @@ Result BaseNode::ForceSubObject(std::uint32_t objectId, std::uint32_t subObjectI
 		}
 		else
 		{
-			subObject->ClearActualValue(); //Clear the actual value
+			if (validateOnly == false)
+				subObject->ClearActualValue(); //Clear the actual value
 		}
 	}
 	return res;
@@ -391,7 +399,7 @@ Result BaseNode::SetSubObjectActualValue(std::uint32_t objectId, std::uint32_t s
 				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
 			}
-			else if(!res.IsSuccessful())
+			else if (!res.IsSuccessful())
 				return res;
 
 			//Log info actual value set

@@ -116,7 +116,7 @@ namespace IndustrialNetwork
 						T GetTypedDefaultValue();
 
 						std::uint8_t GetContainingNode();
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetTypedObjectActualValue(const std::string& actualValueToSet);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetTypedObjectActualValue(const std::string& actualValueToSet, bool validateOnly = false);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetTypedObjectDefaultValue(const std::string& defaultValueToSet);
 
 						void SetComplexDataType(std::shared_ptr<Parameter>& parameter);

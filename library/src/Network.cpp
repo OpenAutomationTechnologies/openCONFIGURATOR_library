@@ -215,30 +215,30 @@ Result Network::RemoveNode(const std::uint8_t nodeID)
 		if (std::dynamic_pointer_cast<ManagingNode>(node.second))
 		{
 			//Reset 0x1F26 / nodeID
-			node.second->ForceSubObject(0x1F26, nodeID, false, "");
+			node.second->ForceSubObject(0x1F26, nodeID, false, false, "");
 			//Reset 0x1F27 / nodeID
-			node.second->ForceSubObject(0x1F27, nodeID, false, "");
+			node.second->ForceSubObject(0x1F27, nodeID, false, false, "");
 			//Reset 0x1F82 / nodeID
-			node.second->ForceSubObject(0x1F81, nodeID, false, "");
+			node.second->ForceSubObject(0x1F81, nodeID, false, false, "");
 			//Reset 0x1F9B / nodeID
-			node.second->ForceSubObject(0x1F9B, nodeID, false, "", false);
+			node.second->ForceSubObject(0x1F9B, nodeID, false, false, "", false);
 			//Reset 0x1F92 / nodeID
-			node.second->ForceSubObject(0x1F92, nodeID, false, "");
+			node.second->ForceSubObject(0x1F92, nodeID, false, false, "");
 			//Reset 0x1F8B / nodeID
-			node.second->ForceSubObject(0x1F8B, nodeID, false, "");
+			node.second->ForceSubObject(0x1F8B, nodeID, false, false, "");
 			//Reset 0x1C09 / nodeID
-			node.second->ForceSubObject(0x1C09, nodeID, false, "");
+			node.second->ForceSubObject(0x1C09, nodeID, false, false, "");
 			//Reset 0x1F8D / nodeID from all CNs
-			node.second->ForceSubObject(0x1F8D, nodeID, false, "");
+			node.second->ForceSubObject(0x1F8D, nodeID, false, false, "");
 		}
 		else
 		{
 			//Reset 0x1F8D / nodeID from all CNs
-			node.second->ForceSubObject(0x1F8D, nodeID, false, "");
+			node.second->ForceSubObject(0x1F8D, nodeID, false, false, "");
 			//Reset 0x1F8B / nodeID
-			node.second->ForceSubObject(0x1F8B, nodeID, false, "", false);
+			node.second->ForceSubObject(0x1F8B, nodeID, false, false, "", false);
 			//Reset 0x1F9B / nodeID from all CNs
-			node.second->ForceSubObject(0x1F9B, nodeID, false, "", false);
+			node.second->ForceSubObject(0x1F9B, nodeID, false, false, "", false);
 		}
 
 		node.second->ClearMappingChannelforNode(nodeID);
@@ -297,30 +297,30 @@ Result Network::SetNodeId(const std::uint8_t nodeId, const std::uint8_t newNodeI
 		if (std::dynamic_pointer_cast<ManagingNode>(node.second))
 		{
 			//Reset 0x1F26 / nodeID
-			node.second->ForceSubObject(0x1F26, nodeId, false, "");
+			node.second->ForceSubObject(0x1F26, nodeId, false, false, "");
 			//Reset 0x1F27 / nodeID
-			node.second->ForceSubObject(0x1F27, nodeId, false, "");
+			node.second->ForceSubObject(0x1F27, nodeId, false, false, "");
 			//Reset 0x1F81 / nodeID
-			node.second->ForceSubObject(0x1F81, nodeId, false, "");
+			node.second->ForceSubObject(0x1F81, nodeId, false, false, "");
 			//Reset 0x1F9B / nodeID
-			node.second->ForceSubObject(0x1F9B, nodeId, false, "", false);
+			node.second->ForceSubObject(0x1F9B, nodeId, false, false, "", false);
 			//Reset 0x1F92 / nodeID
-			node.second->ForceSubObject(0x1F92, nodeId, false, "");
+			node.second->ForceSubObject(0x1F92, nodeId, false, false, "");
 			//Reset 0x1F8B / nodeID
-			node.second->ForceSubObject(0x1F8B, nodeId, false, "");
+			node.second->ForceSubObject(0x1F8B, nodeId, false, false, "");
 			//Reset 0x1C09 / nodeID
-			node.second->ForceSubObject(0x1C09, nodeId, false, "");
+			node.second->ForceSubObject(0x1C09, nodeId, false, false, "");
 			//Reset 0x1F8D / nodeID from all CNs
-			node.second->ForceSubObject(0x1F8D, nodeId, false, "");
+			node.second->ForceSubObject(0x1F8D, nodeId, false, false, "");
 		}
 		else
 		{
 			//Reset 0x1F8D / nodeID from all CNs
-			node.second->ForceSubObject(0x1F8D, nodeId, false, "");
+			node.second->ForceSubObject(0x1F8D, nodeId, false, false, "");
 			//Reset 0x1F8B / nodeID
-			node.second->ForceSubObject(0x1F8B, nodeId, false, "", false);
+			node.second->ForceSubObject(0x1F8B, nodeId, false, false, "", false);
 			//Reset 0x1F9B / nodeID from all CNs
-			node.second->ForceSubObject(0x1F9B, nodeId, false, "", false);
+			node.second->ForceSubObject(0x1F9B, nodeId, false, false, "", false);
 		}
 
 		node.second->ChangeMappingChannelNodeId(nodeId, newNodeId);
@@ -857,30 +857,30 @@ Result Network::EnableNode(const std::uint8_t nodeID, bool enable)
 			if (std::dynamic_pointer_cast<ManagingNode>(node.second))
 			{
 				//Reset 0x1F26 / nodeID
-				node.second->ForceSubObject(0x1F26, nodeID, false, "");
+				node.second->ForceSubObject(0x1F26, nodeID, false, false, "");
 				//Reset 0x1F27 / nodeID
-				node.second->ForceSubObject(0x1F27, nodeID, false, "");
+				node.second->ForceSubObject(0x1F27, nodeID, false, false, "");
 				//Reset 0x1F82 / nodeID
-				node.second->ForceSubObject(0x1F81, nodeID, false, "");
+				node.second->ForceSubObject(0x1F81, nodeID, false, false, "");
 				//Reset 0x1F9B / nodeID
-				node.second->ForceSubObject(0x1F9B, nodeID, false, "", false);
+				node.second->ForceSubObject(0x1F9B, nodeID, false, false, "", false);
 				//Reset 0x1F92 / nodeID
-				node.second->ForceSubObject(0x1F92, nodeID, false, "");
+				node.second->ForceSubObject(0x1F92, nodeID, false, false, "");
 				//Reset 0x1F8B / nodeID
-				node.second->ForceSubObject(0x1F8B, nodeID, false, "");
+				node.second->ForceSubObject(0x1F8B, nodeID, false, false, "");
 				//Reset 0x1C09 / nodeID
-				node.second->ForceSubObject(0x1C09, nodeID, false, "");
+				node.second->ForceSubObject(0x1C09, nodeID, false, false, "");
 				//Reset 0x1F8D / nodeID from all CNs
-				node.second->ForceSubObject(0x1F8D, nodeID, false, "");
+				node.second->ForceSubObject(0x1F8D, nodeID, false, false, "");
 			}
 			else
 			{
 				//Reset 0x1F8D / nodeID from all CNs
-				node.second->ForceSubObject(0x1F8D, nodeID, false, "");
+				node.second->ForceSubObject(0x1F8D, nodeID, false, false, "");
 				//Reset 0x1F8B / nodeID
-				node.second->ForceSubObject(0x1F8B, nodeID, false, "", false);
+				node.second->ForceSubObject(0x1F8B, nodeID, false, false,  "", false);
 				//Reset 0x1F9B / nodeID from all CNs
-				node.second->ForceSubObject(0x1F9B, nodeID, false, "", false);
+				node.second->ForceSubObject(0x1F9B, nodeID, false, false,  "", false);
 			}
 
 			node.second->ClearMappingChannelforNode(nodeID);

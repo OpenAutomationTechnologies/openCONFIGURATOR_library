@@ -864,7 +864,7 @@ namespace IndustrialNetwork
 				template float BaseObject::GetTypedDefaultValue<float>();
 				template double BaseObject::GetTypedDefaultValue<double>();
 
-				Result BaseObject::SetTypedObjectActualValue(const std::string& actualValue)
+				Result BaseObject::SetTypedObjectActualValue(const std::string& actualValue, bool validateOnly)
 				{
 					try
 					{
@@ -885,13 +885,16 @@ namespace IndustrialNetwork
 							case PlkDataType::BOOLEAN:
 								{
 									bool value = StringToBool(actualValue);
-									this->SetActualValue(boost::any(value));
-									if (this->GetDefaultValue().empty())
-										this->actualValueNotDefaultValue = true;
-									else if (this->GetTypedDefaultValue<bool>() != value)
-										this->actualValueNotDefaultValue = true;
-									else
-										this->actualValueNotDefaultValue = false;
+									if (validateOnly == false)
+									{
+										this->SetActualValue(boost::any(value));
+										if (this->GetDefaultValue().empty())
+											this->actualValueNotDefaultValue = true;
+										else if (this->GetTypedDefaultValue<bool>() != value)
+											this->actualValueNotDefaultValue = true;
+										else
+											this->actualValueNotDefaultValue = false;
+									}
 									break;
 								}
 							case PlkDataType::INTEGER8:
@@ -928,13 +931,16 @@ namespace IndustrialNetwork
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
 										}
 									}
-									this->SetActualValue(boost::any(value));
-									if (this->GetDefaultValue().empty())
-										this->actualValueNotDefaultValue = true;
-									else if (this->GetTypedDefaultValue<std::int16_t>() != value)
-										this->actualValueNotDefaultValue = true;
-									else
-										this->actualValueNotDefaultValue = false;
+									if (validateOnly == false)
+									{
+										this->SetActualValue(boost::any(value));
+										if (this->GetDefaultValue().empty())
+											this->actualValueNotDefaultValue = true;
+										else if (this->GetTypedDefaultValue<std::int16_t>() != value)
+											this->actualValueNotDefaultValue = true;
+										else
+											this->actualValueNotDefaultValue = false;
+									}
 									break;
 								}
 							case PlkDataType::INTEGER16:
@@ -968,13 +974,16 @@ namespace IndustrialNetwork
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
 										}
 									}
-									this->SetActualValue(boost::any(value));
-									if (this->GetDefaultValue().empty())
-										this->actualValueNotDefaultValue = true;
-									else if (this->GetTypedDefaultValue<std::int16_t>() != value)
-										this->actualValueNotDefaultValue = true;
-									else
-										this->actualValueNotDefaultValue = false;
+									if (validateOnly == false)
+									{
+										this->SetActualValue(boost::any(value));
+										if (this->GetDefaultValue().empty())
+											this->actualValueNotDefaultValue = true;
+										else if (this->GetTypedDefaultValue<std::int16_t>() != value)
+											this->actualValueNotDefaultValue = true;
+										else
+											this->actualValueNotDefaultValue = false;
+									}
 									break;
 								}
 							case PlkDataType::INTEGER32:
@@ -1008,11 +1017,14 @@ namespace IndustrialNetwork
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
 										}
 									}
-									this->SetActualValue(boost::any(value));
-									if (this->GetDefaultValue().empty())
-										this->actualValueNotDefaultValue = true;
-									else if (this->GetTypedDefaultValue<std::int32_t>() != value)
-										this->actualValueNotDefaultValue = true;
+									if (validateOnly == false)
+									{
+										this->SetActualValue(boost::any(value));
+										if (this->GetDefaultValue().empty())
+											this->actualValueNotDefaultValue = true;
+										else if (this->GetTypedDefaultValue<std::int32_t>() != value)
+											this->actualValueNotDefaultValue = true;
+									}
 									break;
 								}
 							case PlkDataType::UNSIGNED8:
@@ -1049,13 +1061,16 @@ namespace IndustrialNetwork
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
 										}
 									}
-									this->SetActualValue(boost::any(value));
-									if (this->GetDefaultValue().empty())
-										this->actualValueNotDefaultValue = true;
-									else if (this->GetTypedDefaultValue<std::uint16_t>() != value)
-										this->actualValueNotDefaultValue = true;
-									else
-										this->actualValueNotDefaultValue = false;
+									if (validateOnly == false)
+									{
+										this->SetActualValue(boost::any(value));
+										if (this->GetDefaultValue().empty())
+											this->actualValueNotDefaultValue = true;
+										else if (this->GetTypedDefaultValue<std::uint16_t>() != value)
+											this->actualValueNotDefaultValue = true;
+										else
+											this->actualValueNotDefaultValue = false;
+									}
 									break;
 								}
 							case PlkDataType::UNSIGNED16:
@@ -1089,13 +1104,16 @@ namespace IndustrialNetwork
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
 										}
 									}
-									this->SetActualValue(boost::any(value));
-									if (this->GetDefaultValue().empty())
-										this->actualValueNotDefaultValue = true;
-									else if (this->GetTypedDefaultValue<std::uint16_t>() != value)
-										this->actualValueNotDefaultValue = true;
-									else
-										this->actualValueNotDefaultValue = false;
+									if (validateOnly == false)
+									{
+										this->SetActualValue(boost::any(value));
+										if (this->GetDefaultValue().empty())
+											this->actualValueNotDefaultValue = true;
+										else if (this->GetTypedDefaultValue<std::uint16_t>() != value)
+											this->actualValueNotDefaultValue = true;
+										else
+											this->actualValueNotDefaultValue = false;
+									}
 									break;
 								}
 							case PlkDataType::UNSIGNED24:
@@ -1130,13 +1148,16 @@ namespace IndustrialNetwork
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
 										}
 									}
-									this->SetActualValue(boost::any(value));
-									if (this->GetDefaultValue().empty())
-										this->actualValueNotDefaultValue = true;
-									else if (this->GetTypedDefaultValue<std::uint32_t>() != value)
-										this->actualValueNotDefaultValue = true;
-									else
-										this->actualValueNotDefaultValue = false;
+									if (validateOnly == false)
+									{
+										this->SetActualValue(boost::any(value));
+										if (this->GetDefaultValue().empty())
+											this->actualValueNotDefaultValue = true;
+										else if (this->GetTypedDefaultValue<std::uint32_t>() != value)
+											this->actualValueNotDefaultValue = true;
+										else
+											this->actualValueNotDefaultValue = false;
+									}
 									break;
 								}
 							case PlkDataType::Domain:
@@ -1173,38 +1194,46 @@ namespace IndustrialNetwork
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
 										}
 									}
-									this->SetActualValue(boost::any(value));
-									if (this->GetDefaultValue().empty())
-										this->actualValueNotDefaultValue = true;
-									else if (this->GetTypedDefaultValue<std::int32_t>() != value)
-										this->actualValueNotDefaultValue = true;
-									else
-										this->actualValueNotDefaultValue = false;
-
+									if (validateOnly == false)
+									{
+										this->SetActualValue(boost::any(value));
+										if (this->GetDefaultValue().empty())
+											this->actualValueNotDefaultValue = true;
+										else if (this->GetTypedDefaultValue<std::int32_t>() != value)
+											this->actualValueNotDefaultValue = true;
+										else
+											this->actualValueNotDefaultValue = false;
+									}
 									break;
 								}
 							case PlkDataType::REAL32:
 								{
 									float value = boost::lexical_cast<float>(actualValue);
-									this->SetActualValue(boost::any(value));
-									if (this->GetDefaultValue().empty())
-										this->actualValueNotDefaultValue = true;
-									else if (this->GetTypedDefaultValue<float>() != value)
-										this->actualValueNotDefaultValue = true;
-									else
-										this->actualValueNotDefaultValue = false;
+									if (validateOnly == false)
+									{
+										this->SetActualValue(boost::any(value));
+										if (this->GetDefaultValue().empty())
+											this->actualValueNotDefaultValue = true;
+										else if (this->GetTypedDefaultValue<float>() != value)
+											this->actualValueNotDefaultValue = true;
+										else
+											this->actualValueNotDefaultValue = false;
+									}
 									break;
 								}
 							case PlkDataType::REAL64:
 								{
 									double value = boost::lexical_cast<double>(actualValue);
-									this->SetActualValue(boost::any(value));
-									if (this->GetDefaultValue().empty())
-										this->actualValueNotDefaultValue = true;
-									else if (this->GetTypedDefaultValue<double>() != value)
-										this->actualValueNotDefaultValue = true;
-									else
-										this->actualValueNotDefaultValue = false;
+									if (validateOnly == false)
+									{
+										this->SetActualValue(boost::any(value));
+										if (this->GetDefaultValue().empty())
+											this->actualValueNotDefaultValue = true;
+										else if (this->GetTypedDefaultValue<double>() != value)
+											this->actualValueNotDefaultValue = true;
+										else
+											this->actualValueNotDefaultValue = false;
+									}
 									break;
 								}
 							case PlkDataType::INTEGER40:
@@ -1241,13 +1270,16 @@ namespace IndustrialNetwork
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
 										}
 									}
-									this->SetActualValue(boost::any(value));
-									if (this->GetDefaultValue().empty())
-										this->actualValueNotDefaultValue = true;
-									else if (this->GetTypedDefaultValue<std::int64_t>() != value)
-										this->actualValueNotDefaultValue = true;
-									else
-										this->actualValueNotDefaultValue = false;
+									if (validateOnly == false)
+									{
+										this->SetActualValue(boost::any(value));
+										if (this->GetDefaultValue().empty())
+											this->actualValueNotDefaultValue = true;
+										else if (this->GetTypedDefaultValue<std::int64_t>() != value)
+											this->actualValueNotDefaultValue = true;
+										else
+											this->actualValueNotDefaultValue = false;
+									}
 									break;
 								}
 							case PlkDataType::MAC_ADDRESS:
@@ -1285,13 +1317,16 @@ namespace IndustrialNetwork
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
 										}
 									}
-									if (this->GetDefaultValue().empty())
-										this->actualValueNotDefaultValue = true;
-									else if (this->GetTypedDefaultValue<std::uint64_t>() != value)
-										this->actualValueNotDefaultValue = true;
-									else
-										this->actualValueNotDefaultValue = false;
-									this->SetActualValue(boost::any(value));
+									if (validateOnly == false)
+									{
+										this->SetActualValue(boost::any(value));
+										if (this->GetDefaultValue().empty())
+											this->actualValueNotDefaultValue = true;
+										else if (this->GetTypedDefaultValue<std::uint64_t>() != value)
+											this->actualValueNotDefaultValue = true;
+										else
+											this->actualValueNotDefaultValue = false;
+									}
 									break;
 								}
 							case PlkDataType::IP_ADDRESS:
@@ -1302,13 +1337,16 @@ namespace IndustrialNetwork
 							case PlkDataType::TIME_OF_DAY:
 							case PlkDataType::TIME_DIFF:
 								{
-									this->SetActualValue(boost::any(actualValue));
-									if (this->GetDefaultValue().empty())
-										this->actualValueNotDefaultValue = true;
-									else if (this->GetTypedDefaultValue<std::string>() != actualValue)
-										this->actualValueNotDefaultValue = true;
-									else
-										this->actualValueNotDefaultValue = false;
+									if (validateOnly == false)
+									{
+										this->SetActualValue(boost::any(actualValue));
+										if (this->GetDefaultValue().empty())
+											this->actualValueNotDefaultValue = true;
+										else if (this->GetTypedDefaultValue<std::string>() != actualValue)
+											this->actualValueNotDefaultValue = true;
+										else
+											this->actualValueNotDefaultValue = false;
+									}
 									break;
 								}
 							default:

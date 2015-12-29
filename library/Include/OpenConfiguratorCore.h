@@ -692,7 +692,7 @@ namespace IndustrialNetwork
 						\param force Configuration force flag for the actual value.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetObjectActualValue(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, const std::string& actualValue, bool force = false);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetObjectActualValue(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, const std::string& actualValue, bool force = false, bool validateOnly = false);
 						//! Member to set a subobjects actual value.
 						/*!
 						\param networkId Specifies the identifier for the network.
@@ -703,7 +703,7 @@ namespace IndustrialNetwork
 						\param force Configuration force flag for the actual value.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetSubObjectActualValue(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::uint8_t subObjectId, const std::string& actualValue, bool force = false);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetSubObjectActualValue(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::uint8_t subObjectId, const std::string& actualValue, bool force = false, bool validateOnly = false);
 						//! Member to retrieve a %POWERLINK CN feature default value.
 						/*!
 						This default value is common for all networks.
@@ -808,7 +808,7 @@ namespace IndustrialNetwork
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapAllObjectsToChannel(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr, bool updateNrEntries);
-						
+
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetChannelSize(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr, std::uint32_t& size);
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetChannelActualValues(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr, std::map<std::pair<std::uint32_t, std::int32_t> , std::string>& objects);
