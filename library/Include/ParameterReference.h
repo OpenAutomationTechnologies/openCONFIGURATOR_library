@@ -1,8 +1,8 @@
 /************************************************************************
-\file Parameter.h
+\file ParameterReference.h
 \brief Implementation of the Class Parameter
 \author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
-\date 01-May-2015 12:00:00
+\date 05-January-2016 12:00:00
 ************************************************************************/
 
 /*------------------------------------------------------------------------------
@@ -29,20 +29,19 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
-#if !defined PARAMETER_H
-#define PARAMETER_H
+#if !defined PARAMETER_REFERENCE_H
+#define PARAMETER_REFERENCE_H
 
 #include <memory>
-#include <boost/optional.hpp>
-#include <boost/any.hpp>
+#include <boost/dynamic_bitset.hpp>
 
 #include "ComplexDataType.h"
 #include "PlkDataType.h"
 #include "ParameterAccess.h"
+#include "Parameter.h"
 #include "IEC_Datatype.h"
 #include "Utilities.h"
-#include "BaseParameter.h"
-#include "ParameterTemplate.h"
+#include "IParameterGroupEntry.h"
 
 namespace IndustrialNetwork
 {
@@ -53,25 +52,23 @@ namespace IndustrialNetwork
 			namespace ObjectDictionary
 			{
 				/**
-				\brief Represents a complex datatype parameter.
+				\brief Represents a parameter reference.
 				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
-				class Parameter: public BaseParameter
+				class ParameterReference : public IParameterGroupEntry
 				{
 
 					public:
-						Parameter(const std::string& uniqueID, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess parameterAccess, const std::string& dataTypeUniqueIDRef = "");
-						Parameter(const std::string& uniqueID, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess parameterAccess, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype datatype);
-						Parameter(const std::string& uniqueID, const std::string& parameterTemplateUniqueIdRef);
-						virtual ~Parameter();
-
-						void SetParameterTemplate(const std::shared_ptr<ParameterTemplate>& paramTemplate);
-
+						ParameterReference(const std::string& uniqueId, const std::shared_ptr<Parameter>& param, const std::string& actualValue = "", std::uint16_t bitOffset = 0);
+						virtual ~ParameterReference();
+						const std::string& GetActualValue();
+						const boost::dynamic_bitset<>& GetActualValueBitSet();
+						const std::shared_ptr<Parameter>& GetReferencedParameter();
+						std::uint32_t GetBitSize();
 
 					private:
-						std::string parameterTemplateUniqueId;
-						std::shared_ptr<ParameterTemplate> parameterTemplate;
-
+						std::string actualValue;
+						std::shared_ptr<Parameter> referencedParameter;
 				};
 			}
 		}

@@ -784,7 +784,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::UpdatePr
 		for (auto& receivePI : this->GetReceiveProcessImage())
 		{
 			receivePI->SetPIOffset(piOffset);
-			if (receivePI->GetDataType() == IEC_Datatype::BITSTRING)
+			if (receivePI->GetDataType() == IEC_Datatype::BITSTRING || receivePI->GetDataType() == IEC_Datatype::BOOL)
 			{
 				bitCount += receivePI->GetSize();
 				if (bitCount == 8)
@@ -802,7 +802,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::UpdatePr
 		for (auto& transmitPI : this->GetTransmitProcessImage())
 		{
 			transmitPI->SetPIOffset(piOffset);
-			if (transmitPI->GetDataType() == IEC_Datatype::BITSTRING)
+			if (transmitPI->GetDataType() == IEC_Datatype::BITSTRING || transmitPI->GetDataType() == IEC_Datatype::BOOL)
 			{
 				bitCount += transmitPI->GetSize();
 				if (bitCount == 8)

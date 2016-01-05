@@ -137,47 +137,55 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 		receivesPResMN = true;
 
 	//Object has domain datatype
-	if (objToMap->GetUniqueIdRef().is_initialized() &&
-	        objToMap->GetDataType().get() == PlkDataType::Domain)
+	if (objToMap->GetUniqueIdRef().is_initialized())
 	{
-		//Retrieve domain parameter
-		std::shared_ptr<Parameter> param;
-		Result res = this->GetApplicationProcess()->GetParameter(objToMap->GetUniqueIdRef().get(), param);
-		if (!res.IsSuccessful())
-			return res;
+		ParameterAccess access = ParameterAccess::noAccess;
+		std::string uniqueID = "";
+		if (objToMap->GetReferencedParameter().get())
+		{
+			access = objToMap->GetReferencedParameter()->GetParameterAccess();
+			uniqueID = objToMap->GetReferencedParameter()->GetUniqueID();
+		}
+		else if (objToMap->GetReferencedParameterGroup().get())
+		{
+			uniqueID = objToMap->GetReferencedParameterGroup()->GetUniqueId();
+			Result res = objToMap->GetReferencedParameterGroup()->GetParameterGroupAccess(access);
+			if (!res.IsSuccessful())
+				return res;
+		}
 
 		//Check Parameter access depeding on direction
 		if (dir == Direction::RX)
 		{
 			//Check complex data type access
-			if (param->GetParameterAccess() == ParameterAccess::readWriteInput
-			        || param->GetParameterAccess() == ParameterAccess::read)
+			if (access == ParameterAccess::readWriteInput
+			        || access == ParameterAccess::read)
 			{
 				//Parameter access does not match mapping direction
 				boost::format formatter(kMsgAccessTypeForParameterInvalid);
 				formatter
-				% param->GetUniqueID()
+				% uniqueID
 				% index
 				% subindex
 				% (std::uint32_t) this->GetNodeId()
-				% ParameterAccessValues[(std::uint8_t) param->GetParameterAccess()];
+				% ParameterAccessValues[(std::uint8_t) access];
 				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::PARAMETER_ACCESS_INVALID, formatter.str());
 			}
 		}
 		else if (dir == Direction::TX)
 		{
-			if (param->GetParameterAccess() == ParameterAccess::readWriteOutput
-			        || param->GetParameterAccess() == ParameterAccess::write)
+			if (access == ParameterAccess::readWriteOutput
+			        || access == ParameterAccess::write)
 			{
 				//Parameter access does not match mapping direction
 				boost::format formatter(kMsgAccessTypeForParameterInvalid);
 				formatter
-				% param->GetUniqueID()
+				% uniqueID
 				% index
 				% subindex
 				% (std::uint32_t) this->GetNodeId()
-				% ParameterAccessValues[(std::uint8_t) param->GetParameterAccess()];
+				% ParameterAccessValues[(std::uint8_t) access];
 				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::PARAMETER_ACCESS_INVALID, formatter.str());
 			}
@@ -841,6 +849,7 @@ Result ControlledNode::UpdateProcessImage(Direction dir)
 		this->GetTransmitProcessImage().clear();
 
 	std::uint32_t piOffset = 0;
+	std::uint32_t bitOffset = 0;
 	std::uint32_t domainCount = 1;
 
 	std::vector<std::shared_ptr<BaseProcessDataMapping>> mappingVector;
@@ -857,133 +866,68 @@ Result ControlledNode::UpdateProcessImage(Direction dir)
 		if (!res.IsSuccessful())
 			return res;
 
-		//Domain object
+		//Complex data object
 		if (dataObject->GetUniqueIdRef().is_initialized())
 		{
-			std::shared_ptr<Parameter> param;
-			this->GetApplicationProcess()->GetParameter(dataObject->GetUniqueIdRef().get(), param);
-			//Check parameter access
-
-			std::shared_ptr<StructDataType> structDt = std::dynamic_pointer_cast<StructDataType>(param->GetComplexDataType());
-			std::shared_ptr<ArrayDataType> arrayDt = std::dynamic_pointer_cast<ArrayDataType>(param->GetComplexDataType());
-			std::shared_ptr<EnumDataType> enumDt = std::dynamic_pointer_cast<EnumDataType>(param->GetComplexDataType());
-			if (structDt.get())
+			if (dataObject->GetReferencedParameterGroup().get())
 			{
-				std::uint32_t bitOffset = 0;
-				for (auto& varDecl : structDt->GetVarDeclarations())
+				res = ProcessParameterGroup(dataObject->GetReferencedParameterGroup(), dataName, dir, piOffset, domainCount);
+				if (!res.IsSuccessful())
+					return res;
+				domainCount++;
+				if (dir == Direction::RX)
 				{
-					std::stringstream nameBuilder;
-					nameBuilder << "CN" << (std::uint32_t) this->GetNodeId();
-					nameBuilder << "_";
-					nameBuilder << "DOM";
-					nameBuilder << IntToHex<std::uint32_t>(domainCount, 2);
-					nameBuilder << "_";
-					nameBuilder << dataName;
-					nameBuilder	<< "_";
-					//nameBuilder << structDt->GetName();
-					//nameBuilder << "_";
-					nameBuilder << varDecl->GetName();
-
-					std::string piName = nameBuilder.str();
-					boost::trim(piName);
-					boost::remove_erase_if(piName, boost::is_any_of("!\\/(){}[],*'"));
-					std::replace(piName.begin(), piName.end(), ' ', '_');
-					if (varDecl->GetDataType() == IEC_Datatype::BITSTRING)
-					{
-						std::shared_ptr<BaseProcessImageObject> piObj = std::make_shared<BaseProcessImageObject>(
-						            piName,
-						            varDecl->GetDataType(),
-						            piOffset, bitOffset,
-						            varDecl->GetBitSize());
-
-						if (dir == Direction::RX)
-							this->GetReceiveProcessImage().push_back(piObj);
-						else if (dir == Direction::TX)
-							this->GetTransmitProcessImage().push_back(piObj);
-						bitOffset += varDecl->GetSize();
-					}
-					else
-					{
-						std::shared_ptr<BaseProcessImageObject> piObj = std::make_shared<BaseProcessImageObject>(
-						            piName,
-						            varDecl->GetDataType(),
-						            piOffset,
-						            varDecl->GetBitSize());
-						if (dir == Direction::RX)
-							this->GetReceiveProcessImage().push_back(piObj);
-						else if (dir == Direction::TX)
-							this->GetTransmitProcessImage().push_back(piObj);
-						piOffset += varDecl->GetBitSize() / 8 ;
-					}
-
-					if (bitOffset == 8)
+					if (this->GetReceiveProcessImage().back()->GetDataType() == IEC_Datatype::BOOL ||
+					        this->GetReceiveProcessImage().back()->GetDataType() == IEC_Datatype::BITSTRING)
 					{
 						piOffset++;
-						bitOffset = 0;
 					}
 				}
+				else if (dir == Direction::TX)
+					if (this->GetTransmitProcessImage().back()->GetDataType() == IEC_Datatype::BOOL ||
+					        this->GetTransmitProcessImage().back()->GetDataType() == IEC_Datatype::BITSTRING)
+					{
+						piOffset++;
+					}
+				continue;
+			}
+
+			//Check parameter access
+			std::shared_ptr<StructDataType> structDt = std::dynamic_pointer_cast<StructDataType>(dataObject->GetReferencedParameter()->GetComplexDataType());
+			std::shared_ptr<ArrayDataType> arrayDt = std::dynamic_pointer_cast<ArrayDataType>(dataObject->GetReferencedParameter()->GetComplexDataType());
+			std::shared_ptr<EnumDataType> enumDt = std::dynamic_pointer_cast<EnumDataType>(dataObject->GetReferencedParameter()->GetComplexDataType());
+			if (structDt.get())
+			{
+				ProcessComplexDatatype(structDt, dataName, dir, piOffset, domainCount);
 			}
 			else if (arrayDt.get())
 			{
-				std::uint32_t bitOffset = 0;
-				for (std::uint32_t i = arrayDt->GetLowerLimit(); i < arrayDt->GetUpperLimit(); i++)
-				{
-					std::stringstream nameBuilder;
-					nameBuilder << "CN" << (std::uint32_t) this->GetNodeId();
-					nameBuilder << "_";
-					nameBuilder << "DOM";
-					nameBuilder << IntToHex<std::uint32_t>(domainCount, 2);
-					nameBuilder << "_";
-					nameBuilder << dataName;
-					nameBuilder	<< "_";
-					nameBuilder << arrayDt->GetName();
-
-					std::string piName = nameBuilder.str();
-					boost::trim(piName);
-					boost::remove_erase_if(piName, boost::is_any_of("!\\/(){}[],*'"));
-					std::replace(piName.begin(), piName.end(), ' ', '_');
-					if (arrayDt->GetDataType() == IEC_Datatype::BITSTRING)
-					{
-						std::shared_ptr<BaseProcessImageObject> piObj = std::make_shared<BaseProcessImageObject>(
-						            piName,
-						            arrayDt->GetDataType(),
-						            piOffset,
-						            bitOffset,
-						            arrayDt->GetBitSize());
-						if (dir == Direction::RX)
-							this->GetReceiveProcessImage().push_back(piObj);
-						else if (dir == Direction::TX)
-							this->GetTransmitProcessImage().push_back(piObj);
-						bitOffset += arrayDt->GetBitSize();
-
-						if (bitOffset == 8)
-						{
-							piOffset++;
-							bitOffset = 0;
-						}
-					}
-					else
-					{
-						std::shared_ptr<BaseProcessImageObject> piObj = std::make_shared<BaseProcessImageObject>(
-						            piName,
-						            arrayDt->GetDataType(),
-						            piOffset,
-						            arrayDt->GetBitSize());
-						this->GetTransmitProcessImage().push_back(piObj);
-						piOffset += arrayDt->GetBitSize() / 8 ;
-					}
-				}
+				ProcessComplexDatatype(arrayDt, dataName, dir, piOffset, domainCount);
 			}
 			else if (enumDt.get())
 			{
-				//Not supported at the moment
+				//ProcessComplexDatatype(enumDt, dataName, dir, piOffset, domainCount);
 			}
 			else
 			{
-				//return unsupported complex datatype
+				ProcessComplexDatatype(dataObject->GetReferencedParameter(), dataName, dir, piOffset, bitOffset, domainCount);
 			}
 			domainCount++;
 
+			if (dir == Direction::RX)
+			{
+				if (this->GetReceiveProcessImage().back()->GetDataType() == IEC_Datatype::BOOL ||
+				        this->GetReceiveProcessImage().back()->GetDataType() == IEC_Datatype::BITSTRING)
+				{
+					piOffset++;
+				}
+			}
+			else if (dir == Direction::TX)
+				if (this->GetTransmitProcessImage().back()->GetDataType() == IEC_Datatype::BOOL ||
+				        this->GetTransmitProcessImage().back()->GetDataType() == IEC_Datatype::BITSTRING)
+				{
+					piOffset++;
+				}
 		}
 		else
 		{
@@ -1011,16 +955,86 @@ Result ControlledNode::UpdateProcessImage(Direction dir)
 	}
 
 	//Search for equal names in the PI and add a count number
-	std::vector<std::shared_ptr<BaseProcessImageObject>> piCollection;
+	std::vector<std::shared_ptr<BaseProcessImageObject>>* piCollection = NULL;
 	if (dir == Direction::RX)
-		piCollection = this->GetReceiveProcessImage();
+		piCollection = &this->GetReceiveProcessImage();
 	else if (dir == Direction::TX)
-		piCollection = this->GetTransmitProcessImage();
+		piCollection = &this->GetTransmitProcessImage();
 
-	for (auto& pi : piCollection)
+	//Align bit data objects
+	std::uint32_t bitCount = 0;
+	piOffset = 0;
+	std::string name = "";
+	for (auto it = piCollection->begin(); it != piCollection->end(); ++it)
+	{
+		if (it->get()->GetPiOffset() != piOffset)
+		{
+			if (bitCount != 0)
+			{
+				std::shared_ptr<BaseProcessImageObject> piObj = std::make_shared<BaseProcessImageObject>(
+				            name,
+				            IEC_Datatype::BITSTRING,
+				            piOffset,
+				            bitCount,
+				            (8 - bitCount));
+				bitCount = 0;
+				it = piCollection->insert(it, piObj);
+				it++;
+			}
+		}
+
+		if (it->get()->GetDataType() == IEC_Datatype::BITSTRING || it->get()->GetDataType() == IEC_Datatype::BOOL)
+		{
+			bitCount += it->get()->GetSize();
+			if (bitCount == 8)
+				bitCount = 0;
+
+			name = it->get()->GetName().substr(0, it->get()->GetName().find_first_of("_"));
+			name = name + "_Unused_Data";
+		}
+
+		if (it == (piCollection->end() - 1) && bitCount != 0)
+		{
+			std::shared_ptr<BaseProcessImageObject> piObj = std::make_shared<BaseProcessImageObject>(
+			            name,
+			            IEC_Datatype::BITSTRING,
+			            piOffset,
+			            bitCount,
+			            (8 - bitCount));
+			piCollection->push_back(piObj);
+			break;
+		}
+		piOffset = it->get()->GetPiOffset();
+	}
+
+	//Add unused data for byte sized data in the PI
+	for (auto it = piCollection->begin(); it != piCollection->end(); ++it)
+	{
+		if (it != piCollection->end() - 1)
+		{
+			std::uint32_t targetPiOffset = (it + 1)->get()->GetPiOffset();
+			std::uint32_t calculatedTargetPiOffset = it->get()->GetPiOffset() + (Utilities::GetIECDataTypeBitSize(it->get()->GetDataType()) / 8);
+			if (calculatedTargetPiOffset != targetPiOffset)
+			{
+				std::uint32_t targetPiOffset = (it + 1)->get()->GetPiOffset();
+				for (std::uint32_t i = it->get()->GetPiOffset() + 1; i < targetPiOffset; i++)
+				{
+					std::shared_ptr<BaseProcessImageObject> piObj = std::make_shared<BaseProcessImageObject>(
+					            name,
+					            IEC_Datatype::USINT,
+					            i,
+					            8);
+					it = piCollection->insert(it + 1, piObj);
+					it++;
+				}
+			}
+		}
+	}
+
+	for (auto& pi : *piCollection)
 	{
 		std::uint16_t findCount = 0;
-		for (auto& pi_count : piCollection)
+		for (auto& pi_count : *piCollection)
 		{
 			if (pi->GetName() == pi_count->GetName())
 				findCount++;
@@ -1029,7 +1043,7 @@ Result ControlledNode::UpdateProcessImage(Direction dir)
 		{
 			std::uint16_t varCount = 1;
 			std::string originalName = pi->GetName();
-			for (auto& pi_change : piCollection)
+			for (auto& pi_change : *piCollection)
 			{
 				if (pi_change->GetName() == originalName)
 				{
@@ -1224,7 +1238,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 {
 	std::uint32_t dataIndex = mapping->GetMappingIndex();
 	std::uint16_t dataSubindex = mapping->GetMappingSubIndex();
-	std::uint32_t size = mapping->GetMappingLength();
+	std::uint32_t mapping_size = mapping->GetMappingLength();
 
 	std::shared_ptr<Object> dataObject;
 	std::shared_ptr<SubObject> dataSubObject;
@@ -1272,7 +1286,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 	//Check normal data type size
 	if (!foundObject->GetUniqueIdRef().is_initialized())
 	{
-		if (foundObject->GetBitSize() != size)
+		if (foundObject->GetBitSize() != mapping_size)
 		{
 			return Result(ErrorCode::OBJECT_SIZE_MAPPED_INVALID);
 		}
@@ -1280,47 +1294,66 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 	//Check complex data type size
 	else
 	{
-		std::shared_ptr<Parameter> param;
-		Result res = this->GetApplicationProcess()->GetParameter(foundObject->GetUniqueIdRef().get(), param);
-		if (!res.IsSuccessful())
-			return res;
+		std::uint32_t size = 0;
+		ParameterAccess access = ParameterAccess::noAccess;
+		std::string uniqueID = "";
+		if (foundObject->GetReferencedParameter().get())
+		{
+			size = foundObject->GetReferencedParameter()->GetBitSize();
+			uniqueID = foundObject->GetReferencedParameter()->GetUniqueID();
+			access = foundObject->GetReferencedParameter()->GetParameterAccess();
+		}
+		else if (foundObject->GetReferencedParameterGroup().get())
+		{
+			size = foundObject->GetReferencedParameterGroup()->GetBitSize();
+			uniqueID = foundObject->GetReferencedParameterGroup()->GetUniqueId();
+			Result res = foundObject->GetReferencedParameterGroup()->GetParameterGroupAccess(access);
+			if (!res.IsSuccessful())
+				return res;
+		}
 
-		if (foundObject->GetBitSize() != param->GetBitSize())
+		if (foundObject->GetBitSize() != size)
 		{
 			return Result(ErrorCode::OBJECT_SIZE_MAPPED_INVALID);
+		}
+		//Correct size if a parameter has changed the size of the PI
+		else if (mapping_size != size && foundObject->GetBitSize() == size)
+		{
+			mapping->SetMappingLength(size);
+			mapping->GetRelatedObject()->SetTypedObjectActualValue(mapping->ToString(true));
 		}
 
 		if (dir == Direction::RX)
 		{
 			//Check complex data type access
-			if (param->GetParameterAccess() == ParameterAccess::readWriteInput
-			        || param->GetParameterAccess() == ParameterAccess::read)
+			if (access == ParameterAccess::readWriteInput
+			        || access == ParameterAccess::read)
 			{
 				//Parameter access does not match mapping direction
 				boost::format formatter(kMsgAccessTypeForParameterInvalid);
 				formatter
-				% param->GetUniqueID()
+				% uniqueID
 				% dataIndex
 				% dataSubindex
 				% (std::uint32_t) this->GetNodeId()
-				% ParameterAccessValues[(std::uint8_t) param->GetParameterAccess()];
+				% ParameterAccessValues[(std::uint8_t) access];
 				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::PARAMETER_ACCESS_INVALID, formatter.str());
 			}
 		}
 		else if (dir == Direction::TX)
 		{
-			if (param->GetParameterAccess() == ParameterAccess::readWriteOutput
-			        || param->GetParameterAccess() == ParameterAccess::write)
+			if (access == ParameterAccess::readWriteOutput
+			        || access == ParameterAccess::write)
 			{
 				//Parameter access does not match mapping direction
 				boost::format formatter(kMsgAccessTypeForParameterInvalid);
 				formatter
-				% param->GetUniqueID()
+				% uniqueID
 				% dataIndex
 				% dataSubindex
 				% (std::uint32_t) this->GetNodeId()
-				% ParameterAccessValues[(std::uint8_t) param->GetParameterAccess()];
+				% ParameterAccessValues[(std::uint8_t) access];
 				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::PARAMETER_ACCESS_INVALID, formatter.str());
 			}
@@ -1554,3 +1587,225 @@ bool ControlledNode::ReceivesPResMN()
 {
 	return this->receivesPResMN;
 }
+
+Result ControlledNode::ProcessParameterGroup(const std::shared_ptr<ParameterGroup>& grp, const std::string& dataName, Direction dir, std::uint32_t& piOffset, std::uint32_t domainCount)
+{
+	std::uint32_t bitOffset = 0;
+	for (auto& paramGrpEntry : grp->GetParameterGroupEntries())
+	{
+		auto paramGrp = std::dynamic_pointer_cast<ParameterGroup>(paramGrpEntry);
+		auto paramRef = std::dynamic_pointer_cast<ParameterReference>(paramGrpEntry);
+		if (paramGrp)
+		{
+			if (paramGrp->CheckParameterGroupCondition())
+			{
+				if (paramGrp->GetBitOffset() % 8 == 0)
+				{
+					piOffset += paramGrp->GetBitOffset() / 8;
+					bitOffset = 0;
+				}
+				ProcessParameterGroup(paramGrp, dataName, dir, piOffset, domainCount);
+			}
+		}
+		else if (paramRef)
+		{
+			if (paramRef->GetReferencedParameter()->GetComplexDataType())
+			{
+				std::shared_ptr<StructDataType> structDt = std::dynamic_pointer_cast<StructDataType>(paramRef->GetReferencedParameter()->GetComplexDataType());
+				std::shared_ptr<ArrayDataType> arrayDt = std::dynamic_pointer_cast<ArrayDataType>(paramRef->GetReferencedParameter()->GetComplexDataType());
+				std::shared_ptr<EnumDataType> enumDt = std::dynamic_pointer_cast<EnumDataType>(paramRef->GetReferencedParameter()->GetComplexDataType());
+				if (structDt.get())
+				{
+					ProcessComplexDatatype(structDt, dataName, dir, piOffset, domainCount);
+				}
+				else if (arrayDt.get())
+				{
+					ProcessComplexDatatype(arrayDt, dataName, dir, piOffset, domainCount);
+				}
+				else if (enumDt.get())
+				{
+					//ProcessComplexDatatype(enumDt, dataName, dir, piOffset, domainCount);
+				}
+			}
+			else if (paramRef->GetReferencedParameter()->GetDataType().is_initialized())
+				ProcessComplexDatatype(paramRef->GetReferencedParameter(), dataName, dir, piOffset, bitOffset, domainCount);
+		}
+	}
+	return Result();
+}
+
+void ControlledNode::ProcessComplexDatatype(const std::shared_ptr<Parameter>& param, const std::string& dataName, Direction dir, std::uint32_t& piOffset, std::uint32_t& bitOffset, std::uint32_t domainCount)
+{
+	std::stringstream nameBuilder;
+	nameBuilder << "CN" << (std::uint32_t) this->GetNodeId();
+	nameBuilder << "_";
+	nameBuilder << "DOM";
+	nameBuilder << IntToHex<std::uint32_t>(domainCount, 2);
+	nameBuilder << "_";
+	nameBuilder << dataName;
+	nameBuilder << "_";
+	nameBuilder << param->GetUniqueID();
+
+	std::string piName = nameBuilder.str();
+	boost::trim(piName);
+	boost::remove_erase_if(piName, boost::is_any_of("!\\/(){}[],*'"));
+	std::replace(piName.begin(), piName.end(), ' ', '_');
+
+	if (bitOffset == 8)
+	{
+		piOffset++;
+		bitOffset = 0;
+	}
+
+	if (param->GetDataType().get() == IEC_Datatype::BITSTRING || param->GetDataType().get() == IEC_Datatype::BOOL)
+	{
+		std::shared_ptr<BaseProcessImageObject> piObj = std::make_shared<BaseProcessImageObject>(
+		            piName,
+		            param->GetDataType().get(),
+		            piOffset,
+		            bitOffset,
+		            GetIECDataTypeBitSize(param->GetDataType().get()));
+
+		if (dir == Direction::RX)
+			this->GetReceiveProcessImage().push_back(piObj);
+		else if (dir == Direction::TX)
+			this->GetTransmitProcessImage().push_back(piObj);
+		bitOffset += GetIECDataTypeBitSize(param->GetDataType().get());
+	}
+	else
+	{
+		if (bitOffset != 0)
+		{
+			piOffset++;
+			bitOffset = 0;
+		}
+
+		std::shared_ptr<BaseProcessImageObject> piObj = std::make_shared<BaseProcessImageObject>(
+		            piName,
+		            param->GetDataType().get(),
+		            piOffset,
+		            GetIECDataTypeBitSize(param->GetDataType().get()));
+
+		if (dir == Direction::RX)
+			this->GetReceiveProcessImage().push_back(piObj);
+		else if (dir == Direction::TX)
+			this->GetTransmitProcessImage().push_back(piObj);
+		piOffset += GetIECDataTypeBitSize(param->GetDataType().get()) / 8 ;
+	}
+}
+
+void ControlledNode::ProcessComplexDatatype(const std::shared_ptr<StructDataType>& structDt, const std::string& dataName, Direction dir, std::uint32_t& piOffset, std::uint32_t domainCount)
+{
+	std::uint32_t bitOffset = 0;
+	for (auto& varDecl : structDt->GetVarDeclarations())
+	{
+		std::stringstream nameBuilder;
+		nameBuilder << "CN" << (std::uint32_t) this->GetNodeId();
+		nameBuilder << "_";
+		nameBuilder << "DOM";
+		nameBuilder << IntToHex<std::uint32_t>(domainCount, 2);
+		nameBuilder << "_";
+		nameBuilder << dataName;
+		nameBuilder	<< "_";
+		//nameBuilder << structDt->GetName();
+		//nameBuilder << "_";
+		nameBuilder << varDecl->GetName();
+
+		std::string piName = nameBuilder.str();
+		boost::trim(piName);
+		boost::remove_erase_if(piName, boost::is_any_of("!\\/(){}[],*'"));
+		std::replace(piName.begin(), piName.end(), ' ', '_');
+		if (varDecl->GetDataType() == IEC_Datatype::BITSTRING || varDecl->GetDataType() == IEC_Datatype::BOOL)
+		{
+			std::shared_ptr<BaseProcessImageObject> piObj = std::make_shared<BaseProcessImageObject>(
+			            piName,
+			            varDecl->GetDataType(),
+			            piOffset, bitOffset,
+			            varDecl->GetBitSize());
+
+			if (dir == Direction::RX)
+				this->GetReceiveProcessImage().push_back(piObj);
+			else if (dir == Direction::TX)
+				this->GetTransmitProcessImage().push_back(piObj);
+			bitOffset += varDecl->GetSize();
+		}
+		else
+		{
+			std::shared_ptr<BaseProcessImageObject> piObj = std::make_shared<BaseProcessImageObject>(
+			            piName,
+			            varDecl->GetDataType(),
+			            piOffset,
+			            varDecl->GetBitSize());
+			if (dir == Direction::RX)
+				this->GetReceiveProcessImage().push_back(piObj);
+			else if (dir == Direction::TX)
+				this->GetTransmitProcessImage().push_back(piObj);
+			piOffset += varDecl->GetBitSize() / 8 ;
+		}
+
+		if (bitOffset == 8)
+		{
+			piOffset++;
+			bitOffset = 0;
+		}
+	}
+}
+
+void ControlledNode::ProcessComplexDatatype(const std::shared_ptr<ArrayDataType>& arrayDt, const std::string& dataName, Direction dir, std::uint32_t& piOffset, std::uint32_t domainCount)
+{
+	std::uint32_t bitOffset = 0;
+	for (std::uint32_t i = arrayDt->GetLowerLimit(); i < arrayDt->GetUpperLimit(); i++)
+	{
+		std::stringstream nameBuilder;
+		nameBuilder << "CN" << (std::uint32_t) this->GetNodeId();
+		nameBuilder << "_";
+		nameBuilder << "DOM";
+		nameBuilder << IntToHex<std::uint32_t>(domainCount, 2);
+		nameBuilder << "_";
+		nameBuilder << dataName;
+		nameBuilder	<< "_";
+		nameBuilder << arrayDt->GetName();
+
+		std::string piName = nameBuilder.str();
+		boost::trim(piName);
+		boost::remove_erase_if(piName, boost::is_any_of("!\\/(){}[],*'"));
+		std::replace(piName.begin(), piName.end(), ' ', '_');
+		if (arrayDt->GetDataType() == IEC_Datatype::BITSTRING || arrayDt->GetDataType() == IEC_Datatype::BOOL)
+		{
+			std::shared_ptr<BaseProcessImageObject> piObj = std::make_shared<BaseProcessImageObject>(
+			            piName,
+			            arrayDt->GetDataType(),
+			            piOffset,
+			            bitOffset,
+			            arrayDt->GetBitSize());
+			if (dir == Direction::RX)
+				this->GetReceiveProcessImage().push_back(piObj);
+			else if (dir == Direction::TX)
+				this->GetTransmitProcessImage().push_back(piObj);
+			bitOffset += arrayDt->GetBitSize();
+
+			if (bitOffset == 8)
+			{
+				piOffset++;
+				bitOffset = 0;
+			}
+		}
+		else
+		{
+			std::shared_ptr<BaseProcessImageObject> piObj = std::make_shared<BaseProcessImageObject>(
+			            piName,
+			            arrayDt->GetDataType(),
+			            piOffset,
+			            arrayDt->GetBitSize());
+			this->GetTransmitProcessImage().push_back(piObj);
+			piOffset += arrayDt->GetBitSize() / 8 ;
+		}
+	}
+}
+
+/*
+void ControlledNode::ProcessComplexDatatype(const std::shared_ptr<EnumDataType>& enumDT, const std::string& dataName, Direction dir, std::uint32_t& piOffset, std::uint32_t domainCount)
+{
+
+}
+*/

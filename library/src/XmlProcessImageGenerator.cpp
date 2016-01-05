@@ -118,7 +118,8 @@ std::uint32_t XmlProcessImageGenerator::WriteXMLProcessImage(const Direction dir
 			}
 			std::string piName = piEntry->GetName();
 			std::replace(piName.begin(), piName.end(), '_', '.');
-			this->processImageStream << PrintChannel(piName, piEntry->GetDataType(), piEntry->GetSize(), piSize / 8, piEntry->GetBitOffset());
+			if (piName.find("Unused.Data") == std::string::npos)
+				this->processImageStream << PrintChannel(piName, piEntry->GetDataType(), piEntry->GetSize(), piSize / 8, piEntry->GetBitOffset());
 			piSize += piEntry->GetSize();
 		}
 		this->processImageStream << "\t</ProcessImage>" << std::endl;

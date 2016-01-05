@@ -747,6 +747,19 @@ Result OpenConfiguratorCore::CreateDomainObject(const std::string& networkId, co
 {
 	try
 	{
+		Result res = OpenConfiguratorCore::CreateParameterObject(networkId, nodeId, objectId, objectType, name, PlkDataType::Domain, AccessType::UNDEFINED, pdoMapping, uniqueIdRef, "", "");
+		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+	}
+	catch (const std::exception& ex)
+	{
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+	}
+}
+
+Result OpenConfiguratorCore::CreateParameterObject(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, ObjectType objectType, const std::string& name, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping, const std::string& uniqueIdRef, const std::string& defaultValueToSet, const std::string& actualValueToSet)
+{
+	try
+	{
 		std::shared_ptr<Network> network;
 		Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 		if (!res.IsSuccessful())
@@ -757,18 +770,52 @@ Result OpenConfiguratorCore::CreateDomainObject(const std::string& networkId, co
 		if (!res.IsSuccessful())
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
+		std::shared_ptr<Object> ptr(new Object(objectId, objectType, name, nodeId));
+
 		std::shared_ptr<Parameter> param;
 		res = node->GetApplicationProcess()->GetParameter(uniqueIdRef, param);
 		if (!res.IsSuccessful())
-			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+		{
+			std::shared_ptr<ParameterGroup> paramGrp;
+			res = node->GetApplicationProcess()->GetParameterGroup(uniqueIdRef, paramGrp);
+			if (!res.IsSuccessful())
+				return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+			else
+				ptr->SetComplexDataType(paramGrp);
+		}
+		else
+		{
+			ptr->SetComplexDataType(param);
+		}
 
-		std::shared_ptr<Object> ptr(new Object(objectId, objectType, name, nodeId, uniqueIdRef));
+		ptr->SetUniqueIdRef(uniqueIdRef);
+
+		if (dataType != PlkDataType::UNDEFINED)
+			ptr->SetDataType(dataType);
 
 		if (pdoMapping != PDOMapping::UNDEFINED)
 			ptr->SetPDOMapping(pdoMapping);
 
-		ptr->SetComplexDataType(param);
+		if (accessType  != AccessType::UNDEFINED)
+			ptr->SetAccessType(accessType);
+
+		if (!defaultValueToSet.empty())
+		{
+			res = ptr->SetTypedObjectDefaultValue(defaultValueToSet);
+			if (!res.IsSuccessful())
+				return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+		}
+
 		res = node->AddObject(ptr);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		if (!actualValueToSet.empty())
+		{
+			res = node->ForceObject(objectId, false, false, actualValueToSet);
+			if (!res.IsSuccessful())
+				return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+		}
 		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 	}
 	catch (const std::exception& ex)
@@ -863,6 +910,19 @@ Result OpenConfiguratorCore::CreateDomainSubObject(const std::string& networkId,
 {
 	try
 	{
+		Result res = OpenConfiguratorCore::CreateParameterSubObject(networkId, nodeId, objectId, subObjectId, objectType, name, PlkDataType::Domain, AccessType::UNDEFINED, pdoMapping, uniqueIdRef, "", "");
+		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+	}
+	catch (const std::exception& ex)
+	{
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+	}
+}
+
+Result OpenConfiguratorCore::CreateParameterSubObject(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::uint8_t subObjectId, ObjectType objectType, const std::string& name, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping, const std::string& uniqueIdRef, const std::string& defaultValueToSet, const std::string& actualValueToSet)
+{
+	try
+	{
 		std::shared_ptr<Network> network;
 		Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 		if (!res.IsSuccessful())
@@ -873,24 +933,58 @@ Result OpenConfiguratorCore::CreateDomainSubObject(const std::string& networkId,
 		if (!res.IsSuccessful())
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
+		std::shared_ptr<SubObject> ptr(new SubObject(subObjectId, objectType, name, nodeId));
+
 		std::shared_ptr<Parameter> param;
 		res = node->GetApplicationProcess()->GetParameter(uniqueIdRef, param);
 		if (!res.IsSuccessful())
-			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+		{
+			std::shared_ptr<ParameterGroup> paramGrp;
+			res = node->GetApplicationProcess()->GetParameterGroup(uniqueIdRef, paramGrp);
+			if (!res.IsSuccessful())
+				return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+			else
+				ptr->SetComplexDataType(paramGrp);
+		}
+		else
+		{
+			ptr->SetComplexDataType(param);
+		}
 
-		std::shared_ptr<SubObject> ptr(new SubObject(subObjectId, objectType, name, nodeId, uniqueIdRef));
+		ptr->SetUniqueIdRef(uniqueIdRef);
+
+		if (dataType != PlkDataType::UNDEFINED)
+			ptr->SetDataType(dataType);
+
 		if (pdoMapping != PDOMapping::UNDEFINED)
 			ptr->SetPDOMapping(pdoMapping);
 
-		ptr->SetComplexDataType(param);
+		if (accessType  != AccessType::UNDEFINED)
+			ptr->SetAccessType(accessType);
+
+		if (!defaultValueToSet.empty())
+		{
+			res = ptr->SetTypedObjectDefaultValue(defaultValueToSet);
+			if (!res.IsSuccessful())
+				return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+		}
+
 		res = node->AddSubObject(objectId, ptr);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		if (!actualValueToSet.empty())
+		{
+			res = node->ForceSubObject(objectId, subObjectId, false, false, actualValueToSet);
+			if (!res.IsSuccessful())
+				return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+		}
 		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 	}
 	catch (const std::exception& ex)
 	{
 		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
 	}
-
 }
 
 Result OpenConfiguratorCore::GetObjectSize(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::uint32_t& size)
@@ -1034,7 +1128,38 @@ Result OpenConfiguratorCore::SetFeatureValue(const std::string& networkId, const
 	}
 }
 
-Result OpenConfiguratorCore::CreateParameter(const std::string& networkId, const std::uint8_t nodeId, const std::string& uniqueID, ParameterAccess access, IEC_Datatype dataType)
+Result OpenConfiguratorCore::CreateParameter(const std::string& networkId, const std::uint8_t nodeId, const std::string& uniqueID, ParameterAccess access, IEC_Datatype dataType, bool createTemplate)
+{
+	try
+	{
+		std::shared_ptr<Network> network;
+		Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		std::shared_ptr<BaseNode> node;
+		res = network->GetBaseNode(nodeId, node);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+		if (createTemplate)
+		{
+			auto ptr = std::make_shared<ParameterTemplate>(uniqueID, access, dataType);
+			res = node->GetApplicationProcess()->AddParameterTemplate(ptr);
+		}
+		else
+		{
+			auto ptr = std::make_shared<Parameter>(uniqueID, access, dataType);
+			res = node->GetApplicationProcess()->AddParameter(ptr);
+		}
+		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+	}
+	catch (const std::exception& ex)
+	{
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+	}
+}
+
+Result OpenConfiguratorCore::CreateParameter(const std::string& networkId, const std::uint8_t nodeId, const std::string& uniqueId, ParameterAccess access, const std::string& parameterTemplateUniqueIdRef)
 {
 	try
 	{
@@ -1048,7 +1173,17 @@ Result OpenConfiguratorCore::CreateParameter(const std::string& networkId, const
 		if (!res.IsSuccessful())
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
-		auto ptr = std::make_shared<Parameter>(uniqueID, access, dataType);
+		std::shared_ptr<ParameterTemplate> templ;
+		res = node->GetApplicationProcess()->GetParameterTemplate(parameterTemplateUniqueIdRef, templ);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		auto ptr = std::make_shared<Parameter>(uniqueId, parameterTemplateUniqueIdRef);
+		ptr->SetParameterTemplate(templ);
+
+		if (access != ParameterAccess::undefined)
+			ptr->SetParameterAccess(access);
+
 		res = node->GetApplicationProcess()->AddParameter(ptr);
 		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 	}
@@ -1056,10 +1191,9 @@ Result OpenConfiguratorCore::CreateParameter(const std::string& networkId, const
 	{
 		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
 	}
-
 }
 
-Result OpenConfiguratorCore::CreateParameter(const std::string& networkId, const std::uint8_t nodeId, const std::string& uniqueID, const std::string& uniqueIDRef, ParameterAccess access)
+Result OpenConfiguratorCore::CreateParameter(const std::string& networkId, const std::uint8_t nodeId, const std::string& uniqueID, const std::string& datatypeUniqueIDRef, ParameterAccess access, bool createTemplate)
 {
 	try
 	{
@@ -1073,8 +1207,27 @@ Result OpenConfiguratorCore::CreateParameter(const std::string& networkId, const
 		if (!res.IsSuccessful())
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
-		auto ptr = std::make_shared<Parameter>(uniqueID, access, uniqueIDRef);
-		res = node->GetApplicationProcess()->AddParameter(ptr);
+		if (createTemplate)
+		{
+			auto ptr = std::make_shared<ParameterTemplate>(uniqueID, access, datatypeUniqueIDRef);
+			std::shared_ptr<ComplexDataType> dt;
+			res = node->GetApplicationProcess()->GetComplexDataType(datatypeUniqueIDRef, dt);
+			if (!res.IsSuccessful())
+				return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+			ptr->SetComplexDataType(dt);
+			res = node->GetApplicationProcess()->AddParameterTemplate(ptr);
+		}
+		else
+		{
+			auto ptr = std::make_shared<Parameter>(uniqueID, access, datatypeUniqueIDRef);
+			std::shared_ptr<ComplexDataType> dt;
+			res = node->GetApplicationProcess()->GetComplexDataType(datatypeUniqueIDRef, dt);
+			if (!res.IsSuccessful())
+				return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+			ptr->SetComplexDataType(dt);
+			res = node->GetApplicationProcess()->AddParameter(ptr);
+		}
+
 		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 	}
 	catch (const std::exception& ex)
@@ -1097,23 +1250,9 @@ Result OpenConfiguratorCore::CreateStructDatatype(const std::string& networkId, 
 		if (!res.IsSuccessful())
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
-		auto& parameterList = node->GetApplicationProcess()->GetParameterList();
-		for (auto& param : parameterList)
-		{
-			if (param->GetUniqueIDRef() == uniqueId)
-			{
-				auto ptr = std::shared_ptr<ComplexDataType>(new StructDataType(uniqueId, name));
-				param->SetComplexDataType(ptr);
-				return Result();
-			}
-		}
-
-		boost::format formatter(kMsgParameterNotFound);
-		formatter
-		% uniqueId
-		% (std::uint32_t) node->GetNodeId();
-		LOG_ERROR() << formatter.str();
-		return Result(ErrorCode::PARAMETER_NOT_FOUND, "[" + networkId + "] " + formatter.str());
+		auto ptr = std::shared_ptr<ComplexDataType>(new StructDataType(uniqueId, name));
+		res = node->GetApplicationProcess()->AddComplexDataType(ptr);
+		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 	}
 	catch (const std::exception& ex)
 	{
@@ -1135,24 +1274,15 @@ Result OpenConfiguratorCore::CreateVarDeclaration(const std::string& networkId, 
 		if (!res.IsSuccessful())
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
-		auto& parameterList = node->GetApplicationProcess()->GetParameterList();
-		for (auto& param : parameterList)
-		{
-			if (param->GetUniqueIDRef() == structUniqueId)
-			{
-				auto ptr = std::dynamic_pointer_cast<StructDataType>(param->GetComplexDataType());
-				auto sharedVar = std::make_shared<VarDeclaration>(uniqueId, name, datatype, size, initialValue);
-				res = ptr->AddVarDeclaration(sharedVar);
-				return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
-			}
-		}
+		std::shared_ptr<ComplexDataType> dt;
+		res = node->GetApplicationProcess()->GetComplexDataType(structUniqueId, dt);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
-		boost::format formatter(kMsgStructDatatypeNotFound);
-		formatter
-		% structUniqueId
-		% (std::uint32_t) node->GetNodeId();
-		LOG_ERROR() << formatter.str();
-		return Result(ErrorCode::PARAMETER_NOT_FOUND, "[" + networkId + "] " + formatter.str());
+		auto ptr = std::dynamic_pointer_cast<StructDataType>(dt);
+		auto sharedVar = std::make_shared<VarDeclaration>(uniqueId, name, datatype, size, initialValue);
+		res = ptr->AddVarDeclaration(sharedVar);
+		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 	}
 	catch (const std::exception& ex)
 	{
@@ -1174,24 +1304,9 @@ Result OpenConfiguratorCore::CreateArrayDatatype(const std::string& networkId, c
 		if (!res.IsSuccessful())
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
-		auto& parameterList = node->GetApplicationProcess()->GetParameterList();
-		for (auto& param : parameterList)
-		{
-			if (param->GetUniqueIDRef() == uniqueId)
-			{
-				auto ptr = std::shared_ptr<ComplexDataType>(new ArrayDataType(uniqueId, name, lowerLimit, upperLimit, dataType));
-				param->SetComplexDataType(ptr);
-				param->SetUniqueIDRef(uniqueId);
-				return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
-			}
-		}
-
-		boost::format formatter(kMsgParameterNotFound);
-		formatter
-		% uniqueId
-		% (std::uint32_t) node->GetNodeId();
-		LOG_ERROR() << formatter.str();
-		return Result(ErrorCode::PARAMETER_NOT_FOUND, "[" + networkId + "] " + formatter.str());
+		auto ptr = std::shared_ptr<ComplexDataType>(new ArrayDataType(uniqueId, name, lowerLimit, upperLimit, dataType));
+		res = node->GetApplicationProcess()->AddComplexDataType(ptr);
+		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 	}
 	catch (const std::exception& ex)
 	{
@@ -1213,23 +1328,9 @@ Result OpenConfiguratorCore::CreateEnumDatatype(const std::string& networkId, co
 		if (!res.IsSuccessful())
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
-		auto& parameterList = node->GetApplicationProcess()->GetParameterList();
-		for (auto& param : parameterList)
-		{
-			if (param->GetUniqueIDRef() == uniqueId)
-			{
-				auto ptr = std::shared_ptr<ComplexDataType>(new EnumDataType(uniqueId, name, dataType, size));
-				param->SetComplexDataType(ptr);
-				return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
-			}
-		}
-
-		boost::format formatter(kMsgParameterNotFound);
-		formatter
-		% uniqueId
-		% (std::uint32_t) node->GetNodeId();
-		LOG_ERROR() << formatter.str();
-		return Result(ErrorCode::PARAMETER_NOT_FOUND, "[" + networkId + "] " + formatter.str());
+		auto ptr = std::shared_ptr<ComplexDataType>(new EnumDataType(uniqueId, name, dataType, size));
+		res = node->GetApplicationProcess()->AddComplexDataType(ptr);
+		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 	}
 	catch (const std::exception& ex)
 	{
@@ -1251,29 +1352,266 @@ Result OpenConfiguratorCore::CreateEnumValue(const std::string& networkId, const
 		if (!res.IsSuccessful())
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
-		auto& parameterList = node->GetApplicationProcess()->GetParameterList();
-		for (auto& param : parameterList)
-		{
-			if (param->GetUniqueIDRef() == uniqueId)
-			{
-				auto ptr = std::dynamic_pointer_cast<EnumDataType>(param->GetComplexDataType());
-				res = ptr->AddEnumValue(name, value);
-				return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
-			}
-		}
+		std::shared_ptr<ComplexDataType> dt;
+		res = node->GetApplicationProcess()->GetComplexDataType(uniqueId, dt);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
-		boost::format formatter(kMsgParameterNotFound);
-		formatter
-		% uniqueId
-		% (std::uint32_t) node->GetNodeId();
-		LOG_ERROR() << formatter.str();
-		return Result(ErrorCode::PARAMETER_NOT_FOUND, "[" + networkId + "] " + formatter.str());
+		auto ptr = std::dynamic_pointer_cast<EnumDataType>(dt);
+		res = ptr->AddEnumValue(name, value);
+		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 	}
 	catch (const std::exception& ex)
 	{
 		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
 	}
+}
 
+Result OpenConfiguratorCore::SetParameterAllowedValues(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterUniqueId, std::vector<std::string>& allowedValues)
+{
+	try
+	{
+		std::shared_ptr<Network> network;
+		Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		std::shared_ptr<BaseNode> node;
+		res = network->GetBaseNode(nodeId, node);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		std::shared_ptr<Parameter> param;
+		res = node->GetApplicationProcess()->GetParameter(parameterUniqueId, param);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		for (auto& allowedValue : allowedValues)
+		{
+			res = param->AddParameterAllowedValue(allowedValue);
+			if (!res.IsSuccessful())
+				return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+		}
+		return Result();
+	}
+	catch (const std::exception& ex)
+	{
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+	}
+}
+
+Result OpenConfiguratorCore::SetParameterDefaultValue(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterUniqueId, const std::string& paramDefaultValue)
+{
+	try
+	{
+		std::shared_ptr<Network> network;
+		Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		std::shared_ptr<BaseNode> node;
+		res = network->GetBaseNode(nodeId, node);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		std::shared_ptr<Parameter> param;
+		res = node->GetApplicationProcess()->GetParameter(parameterUniqueId, param);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		res = param->AddParameterDefaultValue(paramDefaultValue);
+		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+	}
+	catch (const std::exception& ex)
+	{
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+	}
+}
+
+Result OpenConfiguratorCore::SetParameterActualValue(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterUniqueId, const std::string& paramActualValue)
+{
+	try
+	{
+		std::shared_ptr<Network> network;
+		Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		std::shared_ptr<BaseNode> node;
+		res = network->GetBaseNode(nodeId, node);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		res = node->GetApplicationProcess()->SetParameterActualValue(parameterUniqueId, paramActualValue);
+		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+	}
+	catch (const std::exception& ex)
+	{
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+	}
+}
+
+Result OpenConfiguratorCore::SetParameterAllowedRange(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterUniqueId, const std::string& minValue, const std::string& maxValue)
+{
+	try
+	{
+		std::shared_ptr<Network> network;
+		Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		std::shared_ptr<BaseNode> node;
+		res = network->GetBaseNode(nodeId, node);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		std::shared_ptr<Parameter> param;
+		res = node->GetApplicationProcess()->GetParameter(parameterUniqueId, param);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		res = param->AddParameterAllowedRange(minValue, maxValue);
+		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+	}
+	catch (const std::exception& ex)
+	{
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+	}
+}
+
+Result OpenConfiguratorCore::CreateParameterGroup(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterGroupUniqueId)
+{
+	try
+	{
+		std::shared_ptr<Network> network;
+		Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		std::shared_ptr<BaseNode> node;
+		res = network->GetBaseNode(nodeId, node);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		auto ptr = std::make_shared<ParameterGroup>(parameterGroupUniqueId);
+		res = node->GetApplicationProcess()->AddParameterGroup(ptr);
+		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+	}
+	catch (const std::exception& ex)
+	{
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+	}
+}
+
+Result OpenConfiguratorCore::CreateParameterGroup(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterGroupUniqueId, const std::string& parentParameterGroupUniqueId, std::uint16_t bitOffset)
+{
+	try
+	{
+		std::shared_ptr<Network> network;
+		Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		std::shared_ptr<BaseNode> node;
+		res = network->GetBaseNode(nodeId, node);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		std::shared_ptr<ParameterGroup> ptr(new ParameterGroup(parameterGroupUniqueId, bitOffset));
+		std::shared_ptr<ParameterGroup> grp;
+		res = node->GetApplicationProcess()->GetParameterGroup(parentParameterGroupUniqueId, grp);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		res = grp->AddParameterGroupEntry(ptr);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		res = node->GetApplicationProcess()->AddParameterGroup(ptr);
+		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+	}
+	catch (const std::exception& ex)
+	{
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+	}
+}
+
+Result OpenConfiguratorCore::CreateParameterGroup(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterGroupUniqueId, const std::string& parentParameterGroupUniqueId, const std::string& conditionalUniqueId, const std::string& conditionalValue, std::uint16_t bitOffset)
+{
+	try
+	{
+		std::shared_ptr<Network> network;
+		Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		std::shared_ptr<BaseNode> node;
+		res = network->GetBaseNode(nodeId, node);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		std::shared_ptr<Parameter> conditionParam;
+		if (!conditionalUniqueId.empty())
+		{
+			res = node->GetApplicationProcess()->GetParameter(conditionalUniqueId, conditionParam);
+			if (!res.IsSuccessful())
+				return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+		}
+
+		std::shared_ptr<ParameterGroup> ptr(new ParameterGroup(parameterGroupUniqueId, conditionalUniqueId, conditionalValue, conditionParam, bitOffset));
+		std::shared_ptr<ParameterGroup> grp;
+		res = node->GetApplicationProcess()->GetParameterGroup(parentParameterGroupUniqueId, grp);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		res = grp->AddParameterGroupEntry(ptr);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		res = node->GetApplicationProcess()->AddParameterGroup(ptr);
+		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+	}
+	catch (const std::exception& ex)
+	{
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+	}
+}
+
+Result OpenConfiguratorCore::CreateParameterReference(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterGroupUniqueId, const std::string& parameterUniqueIdRef, const std::string& actualValue, std::uint16_t bitOffset)
+{
+	try
+	{
+		std::shared_ptr<Network> network;
+		Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		std::shared_ptr<BaseNode> node;
+		res = network->GetBaseNode(nodeId, node);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		std::shared_ptr<Parameter> param;
+		res = node->GetApplicationProcess()->GetParameter(parameterUniqueIdRef, param);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		auto ptr = std::make_shared<ParameterReference>(parameterUniqueIdRef, param, actualValue, bitOffset);
+
+		std::shared_ptr<ParameterGroup> grp;
+		res = node->GetApplicationProcess()->GetParameterGroup(parameterGroupUniqueId, grp);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		res = grp->AddParameterGroupEntry(ptr);
+		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+	}
+	catch (const std::exception& ex)
+	{
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+	}
 }
 
 Result OpenConfiguratorCore::GetDatatypeSize(const std::string& networkId, const std::uint8_t nodeId, const std::string& dataTypeUniqueId, std::uint32_t& size)
@@ -1290,22 +1628,12 @@ Result OpenConfiguratorCore::GetDatatypeSize(const std::string& networkId, const
 		if (!res.IsSuccessful())
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
-		auto& parameterList = node->GetApplicationProcess()->GetParameterList();
-		for (auto& param : parameterList)
-		{
-			if (param->GetUniqueID() == dataTypeUniqueId || param->GetUniqueIDRef() == dataTypeUniqueId)
-			{
-				size = param->GetBitSize() / 8;
-				return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
-			}
-		}
-
-		boost::format formatter(kMsgComplexDatatypeNotFoundOnNode);
-		formatter
-		% dataTypeUniqueId
-		% (std::uint32_t) node->GetNodeId();
-		LOG_ERROR() << formatter.str();
-		return Result(ErrorCode::COMPLEX_DATATYPE_NOT_FOUND, "[" + networkId + "] " + formatter.str());
+		std::shared_ptr<ComplexDataType> dt;
+		res = node->GetApplicationProcess()->GetComplexDataType(dataTypeUniqueId, dt);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+		size = dt->GetBitSize() / 8;
+		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 	}
 	catch (const std::exception& ex)
 	{

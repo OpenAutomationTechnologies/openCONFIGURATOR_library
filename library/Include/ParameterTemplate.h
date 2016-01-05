@@ -1,6 +1,6 @@
 /************************************************************************
-\file Parameter.h
-\brief Implementation of the Class Parameter
+\file ParameterTemplate.h
+\brief Implementation of the Class ParameterTemplate
 \author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 \date 01-May-2015 12:00:00
 ************************************************************************/
@@ -29,20 +29,19 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
-#if !defined PARAMETER_H
-#define PARAMETER_H
+#if !defined PARAMETER_TEMPLATE_H
+#define PARAMETER_TEMPLATE_H
 
 #include <memory>
 #include <boost/optional.hpp>
 #include <boost/any.hpp>
 
+#include "BaseParameter.h"
 #include "ComplexDataType.h"
 #include "PlkDataType.h"
 #include "ParameterAccess.h"
 #include "IEC_Datatype.h"
 #include "Utilities.h"
-#include "BaseParameter.h"
-#include "ParameterTemplate.h"
 
 namespace IndustrialNetwork
 {
@@ -56,21 +55,15 @@ namespace IndustrialNetwork
 				\brief Represents a complex datatype parameter.
 				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
 				*/
-				class Parameter: public BaseParameter
+				class ParameterTemplate : public BaseParameter
 				{
 
 					public:
-						Parameter(const std::string& uniqueID, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess parameterAccess, const std::string& dataTypeUniqueIDRef = "");
-						Parameter(const std::string& uniqueID, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess parameterAccess, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype datatype);
-						Parameter(const std::string& uniqueID, const std::string& parameterTemplateUniqueIdRef);
-						virtual ~Parameter();
-
-						void SetParameterTemplate(const std::shared_ptr<ParameterTemplate>& paramTemplate);
-
+						ParameterTemplate(const std::string& uniqueID, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess parameterAccess, const std::string& dataTypeUniqueIDRef = "");
+						ParameterTemplate(const std::string& uniqueID, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess parameterAccess, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype datatype);
+						virtual ~ParameterTemplate();
 
 					private:
-						std::string parameterTemplateUniqueId;
-						std::shared_ptr<ParameterTemplate> parameterTemplate;
 
 				};
 			}

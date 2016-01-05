@@ -54,7 +54,8 @@ namespace IndustrialNetwork
 					readWrite,
 					readWriteInput,
 					readWriteOutput,
-					noAccess
+					noAccess,
+					undefined
 				};
 
 				static const std::string ParameterAccessValues[] =
@@ -65,7 +66,8 @@ namespace IndustrialNetwork
 					"readWrite",
 					"readWriteInput",
 					"readWriteOutput",
-					"noAccess"
+					"noAccess",
+					"undefined"
 				};
 			}
 		}

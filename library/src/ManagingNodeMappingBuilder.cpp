@@ -277,8 +277,7 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 					presMnOffset += mapping->GetMappingLength();
 				}
 			}
-			else if (foundObject->GetUniqueIdRef().is_initialized()
-			         && foundObject->GetDataType().get() == PlkDataType::Domain) // CN mapps a domain object
+			else if (foundObject->GetUniqueIdRef().is_initialized())
 			{
 				bool foundMapping = false;
 				std::uint32_t bitCount = 0;
@@ -286,10 +285,10 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 				std::uint32_t size = mapping->GetMappingLength();
 
 				//Get domain object parameter
-				std::shared_ptr<Parameter> param;
-				res = cn->GetApplicationProcess()->GetParameter(foundObject->GetUniqueIdRef().get(), param);
-				if (!res.IsSuccessful())
-					return res;
+				//std::shared_ptr<Parameter> param;
+				//res = cn->GetApplicationProcess()->GetParameter(foundObject->GetUniqueIdRef().get(), param);
+				//if (!res.IsSuccessful())
+				//	return res;
 
 				std::vector<std::shared_ptr<BaseProcessImageObject>> processImageCollection;
 				if (dir == Direction::RX)
@@ -314,7 +313,7 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 						if (fillSize < size) // add objects as longs as size fits
 						{
 							//domain contains bitstring
-							if (cnPIObject->GetDataType() == IEC_Datatype::BITSTRING)
+							if (cnPIObject->GetDataType() == IEC_Datatype::BITSTRING || cnPIObject->GetDataType() == IEC_Datatype::BOOL)
 							{
 								//Get bitstring size to calculate bit count
 								bitCount += cnPIObject->GetSize();

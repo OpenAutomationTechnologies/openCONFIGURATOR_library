@@ -124,8 +124,13 @@ namespace IndustrialNetwork
 
 				const std::string kMsgParameterCreated = "Parameter with uniqueID \"%s\" created.";
 				const std::string kMsgParameterReturned = "Parameter with uniqueID \"%s\" returned.";
-				const std::string kMsgParameterNotFound = "Parameter which references datatype with uniqueIDRef \"%s\" not found on node %d.";
+				const std::string kMsgParameterNotFound = "Parameter with uniqueIDRef \"%s\" not found.";
 				const std::string kMsgParameterAlreadyExist = "Parameter with uniqueID \"%s\" already exists.";
+				const std::string kMsgParameterActualValueDoesNotExist = "Parameter with uniqueID \"%s\" does not have an actual value.";
+				const std::string kMsgParameterGroupAlreadyExist = "ParameterGroup with uniqueID \"%s\" already exists.";
+				const std::string kMsgParameterTemplateAlreadyExist = "ParameterTemplate with uniqueID \"%s\" already exists.";
+				const std::string kMsgParameterGroupNonExisting = "ParameterGroup with uniqueID \"%s\" does not exist.";
+				const std::string kMsgParameterTemplateNonExisting = "ParameterTemplate with uniqueID \"%s\" does not exist.";				
 
 				const std::string kMsgNodeIdInvalid = "NodeId \"%d\" invalid.";
 				const std::string kMsgSubIndexInvalid = "Subindex 0x%X/0x%X invalid for node %d.";
@@ -164,6 +169,7 @@ namespace IndustrialNetwork
 				const std::string kMsgNonExistingMappedObject = "Mapped object 0x%X does not exist on node %d.";
 				const std::string kMsgNonExistingMappedSubObject = "Mapped subobject 0x%X/0x%X does not exist on node %d.";
 				const std::string kMsgAccessTypeForParameterInvalid = "Parameter with uniqueId \"%s\", referenced by mapped index 0x%X/0x%s on node %d, has invalid access type (\"%s\").";
+				const std::string kMsgAccessTypeForParameterGroupInvalid = "ParameterGroup with uniqueId \"%s\" must not have multiple access types.";
 				const std::string kMsgMappingTypeForPdoInvalid = "(Sub)Index 0x%X/0x%s on node %d cannot be mapped. Wrong PDOMapping attribute \"%s\" for mapping.";
 				const std::string kMsgAccessTypeForPdoInvalid = "(Sub)Index 0x%X/0x%s on node %d cannot be mapped. Invalid access type \"%s\" (RPDOs must be writeable, TPDOs readable).";
 				const std::string kMsgPdoOffsetInvalid = "Mapping-Object 0x%X/0x%X on node %d: Mapping offset invalid. Actual: %d bits, expected %d bits.";

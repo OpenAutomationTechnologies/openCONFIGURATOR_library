@@ -55,15 +55,6 @@ namespace IndustrialNetwork
 		{
 
 			public:
-				IBaseObject() :
-					id(),
-					actualValue(boost::any()),
-					defaultValue(boost::any()),
-					objectType(),
-					name("")
-
-				{}
-
 				IBaseObject(T id, D objectType, const std::string& name) :
 					id(id),
 					actualValue(boost::any()),

@@ -1,8 +1,8 @@
 /************************************************************************
-\file Parameter.h
+\file ParameterReference.cpp
 \brief Implementation of the Class Parameter
 \author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
-\date 01-May-2015 12:00:00
+\date 05-January-2016 12:00:00
 ************************************************************************/
 
 /*------------------------------------------------------------------------------
@@ -29,52 +29,36 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
-#if !defined PARAMETER_H
-#define PARAMETER_H
+#include "ParameterReference.h"
 
-#include <memory>
-#include <boost/optional.hpp>
-#include <boost/any.hpp>
+using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
+using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 
-#include "ComplexDataType.h"
-#include "PlkDataType.h"
-#include "ParameterAccess.h"
-#include "IEC_Datatype.h"
-#include "Utilities.h"
-#include "BaseParameter.h"
-#include "ParameterTemplate.h"
+ParameterReference::ParameterReference(const std::string& uniqueId, const std::shared_ptr<Parameter>& param, const std::string& actualValue, std::uint16_t bitOffset) : IParameterGroupEntry(uniqueId, bitOffset),
+	actualValue(actualValue),
+	referencedParameter(param)
+{}
 
-namespace IndustrialNetwork
+ParameterReference::~ParameterReference()
+{}
+
+const std::string& ParameterReference::GetActualValue()
 {
-	namespace POWERLINK
-	{
-		namespace Core
-		{
-			namespace ObjectDictionary
-			{
-				/**
-				\brief Represents a complex datatype parameter.
-				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
-				*/
-				class Parameter: public BaseParameter
-				{
-
-					public:
-						Parameter(const std::string& uniqueID, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess parameterAccess, const std::string& dataTypeUniqueIDRef = "");
-						Parameter(const std::string& uniqueID, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess parameterAccess, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype datatype);
-						Parameter(const std::string& uniqueID, const std::string& parameterTemplateUniqueIdRef);
-						virtual ~Parameter();
-
-						void SetParameterTemplate(const std::shared_ptr<ParameterTemplate>& paramTemplate);
-
-
-					private:
-						std::string parameterTemplateUniqueId;
-						std::shared_ptr<ParameterTemplate> parameterTemplate;
-
-				};
-			}
-		}
-	}
+	return this->actualValue;
 }
-#endif
+
+std::uint32_t ParameterReference::GetBitSize()
+{
+	return this->referencedParameter->GetBitSize();
+}
+
+const boost::dynamic_bitset<>& ParameterReference::GetActualValueBitSet()
+{
+	return this->referencedParameter->GetParameterActualValueBitSet(this->GetActualValue());
+}
+
+const std::shared_ptr<Parameter>& ParameterReference::GetReferencedParameter()
+{
+	return this->referencedParameter;
+}
+

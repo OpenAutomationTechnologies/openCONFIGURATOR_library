@@ -43,25 +43,13 @@ namespace IndustrialNetwork
 		{
 			namespace ObjectDictionary
 			{
-				BaseObject::BaseObject() : IBaseObject(),
-					forceToCDC(false),
-					highLimit(),
-					lowLimit(),
-					uniqueIdRef(),
-					complexDataType(),
-					accessType(),
-					dataType(),
-					pdoMapping(),
-					containingNode(),
-					actualValueNotDefaultValue(false)
-				{}
-
 				BaseObject::BaseObject(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode) : IBaseObject(id, objectType, name),
 					forceToCDC(false),
 					highLimit(boost::optional<boost::any>()),
 					lowLimit(boost::optional<boost::any>()),
 					uniqueIdRef(boost::optional<std::string>()),
-					complexDataType(),
+					referencedParameter(std::shared_ptr<Parameter>()),
+					referencedParameterGrp(std::shared_ptr<ParameterGroup>()),
 					accessType(boost::optional<AccessType>()),
 					dataType(boost::optional<PlkDataType>()),
 					pdoMapping(boost::optional<PDOMapping>()),
@@ -74,7 +62,8 @@ namespace IndustrialNetwork
 					highLimit(boost::optional<boost::any>()),
 					lowLimit(boost::optional<boost::any>()),
 					uniqueIdRef(boost::optional<std::string>()),
-					complexDataType(),
+					referencedParameter(std::shared_ptr<Parameter>()),
+					referencedParameterGrp(std::shared_ptr<ParameterGroup>()),
 					accessType(accessType),
 					dataType(dataType),
 					pdoMapping(pdoMapping),
@@ -87,7 +76,8 @@ namespace IndustrialNetwork
 					highLimit(boost::optional<boost::any>()),
 					lowLimit(boost::optional<boost::any>()),
 					uniqueIdRef(uniqueIdRef),
-					complexDataType(),
+					referencedParameter(std::shared_ptr<Parameter>()),
+					referencedParameterGrp(std::shared_ptr<ParameterGroup>()),
 					accessType(boost::optional<AccessType>()),
 					dataType(PlkDataType::Domain),
 					pdoMapping(boost::optional<PDOMapping>()),
@@ -163,6 +153,16 @@ namespace IndustrialNetwork
 					return this->lowLimit;
 				}
 
+				const std::shared_ptr<Parameter>& BaseObject::GetReferencedParameter()
+				{
+					return this->referencedParameter;
+				}
+
+				const std::shared_ptr<ParameterGroup>& BaseObject::GetReferencedParameterGroup()
+				{
+					return this->referencedParameterGrp;
+				}
+
 				template<typename T>
 				T BaseObject::GetTypedValue(ValueType type)
 				{
@@ -179,9 +179,39 @@ namespace IndustrialNetwork
 					}
 					std::string dataTypeName;
 
+					//Refresh referenced actual value
+					if (this->uniqueIdRef.is_initialized() && type == ValueType::ACTUAL)
+					{
+						if (this->referencedParameter)
+						{
+							if (this->referencedParameter->HasActualValue())
+							{
+								this->SetTypedObjectActualValue("0x" + this->referencedParameter->GetTypedParameterActualValue<std::string>());
+							}
+						}
+						else if (this->referencedParameterGrp)
+						{
+							std::string actualValueStr = "";
+							auto bitSet = this->referencedParameterGrp->GetActualValueBitSet(GetBitSize());
+							//LOG_FATAL() << bitSet;
+							for (boost::dynamic_bitset<>::size_type bit = 0; bit <= bitSet.size() - 4; bit += 4)
+							{
+								std::stringstream actualValue;
+								boost::dynamic_bitset<> hexDigit(4);
+								hexDigit[0] = bitSet[bit];
+								hexDigit[1] = bitSet[bit + 1];
+								hexDigit[2] = bitSet[bit + 2];
+								hexDigit[3] = bitSet[bit + 3];
+								actualValue << std::hex << hexDigit.to_ulong();
+								actualValueStr.insert(0, actualValue.str());
+							}
+							this->SetTypedObjectActualValue("0x" + actualValueStr);
+						}
+					}
+
 					switch (type)
 					{
-						case IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject::ValueType::ACTUAL:
+						case ValueType::ACTUAL:
 							{
 								if (!this->GetActualValue().empty())
 								{
@@ -201,9 +231,8 @@ namespace IndustrialNetwork
 								LOG_FATAL() << formatter.str();
 								throw Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, formatter.str());
 							}
-						case IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject::ValueType::DEFAULT:
+						case ValueType::DEFAULT:
 							{
-
 								if (!this->GetDefaultValue().empty())
 								{
 									if (this->GetDefaultValue().type() == typeid(T))
@@ -222,7 +251,7 @@ namespace IndustrialNetwork
 								LOG_FATAL() << formatter.str();
 								throw Result(ErrorCode::OBJECT_HAS_NO_DEFAULT_VALUE, formatter.str());
 							}
-						case IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject::ValueType::LOWLIMIT:
+						case ValueType::LOWLIMIT:
 							{
 								if (this->GetLowLimit().is_initialized())
 								{
@@ -242,7 +271,7 @@ namespace IndustrialNetwork
 								throw Result(ErrorCode::OBJECT_LIMITS_INVALID, formatter.str());
 							}
 
-						case IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject::ValueType::HIGHLIMIT:
+						case ValueType::HIGHLIMIT:
 							{
 								if (this->GetHighLimit().is_initialized())
 								{
@@ -277,7 +306,37 @@ namespace IndustrialNetwork
 				template<> std::string BaseObject::GetTypedValue<std::string>(ValueType type)
 				{
 					boost::any value;
-					if (type == ValueType::ACTUAL)
+					if (this->uniqueIdRef.is_initialized() && type == ValueType::ACTUAL)
+					{
+						//Refresh referenced actual value
+						if (this->referencedParameter)
+						{
+							if (this->referencedParameter->HasActualValue())
+							{
+								this->SetTypedObjectActualValue("0x" + this->referencedParameter->GetTypedParameterActualValue<std::string>());
+							}
+						}
+						else if (this->referencedParameterGrp)
+						{
+							std::string actualValueStr = "";
+							auto bitSet = this->referencedParameterGrp->GetActualValueBitSet(GetBitSize());
+							//LOG_FATAL() << bitSet;
+							for (boost::dynamic_bitset<>::size_type bit = 0; bit <= bitSet.size() - 4; bit += 4)
+							{
+								std::stringstream actualValue;
+								boost::dynamic_bitset<> hexDigit(4);
+								hexDigit[0] = bitSet[bit];
+								hexDigit[1] = bitSet[bit + 1];
+								hexDigit[2] = bitSet[bit + 2];
+								hexDigit[3] = bitSet[bit + 3];
+								actualValue << std::hex << hexDigit.to_ulong();
+								actualValueStr.insert(0, actualValue.str());
+							}
+							this->SetTypedObjectActualValue("0x" + actualValueStr);
+						}
+						value = this->GetActualValue();
+					}
+					else if (type == ValueType::ACTUAL)
 					{
 						if (this->GetActualValue().empty())
 						{
@@ -675,22 +734,22 @@ namespace IndustrialNetwork
 
 						switch (type)
 						{
-							case IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject::ValueType::DEFAULT:
+							case ValueType::DEFAULT:
 								{
 									this->SetDefaultValue(valueToSet);
 									break;
 								}
-							case IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject::ValueType::LOWLIMIT:
+							case ValueType::LOWLIMIT:
 								{
 									this->lowLimit = valueToSet;
 									break;
 								}
-							case IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject::ValueType::HIGHLIMIT:
+							case ValueType::HIGHLIMIT:
 								{
 									this->highLimit = valueToSet;
 									break;
 								}
-							case IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject::ValueType::ACTUAL:
+							case ValueType::ACTUAL:
 							default:
 								break;
 						}
@@ -700,7 +759,7 @@ namespace IndustrialNetwork
 					{
 						switch (type)
 						{
-							case IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject::ValueType::DEFAULT:
+							case ValueType::DEFAULT:
 								{
 									boost::format formatter(kMsgDefaultValueDatatypeError);
 									formatter
@@ -709,7 +768,7 @@ namespace IndustrialNetwork
 									LOG_FATAL() << formatter.str() << " " << e.what();
 									return Result(ErrorCode::DEFAULT_VALUE_INVALID, formatter.str());
 								}
-							case IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject::ValueType::LOWLIMIT:
+							case ValueType::LOWLIMIT:
 								{
 									boost::format formatter(kMsgLowLimitDatatypeError);
 									formatter
@@ -718,7 +777,7 @@ namespace IndustrialNetwork
 									LOG_FATAL() << formatter.str() << " " << e.what();
 									return Result(ErrorCode::LOW_LIMIT_INVALID, formatter.str());
 								}
-							case IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject::ValueType::HIGHLIMIT:
+							case ValueType::HIGHLIMIT:
 								{
 									boost::format formatter(kMsgHighLimitDatatypeError);
 									formatter
@@ -727,7 +786,7 @@ namespace IndustrialNetwork
 									LOG_FATAL() << formatter.str() << " " << e.what();
 									return Result(ErrorCode::HIGH_LIMIT_INVALID, formatter.str());
 								}
-							case IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject::ValueType::ACTUAL:
+							case ValueType::ACTUAL:
 							default:
 								break;
 						}
@@ -1396,7 +1455,10 @@ namespace IndustrialNetwork
 								{
 									if (this->GetUniqueIdRef().is_initialized())
 									{
-										return this->complexDataType->GetBitSize();
+										if (this->referencedParameter)
+											return this->referencedParameter->GetBitSize();
+										else if (this->referencedParameterGrp)
+											return this->referencedParameterGrp->GetBitSize();
 									}
 									break;
 								}
@@ -1429,7 +1491,46 @@ namespace IndustrialNetwork
 
 				void BaseObject::SetComplexDataType(std::shared_ptr<Parameter>& parameter)
 				{
-					this->complexDataType = parameter;
+					this->referencedParameter = parameter;
+					if (parameter->GetParameterAccess() != ParameterAccess::undefined)
+					{
+						if (this->accessType.is_initialized())
+						{
+							if (this->accessType.get() != Utilities::GetAccessTypeFromParameterAccessType(parameter->GetParameterAccess()))
+								this->accessType = Utilities::GetAccessTypeFromParameterAccessType(parameter->GetParameterAccess());
+						}
+						else
+							this->accessType = Utilities::GetAccessTypeFromParameterAccessType(parameter->GetParameterAccess());
+					}
+					if (parameter->GetDataType().is_initialized())
+					{
+						if (this->dataType.is_initialized())
+						{
+							if (this->dataType.get() != Utilities::GetPlkDataType(parameter->GetDataType().get()))
+								this->dataType = Utilities::GetPlkDataType(parameter->GetDataType().get());
+						}
+						else
+							this->dataType = Utilities::GetPlkDataType(parameter->GetDataType().get());
+					}
+				}
+
+				void BaseObject::SetComplexDataType(std::shared_ptr<ParameterGroup>& parameterGrp)
+				{
+					this->referencedParameterGrp = parameterGrp;
+				}
+
+				bool BaseObject::HasActualValue() const
+				{
+					if (this->GetActualValue().empty())
+						return false;
+					return true;
+				}
+
+				bool BaseObject::HasDefaultValue() const
+				{
+					if (this->GetDefaultValue().empty())
+						return false;
+					return true;
 				}
 
 				bool BaseObject::WriteToConfiguration() const
@@ -1440,22 +1541,23 @@ namespace IndustrialNetwork
 					            && this->GetAccessType() != AccessType::CONST
 					            && this->GetAccessType() != AccessType::RO))
 						return true;
-					else
+					else if (this->uniqueIdRef.is_initialized() && this->referencedParameter)
+					{
+						if (this->referencedParameter->WriteToConfiguration() || this->actualValueNotDefaultValue == true)
+						{
+							return true;
+						}
 						return false;
-				}
-
-				bool BaseObject::HasActualValue()
-				{
-					if (this->GetActualValue().empty())
+					}
+					else if (this->uniqueIdRef.is_initialized() && this->referencedParameterGrp)
+					{
+						if (!(this->HasDefaultValue() == false && this->HasActualValue() == false) || this->actualValueNotDefaultValue == true)
+						{
+							return true;
+						}
 						return false;
-					return true;
-				}
-
-				bool BaseObject::HasDefaultValue()
-				{
-					if (this->GetDefaultValue().empty())
-						return false;
-					return true;
+					}
+					return false;
 				}
 
 				void BaseObject::ClearActualValue()
@@ -1468,4 +1570,3 @@ namespace IndustrialNetwork
 		}
 	}
 }
-

@@ -115,7 +115,7 @@ std::uint32_t NetProcessImageGenerator::WriteNETProcessImage(const Direction dir
 				}
 			}
 
-			if (piEntry->GetDataType() == IEC_Datatype::BITSTRING)
+			if (piEntry->GetDataType() == IEC_Datatype::BITSTRING || piEntry->GetDataType() == IEC_Datatype::BOOL)
 			{
 				if (bitCount == 0)
 					startName = piEntry->GetName();

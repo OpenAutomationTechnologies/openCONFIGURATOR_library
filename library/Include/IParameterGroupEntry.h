@@ -1,12 +1,12 @@
 /************************************************************************
-\file Parameter.h
-\brief Implementation of the Class Parameter
+\file IParameterGroupEntry.h
+\brief Implementation of the Class IParameterGroupEntry
 \author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
-\date 01-May-2015 12:00:00
+\date 03-March-2016 12:00:00
 ************************************************************************/
 
 /*------------------------------------------------------------------------------
-Copyright (c) 2015, Bernecker+Rainer Industrie-Elektronik Ges.m.b.H. (B&R)
+Copyright (c) 2016, Bernecker+Rainer Industrie-Elektronik Ges.m.b.H. (B&R)
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -29,20 +29,10 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------------------------*/
-#if !defined PARAMETER_H
-#define PARAMETER_H
+#if !defined IPARAMETER_GROUP_ENTRY_H
+#define IPARAMETER_GROUP_ENTRY_H
 
-#include <memory>
-#include <boost/optional.hpp>
-#include <boost/any.hpp>
-
-#include "ComplexDataType.h"
-#include "PlkDataType.h"
-#include "ParameterAccess.h"
-#include "IEC_Datatype.h"
-#include "Utilities.h"
-#include "BaseParameter.h"
-#include "ParameterTemplate.h"
+#include <cstdint>
 
 namespace IndustrialNetwork
 {
@@ -52,25 +42,35 @@ namespace IndustrialNetwork
 		{
 			namespace ObjectDictionary
 			{
-				/**
-				\brief Represents a complex datatype parameter.
-				\author rueckerc, Bernecker+Rainer Industrie Elektronik Ges.m.b.H.
-				*/
-				class Parameter: public BaseParameter
+				class IParameterGroupEntry
 				{
 
 					public:
-						Parameter(const std::string& uniqueID, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess parameterAccess, const std::string& dataTypeUniqueIDRef = "");
-						Parameter(const std::string& uniqueID, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess parameterAccess, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype datatype);
-						Parameter(const std::string& uniqueID, const std::string& parameterTemplateUniqueIdRef);
-						virtual ~Parameter();
+						explicit IParameterGroupEntry(const std::string& uniqueId, std::uint16_t bitOffset) :
+							uniqueId(uniqueId),
+							bitOffset(bitOffset)
+						{}
 
-						void SetParameterTemplate(const std::shared_ptr<ParameterTemplate>& paramTemplate);
+						virtual ~IParameterGroupEntry() {};
 
+						std::uint16_t GetBitOffset()
+						{
+							return this->bitOffset;
+						}
+
+						const std::string& GetUniqueId()
+						{
+							return this->uniqueId;
+						}
+
+						bool operator< (const IParameterGroupEntry& other) const
+						{
+							return (bitOffset < other.bitOffset);
+						}
 
 					private:
-						std::string parameterTemplateUniqueId;
-						std::shared_ptr<ParameterTemplate> parameterTemplate;
+						std::string uniqueId;
+						std::uint16_t bitOffset;
 
 				};
 			}

@@ -54,6 +54,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Utilities.h"
 #include "Result.h"
 #include "Parameter.h"
+#include "ParameterGroup.h"
 #include "LoggingConfiguration.h"
 
 namespace IndustrialNetwork
@@ -72,7 +73,6 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						BaseObject();
 						BaseObject(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode);
 						BaseObject(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping);
 						BaseObject(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode, const std::string& uniqueIdRef);
@@ -120,11 +120,15 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetTypedObjectDefaultValue(const std::string& defaultValueToSet);
 
 						void SetComplexDataType(std::shared_ptr<Parameter>& parameter);
+						void SetComplexDataType(std::shared_ptr<ParameterGroup>& parameterGrp);
+
+						const std::shared_ptr<Parameter>& GetReferencedParameter();
+						const std::shared_ptr<ParameterGroup>& GetReferencedParameterGroup();
 
 						std::uint32_t GetBitSize();
 
-						bool HasActualValue();
-						bool HasDefaultValue();
+						bool HasActualValue() const;
+						bool HasDefaultValue() const;
 
 						void ClearActualValue();
 
@@ -146,7 +150,8 @@ namespace IndustrialNetwork
 						boost::optional<boost::any> highLimit;
 						boost::optional<boost::any> lowLimit;
 						boost::optional<std::string> uniqueIdRef;
-						std::shared_ptr<Parameter> complexDataType;
+						std::shared_ptr<Parameter> referencedParameter;
+						std::shared_ptr<ParameterGroup> referencedParameterGrp;
 						boost::optional<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType> accessType;
 						boost::optional<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType> dataType;
 						boost::optional<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping> pdoMapping;

@@ -117,6 +117,7 @@ namespace IndustrialNetwork
 						case IEC_Datatype::WSTRING:
 							break;
 						case IEC_Datatype::BITSTRING:
+						case IEC_Datatype::BOOL:
 							{
 								return 1; //Bit datatypes
 							}
@@ -124,7 +125,6 @@ namespace IndustrialNetwork
 						case IEC_Datatype::_CHAR:
 						case IEC_Datatype::SINT:
 						case IEC_Datatype::USINT:
-						case IEC_Datatype::BOOL:
 							{
 								return 8; //Byte datatypes
 							}
@@ -461,6 +461,29 @@ namespace IndustrialNetwork
 						}
 						return true;
 					}
+				}
+
+				AccessType GetAccessTypeFromParameterAccessType(ParameterAccess paramAccess)
+				{
+					switch (paramAccess)
+					{
+						case ParameterAccess::constant:
+							return AccessType::CONST;
+						case ParameterAccess::read:
+							return AccessType::RO;
+						case ParameterAccess::write:
+							return AccessType::WO;
+						case ParameterAccess::readWrite:
+						case ParameterAccess::readWriteInput:
+						case ParameterAccess::readWriteOutput:
+							return AccessType::RW;
+						case ParameterAccess::noAccess:
+						case ParameterAccess::undefined:
+							return AccessType::UNDEFINED;
+						default:
+							break;
+					}
+					return AccessType::UNDEFINED;
 				}
 			}
 		}

@@ -44,6 +44,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "IEC_Datatype.h"
 #include "PlkDataType.h"
+#include "AccessType.h"
+#include "ParameterAccess.h"
 
 namespace IndustrialNetwork
 {
@@ -99,6 +101,7 @@ namespace IndustrialNetwork
 				std::uint8_t AsciiToHex(std::uint8_t input);
 				void ConfigurationToAscii(const std::stringstream& inputConfig, std::vector<std::uint8_t>& output);
 				const std::string GetNetDatatypeFromIEC(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype iecDataType);
+				IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType GetAccessTypeFromParameterAccessType(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess paramAccess);
 				bool IsIPAddress(const std::string& ipaddr);
 			}
 		}

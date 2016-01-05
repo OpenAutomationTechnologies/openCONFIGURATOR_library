@@ -34,59 +34,33 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 
-Parameter::Parameter(const std::string& uniqueID, ParameterAccess parameterAccess, const std::string& uniqueIDRef) :
-	uniqueID(uniqueID),
-	uniqueIDRef(uniqueIDRef),
-	complexDataType(),
-	parameterAccess(parameterAccess),
-	dataType(IEC_Datatype::UNDEFINED)
+Parameter::Parameter(const std::string& uniqueID, ParameterAccess parameterAccess, const std::string& dataTypeUniqueIDRef) : BaseParameter(uniqueID, parameterAccess, dataTypeUniqueIDRef),
+	parameterTemplateUniqueId(""),
+	parameterTemplate(std::shared_ptr<ParameterTemplate>())
 {}
 
-Parameter::Parameter(const std::string& uniqueID, ParameterAccess parameterAccess, IEC_Datatype dataType) :
-	uniqueID(uniqueID),
-	uniqueIDRef(),
-	complexDataType(),
-	parameterAccess(parameterAccess),
-	dataType(dataType)
+Parameter::Parameter(const std::string& uniqueID, ParameterAccess parameterAccess, IEC_Datatype dataType) : BaseParameter(uniqueID, parameterAccess,
+	        dataType),
+	parameterTemplateUniqueId(""),
+	parameterTemplate(std::shared_ptr<ParameterTemplate>())
+{}
+
+Parameter::Parameter(const std::string& uniqueID, const std::string& parameterTemplateUniqueIdRef) : BaseParameter(uniqueID),
+	parameterTemplateUniqueId(parameterTemplateUniqueIdRef),
+	parameterTemplate(std::shared_ptr<ParameterTemplate>())
 {}
 
 Parameter::~Parameter()
 {}
 
-const std::string& Parameter::GetUniqueID()
+void Parameter::SetParameterTemplate(const std::shared_ptr<ParameterTemplate>& paramTemplate)
 {
-	return this->uniqueID;
-}
+	this->parameterTemplate = paramTemplate;
+	if (paramTemplate->GetDataType().is_initialized())
+		this->SetDataType(paramTemplate->GetDataType().get());
 
-const std::string& Parameter::GetUniqueIDRef()
-{
-	return this->uniqueIDRef;
-}
+	this->SetParameterAccess(paramTemplate->GetParameterAccess());
 
-void Parameter::SetUniqueIDRef(const std::string& uniqueIDRef)
-{
-	this->uniqueIDRef = uniqueIDRef;
-}
-
-const std::shared_ptr<ComplexDataType>& Parameter::GetComplexDataType()
-{
-	return this->complexDataType;
-}
-
-void Parameter::SetComplexDataType(std::shared_ptr<ComplexDataType>& complexType)
-{
-	this->complexDataType = complexType;
-}
-
-ParameterAccess Parameter::GetParameterAccess()
-{
-	return this->parameterAccess;
-}
-
-std::uint32_t Parameter::GetBitSize()
-{
-	if (!this->uniqueIDRef.empty())
-		return this->complexDataType->GetBitSize();
-	else
-		return GetIECDataTypeBitSize(this->dataType);
+	if (!paramTemplate->GetDataTypeUniqueIDRef().empty())
+		this->SetComplexDataType(paramTemplate->GetComplexDataType());
 }

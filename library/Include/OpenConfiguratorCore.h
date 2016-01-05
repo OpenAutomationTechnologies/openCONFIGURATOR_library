@@ -602,6 +602,7 @@ namespace IndustrialNetwork
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateDomainObject(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ObjectType objectType, const std::string& name, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping pdoMapping, const std::string& uniqueIdRef);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateParameterObject(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ObjectType objectType, const std::string& name, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType accessType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping pdoMapping, const std::string& uniqueIdRef, const std::string& defaultValueToSet, const std::string& actualValueToSet);
 
 						//! Member to create a subobject within a %POWERLINK node.
 						/*!
@@ -643,6 +644,7 @@ namespace IndustrialNetwork
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateDomainSubObject(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::uint8_t subObjectId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ObjectType objectType, const std::string& name, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping pdoMapping, const std::string& uniqueIdRef);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateParameterSubObject(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t objectId, std::uint8_t subObjectId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ObjectType objectType, const std::string& name, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType accessType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping pdoMapping, const std::string& uniqueIdRef, const std::string& defaultValueToSet, const std::string& actualValueToSet);
 						//! Member to retrieve the data size of a %POWERLINK node object.
 						/*!
 						\param networkId Specifies the identifier for the network.
@@ -881,7 +883,7 @@ namespace IndustrialNetwork
 						\param access Specifies the parameter access type.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateParameter(const std::string& networkId, const std::uint8_t nodeId, const std::string& uniqueID, const std::string& uniqueIDRef, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess access);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateParameter(const std::string& networkId, const std::uint8_t nodeId, const std::string& uniqueID, const std::string& dataTypeUniqueIDRef, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess access, bool createTemplate = false);
 						//! Member to create a parameter with a normal datatype within a controlled nodes application process.
 						/*!
 						\param networkId Specifies the identifier for the new network.
@@ -891,7 +893,9 @@ namespace IndustrialNetwork
 						\param dataType Specifies the normal %POWERLINK datatype.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateParameter(const std::string& networkId, const std::uint8_t nodeId, const std::string& uniqueID, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess access, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateParameter(const std::string& networkId, const std::uint8_t nodeId, const std::string& uniqueId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess access, const std::string& parameterTemplateUniqueIdRef);
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateParameter(const std::string& networkId, const std::uint8_t nodeId, const std::string& uniqueId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess access, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType, bool createTemplate = false);
 						//! Member to create a struct datatype within a controlled nodes application process.
 						/*!
 						\param networkId Specifies the identifier for the new network.
@@ -956,6 +960,16 @@ namespace IndustrialNetwork
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetDatatypeSize(const std::string& networkId, const std::uint8_t nodeId, const std::string& dataTypeUniqueId, std::uint32_t& size);
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetParameterAllowedValues(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterUniqueId, std::vector<std::string>& allowedValues);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetParameterDefaultValue(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterUniqueId, const std::string& paramDefaultValue);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetParameterActualValue(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterUniqueId, const std::string& paramActualValue);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetParameterAllowedRange(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterUniqueId, const std::string& minValue, const std::string& maxValue);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateParameterGroup(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterGroupUniqueId);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateParameterGroup(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterGroupUniqueId, const std::string& parentParameterGroupUniqueId, std::uint16_t bitOffset = 0);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateParameterGroup(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterGroupUniqueId, const std::string& parentParameterGroupUniqueId, const std::string& conditionalUniqueId, const std::string& conditionalValue, std::uint16_t bitOffset = 0);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateParameterReference(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterGroupUniqueId, const std::string& parameterUniqueIdRef, const std::string& actualValue = "", std::uint16_t bitOffset = 0);
+
 						/** @} */
 
 					private:

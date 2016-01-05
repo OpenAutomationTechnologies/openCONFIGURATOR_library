@@ -97,6 +97,9 @@
 %ignore GetPlkDataTypeName();
 %ignore PlkFeatureStrings;
 %ignore SetComplexDataType(std::shared_ptr<Parameter>& parameter);
+%ignore SetComplexDataType(std::shared_ptr<ParameterGroup>& parameterGrp);
+%ignore GetReferencedParameter();
+%ignore GetReferencedParameterGroup();
 %ignore GetRmnIds();
 %ignore IECDatatypeValues;
 %ignore ParameterAccessValues;

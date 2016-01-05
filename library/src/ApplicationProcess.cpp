@@ -36,17 +36,63 @@ using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 
 ApplicationProcess::ApplicationProcess() :
-	parameterList(std::vector<std::shared_ptr<Parameter>>())
+	datatypeList(std::vector<std::shared_ptr<ComplexDataType>>()),
+	parameterList(std::vector<std::shared_ptr<Parameter>>()),
+	parameterGroupList(std::vector<std::shared_ptr<ParameterGroup>>()),
+	parameterTemplateList(std::vector<std::shared_ptr<ParameterTemplate>>())
 {}
 
 ApplicationProcess::~ApplicationProcess()
 {
+	this->datatypeList.clear();
 	this->parameterList.clear();
+	this->parameterGroupList.clear();
+	this->parameterTemplateList.clear();
 }
 
 const std::vector<std::shared_ptr<Parameter>>& ApplicationProcess::GetParameterList()
 {
-	return parameterList;
+	return this->parameterList;
+}
+
+const std::vector<std::shared_ptr<ComplexDataType>>& ApplicationProcess::GetDataTypeList()
+{
+	return this->datatypeList;
+}
+
+Result ApplicationProcess::AddComplexDataType(std::shared_ptr<ComplexDataType>& dt)
+{
+	for (auto& currentDt : this->datatypeList)
+	{
+		if (currentDt->GetUniqueID() == dt->GetUniqueID())
+		{
+			boost::format formatter(kMsgComplexDataTypeAlreadyExist);
+			formatter
+			% dt->GetUniqueID();
+			LOG_ERROR() << formatter.str();
+			return Result(ErrorCode::COMPLEX_DATATYPE_ALREADY_EXIST, formatter.str());
+		}
+	}
+	this->datatypeList.push_back(dt);
+	return Result();
+}
+
+Result ApplicationProcess::GetComplexDataType(const std::string& uniqueId, std::shared_ptr<ComplexDataType>& dt)
+{
+	for (auto& currentDt : this->datatypeList)
+	{
+		if (currentDt->GetUniqueID() == uniqueId)
+		{
+			dt = currentDt;
+			return Result();
+		}
+	}
+
+	boost::format formatter(kMsgComplexDatatypeNotFound);
+	formatter
+	% uniqueId;
+	LOG_ERROR() << formatter.str();
+	return Result(ErrorCode::COMPLEX_DATATYPE_NOT_FOUND, formatter.str());
 }
 
 Result ApplicationProcess::AddParameter(std::shared_ptr<Parameter>& param)
@@ -59,7 +105,7 @@ Result ApplicationProcess::AddParameter(std::shared_ptr<Parameter>& param)
 			formatter
 			% param->GetUniqueID();
 			LOG_ERROR() << formatter.str();
-			return Result(ErrorCode::PARAMETER_NOT_FOUND, formatter.str());
+			return Result(ErrorCode::PARAMETER_EXISTS, formatter.str());
 		}
 	}
 	this->parameterList.push_back(param);
@@ -68,6 +114,40 @@ Result ApplicationProcess::AddParameter(std::shared_ptr<Parameter>& param)
 	formatter
 	% param->GetUniqueID();
 	LOG_INFO() << formatter.str();
+	return Result();
+}
+
+Result ApplicationProcess::AddParameterGroup(std::shared_ptr<ParameterGroup>& paramGrp)
+{
+	for (auto& currentParamGrp : this->parameterGroupList)
+	{
+		if (currentParamGrp->GetUniqueId() == paramGrp->GetUniqueId())
+		{
+			boost::format formatter(kMsgParameterGroupAlreadyExist);
+			formatter
+			% paramGrp->GetUniqueId();
+			LOG_ERROR() << formatter.str();
+			return Result(ErrorCode::PARAMETER_GROUP_EXISTS, formatter.str());
+		}
+	}
+	this->parameterGroupList.push_back(paramGrp);
+	return Result();
+}
+
+Result ApplicationProcess::AddParameterTemplate(std::shared_ptr<ParameterTemplate>& paramTempl)
+{
+	for (auto& currentParamTempl : this->parameterTemplateList)
+	{
+		if (currentParamTempl->GetUniqueID() == paramTempl->GetUniqueID())
+		{
+			boost::format formatter(kMsgParameterTemplateAlreadyExist);
+			formatter
+			% paramTempl->GetUniqueID();
+			LOG_ERROR() << formatter.str();
+			return Result(ErrorCode::PARAMETER_TEMPLATE_EXISTS, formatter.str());
+		}
+	}
+	this->parameterTemplateList.push_back(paramTempl);
 	return Result();
 }
 
@@ -87,32 +167,88 @@ Result ApplicationProcess::GetParameter(const std::string& uniqueId, std::shared
 		}
 	}
 
-	boost::format formatter(kMsgParameterAlreadyExist);
+	boost::format formatter(kMsgParameterNotFound);
+	formatter
+	% uniqueId;
+	//LOG_ERROR() << formatter.str();
+	return Result(ErrorCode::PARAMETER_NOT_FOUND, formatter.str());
+}
+
+Result ApplicationProcess::GetParameterGroup(const std::string& uniqueId, std::shared_ptr<ParameterGroup>& returnParam)
+{
+	for (auto& paramGrp : this->parameterGroupList)
+	{
+		if (paramGrp->GetUniqueId() == uniqueId)
+		{
+			returnParam = paramGrp;
+			return Result();
+		}
+	}
+
+	boost::format formatter(kMsgParameterGroupNonExisting);
+	formatter
+	% uniqueId;
+	//LOG_ERROR() << formatter.str();
+	return Result(ErrorCode::PARAMETER_GROUP_DOES_NOT_EXIST, formatter.str());
+}
+Result ApplicationProcess::GetParameterTemplate(const std::string& uniqueId, std::shared_ptr<ParameterTemplate>& returnParam)
+{
+	for (auto& paramTempl : this->parameterTemplateList)
+	{
+		if (paramTempl->GetUniqueID() == uniqueId)
+		{
+			returnParam = paramTempl;
+			return Result();
+		}
+	}
+
+	boost::format formatter(kMsgParameterTemplateNonExisting);
+	formatter
+	% uniqueId;
+	LOG_ERROR() << formatter.str();
+	return Result(ErrorCode::PARAMETER_TEMPLATE_DOES_NOT_EXIST, formatter.str());
+}
+
+Result ApplicationProcess::SetParameterActualValue(const std::string& uniqueId, const std::string& actualValue)
+{
+	for (auto& currentParam : this->parameterList)
+	{
+		if (currentParam->GetUniqueID() == uniqueId)
+			return currentParam->SetParameterActualValue(actualValue);
+	}
+	boost::format formatter(kMsgParameterNotFound);
 	formatter
 	% uniqueId;
 	LOG_ERROR() << formatter.str();
 	return Result(ErrorCode::PARAMETER_NOT_FOUND, formatter.str());
 }
 
-Result ApplicationProcess::GetComplexDataType(const std::string& uniqueId, std::shared_ptr<ComplexDataType>& returnType)
+Result ApplicationProcess::GetParameterActualValue(const std::string& uniqueId, std::string& actualValue)
 {
-	for (auto& param : this->parameterList)
+	for (auto& currentParam : this->parameterList)
 	{
-		if (param->GetUniqueID() == uniqueId)
+		if (currentParam->GetUniqueID() == uniqueId)
 		{
-			returnType = param->GetComplexDataType();
-			boost::format formatter(kMsgComplexDataTypeCreated);
-			formatter
-			% uniqueId;
-			LOG_INFO() << formatter.str();
-			return Result();
+			if (currentParam->HasActualValue())
+			{
+				actualValue = currentParam->GetTypedParameterActualValue<std::string>();
+				return Result();
+			}
+			else
+			{
+				boost::format formatter(kMsgParameterActualValueDoesNotExist);
+				formatter
+				% uniqueId;
+				LOG_ERROR() << formatter.str();
+				return Result(ErrorCode::PARAMETER_HAS_NO_ACTUAL_VALUE, formatter.str());
+			}
 		}
 	}
-	boost::format formatter(kMsgComplexDatatypeNotFound);
+	boost::format formatter(kMsgParameterNotFound);
 	formatter
 	% uniqueId;
 	LOG_ERROR() << formatter.str();
-	return Result(ErrorCode::COMPLEX_DATATYPE_NOT_FOUND, formatter.str());
+	return Result(ErrorCode::PARAMETER_NOT_FOUND, formatter.str());
 }
 
 std::uint32_t ApplicationProcess::GetBitSize(const std::string& uniqueId)
@@ -120,12 +256,10 @@ std::uint32_t ApplicationProcess::GetBitSize(const std::string& uniqueId)
 	for (auto& param : this->parameterList)
 	{
 		if (param->GetUniqueID() == uniqueId)
-		{
-			return param->GetComplexDataType()->GetBitSize();
-		}
+			return param->GetBitSize();
 	}
 
-	boost::format formatter(kMsgComplexDataTypeSizeInvalid);
+	boost::format formatter(kMsgParameterNotFound);
 	formatter
 	% uniqueId;
 	LOG_ERROR() << formatter.str();
