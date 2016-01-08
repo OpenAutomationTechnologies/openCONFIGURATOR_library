@@ -180,7 +180,19 @@ Result BaseNode::ForceObject(std::uint32_t objectId, bool force, bool validateOn
 		% objectId
 		% (std::uint32_t) nodeId;
 		LOG_ERROR() << formatter.str();
-		return Result(ErrorCode::OBJECT_TYPE_DOES_NOT_SUPPORT_VALUES);
+		return Result(ErrorCode::OBJECT_TYPE_DOES_NOT_SUPPORT_VALUES, formatter.str());
+	}
+
+	if (iter->second->GetAccessType() == AccessType::COND
+	        || iter->second->GetAccessType() == AccessType::CONST
+	        || iter->second->GetAccessType() == AccessType::RO)
+	{
+		boost::format formatter(kMsgBaseObjectValueSupport);
+		formatter
+		% objectId
+		% (std::uint32_t) nodeId;
+		LOG_ERROR() << formatter.str();
+		return Result(ErrorCode::OBJECT_ACCESS_DOES_NOT_SUPPORT_VALUES, formatter.str());
 	}
 
 	if (validateOnly == false)
@@ -305,6 +317,30 @@ Result BaseNode::ForceSubObject(std::uint32_t objectId, std::uint32_t subObjectI
 	Result res = iter->second->GetSubObject(subObjectId, subObject, enableLog);
 	if (res.IsSuccessful())
 	{
+		if (subObject->GetObjectType() != ObjectType::VAR)
+		{
+			boost::format formatter(kMsgBaseSubObjectValueSupport);
+			formatter
+			% objectId
+			% subObject->GetObjectId()
+			% (std::uint32_t) nodeId;
+			LOG_ERROR() << formatter.str();
+			return Result(ErrorCode::OBJECT_TYPE_DOES_NOT_SUPPORT_VALUES, formatter.str());
+		}
+
+		if (subObject->GetAccessType() == AccessType::COND
+		        || subObject->GetAccessType() == AccessType::CONST
+		        || subObject->GetAccessType() == AccessType::RO)
+		{
+			boost::format formatter(kMsgBaseSubObjectValueSupport);
+			formatter
+			% objectId
+			% subObject->GetObjectId()
+			% (std::uint32_t) nodeId;
+			LOG_ERROR() << formatter.str();
+			return Result(ErrorCode::OBJECT_ACCESS_DOES_NOT_SUPPORT_VALUES, formatter.str());
+		}
+
 		if (validateOnly == false)
 		{
 			subObject->SetForceToCDC(force);

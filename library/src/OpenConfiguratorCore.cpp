@@ -657,13 +657,17 @@ Result OpenConfiguratorCore::CreateObject(const std::string& networkId, const st
 				return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 		}
 
+		res = node->AddObject(ptr);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
 		if (!actualValueToSet.empty())
 		{
-			res = ptr->SetTypedObjectActualValue(actualValueToSet);
+			res = node->ForceObject(objectId, false, false, actualValueToSet);
 			if (!res.IsSuccessful())
 				return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 		}
-		res = node->AddObject(ptr);
+
 		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 	}
 	catch (const std::exception& ex)
@@ -770,14 +774,16 @@ Result OpenConfiguratorCore::CreateSubObject(const std::string& networkId, const
 				return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 		}
 
+		res = node->AddSubObject(objectId, ptr);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
 		if (!actualValueToSet.empty())
 		{
-			res = ptr->SetTypedObjectActualValue(actualValueToSet);
+			res = node->ForceSubObject(objectId, subObjectId, false, false, actualValueToSet);
 			if (!res.IsSuccessful())
 				return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 		}
-
-		res = node->AddSubObject(objectId, ptr);
 		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 	}
 	catch (const std::exception& ex)
