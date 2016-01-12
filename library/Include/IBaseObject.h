@@ -95,7 +95,7 @@ namespace IndustrialNetwork
 					this->name = name;
 				}
 
-				const boost::any GetActualValue() const
+				const boost::any& GetActualValue() const
 				{
 					return this->actualValue;
 				}
@@ -105,7 +105,7 @@ namespace IndustrialNetwork
 					this->actualValue = actualValue;
 				}
 
-				const boost::any GetDefaultValue() const
+				const boost::any& GetDefaultValue() const
 				{
 					return this->defaultValue;
 				}

@@ -129,6 +129,19 @@ namespace IndustrialNetwork
 						void ClearActualValue();
 
 					private:
+						enum class ValueType : std::uint8_t
+						{
+							ACTUAL = 0,
+							DEFAULT = 1,
+							LOWLIMIT,
+							HIGHLIMIT
+						};
+
+						template<typename T>
+						T GetTypedValue(ValueType type);
+
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetValue(const std::string& value, ValueType type);
+
 						bool forceToCDC;
 						boost::optional<boost::any> highLimit;
 						boost::optional<boost::any> lowLimit;

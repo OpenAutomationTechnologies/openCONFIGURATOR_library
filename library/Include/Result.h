@@ -99,6 +99,8 @@ namespace IndustrialNetwork
 				const std::string kMsgBaseObjectActualValue = "BaseObject '%s' with id '0x%X' on node '%d' does not have an actual value.";
 				const std::string kMsgBaseObjectValueSupport = "Object '0x%X' on node %d does not support actual values.";
 				const std::string kMsgBaseSubObjectValueSupport = "Subobject '0x%X/0x%X' on node %d does not support actual values.";
+				const std::string kMsgBaseObjectHighLimit = "BaseObject '%s' with id '0x%X' on node '%d' does not have a high limit.";
+				const std::string kMsgBaseObjectLowLimit = "BaseObject '%s' with id '0x%X' on node '%d' does not have a low limit.";
 
 				const std::string kMsgConfigurationSettingNotSupported = "Configuration setting '%s' is not supported by the library.";
 				const std::string kMsgConfigurationNonExisting = "Build configuration '%s' does not exist in network '%s'.";
