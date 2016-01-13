@@ -573,7 +573,7 @@ Result ConfigurationGenerator::WriteManufacturerSpecificProfileArea(const std::s
 {
 	for (auto& object : node->GetObjectDictionary())
 	{
-		if (object.first >= 0x2000 && object.first <= 0x5FFF)
+		if (object.first >= 0x2000 && object.first <= 0x9FFF)
 		{
 			if (object.second->WriteToConfiguration())
 			{
