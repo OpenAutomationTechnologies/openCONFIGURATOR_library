@@ -783,6 +783,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
+											% actualValue
 											% this->GetTypedHighLimit<std::int16_t>();
 											if (validateOnly == false)
 											{
@@ -800,6 +801,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
+											% actualValue
 											% this->GetTypedLowLimit<std::int16_t>();
 											if (validateOnly == false)
 											{
@@ -832,6 +834,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
+											% actualValue
 											% this->GetTypedHighLimit<std::int16_t>();
 											if (validateOnly == false)
 											{
@@ -849,6 +852,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
+											% actualValue
 											% this->GetTypedLowLimit<std::int16_t>();
 											if (validateOnly == false)
 											{
@@ -881,6 +885,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
+											% actualValue
 											% this->GetTypedHighLimit<std::int32_t>();
 											if (validateOnly == false)
 											{
@@ -898,6 +903,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
+											% actualValue
 											% this->GetTypedLowLimit<std::int32_t>();
 											if (validateOnly == false)
 											{
@@ -931,6 +937,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
+											% actualValue
 											% this->GetTypedHighLimit<std::uint16_t>();
 											if (validateOnly == false)
 											{
@@ -948,6 +955,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
+											% actualValue
 											% this->GetTypedLowLimit<std::uint16_t>();
 											if (validateOnly == false)
 											{
@@ -980,6 +988,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
+											% actualValue
 											% this->GetTypedHighLimit<std::uint16_t>();
 											if (validateOnly == false)
 											{
@@ -997,6 +1006,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
+											% actualValue
 											% this->GetTypedLowLimit<std::uint16_t>();
 											if (validateOnly == false)
 											{
@@ -1030,6 +1040,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
+											% actualValue
 											% this->GetTypedHighLimit<std::uint32_t>();
 											if (validateOnly == false)
 											{
@@ -1047,6 +1058,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
+											% actualValue
 											% this->GetTypedLowLimit<std::uint32_t>();
 											if (validateOnly == false)
 											{
@@ -1082,6 +1094,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
+											% actualValue
 											% this->GetTypedHighLimit<std::int32_t>();
 											if (validateOnly == false)
 											{
@@ -1099,6 +1112,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
+											% actualValue
 											% this->GetTypedLowLimit<std::int32_t>();
 											if (validateOnly == false)
 											{
@@ -1164,6 +1178,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
+											% actualValue
 											% this->GetTypedHighLimit<std::int64_t>();
 											if (validateOnly == false)
 											{
@@ -1181,6 +1196,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
+											% actualValue
 											% this->GetTypedHighLimit<std::int64_t>();
 											if (validateOnly == false)
 											{
@@ -1217,6 +1233,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
+											% actualValue
 											% this->GetTypedHighLimit<std::uint64_t>();
 											if (validateOnly == false)
 											{
@@ -1234,6 +1251,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
+											% actualValue
 											% this->GetTypedLowLimit<std::uint64_t>();
 											if (validateOnly == false)
 											{

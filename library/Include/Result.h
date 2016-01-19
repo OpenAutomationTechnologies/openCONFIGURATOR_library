@@ -90,17 +90,17 @@ namespace IndustrialNetwork
 				const std::string kMsgDefaultValueDatatypeError = "Default value '%s' with datatype '%d' does exceed the datatype limits.";
 				const std::string kMsgHighLimitDatatypeError = "Highlimit '%s' with datatype '%d' does exceed the datatype limits.";
 				const std::string kMsgLowLimitDatatypeError = "Lowlimit '%s' with datatype '%d' does exceed the datatype limits.";
-				const std::string kMsgBaseObjectLowLimitError = "BaseObject '%s' with id '0x%X' on node '%d' deceeds lowlimit '%d'.";
+				const std::string kMsgBaseObjectLowLimitError = "Object '%s' with id '0x%X' on node '%d' actual value '%s' deceeds lowlimit '%d'.";
 				const std::string kMsgBaseObjectHighLimitSubObjectError = "Object '%s' '0x%X/0x%X' on node '%d' with actual value '%s' exceeds the highlimit.";
 				const std::string kMsgBaseObjectLowLimitSubObjectError = "Object '%s' '0x%X/0x%X' on node '%d' with actual value '%s' deceeds the lowlimit.";
-				const std::string kMsgBaseObjectHighLimitError = "BaseObject '%s' with id '0x%X' on node '%d' exceeds highlimit '%d'.";
-				const std::string kMsgBaseObjectDataTypeError = "BaseObject '%s' with id '0x%X' on node '%d' does not have a specified datatype.";
-				const std::string kMsgBaseObjectDefaultValue = "BaseObject '%s' with id '0x%X' on node '%d' does not have a default value.";
-				const std::string kMsgBaseObjectActualValue = "BaseObject '%s' with id '0x%X' on node '%d' does not have an actual value.";
+				const std::string kMsgBaseObjectHighLimitError = "Object '%s' with id '0x%X' on node '%d' actual value '%s' exceeds highlimit '%d'.";
+				const std::string kMsgBaseObjectDataTypeError = "Object '%s' with id '0x%X' on node '%d' does not have a specified datatype.";
+				const std::string kMsgBaseObjectDefaultValue = "Object '%s' with id '0x%X' on node '%d' does not have a default value.";
+				const std::string kMsgBaseObjectActualValue = "Object '%s' with id '0x%X' on node '%d' does not have an actual value.";
 				const std::string kMsgBaseObjectValueSupport = "Object '0x%X' on node %d does not support actual values.";
 				const std::string kMsgBaseSubObjectValueSupport = "Subobject '0x%X/0x%X' on node %d does not support actual values.";
-				const std::string kMsgBaseObjectHighLimit = "BaseObject '%s' with id '0x%X' on node '%d' does not have a high limit.";
-				const std::string kMsgBaseObjectLowLimit = "BaseObject '%s' with id '0x%X' on node '%d' does not have a low limit.";
+				const std::string kMsgBaseObjectHighLimit = "Object '%s' with id '0x%X' on node '%d' does not have a high limit.";
+				const std::string kMsgBaseObjectLowLimit = "Object '%s' with id '0x%X' on node '%d' does not have a low limit.";
 
 				const std::string kMsgConfigurationSettingNotSupported = "Configuration setting '%s' is not supported by the library.";
 				const std::string kMsgConfigurationNonExisting = "Build configuration '%s' does not exist in network '%s'.";
