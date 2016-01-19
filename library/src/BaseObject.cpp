@@ -744,7 +744,10 @@ namespace IndustrialNetwork
 							% this->GetName()
 							% this->GetObjectId()
 							% (std::uint32_t) this->GetContainingNode();
-							LOG_FATAL() << formatter.str();
+							if (validateOnly == false)
+							{
+								LOG_FATAL() << formatter.str();
+							}
 							return Result(ErrorCode::OBJECT_HAS_NO_DATATYPE, formatter.str());
 						}
 
@@ -781,7 +784,10 @@ namespace IndustrialNetwork
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
 											% this->GetTypedHighLimit<std::int16_t>();
-											LOG_ERROR() << formatter.str();
+											if (validateOnly == false)
+											{
+												LOG_ERROR() << formatter.str();
+											}
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT, formatter.str());
 										}
 									}
@@ -795,7 +801,10 @@ namespace IndustrialNetwork
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
 											% this->GetTypedLowLimit<std::int16_t>();
-											LOG_ERROR() << formatter.str();
+											if (validateOnly == false)
+											{
+												LOG_ERROR() << formatter.str();
+											}
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
 										}
 									}
@@ -824,7 +833,10 @@ namespace IndustrialNetwork
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
 											% this->GetTypedHighLimit<std::int16_t>();
-											LOG_ERROR() << formatter.str();
+											if (validateOnly == false)
+											{
+												LOG_ERROR() << formatter.str();
+											}
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT, formatter.str());
 										}
 									}
@@ -838,7 +850,10 @@ namespace IndustrialNetwork
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
 											% this->GetTypedLowLimit<std::int16_t>();
-											LOG_ERROR() << formatter.str();
+											if (validateOnly == false)
+											{
+												LOG_ERROR() << formatter.str();
+											}
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
 										}
 									}
@@ -867,7 +882,10 @@ namespace IndustrialNetwork
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
 											% this->GetTypedHighLimit<std::int32_t>();
-											LOG_ERROR() << formatter.str();
+											if (validateOnly == false)
+											{
+												LOG_ERROR() << formatter.str();
+											}
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT, formatter.str());
 										}
 									}
@@ -881,7 +899,10 @@ namespace IndustrialNetwork
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
 											% this->GetTypedLowLimit<std::int32_t>();
-											LOG_ERROR() << formatter.str();
+											if (validateOnly == false)
+											{
+												LOG_ERROR() << formatter.str();
+											}
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
 										}
 									}
@@ -911,7 +932,10 @@ namespace IndustrialNetwork
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
 											% this->GetTypedHighLimit<std::uint16_t>();
-											LOG_ERROR() << formatter.str();
+											if (validateOnly == false)
+											{
+												LOG_ERROR() << formatter.str();
+											}
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT, formatter.str());
 										}
 									}
@@ -925,7 +949,10 @@ namespace IndustrialNetwork
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
 											% this->GetTypedLowLimit<std::uint16_t>();
-											LOG_ERROR() << formatter.str();
+											if (validateOnly == false)
+											{
+												LOG_ERROR() << formatter.str();
+											}
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
 										}
 									}
@@ -954,7 +981,10 @@ namespace IndustrialNetwork
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
 											% this->GetTypedHighLimit<std::uint16_t>();
-											LOG_ERROR() << formatter.str();
+											if (validateOnly == false)
+											{
+												LOG_ERROR() << formatter.str();
+											}
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT, formatter.str());
 										}
 									}
@@ -968,7 +998,10 @@ namespace IndustrialNetwork
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
 											% this->GetTypedLowLimit<std::uint16_t>();
-											LOG_ERROR() << formatter.str();
+											if (validateOnly == false)
+											{
+												LOG_ERROR() << formatter.str();
+											}
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
 										}
 									}
@@ -998,7 +1031,10 @@ namespace IndustrialNetwork
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
 											% this->GetTypedHighLimit<std::uint32_t>();
-											LOG_ERROR() << formatter.str();
+											if (validateOnly == false)
+											{
+												LOG_ERROR() << formatter.str();
+											}
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT, formatter.str());
 										}
 									}
@@ -1012,7 +1048,10 @@ namespace IndustrialNetwork
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
 											% this->GetTypedLowLimit<std::uint32_t>();
-											LOG_ERROR() << formatter.str();
+											if (validateOnly == false)
+											{
+												LOG_ERROR() << formatter.str();
+											}
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
 										}
 									}
@@ -1044,7 +1083,10 @@ namespace IndustrialNetwork
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
 											% this->GetTypedHighLimit<std::int32_t>();
-											LOG_ERROR() << formatter.str();
+											if (validateOnly == false)
+											{
+												LOG_ERROR() << formatter.str();
+											}
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT, formatter.str());
 										}
 									}
@@ -1058,7 +1100,10 @@ namespace IndustrialNetwork
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
 											% this->GetTypedLowLimit<std::int32_t>();
-											LOG_ERROR() << formatter.str();
+											if (validateOnly == false)
+											{
+												LOG_ERROR() << formatter.str();
+											}
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
 										}
 									}
@@ -1120,7 +1165,10 @@ namespace IndustrialNetwork
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
 											% this->GetTypedHighLimit<std::int64_t>();
-											LOG_ERROR() << formatter.str();
+											if (validateOnly == false)
+											{
+												LOG_ERROR() << formatter.str();
+											}
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT, formatter.str());
 										}
 									}
@@ -1134,7 +1182,10 @@ namespace IndustrialNetwork
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
 											% this->GetTypedHighLimit<std::int64_t>();
-											LOG_ERROR() << formatter.str();
+											if (validateOnly == false)
+											{
+												LOG_ERROR() << formatter.str();
+											}
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
 										}
 									}
@@ -1167,7 +1218,10 @@ namespace IndustrialNetwork
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
 											% this->GetTypedHighLimit<std::uint64_t>();
-											LOG_ERROR() << formatter.str();
+											if (validateOnly == false)
+											{
+												LOG_ERROR() << formatter.str();
+											}
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT, formatter.str());
 										}
 									}
@@ -1181,7 +1235,10 @@ namespace IndustrialNetwork
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
 											% this->GetTypedLowLimit<std::uint64_t>();
-											LOG_ERROR() << formatter.str();
+											if (validateOnly == false)
+											{
+												LOG_ERROR() << formatter.str();
+											}
 											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
 										}
 									}
@@ -1227,7 +1284,10 @@ namespace IndustrialNetwork
 						formatter
 						% actualValue
 						% (std::uint32_t) GetDataType().get();
-						LOG_FATAL() << formatter.str(); //<< e.what();
+						if (validateOnly == false)
+						{
+							LOG_FATAL() << formatter.str(); //<< e.what();
+						}
 						return Result(ErrorCode::ACTUAL_VALUE_INVALID, formatter.str());
 					}
 					catch (const std::exception&)
@@ -1236,7 +1296,10 @@ namespace IndustrialNetwork
 						formatter
 						% actualValue
 						% (std::uint32_t) GetDataType().get();
-						LOG_FATAL() << formatter.str();// << e.what();
+						if (validateOnly == false)
+						{
+							LOG_FATAL() << formatter.str();// << e.what();
+						}
 						return Result(ErrorCode::ACTUAL_VALUE_INVALID, formatter.str());
 					}
 					return Result();
