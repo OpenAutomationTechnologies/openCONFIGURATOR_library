@@ -123,7 +123,12 @@ Result OpenConfiguratorCore::SetCycleTime(const std::string& networkId, std::uin
 		if (!res.IsSuccessful())
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
-		res = nodePtr->SetObjectActualValue(0x1006, IntToHex(cycleTime, 8, "0x"));
+		std::shared_ptr<Object> obj;
+		res = nodePtr->GetObject(0x1006, obj);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		res = nodePtr->ForceObject(0x1006, obj->GetForceToCDC(), false, IntToHex(cycleTime, 8, "0x"));
 		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 	}
 	catch (const std::exception& ex)
@@ -148,7 +153,12 @@ Result OpenConfiguratorCore::SetAsyncMtu(const std::string& networkId, std::uint
 		if (!res.IsSuccessful())
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
-		res =  nodePtr->SetSubObjectActualValue(0x1F98, 0x8, IntToHex(asyncMtu, 4, "0x"));
+		std::shared_ptr<SubObject> subObj;
+		res = nodePtr->GetSubObject(0x1F98, 0x8, subObj);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		res = nodePtr->ForceSubObject(0x1f98, 0x8, subObj->GetForceToCDC(), false, IntToHex(asyncMtu, 4, "0x"));
 		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 	}
 	catch (const std::exception& ex)
@@ -173,7 +183,12 @@ Result OpenConfiguratorCore::SetMultiplexedCycleCount(const std::string& network
 		if (!res.IsSuccessful())
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
-		res = nodePtr->SetSubObjectActualValue(0x1F98, 0x7, IntToHex(multiplexedCycleCount, 2, "0x"));
+		std::shared_ptr<SubObject> subObj;
+		res = nodePtr->GetSubObject(0x1F98, 0x7, subObj);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		res = nodePtr->ForceSubObject(0x1f98, 0x7, subObj->GetForceToCDC(), false, IntToHex(multiplexedCycleCount, 2, "0x"));
 		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 	}
 	catch (const std::exception& ex)
@@ -198,7 +213,12 @@ Result OpenConfiguratorCore::SetPrescaler(const std::string& networkId, std::uin
 		if (!res.IsSuccessful())
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
-		res = nodePtr->SetSubObjectActualValue(0x1F98, 0x9, IntToHex(prescaler, 2, "0x"));
+		std::shared_ptr<SubObject> subObj;
+		res = nodePtr->GetSubObject(0x1F98, 0x9, subObj);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		res = nodePtr->ForceSubObject(0x1f98, 0x9, subObj->GetForceToCDC(), false, IntToHex(prescaler, 2, "0x"));
 		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 	}
 	catch (const std::exception& ex)
@@ -1644,7 +1664,14 @@ Result OpenConfiguratorCore::SetAsyncSlotTimeout(const std::string& networkId, c
 
 		auto ptr = std::dynamic_pointer_cast<ManagingNode>(node);
 		if (ptr)
-			res = ptr->ForceSubObject(0x1F8A, 0x2, false, false, IntToHex(asyncSlotTimeout, 8, "0x"));
+		{
+			std::shared_ptr<SubObject> subObj;
+			res = ptr->GetSubObject(0x1F8A, 0x2, subObj);
+			if (!res.IsSuccessful())
+				return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+			res = ptr->ForceSubObject(0x1F8A, 0x2, subObj->GetForceToCDC(), false, IntToHex(asyncSlotTimeout, 8, "0x"));
+		}
 		else
 		{
 			boost::format formatter(kMsgNonManagingNode);
@@ -1677,7 +1704,14 @@ Result OpenConfiguratorCore::SetAsndMaxNr(const std::string& networkId, const st
 
 		auto ptr = std::dynamic_pointer_cast<ManagingNode>(node);
 		if (ptr)
-			res = ptr->ForceSubObject(0x1F8A, 0x3, false, false, IntToHex((std::uint16_t) asndMaxNr, 2, "0x"));
+		{
+			std::shared_ptr<SubObject> subObj;
+			res = ptr->GetSubObject(0x1F8A, 0x3, subObj);
+			if (!res.IsSuccessful())
+				return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+			res = ptr->ForceSubObject(0x1F8A, 0x3, subObj->GetForceToCDC(), false, IntToHex((std::uint16_t) asndMaxNr, 2, "0x"));
+		}
 		else
 		{
 			boost::format formatter(kMsgNonManagingNode);
@@ -1698,6 +1732,16 @@ Result OpenConfiguratorCore::SetPResTimeOut(const std::string& networkId, const 
 {
 	try
 	{
+		if (presTimeout < 25000)
+		{
+			boost::format formatter(kMsgLowCnPresTimeoutDefault);
+			formatter
+			% presTimeout
+			% (std::uint32_t) nodeId
+			% (std::uint32_t) nodeId;
+			LOG_WARN() << "[" + networkId + "] " + formatter.str();
+		}
+
 		std::shared_ptr<Network> network;
 		Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 		if (!res.IsSuccessful())
@@ -1708,7 +1752,12 @@ Result OpenConfiguratorCore::SetPResTimeOut(const std::string& networkId, const 
 		if (!res.IsSuccessful())
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
-		res = mnPtr->ForceSubObject(0x1F92, (std::uint32_t) nodeId, false, false, IntToHex(presTimeout, 8, "0x"));
+		std::shared_ptr<SubObject> subObj;
+		res = mnPtr->GetSubObject(0x1F92, (std::uint32_t) nodeId, subObj);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		res = mnPtr->ForceSubObject(0x1F92, (std::uint32_t) nodeId, subObj->GetForceToCDC(), false, IntToHex(presTimeout, 8, "0x"));
 		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 	}
 	catch (const std::exception& ex)
@@ -1733,7 +1782,14 @@ Result OpenConfiguratorCore::SetRedundantManagingNodeWaitNotActive(const std::st
 
 		auto ptr = std::dynamic_pointer_cast<ManagingNode>(node);
 		if (ptr && nodeId != 240)
-			res = ptr->ForceSubObject(0x1F89, 0x1, false, false, IntToHex(waitNotActive, 8, "0x"));
+		{
+			std::shared_ptr<SubObject> subObj;
+			res = ptr->GetSubObject(0x1F89, 0x1, subObj);
+			if (!res.IsSuccessful())
+				return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+			res = ptr->ForceSubObject(0x1F89, 0x1, subObj->GetForceToCDC(), false, IntToHex(waitNotActive, 8, "0x"));
+		}
 		else
 		{
 			boost::format formatter(kMsgNonRedundantManagingNode);
@@ -1766,7 +1822,14 @@ Result OpenConfiguratorCore::SetRedundantManagingNodePriority(const std::string&
 
 		auto ptr = std::dynamic_pointer_cast<ManagingNode>(node);
 		if (ptr && nodeId != 240)
-			res = ptr->ForceSubObject(0x1F89, 0xA, false, false, IntToHex(priority, 8, "0x"));
+		{
+			std::shared_ptr<SubObject> subObj;
+			res = ptr->GetSubObject(0x1F89, 0xA, subObj);
+			if (!res.IsSuccessful())
+				return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+			res = ptr->ForceSubObject(0x1F89, 0xA, subObj->GetForceToCDC(), false, IntToHex(priority, 8, "0x"));
+		}
 		else
 		{
 			boost::format formatter(kMsgNonRedundantManagingNode);
@@ -2214,12 +2277,17 @@ Result OpenConfiguratorCore::SetLossOfSocTolerance(const std::string& networkId,
 		if (!res.IsSuccessful())
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
-		std::shared_ptr<BaseNode> node;
-		res = network->GetBaseNode(nodeId, node);
+		std::shared_ptr<BaseNode> nodePtr;
+		res = network->GetBaseNode(nodeId, nodePtr);
 		if (!res.IsSuccessful())
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
-		res = node->ForceObject(0x1C14, false, false, IntToHex(lossOfSocTolerance, 8, "0x"));
+		std::shared_ptr<Object> obj;
+		res = nodePtr->GetObject(0x1C14, obj);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		res = nodePtr->ForceObject(0x1C14, obj->GetForceToCDC(), false, IntToHex(lossOfSocTolerance, 8, "0x"));
 		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 	}
 	catch (const std::exception& ex)

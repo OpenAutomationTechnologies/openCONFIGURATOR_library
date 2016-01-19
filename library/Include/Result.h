@@ -169,7 +169,8 @@ namespace IndustrialNetwork
 				const std::string kMsgAccessTypeForPdoInvalid = "(Sub)Index 0x%X/0x%s on node %d cannot be mapped. Invalid access type '%s' (RPDOs must be writeable, TPDOs readable).";
 				const std::string kMsgPdoOffsetInvalid = "Mapping-Object 0x%X/0x%X on node %d: Mapping offset invalid. Actual: %d bits, expected %d bits.";
 				const std::string kMsgNoNodesConfigured = "Network does not contain any POWERLINK controlled nodes.";
-				const std::string kMsgLowCnPresTimeout = "PResTimeout (%dns) (subIndex 0x1F92/0x%X on MN) of node %d is less than PresMaxLatency (subIndex 0x1F98/0x03 on CN).";
+				const std::string kMsgLowCnPresTimeout = "PResTimeout (%dns) (sub-object 0x1F92/0x%X on MN) of node %d is less than PresMaxLatency (subIndex 0x1F98/0x03 on CN).";
+				const std::string kMsgLowCnPresTimeoutDefault = "PResTimeout (%dns) (sub-object 0x1F92/0x%X on MN) of node %d is less than specification default value (25000ns).";
 
 				const std::string kMsgManagingNodeTransmitPres = "Managing node transmits PRes but no controlled node is receiving any data.";
 				const std::string kMsgMappingOperationNotSupported = "Mapping operation is not supported for managing or redundant managing node.";
