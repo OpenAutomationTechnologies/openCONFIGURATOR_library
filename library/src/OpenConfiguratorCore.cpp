@@ -2268,7 +2268,7 @@ Result OpenConfiguratorCore::GetNodeAssignment(const std::string& networkId, con
 	}
 }
 
-Result OpenConfiguratorCore::SetLossOfSocTolerance(const std::string& networkId, const std::uint8_t nodeId, const std::uint32_t lossOfSocTolerance)
+Result OpenConfiguratorCore::SetLossOfSocTolerance(const std::string& networkId, const std::uint8_t, const std::uint32_t lossOfSocTolerance)
 {
 	try
 	{
@@ -2277,17 +2277,7 @@ Result OpenConfiguratorCore::SetLossOfSocTolerance(const std::string& networkId,
 		if (!res.IsSuccessful())
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
-		std::shared_ptr<BaseNode> nodePtr;
-		res = network->GetBaseNode(nodeId, nodePtr);
-		if (!res.IsSuccessful())
-			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
-
-		std::shared_ptr<Object> obj;
-		res = nodePtr->GetObject(0x1C14, obj);
-		if (!res.IsSuccessful())
-			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
-
-		res = nodePtr->ForceObject(0x1C14, obj->GetForceToCDC(), false, IntToHex(lossOfSocTolerance, 8, "0x"));
+		res = network->SetLossOfSoCTolerance(lossOfSocTolerance);
 		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 	}
 	catch (const std::exception& ex)
@@ -2296,7 +2286,7 @@ Result OpenConfiguratorCore::SetLossOfSocTolerance(const std::string& networkId,
 	}
 }
 
-Result OpenConfiguratorCore::GetLossOfSocTolerance(const std::string& networkId, const std::uint8_t nodeId, std::uint32_t& lossOfSocTolerance)
+Result OpenConfiguratorCore::GetLossOfSocTolerance(const std::string& networkId, const std::uint8_t, std::uint32_t& lossOfSocTolerance)
 {
 	try
 	{
@@ -2305,39 +2295,7 @@ Result OpenConfiguratorCore::GetLossOfSocTolerance(const std::string& networkId,
 		if (!res.IsSuccessful())
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
-		std::shared_ptr<BaseNode> nodePtr;
-		res = networkPtr->GetBaseNode(nodeId, nodePtr);
-		if (!res.IsSuccessful())
-			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
-
-		auto ptr = std::dynamic_pointer_cast<ControlledNode>(nodePtr);
-		if (ptr)
-		{
-			std::shared_ptr<Object> object;
-			res = nodePtr->GetObject(0x1C14, object);
-			if (!res.IsSuccessful())
-				return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
-
-			if (object->WriteToConfiguration())
-				lossOfSocTolerance = object->GetTypedActualValue<std::uint32_t>();
-			else
-			{
-				boost::format formatter(kMsgObjectNoActualValue);
-				formatter
-				% (std::uint32_t) 0x1C14
-				% (std::uint32_t) 240;
-				LOG_ERROR() << formatter.str();
-				return Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, "[" + networkId + "] " + formatter.str());
-			}
-		}
-		else
-		{
-			boost::format formatter(kMsgNonControlledNode);
-			formatter
-			% nodeId;
-			LOG_ERROR() << formatter.str();
-			return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE, "[" + networkId + "] " + formatter.str());
-		}
+		lossOfSocTolerance = networkPtr->GetLossOfSoCTolerance();
 		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 	}
 	catch (const std::exception& ex)

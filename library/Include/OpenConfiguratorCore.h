@@ -251,7 +251,7 @@ namespace IndustrialNetwork
 						//! Member to set LossOfSoC tolerance for a specific node.
 						/*!
 						\param networkId Specifies the identifier for the new network.
-						\param nodeId Specifies the node identifier.
+						\param nodeId Specifies the node identifier. (not used because common in the complete network)
 						\param lossOfSocTolerance LossOfSoC tolerance to set.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
@@ -299,7 +299,7 @@ namespace IndustrialNetwork
 						//! Member to retrieve LossOfSoC tolerance for a specific node.
 						/*!
 						\param networkId Specifies the identifier for the new network.
-						\param nodeId Specifies the node identifier.
+						\param nodeId Specifies the node identifier. (not used because common in the complete network)
 						\param lossOfSocTolerance LossOfSoC tolerance reference.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/

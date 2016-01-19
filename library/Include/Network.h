@@ -218,11 +218,13 @@ namespace IndustrialNetwork
 						std::uint16_t GetAsyncMTU();
 						std::uint16_t GetMultiplexedCycleCount();
 						std::uint16_t GetPrescaler();
+						std::uint32_t GetLossOfSoCTolerance();
 
 						void SetCycleTime(const std::uint32_t cycleTime);
 						void SetAsyncMTU(const std::uint16_t asyncMTU);
 						void SetMultiplexedCycleCount(const std::uint16_t multiCycleLength);
 						void SetPrescaler(const std::uint16_t prescaler);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetLossOfSoCTolerance(std::uint32_t lossOfSoCTolerance);
 
 					private:
 						std::string networkId;
@@ -230,6 +232,7 @@ namespace IndustrialNetwork
 						std::uint16_t asyncMTU;
 						std::uint16_t multiplexedCycleCount;
 						std::uint16_t prescaler;
+						std::uint32_t lossOfSoCTolerance;
 						std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>> nodeCollection;
 						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Configuration::PlkConfiguration>> buildConfigurations;
 						std::string activeConfiguration;

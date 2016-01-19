@@ -45,6 +45,7 @@ Network::Network() :
 	asyncMTU(300), //DS 301 V1.2.1
 	multiplexedCycleCount(0), //DS 301 V1.2.1
 	prescaler(2), //DS 301 V1.2.1
+	lossOfSoCTolerance(100000),
 	nodeCollection(std::map<std::uint8_t, std::shared_ptr<BaseNode>>()),
 	buildConfigurations(std::vector<std::shared_ptr<PlkConfiguration>>()),
 	activeConfiguration("")
@@ -56,6 +57,7 @@ Network::Network(const std::string& networkId) :
 	asyncMTU(300), //DS 301 V1.2.1
 	multiplexedCycleCount(0), //DS 301 V1.2.1
 	prescaler(2), //DS 301 V1.2.1
+	lossOfSoCTolerance(100000),
 	nodeCollection(std::map<uint8_t, std::shared_ptr<BaseNode>>()),
 	buildConfigurations(std::vector<std::shared_ptr<PlkConfiguration>>()),
 	activeConfiguration("")
@@ -369,6 +371,11 @@ std::uint16_t Network::GetPrescaler()
 	return this->prescaler;
 }
 
+std::uint32_t Network::GetLossOfSoCTolerance()
+{
+	return this->lossOfSoCTolerance;
+}
+
 void Network::SetCycleTime(const std::uint32_t cycleTime)
 {
 	this->cycleTime = cycleTime;
@@ -387,6 +394,26 @@ void Network::SetMultiplexedCycleCount(const std::uint16_t multiCycleCount)
 void Network::SetPrescaler(const std::uint16_t prescaler)
 {
 	this->prescaler = prescaler;
+}
+
+Result Network::SetLossOfSoCTolerance(std::uint32_t lossOfSocTolerance)
+{
+	for (auto& node : this->nodeCollection)
+	{
+		std::shared_ptr<Object> obj;
+		Result res = node.second->GetObject(0x1C14, obj, false);
+		if (!res.IsSuccessful())
+			continue;
+
+		if (obj->GetForceToCDC())
+			continue;
+
+		res = node.second->ForceObject(0x1C14, false, false, IntToHex(lossOfSocTolerance, 8, "0x"));
+		if (!res.IsSuccessful())
+			return res;
+	}
+	this->lossOfSoCTolerance = lossOfSocTolerance;
+	return Result();
 }
 
 Result Network::SetConfigurationSettingEnabled(const std::string& configID, const std::string& settingName, bool enabled)
@@ -664,7 +691,11 @@ Result Network::SetActiveConfiguration(const std::string& configID)
 
 Result Network::GenerateConfiguration()
 {
-	Result res;
+	//Distribute LossOfSoCTolerance
+	Result res = this->SetLossOfSoCTolerance(this->lossOfSoCTolerance);
+	if (!res.IsSuccessful())
+		return res;
+
 	for (auto& node : this->nodeCollection)
 	{
 		std::shared_ptr<ManagingNode> mn = std::dynamic_pointer_cast<ManagingNode>(node.second);
