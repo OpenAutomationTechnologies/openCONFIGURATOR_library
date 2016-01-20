@@ -38,17 +38,24 @@ using namespace IndustrialNetwork::POWERLINK::Core::Node;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 
-ManagingNodeMappingBuilder::ManagingNodeMappingBuilder() : BuildConfigurationSettingBuilder()
+ManagingNodeMappingBuilder::ManagingNodeMappingBuilder() : BuildConfigurationSettingBuilder(),
+	inputOffsets(std::make_shared<std::map<PlkDataType, std::uint32_t>>()),
+	outputOffsets(std::make_shared<std::map<PlkDataType, std::uint32_t>>())
 {}
 
 ManagingNodeMappingBuilder::~ManagingNodeMappingBuilder(void)
-{}
+{
+	inputOffsets->clear();
+	outputOffsets->clear();
+}
 
 Result ManagingNodeMappingBuilder::GenerateConfiguration(const std::string& value, const std::map<std::uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
 	//Get Managing Node (this must not fail)
 	const std::shared_ptr<ManagingNode>& mn = std::dynamic_pointer_cast<ManagingNode>(nodeCollection.at(240));
 	mn->ClearMappingObjects(); //clear MN mapping
+	inputOffsets->clear();
+	outputOffsets->clear();
 
 	//Generate MN RX Mapping
 	Result res = GenerateMnMapping(value, Direction::RX, nodeCollection);
@@ -64,7 +71,29 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 	//Get Managing Node (this must not fail)
 	const std::shared_ptr<ManagingNode>& mn = std::dynamic_pointer_cast<ManagingNode>(nodeCollection.at(240));
 
-	//Direction from node point of view
+	//Init offsets
+	for (auto& dynChannel : mn->GetDynamicChannels())
+	{
+		//input PI
+		if (dynChannel->GetAccessType() == DynamicChannelAccessType::readOnly)
+		{
+			inputOffsets->insert(std::make_pair(dynChannel->GetDataType(), 0));
+		}
+		//output PI
+		else if (dynChannel->GetAccessType() == DynamicChannelAccessType::writeOnly)
+		{
+			outputOffsets->insert(std::make_pair(dynChannel->GetDataType(), 0));
+		}
+		else if (dynChannel->GetAccessType() == DynamicChannelAccessType::readWriteOutput)
+		{
+			if (inputOffsets->find(dynChannel->GetDataType()) != inputOffsets->end())
+				outputOffsets->insert(std::make_pair(dynChannel->GetDataType(), 0));
+			else
+				inputOffsets->insert(std::make_pair(dynChannel->GetDataType(), 0));
+		}
+	}
+
+//Direction from node point of view
 	Direction nodeDir = Direction::TX;
 	if (dir == Direction::TX)
 		nodeDir = Direction::RX;
@@ -115,24 +144,19 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 		//Update CN Mapping
 		cn->UpdateProcessImage(nodeDir);
 
-		//Get MN PDO Channel Objects for direction
-		std::uint16_t pdoChannelObjects = 1;
+		std::uint32_t availableSubindices = 252; //from PI_SUB_INDEX_COUNT
 		Result res;
 		std::vector<std::shared_ptr<BaseProcessDataMapping>> mappingCollection;
 		if (dir == Direction::RX)
 		{
-			res = mn->GetNetworkManagement()->GetFeatureActualValue<std::uint16_t>(GeneralFeatureEnum::PDORPDOChannelObjects, pdoChannelObjects);
 			//Traverse Tx Mapping from Node to create Rx Mapping on MN
 			mappingCollection = cn->GetTransmitMapping();
 		}
 		else if (dir == Direction::TX)
 		{
-			res = mn->GetNetworkManagement()->GetFeatureActualValue<std::uint16_t>(GeneralFeatureEnum::PDOTPDOChannelObjects, pdoChannelObjects);
 			//Traverse Rx Mapping from Node to create Tx Mapping on MN
 			mappingCollection = cn->GetReceiveMapping();
 		}
-		if (!res.IsSuccessful()) //Use default value
-			pdoChannelObjects = 254;
 
 		for (auto& mapping : mappingCollection)
 		{
@@ -156,11 +180,14 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 			if (!foundObject->GetUniqueIdRef().is_initialized()
 			        && foundObject->GetDataType().is_initialized()) //Mapping object has normal data type
 			{
-				//Get Dynamic Channel from MN for datatype amd direction
+				//Get Dynamic Channel from MN for datatype and direction
 				std::shared_ptr<DynamicChannel> dynChannel;
 				res = mn->GetDynamicChannel(foundObject->GetDataType().get(), dir, dynChannel);
 				if (!res.IsSuccessful())
 					return res;
+
+				//availableSubindices = dynChannel->GetMaxNumber() / (dynChannel->GetEndIndex() - dynChannel->GetStartIndex() + 1); //usually 254
+				bitoffset = CalculateOffset(foundObject->GetDataType().get(), dir);
 
 				//Get first index of dynamic channel
 				index = dynChannel->GetStartIndex();
@@ -170,13 +197,27 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 					subindex = ((bitoffset / 8) / byteLength) + 1; //Get subindex for mapped data
 
 					// if subindex exceeds nr of TPDO channel objects use next mapping object
-					if (subindex > pdoChannelObjects)
+					if (subindex > availableSubindices)
 					{
 						subindex--; //Decrement subindex
-						std::uint32_t div = subindex / pdoChannelObjects;
+						std::uint32_t div = subindex / availableSubindices;
 						index = dynChannel->GetStartIndex() + div; //Calculate new index
-						subindex = (subindex % pdoChannelObjects) + 1; //Calczulate new subindex
+						subindex = (subindex % availableSubindices) + 1; //Calculate new subindex
 					}
+				}
+
+				//MN PI is full
+				if (index > dynChannel->GetEndIndex())
+				{
+					boost::format formatter(kMsgDynamicChannelExceeded);
+					formatter
+					% index
+					% subindex
+					% dynChannel->GetStartIndex()
+					% dynChannel->GetEndIndex()
+					% GetPlkDataTypeName(dynChannel->GetDataType())
+					% DirectionTypeValues[(std::uint8_t) dir];
+					LOG_WARN() << formatter.str();
 				}
 
 				std::uint32_t offsetToWrite = channelBitOffset;
@@ -255,6 +296,9 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 							if (!res.IsSuccessful())
 								return res;
 
+							//availableSubindices = (std::uint16_t) dynChannel->GetMaxNumber() / (dynChannel->GetEndIndex() - dynChannel->GetStartIndex() + 1); //usually 254
+							bitoffset = CalculateOffset(GetPlkDataType(cnPIObject->GetDataType()), dir);
+
 							//Get the start index from dynamic channel
 							index = dynChannel->GetStartIndex();
 							if (bitoffset != 0)
@@ -267,13 +311,27 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 
 								subindex = ((bitoffset / 8) / byteLength) + 1;
 
-								if (subindex > pdoChannelObjects) //Use next mapping object when channel objects are reached
+								if (subindex > availableSubindices) //Use next mapping object when channel objects are reached
 								{
 									subindex--;
-									std::uint32_t div = subindex / pdoChannelObjects;
+									std::uint32_t div = subindex / availableSubindices;
 									index = dynChannel->GetStartIndex() + div;
-									subindex = (subindex % pdoChannelObjects) + 1;
+									subindex = (subindex % availableSubindices) + 1;
 								}
+							}
+
+							//MN PI is full
+							if (index > dynChannel->GetEndIndex())
+							{
+								boost::format formatter(kMsgDynamicChannelExceeded);
+								formatter
+								% index
+								% subindex
+								% dynChannel->GetStartIndex()
+								% dynChannel->GetEndIndex()
+								% GetPlkDataTypeName(dynChannel->GetDataType())
+								% DirectionTypeValues[(std::uint8_t) dir];
+								LOG_WARN() << formatter.str();
 							}
 
 							//Bitstring have a size below 1 Byte need special treatment
@@ -541,4 +599,34 @@ Result ManagingNodeMappingBuilder::WriteMappingToForNode(std::uint16_t nodeId, D
 	}
 	//Update nr of entries
 	return nrOfEntriesObj->SetTypedObjectActualValue(IntToHex(nrOfEntries, 2, "0x"));
+}
+
+std::uint32_t ManagingNodeMappingBuilder::CalculateOffset(PlkDataType dataType, Direction dir)
+{
+	std::uint32_t dataTypeSize = Utilities::GetIECDataTypeBitSize(Utilities::GetIECDataType(dataType));
+	std::uint32_t returnOffset = 0;
+	std::shared_ptr<std::map<PlkDataType, std::uint32_t>> offsets;
+
+	if (dir == Direction::TX)
+		offsets = this->inputOffsets;
+	else if (dir == Direction::RX)
+		offsets = this->outputOffsets;
+
+	returnOffset = offsets->at(dataType);
+	offsets->at(dataType) = returnOffset + dataTypeSize;
+
+	for (auto it = offsets->begin(); it != offsets->end(); ++it)
+	{
+		if (it->first == dataType) //same dataType continue
+			continue;
+
+		if (it->second < offsets->at(dataType))
+		{
+			if (dataTypeSize > Utilities::GetIECDataTypeBitSize(Utilities::GetIECDataType(it->first)))
+				it->second = offsets->at(dataType);
+			else
+				it->second = it->second + Utilities::GetIECDataTypeBitSize(Utilities::GetIECDataType(it->first));
+		}
+	}
+	return returnOffset;
 }

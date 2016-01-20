@@ -63,6 +63,7 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType GetDataType();
 						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::DynamicChannelAccessType GetAccessType();
 						std::uint32_t GetStartIndex();
+						std::uint32_t GetEndIndex();
 						std::uint32_t GetMaxNumber();
 						std::uint32_t GetAddressOffset();
 						const boost::optional<std::uint32_t> GetBitAlignment();

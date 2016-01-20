@@ -176,6 +176,7 @@ namespace IndustrialNetwork
 				const std::string kMsgMappingOperationNotSupported = "Mapping operation is not supported for managing or redundant managing node.";
 
 				const std::string kMsgNrOfEntriesInvalid = "Channel 0x%X on node %d: NrOfEntries invalid. Valid mapping entries: %d, Mapping entries enabled: %d.";
+				const std::string kMsgDynamicChannelExceeded = "Object '0x%X/0x%X' exceeds object range (0x%X - 0x%X) of MN dynamic channel for datatype: '%s' and direction: '%s'.";
 
 				//Unused
 				/*

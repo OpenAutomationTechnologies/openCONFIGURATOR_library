@@ -63,6 +63,11 @@ std::uint32_t DynamicChannel::GetStartIndex()
 	return this->startIndex;
 }
 
+std::uint32_t DynamicChannel::GetEndIndex()
+{
+	return this->endIndex;
+}
+
 std::uint32_t DynamicChannel::GetMaxNumber()
 {
 	return this->maxNumber;

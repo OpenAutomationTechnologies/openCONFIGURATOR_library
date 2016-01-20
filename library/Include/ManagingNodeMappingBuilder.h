@@ -74,6 +74,10 @@ namespace IndustrialNetwork
 						bool GenerateForNode(const std::string& value, std::uint16_t nodeId);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result FindMappedObject(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node, std::uint32_t dataIndex, std::uint16_t dataSubindex, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject>& foundObject);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteMappingToForNode(std::uint16_t nodeId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, const std::string& actualMappingValue, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::ManagingNode>& mn);
+						std::uint32_t CalculateOffset(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir);
+
+						std::shared_ptr<std::map<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType, std::uint32_t>> inputOffsets;
+						std::shared_ptr<std::map<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType, std::uint32_t>> outputOffsets;
 				};
 			}
 		}
