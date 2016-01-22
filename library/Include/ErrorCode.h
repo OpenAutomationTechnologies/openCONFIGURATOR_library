@@ -155,7 +155,8 @@ namespace IndustrialNetwork
 					NODE_IS_NOT_REDUNDANT_MANAGING_NODE, //!< The node is not a redundant managing node.
 					DYNAMIC_CHANNEL_NOT_FOUND, //!< Dynamic Channel not found.
 					PARAMETER_ACCESS_INVALID, //!< Parameter access invalid.
-					OBJECT_ACCESS_DOES_NOT_SUPPORT_VALUES //!< Object access does not allow values
+					OBJECT_ACCESS_DOES_NOT_SUPPORT_VALUES, //!< Object access does not allow values
+					CYCLE_TIME_ERROR //!< Cycle time does not meet criteria of the network
 				};
 				/** @} */
 			}

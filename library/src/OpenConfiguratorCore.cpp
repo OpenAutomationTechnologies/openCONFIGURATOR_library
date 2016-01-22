@@ -116,7 +116,9 @@ Result OpenConfiguratorCore::SetCycleTime(const std::string& networkId, std::uin
 		if (!res.IsSuccessful())
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
-		networkPtr->SetCycleTime(cycleTime);
+		res = networkPtr->SetCycleTime(cycleTime);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
 		std::shared_ptr<ManagingNode> nodePtr;
 		res = networkPtr->GetManagingNode(nodePtr);
@@ -128,7 +130,20 @@ Result OpenConfiguratorCore::SetCycleTime(const std::string& networkId, std::uin
 		if (!res.IsSuccessful())
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
-		res = nodePtr->ForceObject(0x1006, obj->GetForceToCDC(), false, IntToHex(cycleTime, 8, "0x"));
+		if (obj->GetForceToCDC())
+		{
+			std::stringstream str;
+			str << cycleTime;
+			boost::format formatter(kMsgForcedValueOverwriteObject);
+			formatter
+			% str.str()
+			% obj->GetObjectId()
+			% (std::uint32_t) 240;
+			LOG_ERROR() << formatter.str();
+			return Result(ErrorCode::FORCED_VALUE_OVERWRITE, "[" + networkId + "] " +  formatter.str());
+		}
+
+		res = nodePtr->ForceObject(0x1006, false, false, IntToHex(cycleTime, 8, "0x"));
 		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 	}
 	catch (const std::exception& ex)

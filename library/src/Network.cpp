@@ -376,9 +376,14 @@ std::uint32_t Network::GetLossOfSoCTolerance()
 	return this->lossOfSoCTolerance;
 }
 
-void Network::SetCycleTime(const std::uint32_t cycleTime)
+Result Network::SetCycleTime(const std::uint32_t cycleTime)
 {
+	Result res = CheckCycleTime(cycleTime);
+	if (!res.IsSuccessful())
+		return res;
+
 	this->cycleTime = cycleTime;
+	return res;
 }
 
 void Network::SetAsyncMTU(const std::uint16_t asyncMTU)
@@ -691,8 +696,33 @@ Result Network::SetActiveConfiguration(const std::string& configID)
 
 Result Network::GenerateConfiguration()
 {
+	std::shared_ptr<ManagingNode> mn;
+	Result res = this->GetManagingNode(mn);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::shared_ptr<Object> obj;
+	res = mn->GetObject(0x1006, obj);
+	if (!res.IsSuccessful())
+		return res;
+
+	std::uint32_t currCycleTime = 0;
+	//Get MN Cycle Time
+	if (obj->HasActualValue())
+		currCycleTime = obj->GetTypedActualValue<std::uint32_t>();
+	else
+		return Result(ErrorCode::CYCLE_TIME_NOT_SET, kMsgCycleTimeOnMnNotSet);
+
+	//Check CycleTime
+	res = CheckCycleTime(currCycleTime);
+	if (!res.IsSuccessful())
+		return res;
+
+	if (this->cycleTime != currCycleTime)
+		this->cycleTime = currCycleTime;
+
 	//Distribute LossOfSoCTolerance
-	Result res = this->SetLossOfSoCTolerance(this->lossOfSoCTolerance);
+	res = this->SetLossOfSoCTolerance(this->lossOfSoCTolerance);
 	if (!res.IsSuccessful())
 		return res;
 
@@ -931,4 +961,67 @@ bool Network::HasControlledNodes()
 			return true;
 	}
 	return false;
+}
+
+IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result Network::CheckCycleTime(const std::uint32_t cycleTime)
+{
+	std::uint32_t minCycleTimeCN = 0;
+	std::uint32_t maxCycleTimeCN = 0;
+	std::uint32_t currentCycleTimeGranularity = 0;
+
+	for (auto& node : this->nodeCollection)
+	{
+		//Optional feature defaults to '1'
+		Result res = node.second->GetNetworkManagement()->GetFeatureActualValue<std::uint32_t>(GeneralFeatureEnum::NMTCycleTimeGranularity, currentCycleTimeGranularity);
+		if (res.IsSuccessful())
+		{
+			if (cycleTime % currentCycleTimeGranularity != 0)
+			{
+				boost::format formatter(kMsgCycleTimeGran);
+				formatter
+				% cycleTime
+				% currentCycleTimeGranularity
+				% node.second->GetName()
+				% (std::uint32_t) node.first;
+				LOG_ERROR() << "[" + networkId + "] " + formatter.str();
+				return Result(ErrorCode::CYCLE_TIME_ERROR, formatter.str());
+			}
+		}
+
+		//Mandatory feature has to have an actual value
+		res = node.second->GetNetworkManagement()->GetFeatureActualValue<std::uint32_t>(GeneralFeatureEnum::NMTCycleTimeMin, minCycleTimeCN);
+		if (!res.IsSuccessful())
+			return res;
+
+		if (cycleTime < minCycleTimeCN)
+		{
+			boost::format formatter(kMsgCycleTimeMin);
+			formatter
+			% cycleTime
+			% minCycleTimeCN
+			% node.second->GetName()
+			% (std::uint32_t) node.first;
+			LOG_ERROR() << "[" + networkId + "] " + formatter.str();
+			return Result(ErrorCode::CYCLE_TIME_ERROR, formatter.str());
+		}
+
+		//Mandatory feature has to have an actual value
+		res = node.second->GetNetworkManagement()->GetFeatureActualValue<std::uint32_t>(GeneralFeatureEnum::NMTCycleTimeMax, maxCycleTimeCN);
+		if (!res.IsSuccessful())
+			return res;
+
+		if (cycleTime > maxCycleTimeCN)
+		{
+			boost::format formatter(kMsgCycleTimeMax);
+			formatter
+			% cycleTime
+			% maxCycleTimeCN
+			% node.second->GetName()
+			% (std::uint32_t) node.first;
+			LOG_ERROR() << "[" + networkId + "] " + formatter.str();
+			return Result(ErrorCode::CYCLE_TIME_ERROR, formatter.str());
+		}
+
+	}
+	return Result();
 }

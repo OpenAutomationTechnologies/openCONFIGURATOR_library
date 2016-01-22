@@ -52,6 +52,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "PlkOperationMode.h"
 #include "Utilities.h"
 #include "Direction.h"
+#include "GeneralFeature.h"
 
 namespace IndustrialNetwork
 {
@@ -220,7 +221,7 @@ namespace IndustrialNetwork
 						std::uint16_t GetPrescaler();
 						std::uint32_t GetLossOfSoCTolerance();
 
-						void SetCycleTime(const std::uint32_t cycleTime);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetCycleTime(const std::uint32_t cycleTime);
 						void SetAsyncMTU(const std::uint16_t asyncMTU);
 						void SetMultiplexedCycleCount(const std::uint16_t multiCycleLength);
 						void SetPrescaler(const std::uint16_t prescaler);
@@ -236,6 +237,7 @@ namespace IndustrialNetwork
 						std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>> nodeCollection;
 						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Configuration::PlkConfiguration>> buildConfigurations;
 						std::string activeConfiguration;
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CheckCycleTime(const std::uint32_t cycleTime);
 				};
 			}
 		}

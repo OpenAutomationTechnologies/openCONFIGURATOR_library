@@ -178,6 +178,9 @@ namespace IndustrialNetwork
 				const std::string kMsgNrOfEntriesInvalid = "Channel 0x%X on node %d: NrOfEntries invalid. Valid mapping entries: %d, Mapping entries enabled: %d.";
 				const std::string kMsgDynamicChannelExceeded = "Object '0x%X/0x%X' exceeds object range (0x%X - 0x%X) of MN dynamic channel for datatype: '%s' and direction: '%s'.";
 
+				const std::string kMsgCycleTimeMin = "Cycle time '%d' is lower than the minimum cycle time '%d' of node '%s' (%d).";
+				const std::string kMsgCycleTimeMax = "Cycle time '%d' is higher than the maximum cycle time '%d' of node '%s' (%d).";
+				const std::string kMsgCycleTimeGran = "Cycle time '%d' does not fit to the cycle time granularity '%d' of node '%s' (%d).";
 				//Unused
 				/*
 				const std::string kMsgNoControlledNodesConfigured = "Configuration does not contain any POWERLINK-CNs.";

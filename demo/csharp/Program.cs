@@ -1191,6 +1191,19 @@ namespace openconfigurator_core_net_app
             Console.WriteLine(res.GetErrorMessage());
             Console.ReadLine();
 
+            core.SetFeatureValue("test", 240, GeneralFeatureEnum.NMTCycleTimeMin, "400");
+            core.SetFeatureValue("test", 240, GeneralFeatureEnum.NMTCycleTimeMax, "1000000");
+            core.SetFeatureValue("test", 241, GeneralFeatureEnum.NMTCycleTimeMin, "400");
+            core.SetFeatureValue("test", 241, GeneralFeatureEnum.NMTCycleTimeMax, "1000000");
+            core.SetFeatureValue("test", 1, GeneralFeatureEnum.NMTCycleTimeMin, "400");
+            core.SetFeatureValue("test", 1, GeneralFeatureEnum.NMTCycleTimeMax, "1000000");
+            core.SetFeatureValue("test", 5, GeneralFeatureEnum.NMTCycleTimeMin, "400");
+            core.SetFeatureValue("test", 5, GeneralFeatureEnum.NMTCycleTimeMax, "1000000");
+            core.SetFeatureValue("test", 10, GeneralFeatureEnum.NMTCycleTimeMin, "400");
+            core.SetFeatureValue("test", 10, GeneralFeatureEnum.NMTCycleTimeMax, "1000000");
+            core.SetFeatureValue("test", 20, GeneralFeatureEnum.NMTCycleTimeMin, "400");
+            core.SetFeatureValue("test", 20, GeneralFeatureEnum.NMTCycleTimeMax, "1000000");
+
             string tempString;
             ByteCollection binString = new ByteCollection();
             res = core.BuildConfiguration("test", out tempString, binString);
