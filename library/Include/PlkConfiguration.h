@@ -84,6 +84,7 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeMultiplCycleAssign(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeSDOSeqLayerTimeout(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeSDOCmdLayerTimeout(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributeIpDefaultGateway(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
 
 						//Distribute CN OD -> MN OD
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result DistributePResTimeOut(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);

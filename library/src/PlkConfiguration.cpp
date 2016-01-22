@@ -92,6 +92,11 @@ Result PlkConfiguration::GenerateConfiguration(const std::map<std::uint8_t, std:
 	if (!res.IsSuccessful())
 		return res;
 
+	//Distribute 0x1E40 / 0x5 to supporting nodes
+	res = DistributeIpDefaultGateway(nodeCollection);
+	if (!res.IsSuccessful())
+		return res;
+
 	//Distribute the CN node assignments to MN and RMNs
 	res = DistributeNodeAssignment(nodeCollection);
 	if (!res.IsSuccessful())
@@ -290,7 +295,7 @@ Result PlkConfiguration::DistributeCycleTime(const std::map<std::uint8_t, std::s
 	//Warn if cycle time has a default value on MN
 	if (cycleTimeObject->HasDefaultValue())
 	{
-		if(cycleTimeObject->GetTypedActualValue<std::uint32_t>() == cycleTimeObject->GetTypedDefaultValue<std::uint32_t>())
+		if (cycleTimeObject->GetTypedActualValue<std::uint32_t>() == cycleTimeObject->GetTypedDefaultValue<std::uint32_t>())
 		{
 			LOG_WARN() << kMsgCycleTimeDefaultValue;
 		}
@@ -835,6 +840,37 @@ Result PlkConfiguration::SyncRedundantManagingNodes(const std::map<std::uint8_t,
 	return Result();
 }
 
+Result PlkConfiguration::DistributeIpDefaultGateway(const std::map<std::uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
+{
+	//Get managing node
+	auto& mn = nodeCollection.at(240);
+	std::shared_ptr<SubObject> defaultGatewayObj;
 
+	//Get IpAddrTableObj object
+	Result res = mn->GetSubObject(0x1E40, 0x5, defaultGatewayObj);
+	if (!res.IsSuccessful())
+		return Result();
 
+	for (auto& node : nodeCollection)
+	{
+		if (node.first == 240)
+			continue;
 
+		if (node.second->IsEnabled() == false)
+			continue;
+
+		if (defaultGatewayObj->WriteToConfiguration())
+		{
+			std::shared_ptr<SubObject> cnDefaultGatewayObj;
+			res = node.second->GetSubObject(0x1E40, 0x5, cnDefaultGatewayObj, false);
+			if (res.GetErrorType() == ErrorCode::OBJECT_DOES_NOT_EXIST)
+				return Result();
+
+			//Set every node 0x1E40 / 0x5 actual value to DefaultGateway
+			res = node.second->SetSubObjectActualValue(0x1E40, 0x5, "0x" + defaultGatewayObj->GetTypedActualValue<std::string>());
+			if (!res.IsSuccessful())
+				return Result();
+		}
+	}
+	return Result();
+}
