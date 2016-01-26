@@ -349,6 +349,17 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 				}
 			}
 
+			if (expectedOffset + objToMap->GetBitSize() > (1490 * 8))
+			{
+				boost::format formatter(kMsgIsochronousMaxPayloadExceeded);
+				formatter
+				% (std::uint32_t) this->GetNodeId()
+				% DirectionTypeValues[(std::uint8_t) dir]
+				% ((expectedOffset + objToMap->GetBitSize()) / 8);
+				LOG_FATAL() << formatter.str();
+				return Result(ErrorCode::CHANNEL_PAYLOAD_LIMIT_EXCEEDED, formatter.str());
+			}
+
 			if (offset < expectedOffset)
 				offset = expectedOffset;
 
@@ -1134,7 +1145,6 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 				nodeID->SetTypedObjectActualValue("240");
 			}
 
-
 			std::uint16_t countNrOfEntries = 0;
 			for (auto& mapping : mappingObject->GetSubObjectDictionary())
 			{
@@ -1186,6 +1196,17 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 						countNrOfEntries++;
 						expectedOffset += mappingPtr->GetMappingLength();
 					}
+				}
+
+				if (expectedOffset > (1490 * 8))
+				{
+					boost::format formatter(kMsgIsochronousMaxPayloadExceeded);
+					formatter
+					% (std::uint32_t) this->GetNodeId()
+					% DirectionTypeValues[(std::uint8_t) dir]
+					% (expectedOffset / 8);
+					LOG_FATAL() << formatter.str();
+					return Result(ErrorCode::CHANNEL_PAYLOAD_LIMIT_EXCEEDED, formatter.str());
 				}
 			}
 			//correct NrOfEntries if there are too much mappings validated

@@ -181,6 +181,8 @@ namespace IndustrialNetwork
 				const std::string kMsgCycleTimeMin = "Cycle time '%d' is lower than the minimum cycle time '%d' of node '%s' (%d).";
 				const std::string kMsgCycleTimeMax = "Cycle time '%d' is higher than the maximum cycle time '%d' of node '%s' (%d).";
 				const std::string kMsgCycleTimeGran = "Cycle time '%d' does not fit to the cycle time granularity '%d' of node '%s' (%d).";
+				const std::string kMsgIsochronousMaxPayloadExceeded = "Node %d: No. of %s-bytes mapped (%d) exceeds limit (1490, C_DLL_ISOCHR_MAX_PAYL).";
+
 				//Unused
 				/*
 				const std::string kMsgNoControlledNodesConfigured = "Configuration does not contain any POWERLINK-CNs.";
@@ -196,7 +198,7 @@ namespace IndustrialNetwork
 				const std::string kMsgValueNotWithinRange = "Value %d of object '%s' on node %d out of range (%d - %d).";
 				const std::string kMsgChannelPayloadLimitExceeded = "Node %d, channel 0x%X: No. of bytes mapped (%d) exceeds limit (1490, C_DLL_ISOCHR_MAX_PAYL)";
 				const std::string kMsgChannelObjectLimitExceeded = "Node %d, channel 0x%X: No. of channel objects (%d) exceeds limit (254).";
-				const std::string kMsgIsochronousMaxPayloadExceeded = "Node %d: No. of %s-bytes mapped (%d) exceeds limit (1490, C_DLL_ISOCHR_MAX_PAYL).";
+				
 				const std::string kMsgPdoDatatypeInvalid = "Node %d, (Sub)Index 0x%X/0x%s: Mapping of datatype '%s' not supported. Supported data types: Integer8(16/32/64), Unsigned8(16/32/64).";
 				const std::string kMsgMaxPiSizeExceeded = "Max. process image size exceeded: Actual: %d bytes, expected: max. %d bytes.";
 				const std::string kMsgObjectLimitsInvalid = "Invalid object limits (high limit '%d' < low limit '%d')";
