@@ -1543,6 +1543,8 @@ Result ControlledNode::MoveMappingObject(const Direction dir, std::uint16_t chan
 
 				channelObj.second->SetTypedObjectActualValue(mappingValue.ToString(true));
 			}
+			else
+				channelObj.second->ClearActualValue();
 		}
 	}
 	return this->UpdateProcessImage(dir);

@@ -2603,7 +2603,7 @@ Result OpenConfiguratorCore::ClearMappingObject(const std::string& networkId, co
 		if (!res.IsSuccessful())
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 		if (mappingParam->HasActualValue())
-			mappingParam->SetTypedObjectActualValue("0x0");
+			mappingParam->ClearActualValue();
 
 		std::shared_ptr<Object> mappingChannel;
 		res = nodePtr->GetObject(channelObjectId, mappingChannel);
@@ -2615,7 +2615,7 @@ Result OpenConfiguratorCore::ClearMappingObject(const std::string& networkId, co
 			if (channelObj.first == position)
 			{
 				if (channelObj.second->HasActualValue())
-					channelObj.second->SetTypedObjectActualValue("0x0");
+					channelObj.second->ClearActualValue();
 				break;
 			}
 		}
@@ -2667,7 +2667,7 @@ Result OpenConfiguratorCore::ClearMappingChannel(const std::string& networkId, c
 		if (!res.IsSuccessful())
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 		if (mappingParam->HasActualValue())
-			mappingParam->SetTypedObjectActualValue("0x0");
+			mappingParam->ClearActualValue();
 
 		std::shared_ptr<Object> mappingChannel;
 		res = nodePtr->GetObject(channelObjectId, mappingChannel);
@@ -2677,7 +2677,7 @@ Result OpenConfiguratorCore::ClearMappingChannel(const std::string& networkId, c
 		for (auto& channelObj : mappingChannel->GetSubObjectDictionary())
 		{
 			if (channelObj.second->HasActualValue())
-				channelObj.second->SetTypedObjectActualValue("0x0");
+				channelObj.second->ClearActualValue();
 		}
 
 		auto cn = std::dynamic_pointer_cast<ControlledNode>(nodePtr);
