@@ -687,7 +687,7 @@ namespace IndustrialNetwork
 									boost::format formatter(kMsgDefaultValueDatatypeError);
 									formatter
 									% valueStr
-									% (std::uint32_t) GetDataType().get();
+									% GetPlkDataTypeName(GetDataType().get());
 									LOG_FATAL() << formatter.str() << e.what();
 									return Result(ErrorCode::DEFAULT_VALUE_INVALID, formatter.str());
 								}
@@ -696,7 +696,7 @@ namespace IndustrialNetwork
 									boost::format formatter(kMsgLowLimitDatatypeError);
 									formatter
 									% valueStr
-									% (std::uint32_t) GetDataType().get();
+									% GetPlkDataTypeName(GetDataType().get());
 									LOG_FATAL() << formatter.str() << e.what();
 									return Result(ErrorCode::LOW_LIMIT_INVALID, formatter.str());
 								}
@@ -705,7 +705,7 @@ namespace IndustrialNetwork
 									boost::format formatter(kMsgHighLimitDatatypeError);
 									formatter
 									% valueStr
-									% (std::uint32_t) this->GetDataType().get();
+									% GetPlkDataTypeName(this->GetDataType().get());
 									LOG_FATAL() << formatter.str() << e.what();
 									return Result(ErrorCode::HIGH_LIMIT_INVALID, formatter.str());
 								}
@@ -1296,24 +1296,12 @@ namespace IndustrialNetwork
 								break;
 						}
 					}
-					catch (const std::range_error&)
-					{
-						boost::format formatter(kMsgActualValueFormatError);
-						formatter
-						% actualValue
-						% (std::uint32_t) GetDataType().get();
-						if (validateOnly == false)
-						{
-							LOG_FATAL() << formatter.str(); //<< e.what();
-						}
-						return Result(ErrorCode::ACTUAL_VALUE_INVALID, formatter.str());
-					}
 					catch (const std::exception&)
 					{
 						boost::format formatter(kMsgActualValueDatatypeError);
 						formatter
 						% actualValue
-						% (std::uint32_t) GetDataType().get();
+						% GetPlkDataTypeName(GetDataType().get());
 						if (validateOnly == false)
 						{
 							LOG_FATAL() << formatter.str();// << e.what();
