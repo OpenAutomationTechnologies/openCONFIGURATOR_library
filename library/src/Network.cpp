@@ -236,7 +236,7 @@ Result Network::RemoveNode(const std::uint8_t nodeID)
 		else
 		{
 			//Reset 0x1F8D / nodeID from all CNs
-			node.second->ForceSubObject(0x1F8D, nodeID, false, false, "");
+			node.second->ForceSubObject(0x1F8D, nodeID, false, false, "", false);
 			//Reset 0x1F8B / nodeID
 			node.second->ForceSubObject(0x1F8B, nodeID, false, false, "", false);
 			//Reset 0x1F9B / nodeID from all CNs
@@ -737,8 +737,12 @@ Result Network::GenerateConfiguration()
 		}
 		else if (cn.get())
 		{
-			cn->UpdateProcessImage(Direction::RX);
-			cn->UpdateProcessImage(Direction::TX);
+			res = cn->UpdateProcessImage(Direction::RX);
+			if(!res.IsSuccessful())
+				return res;
+			res = cn->UpdateProcessImage(Direction::TX);
+			if(!res.IsSuccessful())
+				return res;
 		}
 	}
 
@@ -937,7 +941,7 @@ Result Network::EnableNode(const std::uint8_t nodeID, bool enable)
 			else
 			{
 				//Reset 0x1F8D / nodeID from all CNs
-				node.second->ForceSubObject(0x1F8D, nodeID, false, false, "");
+				node.second->ForceSubObject(0x1F8D, nodeID, false, false, "", false);
 				//Reset 0x1F8B / nodeID
 				node.second->ForceSubObject(0x1F8B, nodeID, false, false,  "", false);
 				//Reset 0x1F9B / nodeID from all CNs

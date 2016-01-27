@@ -617,10 +617,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::UpdatePr
 					std::uint16_t mappingFromNodeCount = 0;
 					std::uint16_t mappingCount = 0;
 					const std::shared_ptr<ControlledNode>& cn = std::dynamic_pointer_cast<ControlledNode>(node.second);
-					if (cn == NULL)
-						continue;
-
-					if (cn->GetOperationMode() != PlkOperationMode::CHAINED)
+					if (cn == NULL) //Node is not a CN
 						continue;
 
 					for (auto& receiveMapping : cn->GetReceiveMapping())
@@ -699,9 +696,6 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::UpdatePr
 				{
 					if (mapping.first == 0)
 						continue;
-
-					if (nrOfEntries == 0)
-						break;
 
 					if (mapping.second->HasActualValue())
 					{

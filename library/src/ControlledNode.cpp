@@ -39,7 +39,8 @@ using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 
 ControlledNode::ControlledNode(std::uint8_t nodeID, const std::string& nodeName) : BaseNode(nodeID, nodeName),
 	operationMode(PlkOperationMode::NORMAL),
-	nodeDataPresMnOffset(0)
+	nodeDataPresMnOffset(0),
+	nodeDataPresMnCurrentOffset(0)
 {
 	//this->AddNodeAssignement(NodeAssignment::MNT_NODEASSIGN_VALID);
 	//this->AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_NODE_EXISTS);
@@ -310,10 +311,10 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 	std::uint32_t expectedOffset = 0; //calculated mapping offset with object + datasize
 
 	if (dir == Direction::RX
-	        && this->GetOperationMode() == PlkOperationMode::CHAINED)
+	        && (fromNode == 240 || this->GetOperationMode() == PlkOperationMode::CHAINED))
 	{
-		offset = this->nodeDataPresMnOffset; // start with Offset from the MN
-		expectedOffset = this->nodeDataPresMnOffset;
+		offset = this->nodeDataPresMnCurrentOffset; // start with Offset from the MN
+		expectedOffset = this->nodeDataPresMnCurrentOffset;
 	}
 
 	if (mappingObj->GetSubObjectDictionary().size() < position)
@@ -349,19 +350,19 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 				}
 			}
 
-			if (expectedOffset + objToMap->GetBitSize() > (1490 * 8))
+			if (offset < expectedOffset)
+				offset = expectedOffset;
+
+			if (offset + objToMap->GetBitSize() > (1490 * 8))
 			{
 				boost::format formatter(kMsgIsochronousMaxPayloadExceeded);
 				formatter
 				% (std::uint32_t) this->GetNodeId()
 				% DirectionTypeValues[(std::uint8_t) dir]
-				% ((expectedOffset + objToMap->GetBitSize()) / 8);
+				% ((offset + objToMap->GetBitSize()) / 8);
 				LOG_FATAL() << formatter.str();
 				return Result(ErrorCode::CHANNEL_PAYLOAD_LIMIT_EXCEEDED, formatter.str());
 			}
-
-			if (offset < expectedOffset)
-				offset = expectedOffset;
 
 			//Build mapping string
 			std::stringstream mappingObjStr;
@@ -871,8 +872,9 @@ Result ControlledNode::GetDataObjectFromMapping(const std::shared_ptr<BaseProces
 
 Result ControlledNode::UpdateProcessImage(Direction dir)
 {
-	this->UpdateProcessDataMapping(dir);
-
+	Result res = this->UpdateProcessDataMapping(dir);
+	if (!res.IsSuccessful())
+		return res;
 	if (dir == Direction::RX)
 		this->GetReceiveProcessImage().clear();
 	else if (dir == Direction::TX)
@@ -1078,6 +1080,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 		this->GetReceiveMapping().clear();
 		mappingParameterIndex = 0x1400;
 		mappingObjectIndex = 0x1600;
+		this->nodeDataPresMnCurrentOffset = this->nodeDataPresMnOffset;
 	}
 
 	else if (dir == Direction::TX)
@@ -1092,7 +1095,6 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 		std::uint16_t mappedFromNode = 0;
 		std::uint16_t nrOfEntries = 0;
 		std::uint32_t expectedOffset = 0;
-
 		if (obj.first >= mappingParameterIndex && obj.first < (mappingParameterIndex + 0x100))
 		{
 			//Get mapping parameter object
@@ -1104,13 +1106,12 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 			if (nodeID->WriteToConfiguration())
 				mappedFromNode = nodeID->GetTypedActualValue<std::uint16_t>();
 
-			if (this->GetOperationMode() == PlkOperationMode::CHAINED
-			        && dir == Direction::RX
-			        && (mappedFromNode == 0
-			            || mappedFromNode == 240)) //Node mode has changed to chaining or is already chained
+			if ((this->GetOperationMode() == PlkOperationMode::CHAINED
+			        || mappedFromNode == 240)
+			        && dir == Direction::RX) //Node mode has changed to chaining or is already chained
 			{
-				mappedFromNode = 240;
-				expectedOffset = this->nodeDataPresMnOffset;
+				mappedFromNode = 240; //Might be '0' if not correct configured.
+				expectedOffset = this->nodeDataPresMnCurrentOffset;
 			}
 
 			//Get according mapping object
@@ -1161,6 +1162,17 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 						std::shared_ptr<BaseProcessDataMapping> mappingPtr = std::shared_ptr<BaseProcessDataMapping>(new BaseProcessDataMapping(mappingObject->GetObjectId(),
 						        mapping.second->GetObjectId(), mapping.second, mapping.second->GetTypedActualValue<std::string>(), mappedFromNode, false));
 
+						if (expectedOffset + mappingPtr->GetMappingLength() > (1490 * 8))
+						{
+							boost::format formatter(kMsgIsochronousMaxPayloadExceeded);
+							formatter
+							% (std::uint32_t) this->GetNodeId()
+							% DirectionTypeValues[(std::uint8_t) dir]
+							% ((expectedOffset + mappingPtr->GetMappingLength()) / 8);
+							LOG_FATAL() << formatter.str();
+							return Result(ErrorCode::CHANNEL_PAYLOAD_LIMIT_EXCEEDED, formatter.str());
+						}
+
 						mappingPtr->SetMappingOffset(expectedOffset);
 						mapping.second->SetTypedObjectActualValue(IntToHex<std::uint64_t>(mappingPtr->GetValue(), 16, "0x"));
 						res = CheckProcessDataMapping(mappingPtr, expectedOffset, dir);
@@ -1184,6 +1196,17 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 						std::shared_ptr<BaseProcessDataMapping> mappingPtr = std::shared_ptr<BaseProcessDataMapping>(new BaseProcessDataMapping(mappingObject->GetObjectId(),
 						        mapping.second->GetObjectId(), mapping.second, mapping.second->GetTypedDefaultValue<std::string>(), mappedFromNode, true));
 
+						if (expectedOffset + mappingPtr->GetMappingLength() > (1490 * 8))
+						{
+							boost::format formatter(kMsgIsochronousMaxPayloadExceeded);
+							formatter
+							% (std::uint32_t) this->GetNodeId()
+							% DirectionTypeValues[(std::uint8_t) dir]
+							% ((expectedOffset + mappingPtr->GetMappingLength()) / 8);
+							LOG_FATAL() << formatter.str();
+							return Result(ErrorCode::CHANNEL_PAYLOAD_LIMIT_EXCEEDED, formatter.str());
+
+						}
 						res = CheckProcessDataMapping(mappingPtr, expectedOffset, dir);
 						if (!res.IsSuccessful())
 							return res;
@@ -1197,18 +1220,12 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 						expectedOffset += mappingPtr->GetMappingLength();
 					}
 				}
-
-				if (expectedOffset > (1490 * 8))
-				{
-					boost::format formatter(kMsgIsochronousMaxPayloadExceeded);
-					formatter
-					% (std::uint32_t) this->GetNodeId()
-					% DirectionTypeValues[(std::uint8_t) dir]
-					% (expectedOffset / 8);
-					LOG_FATAL() << formatter.str();
-					return Result(ErrorCode::CHANNEL_PAYLOAD_LIMIT_EXCEEDED, formatter.str());
-				}
 			}
+
+			//Store the current PResMN offset if there is a second channel receiving data from PResMN
+			if (mappedFromNode == 240)
+				this->nodeDataPresMnCurrentOffset = expectedOffset;
+
 			//correct NrOfEntries if there are too much mappings validated
 			if (nrOfEntries  > countNrOfEntries)
 			{
@@ -1449,6 +1466,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 void ControlledNode::SetNodeDataPresMnOffset(std::uint32_t offset)
 {
 	this->nodeDataPresMnOffset = offset;
+	this->nodeDataPresMnCurrentOffset = offset;
 }
 
 std::uint32_t ControlledNode::GetNodeDataPresMnOffset()
