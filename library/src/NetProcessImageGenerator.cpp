@@ -52,52 +52,69 @@ NetProcessImageGenerator& NetProcessImageGenerator::GetInstance()
 
 const std::string NetProcessImageGenerator::Generate(std::uint8_t nodeid, std::shared_ptr<Network> network)
 {
-	//clear PI stream
-	this->processImageStream.str(std::string());
-
+	std::stringstream fullProcessImage;
+	std::uint32_t size = 0;
 	std::shared_ptr<BaseNode> node;
 	network->GetBaseNode(nodeid, node);
 
-	WriteNETHeader(node);
+	fullProcessImage << WriteNETHeader(network->GetNetworkId(), node);
 
-	this->WriteNETProcessImage(Direction::RX, node);
-	this->WriteNETProcessImage(Direction::TX, node);
+	size = this->WriteNETProcessImage(Direction::RX, node);
+	if (size != 0)
+	{
+		fullProcessImage << WriteNETOutputSizeHeader(size);
+		fullProcessImage << this->processImageStream.str();
+	}
 
-	this->processImageStream << "}" << std::endl;
-
-	return this->processImageStream.str();
+	size = this->WriteNETProcessImage(Direction::TX, node);
+	if (size != 0)
+	{
+		fullProcessImage << WriteNETInputSizeHeader(size);
+		fullProcessImage << this->processImageStream.str();
+	}
+	fullProcessImage << "}" << std::endl;
+	return fullProcessImage.str();
 }
 
-void NetProcessImageGenerator::WriteNETProcessImage(const Direction dir, const std::shared_ptr<BaseNode>& node)
+std::uint32_t NetProcessImageGenerator::WriteNETProcessImage(const Direction dir, const std::shared_ptr<BaseNode>& node)
 {
+	this->processImageStream.str(std::string());
 	std::vector<std::shared_ptr<BaseProcessImageObject>> processImage;
+	std::uint32_t piTotalSize = 0;
 	std::uint32_t piSize = 0;
-	std::uint32_t piOffset = 0;
 	std::uint16_t paddingCount = 1;
 	std::uint32_t bitCount = 0;
 	std::string startName;
 
 	if (dir == Direction::RX)
 	{
-		piSize = node->GetReceiveProcessImageSize();
+		piTotalSize = node->GetReceiveProcessImageSize();
 		processImage = node->GetReceiveProcessImage();
 
 	}
 	else if (dir == Direction::TX)
 	{
-		piSize = node->GetTransmitProcessImageSize();
+		piTotalSize = node->GetTransmitProcessImageSize();
 		processImage = node->GetTransmitProcessImage();
 	}
 
-	if (piSize != 0)
+	if (piTotalSize != 0)
 	{
-		if (dir == Direction::RX)
-			WriteNETOutputSizeHeader(node);
-		else if (dir == Direction::TX)
-			WriteNETInputSizeHeader(node);
-
 		for (auto& piEntry : processImage)
 		{
+			if (piEntry->GetSize() % 8 == 0 || piEntry->GetSize() % 16 == 0 || piEntry->GetSize() % 32 == 0)
+			{
+				while (piSize % piEntry->GetSize() != 0)
+				{
+					std::stringstream convert;
+					convert << "PADDING_VAR_" << paddingCount;
+					this->processImageStream << "\t\t[FieldOffset(" << piSize / 8 << ")]" << std::endl;
+					this->processImageStream << PrintChannel(convert.str(), IEC_Datatype::USINT, 8, piSize / 8, boost::optional<std::uint32_t>());
+					paddingCount++;
+					piSize += 8;
+				}
+			}
+
 			if (piEntry->GetDataType() == IEC_Datatype::BITSTRING)
 			{
 				if (bitCount == 0)
@@ -107,38 +124,35 @@ void NetProcessImageGenerator::WriteNETProcessImage(const Direction dir, const s
 				if (bitCount == 8)
 				{
 					startName = startName + "_to_" + piEntry->GetName();
-					this->processImageStream << "\t\t[FieldOffset(" << piEntry->GetPiOffset() << ")]" << std::endl;
-					this->processImageStream << PrintChannel(startName, piEntry->GetDataType(), piEntry->GetSize(), piEntry->GetPiOffset(), piEntry->GetBitOffset());
+					this->processImageStream << "\t\t[FieldOffset(" << piSize / 8 << ")]" << std::endl;
+					this->processImageStream << PrintChannel(startName, piEntry->GetDataType(), piEntry->GetSize(), piSize / 8, piEntry->GetBitOffset());
 					bitCount = 0;
 					startName = "";
-					piOffset++;
+					piSize += 8;
 				}
 				continue;
 			}
 			else
 			{
-				this->processImageStream << "\t\t[FieldOffset(" << piEntry->GetPiOffset() << ")]" << std::endl;
-				this->processImageStream << PrintChannel(piEntry->GetName(), piEntry->GetDataType(), piEntry->GetSize(), piEntry->GetPiOffset(), piEntry->GetBitOffset());
-				piOffset = piEntry->GetPiOffset() + piEntry->GetSize() / 8;
+				this->processImageStream << "\t\t[FieldOffset(" << piSize / 8 << ")]" << std::endl;
+				this->processImageStream << PrintChannel(piEntry->GetName(), piEntry->GetDataType(), piEntry->GetSize(), piSize / 8, piEntry->GetBitOffset());
+				piSize += piEntry->GetSize();
 			}
 		}
-		if (piSize % 32 != 0)
-		{
-			std::uint32_t totalSize = piSize;
-			while (totalSize % 32 != 0)
-			{
-				std::stringstream convert;
-				convert << "PADDING_VAR_" << paddingCount;
-				this->processImageStream << "\t\t[FieldOffset(" << piOffset << ")]" << std::endl;
-				this->processImageStream << PrintChannel(convert.str(), IEC_Datatype::USINT, 8, piOffset, boost::optional<std::uint32_t>());
-				totalSize += 8;
-				paddingCount++;
-				piOffset++;
 
-			}
+		while (piSize % 32 != 0)
+		{
+			std::stringstream convert;
+			convert << "PADDING_VAR_" << paddingCount;
+			this->processImageStream << "\t\t[FieldOffset(" << piSize / 8 << ")]" << std::endl;
+			this->processImageStream << PrintChannel(convert.str(), IEC_Datatype::USINT, 8, piSize / 8, boost::optional<std::uint32_t>());
+			paddingCount++;
+			piSize += 8;
 		}
+
 		this->processImageStream << "\t}" << std::endl << std::endl;
 	}
+	return piSize;
 }
 
 const std::string NetProcessImageGenerator::PrintChannel(const std::string& name, const IEC_Datatype dt, const std::uint32_t, const std::uint32_t, const boost::optional<std::uint32_t>&)
@@ -148,55 +162,50 @@ const std::string NetProcessImageGenerator::PrintChannel(const std::string& name
 	return channel.str();
 }
 
-void NetProcessImageGenerator::WriteNETHeader(const std::shared_ptr<BaseNode>& node)
+const std::string NetProcessImageGenerator::WriteNETHeader(const std::string& projName, const std::shared_ptr<BaseNode>& node)
 {
 	std::ostringstream dateTime;
+	std::stringstream header;
 	const boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
 	//No deletion needed : http://stackoverflow.com/questions/17779660/who-is-responsible-for-deleting-the-facet
 	boost::posix_time::time_facet* const f = new boost::posix_time::time_facet("%d-%b-%Y %H:%M:%S");
 	dateTime.imbue(std::locale(dateTime.getloc(), f));
 	dateTime << now;
 
-	this->processImageStream << "using System;" << std::endl;
-	this->processImageStream << "using System.Runtime.InteropServices;" << std::endl;
-	this->processImageStream << "/// <summary>" << std::endl;
-	this->processImageStream << "/// This file was autogenerated by openCONFIGURATOR-";
-	this->processImageStream << kVersionMajor << "." << kVersionMinor << "." << kVersionFix << "_" << kReleaseType << " on " << dateTime.str() << std::endl;
-	this->processImageStream << "/// Application process for " << node->GetName() << "(";
-	this->processImageStream << std::dec << (uint32_t) node->GetNodeId();
-	this->processImageStream << ")" << std::endl;
-	this->processImageStream << "/// </summary>" << std::endl << std::endl;
-	this->processImageStream << "namespace openPOWERLINK" << std::endl << "{" << std::endl << std::endl;
+	header << "using System;" << std::endl;
+	header << "using System.Runtime.InteropServices;" << std::endl << std::endl;
+	header << "/// <summary>" << std::endl;
+	header << "/// This file was autogenerated by openCONFIGURATOR-";
+	header << kVersionMajor << "." << kVersionMinor << "." << kVersionFix << "_" << kReleaseType << " on " << dateTime.str() << std::endl;
+	header << "/// Project: " << projName << std::endl;
+	header << "/// Application process for " << node->GetName() << "(";
+	header << std::dec << (uint32_t) node->GetNodeId();
+	header << ")" << std::endl;
+	header << "/// </summary>" << std::endl << std::endl;
+	header << "namespace openPOWERLINK" << std::endl << "{" << std::endl << std::endl;
+	return header.str();
 }
 
-void NetProcessImageGenerator::WriteNETOutputSizeHeader(const std::shared_ptr<BaseNode>& node)
+const std::string NetProcessImageGenerator::WriteNETOutputSizeHeader(std::uint32_t totalSize)
 {
-	// Pad the size to 4 byte alignment
-	std::uint32_t totalSize = node->GetReceiveProcessImageSize();
-	if ((totalSize % 32) != 0)
-		totalSize += (32 - (totalSize % 32));
-
-	this->processImageStream << "\t/// <summary>" << std::endl;
-	this->processImageStream << "\t/// Struct : ProcessImage Out" << std::endl;
-	this->processImageStream << "\t/// </summary>" << std::endl;
-	this->processImageStream << "\t[StructLayout(LayoutKind.Explicit, Pack = 1, Size = " << totalSize / 8 << ")]" << std::endl;
-	this->processImageStream << "\tpublic struct AppProcessImageOut" << std::endl;
-	this->processImageStream << "\t{" << std::endl;
+	std::stringstream sizeHeader;
+	sizeHeader << "\t/// <summary>" << std::endl;
+	sizeHeader << "\t/// Struct : ProcessImage Out" << std::endl;
+	sizeHeader << "\t/// </summary>" << std::endl;
+	sizeHeader << "\t[StructLayout(LayoutKind.Explicit, Pack = 1, Size = " << totalSize / 8 << ")]" << std::endl;
+	sizeHeader << "\tpublic struct AppProcessImageOut" << std::endl;
+	sizeHeader << "\t{" << std::endl;
+	return sizeHeader.str();
 }
 
-void NetProcessImageGenerator::WriteNETInputSizeHeader(const std::shared_ptr<BaseNode>& node)
+const std::string NetProcessImageGenerator::WriteNETInputSizeHeader(std::uint32_t totalSize)
 {
-	// Pad the size to 4 byte alignment
-	std::uint32_t totalSize = node->GetTransmitProcessImageSize();
-	if ((totalSize % 32) != 0)
-		totalSize += (32 - (totalSize % 32));
-
-	this->processImageStream << "\t/// <summary>" << std::endl;
-	this->processImageStream << "\t/// Struct : ProcessImage In" << std::endl;
-	this->processImageStream << "\t/// </summary>" << std::endl;
-	this->processImageStream << "\t[StructLayout(LayoutKind.Explicit, Pack = 1, Size = " << totalSize / 8 << ")]" << std::endl;
-	this->processImageStream << "\tpublic struct AppProcessImageIn" << std::endl;
-	this->processImageStream << "\t{" << std::endl;
+	std::stringstream sizeHeader;
+	sizeHeader << "\t/// <summary>" << std::endl;
+	sizeHeader << "\t/// Struct : ProcessImage In" << std::endl;
+	sizeHeader << "\t/// </summary>" << std::endl;
+	sizeHeader << "\t[StructLayout(LayoutKind.Explicit, Pack = 1, Size = " << totalSize / 8 << ")]" << std::endl;
+	sizeHeader << "\tpublic struct AppProcessImageIn" << std::endl;
+	sizeHeader << "\t{" << std::endl;
+	return sizeHeader.str();
 }
-
-

@@ -69,10 +69,10 @@ namespace IndustrialNetwork
 						std::stringstream processImageStream;
 
 						const std::string PrintChannel(const std::string& name, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype datatype, const std::uint32_t size, const std::uint32_t piOffset, const boost::optional<std::uint32_t>& bitOffset);
-						void WriteNETHeader(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node);
-						void WriteNETOutputSizeHeader(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node);
-						void WriteNETInputSizeHeader(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node);
-						void WriteNETProcessImage(const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node);
+						const std::string WriteNETHeader(const std::string& projName, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node);
+						const std::string WriteNETOutputSizeHeader(std::uint32_t totalSize);
+						const std::string WriteNETInputSizeHeader(std::uint32_t totalSize);
+						std::uint32_t WriteNETProcessImage(const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node);
 				};
 			}
 		}
