@@ -133,8 +133,8 @@ Result Network::AddNode(std::shared_ptr<ManagingNode>& node)
 			std::shared_ptr<ManagingNode> rmnPtr = std::dynamic_pointer_cast<ManagingNode>(rmn.second);
 			if (rmnPtr.get())
 			{
-				//Increment RMN count
-				rmnPtr->AddRmnId(rmnPtr->GetNodeId());
+				//Add RMN id
+				rmnPtr->AddRmnId(node->GetNodeId());
 			}
 		}
 	}
@@ -201,10 +201,11 @@ Result Network::RemoveNode(const std::uint8_t nodeID)
 		Result res = this->GetManagingNode(mn);
 		if (!res.IsSuccessful())
 			return res;
-		mn->RemoveRmnId(it->second->GetNodeId()); //Decrement the RMN count in MN
+		mn->RemoveRmnId((std::uint16_t) it->second->GetNodeId()); //Decrement the RMN count in MN
 
 	}
 	this->nodeCollection.erase(it);
+
 	//Log info node removed
 	boost::format formatter(kMsgNodeRemoved);
 	formatter
@@ -217,21 +218,21 @@ Result Network::RemoveNode(const std::uint8_t nodeID)
 		if (std::dynamic_pointer_cast<ManagingNode>(node.second))
 		{
 			//Reset 0x1F26 / nodeID
-			node.second->ForceSubObject(0x1F26, nodeID, false, false, "");
+			node.second->ForceSubObject(0x1F26, nodeID, false);
 			//Reset 0x1F27 / nodeID
-			node.second->ForceSubObject(0x1F27, nodeID, false, false, "");
+			node.second->ForceSubObject(0x1F27, nodeID, false);
 			//Reset 0x1F82 / nodeID
-			node.second->ForceSubObject(0x1F81, nodeID, false, false, "");
+			node.second->ForceSubObject(0x1F81, nodeID, false);
 			//Reset 0x1F9B / nodeID
 			node.second->ForceSubObject(0x1F9B, nodeID, false, false, "", false);
 			//Reset 0x1F92 / nodeID
-			node.second->ForceSubObject(0x1F92, nodeID, false, false, "");
+			node.second->ForceSubObject(0x1F92, nodeID, false);
 			//Reset 0x1F8B / nodeID
-			node.second->ForceSubObject(0x1F8B, nodeID, false, false, "");
+			node.second->ForceSubObject(0x1F8B, nodeID, false);
 			//Reset 0x1C09 / nodeID
-			node.second->ForceSubObject(0x1C09, nodeID, false, false, "");
+			node.second->ForceSubObject(0x1C09, nodeID, false);
 			//Reset 0x1F8D / nodeID from all CNs
-			node.second->ForceSubObject(0x1F8D, nodeID, false, false, "");
+			node.second->ForceSubObject(0x1F8D, nodeID, false);
 		}
 		else
 		{
@@ -726,6 +727,20 @@ Result Network::GenerateConfiguration()
 	if (!res.IsSuccessful())
 		return res;
 
+	//Build will fail for RMN and chained nodes
+	if (mn->GetRmnCount() > 0)
+	{
+	for (auto& node : this->nodeCollection)
+	{
+			std::shared_ptr<ControlledNode> cn = std::dynamic_pointer_cast<ControlledNode>(node.second);
+			if (cn)
+			{
+				if (cn->GetOperationMode() == PlkOperationMode::CHAINED)
+					return Result(ErrorCode::CHAINING_NOT_SUPPORTED, kMsgChainingRmnNotSupported);
+			}
+		}
+	}
+
 	for (auto& node : this->nodeCollection)
 	{
 		std::shared_ptr<ManagingNode> mn = std::dynamic_pointer_cast<ManagingNode>(node.second);
@@ -778,6 +793,10 @@ Result Network::SetOperationMode(const std::uint8_t nodeID, const PlkOperationMo
 			mn->GetNetworkManagement()->GetFeatureActualValue<bool>(MNFeatureEnum::DLLMNPResChaining, operationModeSupported);
 			if (!operationModeSupported)
 				return Result(ErrorCode::CHAINING_NOT_SUPPORTED);
+
+			if (mn->GetRmnCount() > 0)
+				return Result(ErrorCode::CHAINING_NOT_SUPPORTED, kMsgChainingRmnNotSupported);
+
 		}
 		else if (mode == PlkOperationMode::MULTIPLEXED)
 		{
@@ -832,24 +851,8 @@ Result Network::SetOperationMode(const std::uint8_t nodeID, const PlkOperationMo
 			case PlkOperationMode::CHAINED:
 				{
 					//Add PresMN on managing node
-					mn->AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_MN_PRES);
-					std::uint32_t mnAssignValue = mn->GetNodeAssignmentValue();
+					mn->AddNodeAssignment(NodeAssignment::NMT_NODEASSIGN_MN_PRES);
 
-					res = cn->SetSubObjectActualValue(0x1F81, 240, IntToHex<std::uint32_t>(mnAssignValue, 0, "0x"));
-					if (!res.IsSuccessful())
-						return res;
-
-					//Set 1F81 / 240 also on all RMNs
-					for (auto& rmn : this->nodeCollection)
-					{
-						std::shared_ptr<ManagingNode> rmnPtr = std::dynamic_pointer_cast<ManagingNode>(rmn.second);
-						if (rmnPtr.get())
-						{
-							res = rmnPtr->SetSubObjectActualValue(0x1F81, 240, IntToHex<std::uint32_t>(mnAssignValue, 0, "0x"));
-							if (!res.IsSuccessful())
-								return res;
-						}
-					}
 					//Check if multiplexing supported
 					bool featureMultiplex = false;
 					mn->GetNetworkManagement()->GetFeatureActualValue(MNFeatureEnum::DLLMNFeatureMultiplex, featureMultiplex);
@@ -893,14 +896,13 @@ Result Network::EnableNode(const std::uint8_t nodeID, bool enable)
 	if (enable)
 	{
 		it->second->SetEnabled(true);
-		if (std::dynamic_pointer_cast<ManagingNode>(it->second))//if RMN is disabled
+		if (std::dynamic_pointer_cast<ManagingNode>(it->second))//if RMN is enabled
 		{
 			std::shared_ptr<ManagingNode> mn;
 			Result res = this->GetManagingNode(mn);
 			if (!res.IsSuccessful())
 				return res;
-			mn->RemoveRmnId(it->second->GetNodeId()); //Remove the RMN Id in MN
-
+			mn->AddRmnId(it->second->GetNodeId()); //Add the RMN Id in MN
 		}
 	}
 	else
@@ -913,7 +915,6 @@ Result Network::EnableNode(const std::uint8_t nodeID, bool enable)
 			if (!res.IsSuccessful())
 				return res;
 			mn->RemoveRmnId(it->second->GetNodeId()); //Remove the RMN Id in MN
-
 		}
 
 		//Remove CN related MN and RMN objects

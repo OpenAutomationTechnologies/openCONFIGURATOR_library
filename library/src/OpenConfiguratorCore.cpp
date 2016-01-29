@@ -1457,7 +1457,7 @@ Result OpenConfiguratorCore::AddNodeAssignment(const std::string& networkId, con
 		if (!res.IsSuccessful())
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
-		res = node->AddNodeAssignement(assignment);
+		res = node->AddNodeAssignment(assignment);
 		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 	}
 	catch (const std::exception& ex)

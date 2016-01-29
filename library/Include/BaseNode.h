@@ -94,7 +94,7 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetSubObjectActualValue(std::uint32_t objectId, std::uint32_t subObjectId, const std::string& actualValue);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetSubObject(std::uint32_t objectId, std::uint32_t subObjectId, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::SubObject>& subObjRef, bool enableLog = true);
 
-						virtual IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNodeAssignement(NodeAssignment) = 0;
+						virtual IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNodeAssignment(NodeAssignment) = 0;
 						virtual IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveNodeAssignment(NodeAssignment) = 0;
 						virtual std::uint32_t GetNodeAssignmentValue() = 0;
 

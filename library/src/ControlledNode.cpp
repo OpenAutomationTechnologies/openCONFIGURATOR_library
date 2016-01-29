@@ -42,16 +42,16 @@ ControlledNode::ControlledNode(std::uint8_t nodeID, const std::string& nodeName)
 	nodeDataPresMnOffset(0),
 	nodeDataPresMnCurrentOffset(0)
 {
-	//this->AddNodeAssignement(NodeAssignment::MNT_NODEASSIGN_VALID);
-	//this->AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_NODE_EXISTS);
-	//this->AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_NODE_IS_CN);
-	//this->AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_START_CN);
+	//this->AddNodeAssignment(NodeAssignment::MNT_NODEASSIGN_VALID);
+	//this->AddNodeAssignment(NodeAssignment::NMT_NODEASSIGN_NODE_EXISTS);
+	//this->AddNodeAssignment(NodeAssignment::NMT_NODEASSIGN_NODE_IS_CN);
+	//this->AddNodeAssignment(NodeAssignment::NMT_NODEASSIGN_START_CN);
 }
 
 ControlledNode::~ControlledNode()
 {}
 
-Result ControlledNode::AddNodeAssignement(NodeAssignment assign)
+Result ControlledNode::AddNodeAssignment(NodeAssignment assign)
 {
 	if (assign == NodeAssignment::NMT_NODEASSIGN_MN_PRES)
 	{
@@ -702,7 +702,7 @@ Result ControlledNode::SetOperationMode(PlkOperationMode operationMode)
 		if (operationModeSupported)
 		{
 			this->operationMode = operationMode;
-			this->AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_MULTIPLEXED_CN);
+			this->AddNodeAssignment(NodeAssignment::NMT_NODEASSIGN_MULTIPLEXED_CN);
 		}
 		else
 		{
@@ -722,7 +722,7 @@ Result ControlledNode::SetOperationMode(PlkOperationMode operationMode)
 		if (operationModeSupported)
 		{
 			this->operationMode = operationMode;
-			this->AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_PRES_CHAINING);
+			this->AddNodeAssignment(NodeAssignment::NMT_NODEASSIGN_PRES_CHAINING);
 			this->UpdateProcessImage(Direction::RX);
 		}
 		else

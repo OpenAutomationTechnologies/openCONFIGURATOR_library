@@ -70,7 +70,7 @@ namespace IndustrialNetwork
 						ManagingNode(std::uint8_t nodeID = 240, const std::string& nodeName = "");
 						virtual ~ManagingNode();
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNodeAssignement(NodeAssignment assign);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNodeAssignment(NodeAssignment assign);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveNodeAssignment(NodeAssignment assign);
 						std::uint32_t GetNodeAssignmentValue();
 
@@ -84,7 +84,8 @@ namespace IndustrialNetwork
 						std::uint16_t GetRmnCount();
 						void AddRmnId(std::uint16_t nodeId);
 						void RemoveRmnId(std::uint16_t nodeId);
-						const std::vector<std::uint16_t>& GetRmnIds();
+						void ClearRmnList();
+						const std::vector<std::uint16_t>& GetRmnList();
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapObject(std::uint32_t index, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir,  std::uint16_t channelNr = 0, std::uint32_t position = 0, std::uint16_t fromNode = 0, bool updateNrOfEntries = false);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapSubObject(std::uint32_t index, std::uint16_t subindex, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr = 0, std::uint32_t position = 0, std::uint16_t fromNode = 0, bool updateNrOfEntries = false);

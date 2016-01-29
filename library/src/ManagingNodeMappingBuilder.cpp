@@ -146,7 +146,7 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 				{
 					//Set correct offset for CN receive PDO from MN
 					cn->SetNodeDataPresMnOffset(presMnOffset);
-					mn->AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_MN_PRES);
+					mn->AddNodeAssignment(NodeAssignment::NMT_NODEASSIGN_MN_PRES);
 					cnReceivePresMN = true;
 
 					//Update CN Mapping once with correct PResMN offset

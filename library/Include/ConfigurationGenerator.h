@@ -83,7 +83,7 @@ namespace IndustrialNetwork
 
 						void WriteHeader(const std::shared_ptr<Network>& net, std::stringstream& configurationOutput);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteManagingNodeObjectCount(const std::shared_ptr<Network>& net, std::stringstream& configurationOutput, std::stringstream& hexOutput);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteNodeAssignement(const std::shared_ptr<Network>& net, std::stringstream& configurationOutput, std::stringstream& hexOutput, bool writeNodeValid, bool writeComments);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteNodeAssignment(const std::shared_ptr<Network>& net, std::stringstream& configurationOutput, std::stringstream& hexOutput, bool writeNodeValid, bool writeComments);
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteManagingNodeConfiguration(const std::shared_ptr<Network>& net, std::stringstream& configurationOutput, std::stringstream& hexOutput);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteControlledNodeConfiguration(const std::shared_ptr<Network>& net, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node, std::stringstream& configurationOutput, std::stringstream& hexOutput);

@@ -41,12 +41,12 @@ ManagingNode::ManagingNode(std::uint8_t nodeID, const std::string& nodeName) : B
 	dynamicChannelList(std::vector<std::shared_ptr<DynamicChannel>>()),
 	rmnList(std::vector<std::uint16_t>())
 {
-	//this->AddNodeAssignement(NodeAssignment::MNT_NODEASSIGN_VALID);
-	//this->AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_NODE_EXISTS);
+	//this->AddNodeAssignment(NodeAssignment::MNT_NODEASSIGN_VALID);
+	//this->AddNodeAssignment(NodeAssignment::NMT_NODEASSIGN_NODE_EXISTS);
 
 	//if (nodeID != 240) //Add assignments for RMNs only
 	//{
-	//AddNodeAssignement(NodeAssignment::NMT_NODEASSIGN_NODE_IS_CN);
+	//AddNodeAssignment(NodeAssignment::NMT_NODEASSIGN_NODE_IS_CN);
 	//}
 }
 
@@ -55,7 +55,7 @@ ManagingNode::~ManagingNode()
 	this->dynamicChannelList.clear();
 }
 
-Result ManagingNode::AddNodeAssignement(NodeAssignment assign)
+Result ManagingNode::AddNodeAssignment(NodeAssignment assign)
 {
 	switch (assign)
 	{
@@ -85,7 +85,7 @@ Result ManagingNode::AddNodeAssignement(NodeAssignment assign)
 				if (it == this->GetNodeAssignment().end())
 				{
 					this->GetNodeAssignment().push_back(assign);
-					return SetSubObjectActualValue(0x1F81, 240, IntToHex<std::uint32_t>(this->GetNodeAssignmentValue(), 0, "0x"));
+					return SetSubObjectActualValue(0x1F81, (std::uint32_t) this->GetNodeId(), IntToHex<std::uint32_t>(this->GetNodeAssignmentValue(), 0, "0x"));
 				}
 				else
 				{
@@ -107,7 +107,7 @@ Result ManagingNode::AddNodeAssignement(NodeAssignment assign)
 Result ManagingNode::RemoveNodeAssignment(NodeAssignment assign)
 {
 	this->GetNodeAssignment().erase(std::remove(this->GetNodeAssignment().begin(), this->GetNodeAssignment().end(), assign), this->GetNodeAssignment().end());
-	return SetSubObjectActualValue(0x1F81, 240, IntToHex<std::uint32_t>(this->GetNodeAssignmentValue(), 0, "0x"));
+	return SetSubObjectActualValue(0x1F81, (std::uint32_t) this->GetNodeId(), IntToHex<std::uint32_t>(this->GetNodeAssignmentValue(), 0, "0x"));
 }
 
 std::uint32_t ManagingNode::GetNodeAssignmentValue()
@@ -205,7 +205,7 @@ std::uint32_t ManagingNode::GetConfigurationObjectCount()
 					mappingObjCount++;
 				}
 			}
-			else if (object.first == 0x1F81 && subobject.first != 0x0) //Count for node assignement and reassignment
+			else if (object.first == 0x1F81 && subobject.first != 0x0) //Count for node assignment and reassignment
 			{
 				if (subobject.second->WriteToConfiguration())
 				{
@@ -281,7 +281,7 @@ std::uint32_t ManagingNode::GetConfigurationObjectSize()
 					mappingObjCount++;
 				}
 			}
-			else if (object.first == 0x1F81 && subobject.first != 0x0) //Size for node assignement and reassignment
+			else if (object.first == 0x1F81 && subobject.first != 0x0) //Size for node assignment and reassignment
 			{
 				if (subobject.second->WriteToConfiguration())
 				{
@@ -289,7 +289,7 @@ std::uint32_t ManagingNode::GetConfigurationObjectSize()
 					{
 						if (std::find(this->GetNodeAssignment().begin(), this->GetNodeAssignment().end(), NodeAssignment::NMT_NODEASSIGN_MN_PRES) != this->GetNodeAssignment().end())
 						{
-							size += subobject.second->GetBitSize(); //For managing node assignement on MN or RMN calculate only one object
+							size += subobject.second->GetBitSize(); //For managing node assignment on MN or RMN calculate only one object
 						}
 					}
 					else
@@ -322,12 +322,17 @@ std::uint16_t ManagingNode::GetRmnCount()
 	return (std::uint16_t) this->rmnList.size();
 }
 
-void ManagingNode::AddRmnId(std::uint16_t count)
+void ManagingNode::AddRmnId(std::uint16_t id)
 {
-	this->rmnList.push_back(count);
+	this->rmnList.push_back(id);
 	//Sort and remove duplicates
 	std::sort(rmnList.begin(), rmnList.end());
 	rmnList.erase(std::unique(rmnList.begin(), rmnList.end()), rmnList.end());
+}
+
+void ManagingNode::ClearRmnList()
+{
+	this->rmnList.clear();
 }
 
 void ManagingNode::RemoveRmnId(std::uint16_t nodeId)
@@ -335,7 +340,7 @@ void ManagingNode::RemoveRmnId(std::uint16_t nodeId)
 	this->rmnList.erase(std::remove(this->rmnList.begin(), this->rmnList.end(), nodeId), this->rmnList.end());
 }
 
-const std::vector<std::uint16_t>& ManagingNode::GetRmnIds()
+const std::vector<std::uint16_t>& ManagingNode::GetRmnList()
 {
 	return this->rmnList;
 }

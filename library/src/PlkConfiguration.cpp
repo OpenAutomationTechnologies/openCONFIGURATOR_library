@@ -243,14 +243,11 @@ Result PlkConfiguration::DistributeNodeAssignment(const std::map<std::uint8_t, s
 		if (node.second->IsEnabled() == false)
 			continue;
 
-		if (node.first == 240) //Dont distribute assignement for MN
-			continue;
-
 		nodeAssignmentStr << node.second->GetNodeAssignmentValue(); //Retrieve assignment from CN or RMN
 		for (auto& mn : nodeCollection)
 		{
 			//Distribute to MN and RMNs
-			if (std::dynamic_pointer_cast<ManagingNode>(mn.second)) //Set MN or RMN node assignement objects
+			if (std::dynamic_pointer_cast<ManagingNode>(mn.second)) //Set MN or RMN node assignment objects
 			{
 				Result res = mn.second->SetSubObjectActualValue(0x1F81, node.first, nodeAssignmentStr.str()); //Set actual value with assignment
 				if (!res.IsSuccessful())
@@ -788,7 +785,9 @@ Result PlkConfiguration::DistributeCNLossObjects(const std::map<std::uint8_t, st
 Result PlkConfiguration::SyncRedundantManagingNodes(const std::map<std::uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
 	//Get managing node
-	auto& mn = nodeCollection.at(240);
+	std::shared_ptr<ManagingNode> mn = std::dynamic_pointer_cast<ManagingNode>(nodeCollection.at(240));
+	if (!mn)
+		return Result(ErrorCode::NO_MANAGING_NODE_CONFIGURED);
 
 	for (auto& node : nodeCollection)
 	{
@@ -826,6 +825,7 @@ Result PlkConfiguration::SyncRedundantManagingNodes(const std::map<std::uint8_t,
 				}
 			}
 
+			//Sync MN PI
 			rmn->GetTransmitProcessImage().clear();
 			rmn->GetReceiveProcessImage().clear();
 			for (auto& rxPi : mn->GetReceiveProcessImage())
@@ -835,6 +835,19 @@ Result PlkConfiguration::SyncRedundantManagingNodes(const std::map<std::uint8_t,
 			for (auto& txPi : mn->GetTransmitProcessImage())
 			{
 				rmn->GetTransmitProcessImage().push_back(txPi);
+			}
+
+			//MN transmits PRes RMN should too
+			if (std::find(mn->GetNodeAssignment().begin(), mn->GetNodeAssignment().end(), NodeAssignment::NMT_NODEASSIGN_MN_PRES) != mn->GetNodeAssignment().end())
+				rmn->AddNodeAssignment(NodeAssignment::NMT_NODEASSIGN_MN_PRES);
+			else
+				rmn->RemoveNodeAssignment(NodeAssignment::NMT_NODEASSIGN_MN_PRES);
+
+			//Sync RMN List
+			rmn->ClearRmnList();
+			for (auto id : mn->GetRmnList())
+			{
+				rmn->AddRmnId(id);
 			}
 		}
 	}

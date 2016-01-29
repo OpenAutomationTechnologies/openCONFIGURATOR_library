@@ -72,7 +72,7 @@ namespace IndustrialNetwork
 						ControlledNode(std::uint8_t nodeID, const std::string& nodeName = "");
 						virtual ~ControlledNode();
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNodeAssignement(NodeAssignment);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNodeAssignment(NodeAssignment);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveNodeAssignment(NodeAssignment);
 						std::uint32_t GetNodeAssignmentValue();
 

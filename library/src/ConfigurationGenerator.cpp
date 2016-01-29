@@ -81,15 +81,17 @@ Result ConfigurationGenerator::GenerateNetworkConfiguration(const std::shared_pt
 		return res;
 
 	//Write the node assignments
-	res = WriteNodeAssignement(net, configurationOutput, hexOutput, false, true);
+	res = WriteNodeAssignment(net, configurationOutput, hexOutput, false, true);
 	if (!res.IsSuccessful())
 		return res;
+	configurationOutput << std::endl;
 
 	//Write the managing node configuration
 	res = WriteManagingNodeConfiguration(net, configurationOutput, hexOutput);
 	if (!res.IsSuccessful())
 		return res;
 
+	configurationOutput << std::endl;
 	std::map<std::uint8_t, std::shared_ptr<BaseNode>> nodes;
 	res = net->GetNodes(nodes);
 	if (!res.IsSuccessful())
@@ -111,7 +113,7 @@ Result ConfigurationGenerator::GenerateNetworkConfiguration(const std::shared_pt
 	}
 
 	//Write the node reassignment
-	res = WriteNodeAssignement(net, configurationOutput, hexOutput, true, true);
+	res = WriteNodeAssignment(net, configurationOutput, hexOutput, true, true);
 	return res;
 }
 
@@ -129,7 +131,7 @@ Result ConfigurationGenerator::WriteManagingNodeObjectCount(const std::shared_pt
 	return res;
 }
 
-Result ConfigurationGenerator::WriteNodeAssignement(const std::shared_ptr<Network>& net, std::stringstream& configurationOutput, std::stringstream& hexOutput, bool writeNodeValid, bool writeComments)
+Result ConfigurationGenerator::WriteNodeAssignment(const std::shared_ptr<Network>& net, std::stringstream& configurationOutput, std::stringstream& hexOutput, bool writeNodeValid, bool writeComments)
 {
 	std::map<std::uint8_t, std::shared_ptr<BaseNode>> nodes;
 	Result res = net->GetNodes(nodes);
@@ -176,10 +178,8 @@ Result ConfigurationGenerator::WriteNodeAssignement(const std::shared_ptr<Networ
 
 		//If valid bit has been remove add it again
 		if (!writeNodeValid)
-			node.second->AddNodeAssignement(NodeAssignment::MNT_NODEASSIGN_VALID);
+			node.second->AddNodeAssignment(NodeAssignment::MNT_NODEASSIGN_VALID);
 	}
-	//Write newline to make txt representation more readable
-	configurationOutput << std::endl;
 	LOG_INFO() << kMsgWriteNodeAssignment;
 	return res;
 }
@@ -243,7 +243,7 @@ Result ConfigurationGenerator::WriteRedundantManagingNodeConfiguration(const std
 	hexOutput << ReverseHex(rmnDomainSize, 8);
 	hexOutput << ReverseHex(rmn->GetConfigurationObjectCount(), 8);
 
-	Result res = WriteNodeAssignement(net, configurationOutput, hexOutput, false, false);
+	Result res = WriteNodeAssignment(net, configurationOutput, hexOutput, false, false);
 	if (!res.IsSuccessful())
 		return res;
 
@@ -267,7 +267,9 @@ Result ConfigurationGenerator::WriteRedundantManagingNodeConfiguration(const std
 	if (!res.IsSuccessful())
 		return res;
 
-	res = WriteNodeAssignement(net, configurationOutput, hexOutput, true, false);
+	res = WriteNodeAssignment(net, configurationOutput, hexOutput, true, false);
+	configurationOutput << std::endl;
+
 	boost::format formatter(kMsgWriteRedundantManagingNode);
 	formatter
 	% (uint32_t) rmn->GetNodeId();
@@ -531,7 +533,7 @@ Result ConfigurationGenerator::WriteCommunicationProfileArea(const std::shared_p
 			for (auto& subobject : object.second->GetSubObjectDictionary())
 			{
 				//Write MN node assignment only when PResMN is set
-				if (object.first == 0x1F81 && subobject.first == 240 && node->GetNodeId() == 240)
+				if (object.first == 0x1F81 && subobject.first == 240 && node->GetNodeId() >= 240)
 				{
 					std::shared_ptr<ManagingNode> mn = std::dynamic_pointer_cast<ManagingNode>(node);
 					if (mn)
@@ -540,7 +542,7 @@ Result ConfigurationGenerator::WriteCommunicationProfileArea(const std::shared_p
 							continue;
 					}
 				}
-				else if (object.first == 0x1F81 && subobject.first != 240 && node->GetNodeId() == 240)
+				else if (object.first == 0x1F81 && subobject.first != 240 && node->GetNodeId() >= 240)
 					continue;
 
 				if (subobject.second->WriteToConfiguration())

@@ -181,6 +181,7 @@ namespace IndustrialNetwork
 				const std::string kMsgCycleTimeMax = "Cycle time \"%d\" is higher than the maximum cycle time \"%d\" of node \"%s\" (%d).";
 				const std::string kMsgCycleTimeGran = "Cycle time \"%d\" does not fit to the cycle time granularity \"%d\" of node \"%s\" (%d).";
 				const std::string kMsgIsochronousMaxPayloadExceeded = "Node %d: No. of %s-bytes mapped (%d) exceeds limit (1490, C_DLL_ISOCHR_MAX_PAYL).";
+				const std::string kMsgChainingRmnNotSupported = "PRes Chaining is not supported in combination with Redundant Managing Nodes.";
 
 				/** \addtogroup apireturn
 				* @{
