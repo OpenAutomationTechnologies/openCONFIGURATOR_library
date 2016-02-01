@@ -108,7 +108,7 @@ const std::string CProcessImageGenerator::WriteCHeader(const std::string& projNa
 const std::string CProcessImageGenerator::WriteCOutputSizeHeader(std::uint32_t size)
 {
 	std::stringstream outputHeader;
-	outputHeader << "# define COMPUTED_PI_OUT_SIZE " << size / 8 << std::endl;
+	outputHeader << "#define COMPUTED_PI_OUT_SIZE " << size / 8 << std::endl;
 	outputHeader << "typedef struct" << std::endl;
 	outputHeader << "{" << std::endl;
 	return outputHeader.str();
@@ -117,7 +117,7 @@ const std::string CProcessImageGenerator::WriteCOutputSizeHeader(std::uint32_t s
 const std::string CProcessImageGenerator::WriteCInputSizeHeader(std::uint32_t size)
 {
 	std::stringstream inputHeader;
-	inputHeader << "# define COMPUTED_PI_IN_SIZE " << size / 8 << std::endl;
+	inputHeader << "#define COMPUTED_PI_IN_SIZE " << size / 8 << std::endl;
 	inputHeader << "typedef struct" << std::endl;
 	inputHeader << "{" << std::endl;
 	return inputHeader.str();
