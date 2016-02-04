@@ -722,6 +722,19 @@ Result Network::GenerateConfiguration()
 	if (this->cycleTime != currCycleTime)
 		this->cycleTime = currCycleTime;
 
+	//Get LossOfSoCTolerance if existing in the MN and not equal to project LossOfSoCTolerance
+	std::uint32_t mnLossOfSoCTolerance = 0;
+	res = mn->GetObject(0x1C14, obj, false);
+	if (res.IsSuccessful())
+	{
+		if (obj->HasActualValue())
+		{
+			mnLossOfSoCTolerance = obj->GetTypedActualValue<std::uint32_t>();
+			if (this->lossOfSoCTolerance != mnLossOfSoCTolerance)
+				this->lossOfSoCTolerance = mnLossOfSoCTolerance;
+		}
+	}
+
 	//Distribute LossOfSoCTolerance
 	res = this->SetLossOfSoCTolerance(this->lossOfSoCTolerance);
 	if (!res.IsSuccessful())
