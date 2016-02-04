@@ -219,12 +219,12 @@ namespace std {
 	}
 
     const std::string getValue() {
-      const std::pair<std::pair<unsigned int, int>, std::string> ret = *it;
+      const std::pair<std::pair<unsigned int, int>, std::string>& ret = *it;
       return ret.second;
     }
 
 	const std::string nextImpl() {
-      const std::pair<std::pair<unsigned int, int>, std::string> ret = *it++;
+      const std::pair<std::pair<unsigned int, int>, std::string>& ret = *it++;
       return ret.second;
     }
 
