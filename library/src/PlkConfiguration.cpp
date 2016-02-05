@@ -195,6 +195,10 @@ Result PlkConfiguration::DistributeDateTimeStamps(const std::map<std::uint8_t, s
 		//Distribute to MN and RMNs
 		if (std::dynamic_pointer_cast<ManagingNode>(node.second)) //Set MN date and time objects 1F26 / 1F27
 		{
+			//Clear to delete pending artifacts
+			ClearActualValues(node.second, 0x1F26);
+			ClearActualValues(node.second, 0x1F27);
+
 			for (auto& nodeIds : nodeCollection)
 			{
 				if (nodeIds.first == 240) //Avoid distributing values for MN nodeID
@@ -238,6 +242,9 @@ Result PlkConfiguration::DistributeDateTimeStamps(const std::map<std::uint8_t, s
 Result PlkConfiguration::DistributeNodeAssignment(const std::map<std::uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
 	std::stringstream nodeAssignmentStr;
+	auto& mn = nodeCollection.at(240);
+	ClearActualValues(mn, 0x1F81);
+
 	for (auto& node : nodeCollection)
 	{
 		if (node.second->IsEnabled() == false)
@@ -545,6 +552,7 @@ Result PlkConfiguration::DistributePResTimeOut(const std::map<std::uint8_t, std:
 {
 	//Get managing node
 	auto& mn = nodeCollection.at(240);
+	ClearActualValues(mn, 0x1F92);
 
 	for (auto& node : nodeCollection)
 	{
@@ -610,6 +618,7 @@ Result PlkConfiguration::DistributePReqPayloadLimit(const std::map<std::uint8_t,
 {
 	//Get managing node
 	auto& mn = nodeCollection.at(240);
+	ClearActualValues(mn, 0x1F8B);
 
 	for (auto& node : nodeCollection)
 	{
@@ -661,6 +670,7 @@ Result PlkConfiguration::DistributePResPayloadLimit(const std::map<std::uint8_t,
 {
 	//Get managing node
 	auto& mn = nodeCollection.at(240);
+	ClearActualValues(mn, 0x1F8D);
 
 	for (auto& node : nodeCollection)
 	{
@@ -800,7 +810,9 @@ Result PlkConfiguration::SyncRedundantManagingNodes(const std::map<std::uint8_t,
 		{
 			//Set RMN support on MN and distribute to all RMNs
 			mn->SetObjectActualValue(0x1F80, "0x4800");
-
+			ClearActualValues(rmn, 0x1F92);
+			ClearActualValues(rmn, 0x1F8B);
+			ClearActualValues(rmn, 0x1F8D);
 			rmn->ClearMappingObjects();
 
 			for (auto& obj : mn->GetObjectDictionary())
@@ -885,6 +897,21 @@ Result PlkConfiguration::DistributeIpDefaultGateway(const std::map<std::uint8_t,
 			if (!res.IsSuccessful())
 				return Result();
 		}
+	}
+	return Result();
+}
+
+Result PlkConfiguration::ClearActualValues(std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode> node, std::uint32_t objectId)
+{
+	std::shared_ptr<Object> obj;
+	Result res = node->GetObject(objectId, obj);
+	if (!res.IsSuccessful())
+		return res;
+
+	for (auto& subObj : obj->GetSubObjectDictionary())
+	{
+		if (subObj.second->HasActualValue())
+			subObj.second->ClearActualValue();
 	}
 	return Result();
 }
