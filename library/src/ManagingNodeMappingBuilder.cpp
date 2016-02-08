@@ -220,7 +220,20 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 				// Write mapping to MN object dictionary
 				res = this->WriteMappingToForNode(nodeId, dir, this->GetMappingString(mapping->GetMappingLength(), offsetToWrite, subindex, index), mn);
 				if (!res.IsSuccessful())
-					return res;
+				{
+					if (res.GetErrorType() == ErrorCode::CHANNEL_OBJECT_LIMIT_EXCEEDED)
+					{
+						boost::format formatter(kMsgChannelExceeded);
+						formatter
+						% DirectionTypeValues[(std::uint8_t) dir]
+						% node.second->GetName()
+						% (std::uint32_t) node.second->GetNodeId();
+						LOG_WARN() << formatter.str();
+						break;
+					}
+					else
+						return res;
+				}
 
 				// Increment bitoffset with the length of the added mapping
 				bitoffset += mapping->GetMappingLength();
@@ -401,7 +414,7 @@ const std::string ManagingNodeMappingBuilder::GetMappingString(std::uint32_t bit
 bool ManagingNodeMappingBuilder::GenerateForNode(const std::string& value, std::uint16_t nodeId)
 {
 	std::vector<std::string> nodeIds;
-	boost::split(nodeIds, value, boost::is_any_of(";"));
+	boost::split(nodeIds, value, boost::is_any_of("; "));
 
 	//Node ids can be hex or dec numbers
 	for (auto& part : nodeIds)
@@ -483,6 +496,7 @@ Result ManagingNodeMappingBuilder::WriteMappingToForNode(std::uint16_t nodeId, D
 
 	//Get mapping object
 	std::shared_ptr<SubObject> mappingParamObj;
+	bool noChannelAvailable = true;
 	for (auto& obj : mn->GetObjectDictionary())
 	{
 		if (obj.first >= mappingParameterIndex && obj.first < (mappingParameterIndex + 0x100)) //Traverse mapping parameter
@@ -522,6 +536,7 @@ Result ManagingNodeMappingBuilder::WriteMappingToForNode(std::uint16_t nodeId, D
 						}
 					}
 					useNewMappingParameter = false; // Mapping parameter already exist for node
+					noChannelAvailable = false;
 					break; //End traversal
 				}
 				else
@@ -534,11 +549,16 @@ Result ManagingNodeMappingBuilder::WriteMappingToForNode(std::uint16_t nodeId, D
 					mappingParamObj = nodeID;
 					mappingObjectIndex = (obj.first - mappingParameterIndex) + mappingObjectIndex;
 					useNewMappingParameter = true; // new mapping parameter stored
+					noChannelAvailable = false;
 				}
 				continue;
 			}
 		}
 	}
+	//Check for no available channels
+	if (noChannelAvailable)
+		return Result(ErrorCode::CHANNEL_OBJECT_LIMIT_EXCEEDED);
+
 	//Create new mapping parameter for node
 	if (useNewMappingParameter)
 	{
