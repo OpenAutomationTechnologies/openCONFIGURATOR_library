@@ -105,6 +105,12 @@ namespace IndustrialNetwork
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result InitLoggingConfiguration(const std::string& configuration);
+						//! Member to pass the logging path for the eclipse style logging.
+						/*!
+						The library will initialize the logging path with an eclipse styl configuration.
+						\param loggingPath Path for the logging output.
+						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
+						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result InitEclipseLoggingPath(const std::string& loggingPath);
 						/** @} */
 
@@ -808,15 +814,54 @@ namespace IndustrialNetwork
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapAllObjectsToChannel(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr, bool updateNrEntries);
-
+						//! Member to retrieve the channel data size in bytes.
+						/*!
+						\param networkId Specifies the identifier for the new network.
+						\param nodeId Specifies the node identifier.
+						\param dir Specifies the direction of the mapping (transmit or receive)
+						\param channelNr Specifies the number XX of the channel (16XX for Rx channels, 1AXX for Tx channels)
+						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
+						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetChannelSize(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr, std::uint32_t& size);
-
+						//! Member to retrieve the channel object actual values.
+						/*!
+						\param networkId Specifies the identifier for the new network.
+						\param nodeId Specifies the node identifier.
+						\param dir Specifies the direction of the mapping (transmit or receive)
+						\param channelNr Specifies the number XX of the channel (16XX for Rx channels, 1AXX for Tx channels)
+						\param objects Return map for the actual values.
+						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
+						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetChannelActualValues(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr, std::map<std::pair<std::uint32_t, std::int32_t> , std::string>& objects);
-
+						//! Member to retrieve to move a mapping up or down in the channel.
+						/*!
+						\param networkId Specifies the identifier for the new network.
+						\param nodeId Specifies the node identifier.
+						\param dir Specifies the direction of the mapping (transmit or receive)
+						\param channelNr Specifies the number XX of the channel (16XX for Rx channels, 1AXX for Tx channels)
+						\param oldPosition Position of the mapping to be moved.
+						\param newPosition Position to be moved to.
+						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
+						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MoveMappingObject(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr, std::uint16_t oldPosition, std::uint16_t newPosition);
-
+						//! Member to clear a mapping actual value by its channel position.
+						/*!
+						\param networkId Specifies the identifier for the new network.
+						\param nodeId Specifies the node identifier.
+						\param dir Specifies the direction of the mapping (transmit or receive)
+						\param channelNr Specifies the number XX of the channel (16XX for Rx channels, 1AXX for Tx channels)
+						\param position Position of the mapping to be cleared.
+						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
+						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ClearMappingObject(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr, std::uint16_t position);
-
+						//! Member to clear all actual values of a channel.
+						/*!
+						\param networkId Specifies the identifier for the new network.
+						\param nodeId Specifies the node identifier.
+						\param dir Specifies the direction of the mapping (transmit or receive)
+						\param channelNr Specifies the number XX of the channel (16XX for Rx channels, 1AXX for Tx channels)
+						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
+						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ClearMappingChannel(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr);
 
 						//IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateOffsetGap(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr, std::uint16_t position, std::uint32_t gapSize);
