@@ -156,6 +156,7 @@ namespace IndustrialNetwork
 				{
 					try
 					{
+						boost::format string_formatter("%s");
 						logging::add_common_attributes();
 
 						logging::add_file_log
@@ -165,24 +166,24 @@ namespace IndustrialNetwork
 						        (
 						            expr::stream
 						            /* << "!ENTRY org.epsg.openconfigurator.core " */
-						            << "["
+						            << (string_formatter % "[").str()
 						            << expr::format_date_time(timestamp, "%Y-%m-%d %H:%M:%S")
-						            << "] "
+						            << (string_formatter % "] ").str()
 						            << expr::if_(logging::trivial::severity == logging::trivial::info)
 						            [
-						                expr::stream <<  "[INFO] "
+						                expr::stream << (string_formatter % "[INFO] ").str()
 						            ]
 						            << expr::if_(logging::trivial::severity == logging::trivial::warning)
 						            [
-						                expr::stream << "[WARNING] "
+						                expr::stream << (string_formatter % "[WARNING] ").str()
 						            ]
 						            << expr::if_(logging::trivial::severity == logging::trivial::error)
 						            [
-						                expr::stream << "[ERROR] "
+						                expr::stream << (string_formatter % "[ERROR] ").str()
 						            ]
 						            << expr::if_(logging::trivial::severity == logging::trivial::fatal)
 						            [
-						                expr::stream << "[FATAL] "
+						                expr::stream << (string_formatter % "[FATAL] ").str()
 						            ]
 						            /*<< " 0 "*/
 						            /*<< "!MESSAGE " */

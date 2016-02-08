@@ -53,6 +53,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <boost/log/support/date_time.hpp>
 #include <boost/log/expressions.hpp>
 #include <boost/log/utility/setup/file.hpp>
+#include <boost/format.hpp>
 
 #ifdef _MSC_VER
 #pragma warning(pop) // Restore previous warning state
