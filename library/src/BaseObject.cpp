@@ -688,7 +688,7 @@ namespace IndustrialNetwork
 									formatter
 									% valueStr
 									% GetPlkDataTypeName(GetDataType().get());
-									LOG_FATAL() << formatter.str() << e.what();
+									LOG_FATAL() << formatter.str() << " " << e.what();
 									return Result(ErrorCode::DEFAULT_VALUE_INVALID, formatter.str());
 								}
 							case IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject::ValueType::LOWLIMIT:
@@ -697,7 +697,7 @@ namespace IndustrialNetwork
 									formatter
 									% valueStr
 									% GetPlkDataTypeName(GetDataType().get());
-									LOG_FATAL() << formatter.str() << e.what();
+									LOG_FATAL() << formatter.str() << " " << e.what();
 									return Result(ErrorCode::LOW_LIMIT_INVALID, formatter.str());
 								}
 							case IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject::ValueType::HIGHLIMIT:
@@ -706,7 +706,7 @@ namespace IndustrialNetwork
 									formatter
 									% valueStr
 									% GetPlkDataTypeName(this->GetDataType().get());
-									LOG_FATAL() << formatter.str() << e.what();
+									LOG_FATAL() << formatter.str() << " " << e.what();
 									return Result(ErrorCode::HIGH_LIMIT_INVALID, formatter.str());
 								}
 							case IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject::ValueType::ACTUAL:
@@ -1273,6 +1273,10 @@ namespace IndustrialNetwork
 									break;
 								}
 							case PlkDataType::IP_ADDRESS:
+								{
+									if (!IsIPAddress(actualValue))
+										throw std::range_error("");
+								}
 							case PlkDataType::NETTIME:
 							case PlkDataType::VISIBLE_STRING:
 							case PlkDataType::OCTET_STRING:

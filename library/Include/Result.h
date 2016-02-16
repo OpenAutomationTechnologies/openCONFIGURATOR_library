@@ -88,7 +88,7 @@ namespace IndustrialNetwork
 				const std::string kMsgActualValueDatatypeError = "Actual value \"%s\" with datatype \"%s\" does not fit the datatype limits or format.";
 				const std::string kMsgDefaultValueDatatypeError = "Default value \"%s\" with datatype \"%s\" does not fit the datatype limits or format.";
 				const std::string kMsgHighLimitDatatypeError = "Highlimit \"%s\" with datatype \"%s\" exceeds the datatype limits.";
-				const std::string kMsgLowLimitDatatypeError = "Lowlimit \"%s\" with datatype \"%s\" exceeds the datatype limits.";
+				const std::string kMsgLowLimitDatatypeError = "Lowlimit \"%s\" with datatype \"%s\" deceeds the datatype limits.";
 				const std::string kMsgBaseObjectLowLimitError = "Object \"%s\" with id \"0x%X\" on node \"%d\" actual value \"%s\" deceeds lowlimit \"%d\".";
 				const std::string kMsgBaseObjectHighLimitSubObjectError = "Object \"%s\" \"0x%X/0x%X\" on node \"%d\" with actual value \"%s\" exceeds the highlimit.";
 				const std::string kMsgBaseObjectLowLimitSubObjectError = "Object \"%s\" \"0x%X/0x%X\" on node \"%d\" with actual value \"%s\" deceeds the lowlimit.";

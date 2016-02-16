@@ -734,7 +734,7 @@ Result PlkConfiguration::DistributePResPayloadLimit(const std::map<std::uint8_t,
 			if (crossTrafficForNode == false)
 			{
 				std::shared_ptr<SubObject> presActValueObj;
-				res = cn.second->GetSubObject(0x1F8D, node.first, presActValueObj);
+				res = cn.second->GetSubObject(0x1F8D, node.first, presActValueObj, false);
 				if (res.IsSuccessful())
 					presActValueObj->ClearActualValue();
 			}

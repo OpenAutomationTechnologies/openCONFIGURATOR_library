@@ -162,7 +162,7 @@ namespace IndustrialNetwork
 						boost::format formatter(kMsgMnFeatureDatatypeError);
 						formatter
 						% this->GetName();
-						LOG_FATAL() << formatter.str() << e.what();
+						LOG_FATAL() << formatter.str() << " " << e.what();
 						return Result(ErrorCode::MN_FEATURE_VALUE_INVALID, formatter.str());
 					}
 					return Result();

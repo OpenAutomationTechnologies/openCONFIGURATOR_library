@@ -221,7 +221,7 @@ namespace IndustrialNetwork
 						boost::format formatter(kMsgGeneralFeatureDatatypeError);
 						formatter
 						% this->GetName();
-						LOG_FATAL() << formatter.str() << e.what();
+						LOG_FATAL() << formatter.str() << " " << e.what();
 						return Result(ErrorCode::GENERAL_FEATURE_VALUE_INVALID, formatter.str());
 					}
 					return Result();

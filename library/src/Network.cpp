@@ -319,7 +319,7 @@ Result Network::SetNodeId(const std::uint8_t nodeId, const std::uint8_t newNodeI
 		else
 		{
 			//Reset 0x1F8D / nodeID from all CNs
-			node.second->ForceSubObject(0x1F8D, nodeId, false, false, "");
+			node.second->ForceSubObject(0x1F8D, nodeId, false, false, "", false);
 			//Reset 0x1F8B / nodeID
 			node.second->ForceSubObject(0x1F8B, nodeId, false, false, "", false);
 			//Reset 0x1F9B / nodeID from all CNs

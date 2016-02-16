@@ -40,6 +40,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <bitset>
 #include <vector>
 
+#include <boost/algorithm/string.hpp>
+
 #include "IEC_Datatype.h"
 #include "PlkDataType.h"
 
@@ -95,6 +97,7 @@ namespace IndustrialNetwork
 				std::uint8_t AsciiToHex(std::uint8_t input);
 				void ConfigurationToAscii(const std::stringstream& inputConfig, std::vector<std::uint8_t>& output);
 				const std::string GetNetDatatypeFromIEC(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype iecDataType);
+				bool IsIPAddress(const std::string& ipaddr);
 			}
 		}
 	}

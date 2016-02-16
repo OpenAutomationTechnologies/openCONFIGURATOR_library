@@ -408,8 +408,33 @@ namespace IndustrialNetwork
 							return "";
 					}
 				}
+
+				bool IsIPAddress(const std::string& ipaddr)
+				{
+					if (ipaddr.substr(0, 2) == "0x")
+					{
+						if (ipaddr.size() != 10)
+							return false;
+						return true;
+					}
+					else
+					{
+						std::vector<std::string> ipAddressParts;
+						boost::split(ipAddressParts, ipaddr, boost::is_any_of("."));
+
+						if (ipAddressParts.size() != 4)
+							return false;
+						for (auto& part : ipAddressParts)
+						{
+							std::int32_t numb;
+							std::istringstream(part) >> numb;
+							if ((numb < 0) || (numb > 255))
+								return false;
+						}
+						return true;
+					}
+				}
 			}
 		}
 	}
 }
-
