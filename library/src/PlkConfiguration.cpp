@@ -196,8 +196,8 @@ Result PlkConfiguration::DistributeDateTimeStamps(const std::map<std::uint8_t, s
 		if (std::dynamic_pointer_cast<ManagingNode>(node.second)) //Set MN date and time objects 1F26 / 1F27
 		{
 			//Clear to delete pending artifacts
-			ClearActualValues(node.second, 0x1F26);
-			ClearActualValues(node.second, 0x1F27);
+			ClearActualValues(nodeCollection, node.second, 0x1F26);
+			ClearActualValues(nodeCollection, node.second, 0x1F27);
 
 			for (auto& nodeIds : nodeCollection)
 			{
@@ -243,7 +243,7 @@ Result PlkConfiguration::DistributeNodeAssignment(const std::map<std::uint8_t, s
 {
 	std::stringstream nodeAssignmentStr;
 	auto& mn = nodeCollection.at(240);
-	ClearActualValues(mn, 0x1F81);
+	ClearActualValues(nodeCollection, mn, 0x1F81);
 
 	for (auto& node : nodeCollection)
 	{
@@ -552,7 +552,7 @@ Result PlkConfiguration::DistributePResTimeOut(const std::map<std::uint8_t, std:
 {
 	//Get managing node
 	auto& mn = nodeCollection.at(240);
-	ClearActualValues(mn, 0x1F92);
+	ClearActualValues(nodeCollection, mn, 0x1F92);
 
 	for (auto& node : nodeCollection)
 	{
@@ -579,7 +579,7 @@ Result PlkConfiguration::DistributePResTimeOut(const std::map<std::uint8_t, std:
 			presMaxLatencyActualValue = presMaxLatencyCNObj->GetTypedDefaultValue<std::uint32_t>();
 
 		std::uint32_t presTimoutActualValue = 0;
-		if (presTimoutMNObj->WriteToConfiguration())
+		if (presTimoutMNObj->HasActualValue())
 			presTimoutActualValue = presTimoutMNObj->GetTypedActualValue<std::uint32_t>();
 		else
 		{
@@ -618,7 +618,7 @@ Result PlkConfiguration::DistributePReqPayloadLimit(const std::map<std::uint8_t,
 {
 	//Get managing node
 	auto& mn = nodeCollection.at(240);
-	ClearActualValues(mn, 0x1F8B);
+	ClearActualValues(nodeCollection, mn, 0x1F8B);
 
 	for (auto& node : nodeCollection)
 	{
@@ -670,7 +670,7 @@ Result PlkConfiguration::DistributePResPayloadLimit(const std::map<std::uint8_t,
 {
 	//Get managing node
 	auto& mn = nodeCollection.at(240);
-	ClearActualValues(mn, 0x1F8D);
+	ClearActualValues(nodeCollection, mn, 0x1F8D);
 
 	for (auto& node : nodeCollection)
 	{
@@ -810,9 +810,9 @@ Result PlkConfiguration::SyncRedundantManagingNodes(const std::map<std::uint8_t,
 		{
 			//Set RMN support on MN and distribute to all RMNs
 			mn->SetObjectActualValue(0x1F80, "0x4800");
-			ClearActualValues(rmn, 0x1F92);
-			ClearActualValues(rmn, 0x1F8B);
-			ClearActualValues(rmn, 0x1F8D);
+			ClearActualValues(nodeCollection, rmn, 0x1F92);
+			ClearActualValues(nodeCollection, rmn, 0x1F8B);
+			ClearActualValues(nodeCollection, rmn, 0x1F8D);
 			rmn->ClearMappingObjects();
 
 			for (auto& obj : mn->GetObjectDictionary())
@@ -901,7 +901,7 @@ Result PlkConfiguration::DistributeIpDefaultGateway(const std::map<std::uint8_t,
 	return Result();
 }
 
-Result PlkConfiguration::ClearActualValues(std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode> node, std::uint32_t objectId)
+Result PlkConfiguration::ClearActualValues(const std::map<std::uint8_t, std::shared_ptr<BaseNode>>& nodeCollection, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode> node, std::uint32_t objectId)
 {
 	std::shared_ptr<Object> obj;
 	Result res = node->GetObject(objectId, obj);
@@ -910,6 +910,9 @@ Result PlkConfiguration::ClearActualValues(std::shared_ptr<IndustrialNetwork::PO
 
 	for (auto& subObj : obj->GetSubObjectDictionary())
 	{
+		if (nodeCollection.find((std::uint8_t) subObj.first) != nodeCollection.end())
+			continue;
+
 		if (subObj.second->HasActualValue())
 			subObj.second->ClearActualValue();
 	}

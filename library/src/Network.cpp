@@ -284,7 +284,6 @@ Result Network::SetNodeId(const std::uint8_t nodeId, const std::uint8_t newNodeI
 			return res;
 		mn->RemoveRmnId((std::uint16_t) nodeId); //Remove the old RMN Id from MN
 		mn->AddRmnId((std::uint16_t) newNodeId); //Add the new RMN id to MN
-
 	}
 
 	it->second->SetNodeId(newNodeId);
@@ -294,11 +293,24 @@ Result Network::SetNodeId(const std::uint8_t nodeId, const std::uint8_t newNodeI
 	//Remove CN related MN and RMN objects
 	for (auto& node : this->nodeCollection)
 	{
-		if (node.first == newNodeId)
+		if ((std::uint32_t)node.first == newNodeId)
 			continue;
 
 		if (std::dynamic_pointer_cast<ManagingNode>(node.second))
 		{
+			if ((std::uint32_t)node.first == 240)
+			{
+				std::shared_ptr<SubObject> subObj;
+				Result res = node.second->GetSubObject(0x1F92, (std::uint32_t) nodeId, subObj);
+				if (!res.IsSuccessful())
+					return res;
+				if (subObj->HasActualValue())
+				{
+					res = node.second->SetSubObjectActualValue(0x1F92, (std::uint32_t) newNodeId, "0x" + subObj->GetTypedActualValue<std::string>());
+					if (!res.IsSuccessful())
+						return res;
+				}
+			}
 			//Reset 0x1F26 / nodeID
 			node.second->ForceSubObject(0x1F26, nodeId, false, false, "");
 			//Reset 0x1F27 / nodeID
@@ -743,8 +755,8 @@ Result Network::GenerateConfiguration()
 	//Build will fail for RMN and chained nodes
 	if (mn->GetRmnCount() > 0)
 	{
-	for (auto& node : this->nodeCollection)
-	{
+		for (auto& node : this->nodeCollection)
+		{
 			std::shared_ptr<ControlledNode> cn = std::dynamic_pointer_cast<ControlledNode>(node.second);
 			if (cn)
 			{
@@ -766,10 +778,10 @@ Result Network::GenerateConfiguration()
 		else if (cn.get())
 		{
 			res = cn->UpdateProcessImage(Direction::RX);
-			if(!res.IsSuccessful())
+			if (!res.IsSuccessful())
 				return res;
 			res = cn->UpdateProcessImage(Direction::TX);
-			if(!res.IsSuccessful())
+			if (!res.IsSuccessful())
 				return res;
 		}
 	}
