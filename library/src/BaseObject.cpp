@@ -641,6 +641,7 @@ namespace IndustrialNetwork
 							case PlkDataType::UNICODE_STRING:
 							case PlkDataType::TIME_OF_DAY:
 							case PlkDataType::TIME_DIFF:
+							case PlkDataType::Domain:
 								{
 									if (type == ValueType::LOWLIMIT || type == ValueType::HIGHLIMIT)
 										return Result(ErrorCode::DATATYPE_DOES_NOT_SUPPORT_LIMITS);
@@ -648,7 +649,6 @@ namespace IndustrialNetwork
 										valueToSet = valueStr;
 									break;
 								}
-							case PlkDataType::Domain:
 							default:
 								{
 									return Result(ErrorCode::OBJECT_TYPE_DOES_NOT_SUPPORT_VALUES);
