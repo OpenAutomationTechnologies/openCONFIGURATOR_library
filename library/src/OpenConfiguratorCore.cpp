@@ -2135,17 +2135,18 @@ Result OpenConfiguratorCore::GetPResTimeOut(const std::string& networkId, const 
 		if (!res.IsSuccessful())
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
-		if (subobject->WriteToConfiguration())
+		if (subobject->HasActualValue())
 			presTimeout = subobject->GetTypedActualValue<std::uint32_t>();
+		else if (subobject->HasDefaultValue())
+			presTimeout = subobject->GetTypedDefaultValue<std::uint32_t>();
 		else
 		{
-			boost::format formatter(kMsgSubObjectNoActualValue);
+			boost::format formatter(kMsgDefaultCnPresTimeout);
 			formatter
-			% (std::uint32_t) 0x1F92
 			% (std::uint32_t) nodeId
-			% (std::uint32_t) 240;
+			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
-			return Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, "[" + networkId + "] " + formatter.str());
+			return Result(ErrorCode::SUB_OBJECT_HAS_NO_DEFAULT_VALUE, "[" + networkId + "] " + formatter.str());
 		}
 		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 	}

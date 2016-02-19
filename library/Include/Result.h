@@ -170,6 +170,7 @@ namespace IndustrialNetwork
 				const std::string kMsgNoNodesConfigured = "Network does not contain any POWERLINK controlled nodes.";
 				const std::string kMsgLowCnPresTimeout = "PResTimeout (%dns) (sub-object 0x1F92/0x%X on MN) of node %d is less than PresMaxLatency (subIndex 0x1F98/0x03 on CN).";
 				const std::string kMsgLowCnPresTimeoutDefault = "PResTimeout (%dns) (sub-object 0x1F92/0x%X on MN) of node %d is less than specification default value (25000ns).";
+				const std::string kMsgDefaultCnPresTimeout = "PResTimeout (sub-object 0x1F92/0x%X on MN) of node %d does not a have a default value. Error according to DS 301.";
 
 				const std::string kMsgManagingNodeTransmitPres = "Managing node transmits PRes but no controlled node is receiving any data.";
 				const std::string kMsgMappingOperationNotSupported = "Mapping operation is not supported for managing or redundant managing node.";
