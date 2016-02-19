@@ -823,33 +823,35 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Calcul
 	}
 }
 
-Result ControlledNode::GetDataObjectFromMapping(const std::shared_ptr<BaseProcessDataMapping>& mapping, std::shared_ptr<BaseObject>& returnObject)
+Result ControlledNode::GetDataObjectFromMapping(const std::shared_ptr<BaseProcessDataMapping>& mapping, std::shared_ptr<BaseObject>& returnObject, std::string& retName)
 {
 	std::uint32_t dataIndex = mapping->GetMappingIndex();
 	std::uint16_t dataSubindex = mapping->GetMappingSubIndex();
 
 	std::shared_ptr<Object> dataObject;
+	Result res = this->GetObject(dataIndex, dataObject);
+	if (!res.IsSuccessful())
+	{
+		boost::format formatter(kMsgNonExistingMappedObject);
+		formatter
+		% dataIndex
+		% (std::uint32_t) this->GetNodeId();
+		LOG_ERROR() << formatter.str();
+		return Result(ErrorCode::MAPPED_OBJECT_DOES_NOT_EXIST, formatter.str());
+	}
+	retName.append(dataObject->GetName());
+
 	std::shared_ptr<SubObject> dataSubObject;
 	if (dataSubindex == 0)
 	{
 		Result res = this->GetSubObject(dataIndex, dataSubindex, dataSubObject, false);
 		if (!res.IsSuccessful())
-		{
-			res = this->GetObject(dataIndex, dataObject);
-			if (!res.IsSuccessful())
-			{
-				boost::format formatter(kMsgNonExistingMappedObject);
-				formatter
-				% dataIndex
-				% (std::uint32_t) this->GetNodeId();
-				LOG_ERROR() << formatter.str();
-				return Result(ErrorCode::MAPPED_OBJECT_DOES_NOT_EXIST, formatter.str());
-			}
-			else
-				returnObject = dataObject;
-		}
+			returnObject = dataObject;
 		else
+		{
 			returnObject = dataSubObject;
+			retName.append("_" + dataSubObject->GetName());
+		}
 	}
 	else
 	{
@@ -865,7 +867,10 @@ Result ControlledNode::GetDataObjectFromMapping(const std::shared_ptr<BaseProces
 			return Result(ErrorCode::MAPPED_SUBOBJECT_DOES_NOT_EXIST, formatter.str());
 		}
 		else
+		{
 			returnObject = dataSubObject;
+			retName.append("_" + dataSubObject->GetName());
+		}
 	}
 	return Result();
 }
@@ -892,7 +897,8 @@ Result ControlledNode::UpdateProcessImage(Direction dir)
 	for (auto& mapObj : mappingVector)
 	{
 		std::shared_ptr<BaseObject> dataObject;
-		Result res = GetDataObjectFromMapping(mapObj, dataObject);
+		std::string dataName;
+		Result res = GetDataObjectFromMapping(mapObj, dataObject, dataName);
 		if (!res.IsSuccessful())
 			return res;
 
@@ -909,20 +915,18 @@ Result ControlledNode::UpdateProcessImage(Direction dir)
 			if (structDt.get())
 			{
 				std::uint32_t bitOffset = 0;
-				std::uint32_t varCount = 0;
 				for (auto& varDecl : structDt->GetVarDeclarations())
 				{
 					std::stringstream nameBuilder;
-					nameBuilder << "CN" << IntToHex<std::uint32_t>((std::uint32_t) this->GetNodeId(), 2);
+					nameBuilder << "CN" << (std::uint32_t) this->GetNodeId();
 					nameBuilder << "_";
 					nameBuilder << "DOM";
 					nameBuilder << IntToHex<std::uint32_t>(domainCount, 2);
-					nameBuilder	<< "_";
-					nameBuilder << "VAR";
-					nameBuilder << IntToHex<std::uint32_t>(varCount, 2);
-					nameBuilder	<< "_";
-					nameBuilder << structDt->GetName();
 					nameBuilder << "_";
+					nameBuilder << dataName;
+					nameBuilder	<< "_";
+					//nameBuilder << structDt->GetName();
+					//nameBuilder << "_";
 					nameBuilder << varDecl->GetName();
 
 					if (varDecl->GetDataType() == IEC_Datatype::BITSTRING)
@@ -958,7 +962,6 @@ Result ControlledNode::UpdateProcessImage(Direction dir)
 						piOffset++;
 						bitOffset = 0;
 					}
-					varCount++;
 				}
 			}
 			else if (arrayDt.get())
@@ -967,13 +970,12 @@ Result ControlledNode::UpdateProcessImage(Direction dir)
 				for (std::uint32_t i = arrayDt->GetLowerLimit(); i < arrayDt->GetUpperLimit(); i++)
 				{
 					std::stringstream nameBuilder;
-					nameBuilder << "CN" << IntToHex<std::uint32_t>((std::uint32_t) this->GetNodeId(), 2);
+					nameBuilder << "CN" << (std::uint32_t) this->GetNodeId();
 					nameBuilder << "_";
 					nameBuilder << "DOM";
 					nameBuilder << IntToHex<std::uint32_t>(domainCount, 2);
-					nameBuilder	<< "_";
-					nameBuilder << "VAR";
-					nameBuilder << IntToHex<std::uint32_t>(i, 2);
+					nameBuilder << "_";
+					nameBuilder << dataName;
 					nameBuilder	<< "_";
 					nameBuilder << arrayDt->GetName();
 
@@ -1022,8 +1024,13 @@ Result ControlledNode::UpdateProcessImage(Direction dir)
 		}
 		else
 		{
+			std::stringstream nameBuilder;
+			nameBuilder << "CN" << (std::uint32_t) this->GetNodeId();
+			nameBuilder << "_";
+			nameBuilder << dataName;
+
 			std::shared_ptr<BaseProcessImageObject> piObj = std::make_shared<BaseProcessImageObject>(
-			            dataObject->GetName(),
+			            nameBuilder.str(),
 			            GetIECDataType(dataObject->GetDataType().get()),
 			            piOffset,
 			            GetIECDataTypeBitSize(GetIECDataType(dataObject->GetDataType().get())));

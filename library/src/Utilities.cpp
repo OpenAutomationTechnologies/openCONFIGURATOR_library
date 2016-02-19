@@ -401,7 +401,9 @@ namespace IndustrialNetwork
 						case IEC_Datatype::UINT:
 							return std::string("UInt16");
 						case IEC_Datatype::REAL:
+							return std::string("float");
 						case IEC_Datatype::LREAL:
+							return std::string("double");
 						case IEC_Datatype::STRING:
 						case IEC_Datatype::WSTRING:
 						default:

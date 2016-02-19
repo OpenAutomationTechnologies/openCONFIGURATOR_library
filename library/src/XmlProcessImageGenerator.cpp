@@ -116,7 +116,9 @@ std::uint32_t XmlProcessImageGenerator::WriteXMLProcessImage(const Direction dir
 					piSize += paddingSize;
 				}
 			}
-			this->processImageStream << PrintChannel(piEntry->GetName(), piEntry->GetDataType(), piEntry->GetSize(), piSize / 8, piEntry->GetBitOffset());
+			std::string piName = piEntry->GetName();
+			std::replace(piName.begin(), piName.end(), '_', '.');
+			this->processImageStream << PrintChannel(piName, piEntry->GetDataType(), piEntry->GetSize(), piSize / 8, piEntry->GetBitOffset());
 			piSize += piEntry->GetSize();
 		}
 		this->processImageStream << "\t</ProcessImage>" << std::endl;
