@@ -647,36 +647,14 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::UpdatePr
 			//PResMN - process all channels at once
 			if (mappedFromNode == 0 && dir == Direction::TX && presMNProcessed == false)
 			{
-				std::uint16_t startNodeMapping = 0;
 				for (auto& node : nodeCollection)
 				{
-					std::uint16_t mappingFromNodeCount = 0;
-					std::uint16_t mappingCount = 0;
 					const std::shared_ptr<ControlledNode>& cn = std::dynamic_pointer_cast<ControlledNode>(node.second);
 					if (cn == NULL) //Node is not a CN
 						continue;
 
-					for (auto& receiveMapping : cn->GetReceiveMapping())
-					{
-						if (receiveMapping->GetDestinationNode() == 240)
-							mappingFromNodeCount++;
-					}
-
-					std::uint16_t endNodeMapping = startNodeMapping + mappingFromNodeCount;
 					for (auto& mapping : presMn)
 					{
-						if (mappingCount < startNodeMapping)
-						{
-							mappingCount++;
-							continue;
-						}
-
-						if (mappingCount == endNodeMapping)
-						{
-							startNodeMapping = endNodeMapping;
-							break;
-						}
-
 						if (mapping->HasActualValue())
 						{
 							if (mapping->GetTypedActualValue<std::uint64_t>() != 0)
@@ -684,14 +662,18 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::UpdatePr
 								std::shared_ptr<BaseProcessDataMapping> mappingPtr = std::shared_ptr<BaseProcessDataMapping>(new BaseProcessDataMapping(node.first,
 								        mapping->GetObjectId(), mapping, mapping->GetTypedActualValue<std::string>(), this->GetNodeId(), false));
 
-								mappingPtr->SetMappingOffset(mappingPtr->GetMappingOffset() - cn->GetNodeDataPresMnOffset());
+								if (cn->GetNodeDataPresMnOffset() > mappingPtr->GetMappingOffset())
+									continue;
 
-								res = CheckProcessDataMapping(nodeCollection.at((std::uint8_t) node.first), mappingPtr, Direction::RX);
+								if (mappingPtr->GetMappingOffset() >= cn->GetNodeDataPresMnCurrentOffset())
+									break;
+
+								mappingPtr->SetMappingOffset(mappingPtr->GetMappingOffset() - cn->GetNodeDataPresMnOffset());
+								res = CheckProcessDataMapping(node.second, mappingPtr, Direction::RX);
 								if (!res.IsSuccessful())
 									return res;
 
 								this->GetTransmitMapping().push_back(mappingPtr);
-								mappingCount++;
 							}
 						}
 						else if (mapping->HasDefaultValue())
@@ -701,12 +683,18 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::UpdatePr
 								std::shared_ptr<BaseProcessDataMapping> mappingPtr = std::shared_ptr<BaseProcessDataMapping>(new BaseProcessDataMapping(node.first,
 								        mapping->GetObjectId(), mapping, mapping->GetTypedDefaultValue<std::string>(), this->GetNodeId(), true));
 
-								res = CheckProcessDataMapping(nodeCollection.at((std::uint8_t) mappedFromNode), mappingPtr, Direction::RX);
+								if (cn->GetNodeDataPresMnOffset() > mappingPtr->GetMappingOffset())
+									continue;
+
+								if (mappingPtr->GetMappingOffset() >= cn->GetNodeDataPresMnCurrentOffset())
+									break;
+
+								mappingPtr->SetMappingOffset(mappingPtr->GetMappingOffset() - cn->GetNodeDataPresMnOffset());
+								res = CheckProcessDataMapping(node.second, mappingPtr, Direction::RX);
 								if (!res.IsSuccessful())
 									return res;
 
 								this->GetTransmitMapping().push_back(mappingPtr);
-								mappingCount++;
 							}
 						}
 					}

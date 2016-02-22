@@ -93,7 +93,7 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 		}
 	}
 
-//Direction from node point of view
+	//Direction from node point of view
 	Direction nodeDir = Direction::TX;
 	if (dir == Direction::TX)
 		nodeDir = Direction::RX;
@@ -105,11 +105,41 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 	std::uint32_t subindex = 1;
 	bool cnReceivePresMN = false;
 
-	//Traverse all controlled nodes
+	//Sort PResMN first
+	std::vector<std::shared_ptr<BaseNode>> sortedCollection;
+	if (dir == Direction::TX)
+	{
+		for (auto& node : nodeCollection)
+		{
+			//Cast pointer to CN
+			std::shared_ptr<ControlledNode> cn = std::dynamic_pointer_cast<ControlledNode>(node.second);
+			if (!cn)
+				continue;
+
+			if (cn->ReceivesPResMN() || cn->GetOperationMode() == PlkOperationMode::CHAINED)
+				sortedCollection.push_back(node.second);
+
+		}
+	}
 	for (auto& node : nodeCollection)
 	{
+		//Cast pointer to CN
+		std::shared_ptr<ControlledNode> cn = std::dynamic_pointer_cast<ControlledNode>(node.second);
+		if (!cn)
+		{
+			sortedCollection.push_back(node.second);
+			continue;
+		}
+
+		if ((cn->ReceivesPResMN() == false && cn->GetOperationMode() != PlkOperationMode::CHAINED) || dir == Direction::RX)
+			sortedCollection.push_back(node.second);
+	}
+
+	//Traverse all controlled nodes
+	for (auto& node : sortedCollection)
+	{
 		//Continue if node is disabled
-		if (node.second->IsEnabled() == false)
+		if (node->IsEnabled() == false)
 			continue;
 
 		//Reset channel bit offset
@@ -117,12 +147,12 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 
 		if (!value.empty())
 		{
-			if (!this->GenerateForNode(value, node.first)) //Check if values have to be generated
+			if (!this->GenerateForNode(value, node->GetNodeId())) //Check if values have to be generated
 				continue;
 		}
 
 		//Cast pointer to CN
-		std::shared_ptr<ControlledNode> cn = std::dynamic_pointer_cast<ControlledNode>(node.second); //Check if not RMN needs to be handled properly
+		std::shared_ptr<ControlledNode> cn = std::dynamic_pointer_cast<ControlledNode>(node); //Check if not RMN needs to be handled properly
 		if (!cn)
 			continue; //If RMN continue
 
@@ -150,7 +180,10 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 					cnReceivePresMN = true;
 
 					//Update CN Mapping once with correct PResMN offset
-					cn->UpdateProcessImage(nodeDir);
+					res = cn->UpdateProcessImage(nodeDir);
+					if (!res.IsSuccessful())
+						return res;
+
 					nodeOffsetSet = true;
 				}
 				else if (mapping->GetDestinationNode() != 0
@@ -226,8 +259,8 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 						boost::format formatter(kMsgChannelExceeded);
 						formatter
 						% DirectionTypeValues[(std::uint8_t) dir]
-						% node.second->GetName()
-						% (std::uint32_t) node.second->GetNodeId();
+						% node->GetName()
+						% (std::uint32_t) node->GetNodeId();
 						LOG_WARN() << formatter.str();
 						break;
 					}
@@ -274,7 +307,7 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 				for (auto& cnPIObject : processImageCollection)
 				{
 					//Check if CN PI object belongs to mapped domain
-					if (cnPIObject->GetPiOffset() >= mapping->GetMappingOffset() / 8
+					if (cnPIObject->GetPiOffset() >= channelBitOffset / 8
 					        || foundMapping) //allow offset gaps
 					{
 						foundMapping = true;
@@ -476,22 +509,23 @@ Result ManagingNodeMappingBuilder::FindMappedObject(const std::shared_ptr<BaseNo
 
 Result ManagingNodeMappingBuilder::WriteMappingToForNode(std::uint16_t nodeId, Direction dir, const std::string& actualMappingValue, const std::shared_ptr<ManagingNode>& mn)
 {
-	std::uint32_t mappingParameterIndex = 0;
 	std::uint32_t mappingObjectIndex = 0;
+	std::uint32_t mappingBaseParameterIndex = 0;
+	std::uint32_t mappingBaseObjectIndex = 0;
 	std::uint16_t nrOfEntries = 1;
 	bool useNewMappingParameter = false;
 
 	//Set mapping parameter index according to direction
 	if (dir == Direction::RX)
 	{
-		mappingParameterIndex = 0x1400;
-		mappingObjectIndex = 0x1600;
+		mappingBaseParameterIndex = 0x1400;
+		mappingBaseObjectIndex = 0x1600;
 	}
 
 	else if (dir == Direction::TX)
 	{
-		mappingParameterIndex = 0x1800;
-		mappingObjectIndex = 0x1A00;
+		mappingBaseParameterIndex = 0x1800;
+		mappingBaseObjectIndex = 0x1A00;
 	}
 
 	//Get mapping object
@@ -499,7 +533,7 @@ Result ManagingNodeMappingBuilder::WriteMappingToForNode(std::uint16_t nodeId, D
 	bool noChannelAvailable = true;
 	for (auto& obj : mn->GetObjectDictionary())
 	{
-		if (obj.first >= mappingParameterIndex && obj.first < (mappingParameterIndex + 0x100)) //Traverse mapping parameter
+		if (obj.first >= mappingBaseParameterIndex && obj.first < (mappingBaseParameterIndex + 0x100)) //Traverse mapping parameter
 		{
 			//Get mapping parameter object
 			std::shared_ptr<SubObject> nodeID;
@@ -511,7 +545,7 @@ Result ManagingNodeMappingBuilder::WriteMappingToForNode(std::uint16_t nodeId, D
 			{
 				if (nodeId == nodeID->GetTypedActualValue<std::uint16_t>())
 				{
-					mappingObjectIndex = (obj.first - mappingParameterIndex) + mappingObjectIndex; //Calculate mapping object index for node
+					mappingObjectIndex = (obj.first - mappingBaseParameterIndex) + mappingBaseObjectIndex; //Calculate mapping object index for node
 
 					//Get according mapping object - Check if mappings are available
 					std::shared_ptr<Object> mappingObject;
@@ -547,7 +581,7 @@ Result ManagingNodeMappingBuilder::WriteMappingToForNode(std::uint16_t nodeId, D
 				if (useNewMappingParameter == false) // Take first unsused parameter and store it
 				{
 					mappingParamObj = nodeID;
-					mappingObjectIndex = (obj.first - mappingParameterIndex) + mappingObjectIndex;
+					mappingObjectIndex = (obj.first - mappingBaseParameterIndex) + mappingBaseObjectIndex;
 					useNewMappingParameter = true; // new mapping parameter stored
 					noChannelAvailable = false;
 				}

@@ -95,6 +95,9 @@ namespace IndustrialNetwork
 
 						void SetNodeDataPresMnOffset(std::uint32_t offset);
 						std::uint32_t GetNodeDataPresMnOffset();
+						std::uint32_t GetNodeDataPresMnCurrentOffset();
+
+						bool ReceivesPResMN();
 
 					private:
 						IndustrialNetwork::POWERLINK::Core::Node::PlkOperationMode operationMode;
@@ -105,6 +108,7 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapBaseObject(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject>& obj, std::uint32_t index, std::uint16_t subindex, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, bool updateNrOfEntries, std::uint16_t channelNr = 0, std::uint32_t position = 0, std::uint16_t fromNode = 0);
 						std::uint32_t nodeDataPresMnOffset;
 						std::uint32_t nodeDataPresMnCurrentOffset;
+						bool receivesPResMN;
 
 				};
 			}

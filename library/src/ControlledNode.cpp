@@ -40,7 +40,8 @@ using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 ControlledNode::ControlledNode(std::uint8_t nodeID, const std::string& nodeName) : BaseNode(nodeID, nodeName),
 	operationMode(PlkOperationMode::NORMAL),
 	nodeDataPresMnOffset(0),
-	nodeDataPresMnCurrentOffset(0)
+	nodeDataPresMnCurrentOffset(0),
+	receivesPResMN(false)
 {
 	//this->AddNodeAssignment(NodeAssignment::MNT_NODEASSIGN_VALID);
 	//this->AddNodeAssignment(NodeAssignment::NMT_NODEASSIGN_NODE_EXISTS);
@@ -129,7 +130,11 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 	        && this->GetOperationMode() == PlkOperationMode::CHAINED)
 	{
 		fromNode = 240;
+		receivesPResMN = true;
 	}
+
+	if (fromNode == 240)
+		receivesPResMN = true;
 
 	//Object has domain datatype
 	if (objToMap->GetUniqueIdRef().is_initialized() &&
@@ -670,28 +675,6 @@ Result ControlledNode::SetOperationMode(PlkOperationMode operationMode)
 		this->RemoveNodeAssignment(NodeAssignment::NMT_NODEASSIGN_MULTIPLEXED_CN);
 		this->RemoveNodeAssignment(NodeAssignment::NMT_NODEASSIGN_PRES_CHAINING);
 
-		//Reset PResMN receive data
-		if (this->operationMode == PlkOperationMode::CHAINED)
-		{
-			for (auto& obj : this->GetObjectDictionary())
-			{
-				if (obj.first >= 0x1400 && obj.first < 0x1500)
-				{
-					//Get mapping parameter object
-					std::shared_ptr<SubObject> nodeID;
-					Result res = obj.second->GetSubObject(0x1, nodeID);
-					if (!res.IsSuccessful())
-						return res;
-
-					if (nodeID->WriteToConfiguration())
-					{
-						if (nodeID->GetTypedActualValue<std::uint16_t>() == 240)
-							nodeID->SetTypedObjectActualValue("0");
-					}
-				}
-			}
-		}
-
 		this->operationMode = operationMode;
 	}
 	else if (operationMode == PlkOperationMode::MULTIPLEXED)
@@ -1113,12 +1096,14 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 			if (nodeID->WriteToConfiguration())
 				mappedFromNode = nodeID->GetTypedActualValue<std::uint16_t>();
 
-			if ((this->GetOperationMode() == PlkOperationMode::CHAINED
+			if (((this->GetOperationMode() == PlkOperationMode::CHAINED && mappedFromNode == 0)
 			        || mappedFromNode == 240)
 			        && dir == Direction::RX) //Node mode has changed to chaining or is already chained
 			{
-				mappedFromNode = 240; //Might be '0' if not correct configured.
+				if (this->GetOperationMode() == PlkOperationMode::CHAINED && mappedFromNode == 0)
+					mappedFromNode = 240; //Make sure that chained node receives from PResMN
 				expectedOffset = this->nodeDataPresMnCurrentOffset;
+				receivesPResMN = true;
 			}
 
 			//Get according mapping object
@@ -1474,11 +1459,17 @@ void ControlledNode::SetNodeDataPresMnOffset(std::uint32_t offset)
 {
 	this->nodeDataPresMnOffset = offset;
 	this->nodeDataPresMnCurrentOffset = offset;
+	this->receivesPResMN = true;
 }
 
 std::uint32_t ControlledNode::GetNodeDataPresMnOffset()
 {
 	return this->nodeDataPresMnOffset;
+}
+
+std::uint32_t ControlledNode::GetNodeDataPresMnCurrentOffset()
+{
+	return this->nodeDataPresMnCurrentOffset;
 }
 
 Result ControlledNode::MoveMappingObject(const Direction dir, std::uint16_t channelNr, std::uint16_t oldPosition, std::uint16_t newPosition)
@@ -1573,4 +1564,9 @@ Result ControlledNode::MoveMappingObject(const Direction dir, std::uint16_t chan
 		}
 	}
 	return this->UpdateProcessImage(dir);
+}
+
+bool ControlledNode::ReceivesPResMN()
+{
+	return this->receivesPResMN;
 }
