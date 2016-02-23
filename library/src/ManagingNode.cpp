@@ -649,6 +649,9 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::UpdatePr
 			{
 				for (auto& node : nodeCollection)
 				{
+					if (node.second->IsEnabled() == false)
+						continue;
+
 					const std::shared_ptr<ControlledNode>& cn = std::dynamic_pointer_cast<ControlledNode>(node.second);
 					if (cn == NULL) //Node is not a CN
 						continue;

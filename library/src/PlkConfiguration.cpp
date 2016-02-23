@@ -727,16 +727,17 @@ Result PlkConfiguration::DistributePResPayloadLimit(const std::map<std::uint8_t,
 					if (paramObj->GetTypedActualValue<std::uint16_t>() == node.first)
 					{
 						cn.second->SetSubObjectActualValue(0x1F8D, node.first, presActPayloadLimitValue.str());
+						if (!std::dynamic_pointer_cast<ManagingNode>(cn.second))
+							cn.second->SetSubObjectActualValue(0x1F81, node.first, IntToHex<std::uint32_t>(node.second->GetNodeAssignmentValue(), 8, "0x")); //Set actual value with assignment
 						crossTrafficForNode = true;
 					}
 				}
 			}
 			if (crossTrafficForNode == false)
 			{
-				std::shared_ptr<SubObject> presActValueObj;
-				res = cn.second->GetSubObject(0x1F8D, node.first, presActValueObj, false);
-				if (res.IsSuccessful())
-					presActValueObj->ClearActualValue();
+				cn.second->ForceSubObject(0x1F8D, node.first, false, false, "", false);
+				if (!std::dynamic_pointer_cast<ManagingNode>(cn.second))
+					cn.second->ForceSubObject(0x1F81, node.first, false, false, "", false);
 			}
 		}
 	}
