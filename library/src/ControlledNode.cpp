@@ -912,10 +912,13 @@ Result ControlledNode::UpdateProcessImage(Direction dir)
 					//nameBuilder << "_";
 					nameBuilder << varDecl->GetName();
 
+					std::string piName = nameBuilder.str();
+					boost::trim(piName);
+					std::replace(piName.begin(), piName.end(), ' ', '_');
 					if (varDecl->GetDataType() == IEC_Datatype::BITSTRING)
 					{
 						std::shared_ptr<BaseProcessImageObject> piObj = std::make_shared<BaseProcessImageObject>(
-						            nameBuilder.str(),
+						            piName,
 						            varDecl->GetDataType(),
 						            piOffset, bitOffset,
 						            varDecl->GetBitSize());
@@ -929,7 +932,7 @@ Result ControlledNode::UpdateProcessImage(Direction dir)
 					else
 					{
 						std::shared_ptr<BaseProcessImageObject> piObj = std::make_shared<BaseProcessImageObject>(
-						            nameBuilder.str(),
+						            piName,
 						            varDecl->GetDataType(),
 						            piOffset,
 						            varDecl->GetBitSize());
@@ -962,10 +965,13 @@ Result ControlledNode::UpdateProcessImage(Direction dir)
 					nameBuilder	<< "_";
 					nameBuilder << arrayDt->GetName();
 
+					std::string piName = nameBuilder.str();
+					boost::trim(piName);
+					std::replace(piName.begin(), piName.end(), ' ', '_');
 					if (arrayDt->GetDataType() == IEC_Datatype::BITSTRING)
 					{
 						std::shared_ptr<BaseProcessImageObject> piObj = std::make_shared<BaseProcessImageObject>(
-						            nameBuilder.str(),
+						            piName,
 						            arrayDt->GetDataType(),
 						            piOffset,
 						            bitOffset,
@@ -985,7 +991,7 @@ Result ControlledNode::UpdateProcessImage(Direction dir)
 					else
 					{
 						std::shared_ptr<BaseProcessImageObject> piObj = std::make_shared<BaseProcessImageObject>(
-						            nameBuilder.str(),
+						            piName,
 						            arrayDt->GetDataType(),
 						            piOffset,
 						            arrayDt->GetBitSize());
@@ -1012,8 +1018,11 @@ Result ControlledNode::UpdateProcessImage(Direction dir)
 			nameBuilder << "_";
 			nameBuilder << dataName;
 
+			std::string piName = nameBuilder.str();
+			boost::trim(piName);
+			std::replace(piName.begin(), piName.end(), ' ', '_');
 			std::shared_ptr<BaseProcessImageObject> piObj = std::make_shared<BaseProcessImageObject>(
-			            nameBuilder.str(),
+			            piName,
 			            GetIECDataType(dataObject->GetDataType().get()),
 			            piOffset,
 			            GetIECDataTypeBitSize(GetIECDataType(dataObject->GetDataType().get())));

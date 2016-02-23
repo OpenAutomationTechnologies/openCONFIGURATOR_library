@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CONTROLLED_NODE_H
 
 #include <boost/format.hpp>
+#include <boost/algorithm/string.hpp>
 
 #include "BaseNode.h"
 #include "BaseObject.h"
