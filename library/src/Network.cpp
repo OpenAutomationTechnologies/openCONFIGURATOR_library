@@ -900,11 +900,16 @@ Result Network::EnableNode(const std::uint8_t nodeID, bool enable)
 {
 	if (nodeID == 240)
 	{
-		boost::format formatter(kMsgManagingNodeDisable);
-		formatter
-		% this->networkId;
-		LOG_ERROR() << "[" + networkId + "] " + formatter.str();
-		return Result(ErrorCode::MANAGING_NODE_DISABLE_INVALID, formatter.str());
+		if (enable == false)
+		{
+			boost::format formatter(kMsgManagingNodeDisable);
+			formatter
+			% this->networkId;
+			LOG_ERROR() << "[" + networkId + "] " + formatter.str();
+			return Result(ErrorCode::MANAGING_NODE_DISABLE_INVALID, formatter.str());
+		}
+		else
+			return Result();
 	}
 
 	auto it = this->nodeCollection.find(nodeID);
