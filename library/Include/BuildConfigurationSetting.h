@@ -65,7 +65,7 @@ namespace IndustrialNetwork
 				{
 					public:
 						BuildConfigurationSetting();
-						~BuildConfigurationSetting();
+						virtual ~BuildConfigurationSetting();
 
 						/**
 						\brief Constructor for the BuildConfigurationHandler class.
