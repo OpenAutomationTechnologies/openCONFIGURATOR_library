@@ -473,7 +473,8 @@ Result ControlledNode::MapAllRxObjects(std::uint16_t channelNr, bool updateNrOfE
 	{
 		if (obj.second->GetPDOMapping().is_initialized())
 		{
-			if (obj.second->GetPDOMapping() == PDOMapping::RPDO)
+			if ((obj.second->GetPDOMapping() == PDOMapping::RPDO || obj.second->GetPDOMapping() == PDOMapping::DEFAULT || obj.second->GetPDOMapping() == PDOMapping::OPTIONAL)
+			        && (obj.second->GetAccessType() == AccessType::RW || obj.second->GetAccessType() == AccessType::WO))
 			{
 				Result res = this->MapBaseObject(obj.second, obj.first, 0, Direction::RX, updateNrOfEntries, channelNr, position, 0);
 				if (!res.IsSuccessful())
@@ -487,7 +488,8 @@ Result ControlledNode::MapAllRxObjects(std::uint16_t channelNr, bool updateNrOfE
 			if (!subobj.second->GetPDOMapping().is_initialized())
 				continue;
 
-			if (subobj.second->GetPDOMapping() == PDOMapping::RPDO)
+			if ((subobj.second->GetPDOMapping() == PDOMapping::RPDO || subobj.second->GetPDOMapping() == PDOMapping::DEFAULT || subobj.second->GetPDOMapping() == PDOMapping::OPTIONAL)
+			        && (subobj.second->GetAccessType() == AccessType::RW || subobj.second->GetAccessType() == AccessType::WO))
 			{
 				Result res = this->MapBaseObject(subobj.second, obj.first, (std::uint16_t) subobj.first, Direction::RX, updateNrOfEntries, channelNr, position, 0);
 				if (!res.IsSuccessful())
@@ -508,7 +510,8 @@ Result ControlledNode::MapAllTxObjects(std::uint16_t channelNr,  bool updateNrOf
 	{
 		if (obj.second->GetPDOMapping().is_initialized())
 		{
-			if (obj.second->GetPDOMapping() == PDOMapping::TPDO)
+			if ((obj.second->GetPDOMapping() == PDOMapping::TPDO || obj.second->GetPDOMapping() == PDOMapping::DEFAULT || obj.second->GetPDOMapping() == PDOMapping::OPTIONAL)
+			        && (obj.second->GetAccessType() == AccessType::RW || obj.second->GetAccessType() == AccessType::RO))
 			{
 				Result res = this->MapBaseObject(obj.second, obj.first, 0, Direction::TX, updateNrOfEntries, channelNr, position, 0);
 				if (!res.IsSuccessful())
@@ -522,7 +525,8 @@ Result ControlledNode::MapAllTxObjects(std::uint16_t channelNr,  bool updateNrOf
 			if (!subobj.second->GetPDOMapping().is_initialized())
 				continue;
 
-			if (subobj.second->GetPDOMapping() == PDOMapping::TPDO)
+			if ((subobj.second->GetPDOMapping() == PDOMapping::TPDO || subobj.second->GetPDOMapping() == PDOMapping::DEFAULT || subobj.second->GetPDOMapping() == PDOMapping::OPTIONAL)
+			        && (subobj.second->GetAccessType() == AccessType::RW || subobj.second->GetAccessType() == AccessType::RO))
 			{
 				Result res = this->MapBaseObject(subobj.second, obj.first, (std::uint16_t) subobj.first, Direction::TX, updateNrOfEntries, channelNr, position, 0);
 				if (!res.IsSuccessful())
@@ -914,6 +918,7 @@ Result ControlledNode::UpdateProcessImage(Direction dir)
 
 					std::string piName = nameBuilder.str();
 					boost::trim(piName);
+					boost::remove_erase_if(piName, boost::is_any_of("!\\/(){}[],*'"));
 					std::replace(piName.begin(), piName.end(), ' ', '_');
 					if (varDecl->GetDataType() == IEC_Datatype::BITSTRING)
 					{
@@ -967,6 +972,7 @@ Result ControlledNode::UpdateProcessImage(Direction dir)
 
 					std::string piName = nameBuilder.str();
 					boost::trim(piName);
+					boost::remove_erase_if(piName, boost::is_any_of("!\\/(){}[],*'"));
 					std::replace(piName.begin(), piName.end(), ' ', '_');
 					if (arrayDt->GetDataType() == IEC_Datatype::BITSTRING)
 					{
@@ -1020,6 +1026,7 @@ Result ControlledNode::UpdateProcessImage(Direction dir)
 
 			std::string piName = nameBuilder.str();
 			boost::trim(piName);
+			boost::remove_erase_if(piName, boost::is_any_of("!\\/(){}[],*'"));
 			std::replace(piName.begin(), piName.end(), ' ', '_');
 			std::shared_ptr<BaseProcessImageObject> piObj = std::make_shared<BaseProcessImageObject>(
 			            piName,

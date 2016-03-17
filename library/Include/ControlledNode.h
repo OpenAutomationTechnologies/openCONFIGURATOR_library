@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/range/algorithm_ext.hpp>
 
 #include "BaseNode.h"
 #include "BaseObject.h"
