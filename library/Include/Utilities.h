@@ -90,6 +90,8 @@ namespace IndustrialNetwork
 
 				int32_t FloatToSinglePrecisisionHex(float value);
 				int64_t DoubleToDoublePrecisisionHex(double value);
+				float SinglePrecisisionHexToFloat(const std::string& hexString);
+				double DoublePrecisisionHexToDouble(const std::string& hexString);
 
 				template <typename T>
 				std::string ReverseHex(const T& number, const std::uint32_t width = 0);

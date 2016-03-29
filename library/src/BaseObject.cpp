@@ -593,13 +593,31 @@ namespace IndustrialNetwork
 								}
 							case PlkDataType::REAL32:
 								{
-									float value = boost::lexical_cast<float>(valueStr);
+									float value = 0;
+									if (valueStr.substr(0, 2) == "0x"
+									        || valueStr.substr(0, 2) == "0X")
+									{
+										value = SinglePrecisisionHexToFloat(valueStr);
+									}
+									else
+									{
+										value = boost::lexical_cast<float>(valueStr);
+									}
 									valueToSet = value;
 									break;
 								}
 							case PlkDataType::REAL64:
 								{
-									double value = boost::lexical_cast<double>(valueStr);
+									double value = 0;
+									if (valueStr.substr(0, 2) == "0x"
+									        || valueStr.substr(0, 2) == "0X")
+									{
+										value = DoublePrecisisionHexToDouble(valueStr);
+									}
+									else
+									{
+										value = boost::lexical_cast<double>(valueStr);
+									}
 									valueToSet = value;
 									break;
 								}
@@ -1135,7 +1153,16 @@ namespace IndustrialNetwork
 								}
 							case PlkDataType::REAL32:
 								{
-									float value = boost::lexical_cast<float>(actualValue);
+									float value = 0;
+									if (actualValue.substr(0, 2) == "0x"
+									        || actualValue.substr(0, 2) == "0X")
+									{
+										value = SinglePrecisisionHexToFloat(actualValue);
+									}
+									else
+									{
+										value = boost::lexical_cast<float>(actualValue);
+									}
 									if (validateOnly == false)
 									{
 										this->SetActualValue(boost::any(value));
@@ -1150,7 +1177,16 @@ namespace IndustrialNetwork
 								}
 							case PlkDataType::REAL64:
 								{
-									double value = boost::lexical_cast<double>(actualValue);
+									double value = 0;
+									if (actualValue.substr(0, 2) == "0x"
+									        || actualValue.substr(0, 2) == "0X")
+									{
+										value = DoublePrecisisionHexToDouble(actualValue);
+									}
+									else
+									{
+										value = boost::lexical_cast<double>(actualValue);
+									}
 									if (validateOnly == false)
 									{
 										this->SetActualValue(boost::any(value));

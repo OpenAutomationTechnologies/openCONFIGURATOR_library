@@ -161,7 +161,7 @@ namespace IndustrialNetwork
 					union
 					{
 						float input;
-						int output;
+						std::int32_t output;
 					} data;
 
 					data.input = value;
@@ -182,7 +182,7 @@ namespace IndustrialNetwork
 					union
 					{
 						double input;
-						long long output;
+						std::int64_t output;
 					} data;
 
 					data.input = value;
@@ -196,6 +196,32 @@ namespace IndustrialNetwork
 
 					return hex;
 				}
+
+
+				float SinglePrecisisionHexToFloat(const std::string& hexString)
+				{
+					union
+					{
+						float output;
+						std::int32_t input;
+					} data;
+					data.input = HexToInt<std::int32_t>(hexString);
+
+					return data.output;
+				}
+
+				double DoublePrecisisionHexToDouble(const std::string& hexString)
+				{
+					union
+					{
+						double output;
+						std::int64_t input;
+					} data;
+					data.input = HexToInt<std::int64_t>(hexString);
+
+					return data.output;
+				}
+
 
 				template <typename T>
 				std::string ReverseHex(const T& number, const std::uint32_t width)
