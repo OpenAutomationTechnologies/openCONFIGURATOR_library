@@ -87,15 +87,14 @@ ENDIF(MSVC)
 ###############################################################################
 SET(Boost_DEBUG TRUE)
 SET(Boost_USE_STATIC_RUNTIME OFF)
-SET(Boost_ADDITIONAL_VERSIONS "1.54.0" "1.59.0" "1.60.0")
 FIND_PACKAGE(Boost COMPONENTS log log_setup chrono date_time filesystem system thread REQUIRED)
 # Necessary for Auto-Linking under VS, ignored under Unix
 ADD_DEFINITIONS(/DBOOST_ALL_DYN_LINK)
 IF(NOT Boost_FOUND)
 	MESSAGE(SEND_ERROR "Boost libraries not found. Please add BOOST_ROOT environment variable to system.")
-# Boost version above 1.55.0 require boost atomic to be linked
+# Boost version above 1.55.0 require boost regex to be linked
 ELSEIF(Boost_FOUND AND Boost_MINOR_VERSION GREATER 55)
-	FIND_PACKAGE(Boost COMPONENTS atomic REQUIRED)
+	FIND_PACKAGE(Boost COMPONENTS log log_setup chrono date_time filesystem system thread regex REQUIRED)
 ENDIF()
 
 ###############################################################################
