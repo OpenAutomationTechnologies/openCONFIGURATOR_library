@@ -92,8 +92,11 @@ namespace IndustrialNetwork
 							case MNFeatureEnum::NMTNetTime:
 							case MNFeatureEnum::NMTNetTimeIsRealTime:
 							case MNFeatureEnum::NMTRelativeTime:
+							case MNFeatureEnum::NMTServiceUdpIp:
 							case MNFeatureEnum::NMTSimpleBoot:
+							case MNFeatureEnum::NMTMNDNA:
 							case MNFeatureEnum::NMTMNRedundancy:
+							case MNFeatureEnum::DLLMNRingRedundancy:
 								{
 									if (!defaultValue.empty())
 									{
@@ -108,21 +111,6 @@ namespace IndustrialNetwork
 										break;
 									}
 								}
-							case MNFeatureEnum::NMTMNMultiplCycMax:
-								{
-									if (!defaultValue.empty())
-									{
-										std::uint16_t value = HexToInt<std::uint16_t>(defaultValue);
-										this->SetUntypedDefaultValue(boost::any(value));
-										break;
-									}
-									if (!actualValue.empty())
-									{
-										std::uint16_t value = HexToInt<std::uint16_t>(actualValue);
-										this->SetUntypedActualValue(boost::any(value));
-										break;
-									}
-								}
 							case MNFeatureEnum::NMTMNASnd2SoC:
 							case MNFeatureEnum::NMTMNPRes2PReq:
 							case MNFeatureEnum::NMTMNPRes2PRes:
@@ -131,6 +119,12 @@ namespace IndustrialNetwork
 							case MNFeatureEnum::NMTMNSoA2ASndTx:
 							case MNFeatureEnum::NMTMNSoC2PReq:
 								{
+									if (!defaultValue.empty())
+									{
+										std::uint32_t value = HexToInt<std::uint32_t>(defaultValue);
+										this->SetUntypedDefaultValue(boost::any(value));
+										break;
+									}
 									if (!actualValue.empty())
 									{
 										std::uint32_t value = HexToInt<std::uint32_t>(actualValue);
@@ -139,6 +133,8 @@ namespace IndustrialNetwork
 									}
 								}
 							case MNFeatureEnum::PDOTPDOChannels:
+							case MNFeatureEnum::NMTMNMultiplCycMax:
+							case MNFeatureEnum::NMTMNMaxAsynchronousSlots:
 								{
 									if (!defaultValue.empty())
 									{

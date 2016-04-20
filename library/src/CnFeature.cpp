@@ -85,6 +85,7 @@ namespace IndustrialNetwork
 						{
 							case CNFeatureEnum::DLLCNFeatureMultiplex:
 							case CNFeatureEnum::DLLCNPResChaining:
+							case CNFeatureEnum::NMTCNDNA:
 								{
 									if (!defaultValue.empty())
 									{
@@ -99,8 +100,17 @@ namespace IndustrialNetwork
 										break;
 									}
 								}
+							case CNFeatureEnum::NMTCNPreOp2ToReady2Op:
 							case CNFeatureEnum::NMTCNSoC2PReq:
+							case CNFeatureEnum::NMTCNSetNodeNumberTime:
+							case CNFeatureEnum::NMTCNMaxAInv:
 								{
+									if (!defaultValue.empty())
+									{
+										std::uint32_t value = HexToInt<std::uint32_t>(defaultValue);
+										this->SetUntypedDefaultValue(boost::any(value));
+										break;
+									}
 									if (!actualValue.empty())
 									{
 										std::uint32_t value = HexToInt<std::uint32_t>(actualValue);

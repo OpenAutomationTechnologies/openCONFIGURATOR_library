@@ -88,9 +88,12 @@ namespace IndustrialNetwork
 							case GeneralFeatureEnum::DLLErrMacBuffer:
 							case GeneralFeatureEnum::DLLFeatureCN:
 							case GeneralFeatureEnum::DLLFeatureMN:
+							case GeneralFeatureEnum::NMTExtNmtCmds:
 							case GeneralFeatureEnum::NMTFlushArpEntry:
+							case GeneralFeatureEnum::NMTIsochronous:
 							case GeneralFeatureEnum::NMTNetHostNameSet:
 							case GeneralFeatureEnum::NMTNodeIDByHW:
+							case GeneralFeatureEnum::NMTNodeIDBySW:
 							case GeneralFeatureEnum::NMTPublishActiveNodes:
 							case GeneralFeatureEnum::NMTPublishConfigNodes:
 							case GeneralFeatureEnum::NMTPublishEmergencyNew:
@@ -104,6 +107,7 @@ namespace IndustrialNetwork
 							case GeneralFeatureEnum::NWLForward:
 							case GeneralFeatureEnum::NWLICMPSupport:
 							case GeneralFeatureEnum::NWLIPSupport:
+							case GeneralFeatureEnum::PDODynamicMapping:
 							case GeneralFeatureEnum::PDOSelfReceipt:
 							case GeneralFeatureEnum::PHYHubIntegrated:
 							case GeneralFeatureEnum::RT1RT1SecuritySupport:
@@ -120,6 +124,10 @@ namespace IndustrialNetwork
 							case GeneralFeatureEnum::SDOCmdWriteByName:
 							case GeneralFeatureEnum::SDOCmdWriteMultParam:
 							case GeneralFeatureEnum::SDOServer:
+							case GeneralFeatureEnum::SDOSupportASnd:
+							case GeneralFeatureEnum::SDOSupportPDO:
+							case GeneralFeatureEnum::SDOSupportUdpIp:
+							case GeneralFeatureEnum::DLLMultiplePReqPRes:
 								{
 									if (!defaultValue.empty())
 									{
@@ -134,21 +142,13 @@ namespace IndustrialNetwork
 										break;
 									}
 								}
+							case GeneralFeatureEnum::NMTBootTimeNotActive:
+							case GeneralFeatureEnum::NMTCycleTimeGranularity:
 							case GeneralFeatureEnum::NMTCycleTimeMax:
 							case GeneralFeatureEnum::NMTCycleTimeMin:
-							case GeneralFeatureEnum::NMTBootTimeNotActive:
-							case GeneralFeatureEnum::NMTErrorEntries:
-								{
-									if (!actualValue.empty())
-									{
-										std::uint32_t value = HexToInt<std::uint32_t>(actualValue);
-										this->SetUntypedActualValue(boost::any(value));
-										break;
-									}
-								}
-							case GeneralFeatureEnum::NMTCycleTimeGranularity:
 							case GeneralFeatureEnum::NMTMinRedCycleTime:
 							case GeneralFeatureEnum::NMTEmergencyQueueSize:
+							case GeneralFeatureEnum::NMTErrorEntries:
 							case GeneralFeatureEnum::NMTProductCode:
 							case GeneralFeatureEnum::NMTRevisionNo:
 							case GeneralFeatureEnum::PDOMaxDescrMem:
@@ -177,23 +177,9 @@ namespace IndustrialNetwork
 							case GeneralFeatureEnum::NMTMaxCNNumber:
 							case GeneralFeatureEnum::NMTMaxHeartbeats:
 							case GeneralFeatureEnum::PDOGranularity:
-							case GeneralFeatureEnum::PDOTPDOChannelObjects:
 							case GeneralFeatureEnum::PDORPDOChannelObjects:
+							case GeneralFeatureEnum::PDOTPDOChannelObjects:
 							case GeneralFeatureEnum::PHYExtEPLPorts:
-								{
-									if (!defaultValue.empty())
-									{
-										std::uint16_t value = HexToInt<std::uint16_t>(defaultValue);
-										this->SetUntypedDefaultValue(boost::any(value));
-										break;
-									}
-									if (!actualValue.empty())
-									{
-										uint16_t value = HexToInt<uint16_t>(actualValue);
-										this->SetUntypedActualValue(boost::any(value));
-										break;
-									}
-								}
 							case GeneralFeatureEnum::PDORPDOChannels:
 							case GeneralFeatureEnum::PDORPDOOverallObjects:
 							case GeneralFeatureEnum::PDOTPDOOverallObjects:
@@ -266,7 +252,6 @@ namespace IndustrialNetwork
 					return Result(ErrorCode::DATATYPE_MISMATCH, formatter.str());
 				}
 				template Result GeneralFeature::SetActualValue(const bool value);
-				template Result GeneralFeature::SetActualValue(const std::uint8_t value);
 				template Result GeneralFeature::SetActualValue(const std::uint16_t value);
 				template Result GeneralFeature::SetActualValue(const std::uint32_t value);
 			}
