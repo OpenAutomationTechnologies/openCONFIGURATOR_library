@@ -735,7 +735,7 @@ Result PlkConfiguration::DistributePResPayloadLimit(const std::map<std::uint8_t,
 			}
 			if (crossTrafficForNode == false)
 			{
-				cn.second->ForceSubObject(0x1F8D, node.first, false, false, "", false);
+				cn.second->SetSubObjectActualValue(0x1F8D, node.first, "");
 				if (!std::dynamic_pointer_cast<ManagingNode>(cn.second))
 					cn.second->ForceSubObject(0x1F81, node.first, false, false, "", false);
 			}
@@ -914,7 +914,7 @@ Result PlkConfiguration::ClearActualValues(const std::map<std::uint8_t, std::sha
 		if (nodeCollection.find((std::uint8_t) subObj.first) != nodeCollection.end())
 			continue;
 
-		if (subObj.second->HasActualValue())
+		if (subObj.second->HasActualValue() && subObj.second->GetForceToCDC() == false)
 			subObj.second->ClearActualValue();
 	}
 	return Result();
