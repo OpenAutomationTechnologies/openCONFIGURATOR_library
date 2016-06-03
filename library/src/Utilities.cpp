@@ -75,7 +75,7 @@ namespace IndustrialNetwork
 						stream << std::hex << valueStr;
 						stream >> value;
 					}
-					else if ((hexString.find_first_not_of("0123456789") == std::string::npos))
+					else if ((hexString.find_first_not_of("-0123456789") == std::string::npos))
 					{
 						stream << std::dec << hexString;
 						stream >> value;
