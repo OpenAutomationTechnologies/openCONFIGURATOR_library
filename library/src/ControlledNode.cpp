@@ -562,14 +562,6 @@ std::uint32_t ControlledNode::GetConfigurationObjectCount()
 						count += 2; //Add count for mapping set and reset
 						mappingObjNrOfEntries = subobject.second->GetTypedActualValue<std::uint16_t>(); //Set actual nr of mapping objects
 					}
-					else if (subobject.second->HasDefaultValue())
-					{
-						if (subobject.second->GetTypedDefaultValue<std::uint16_t>() != 0)
-						{
-							count += 2; //Add count for mapping set and reset
-							mappingObjNrOfEntries = subobject.second->GetTypedDefaultValue<std::uint16_t>(); //Set actual nr of mapping objects
-						}
-					}
 				}
 				else if (mappingObjCount < mappingObjNrOfEntries)
 				{
@@ -577,14 +569,6 @@ std::uint32_t ControlledNode::GetConfigurationObjectCount()
 					{
 						count++;
 						mappingObjCount++;
-					}
-					else if (subobject.second->HasDefaultValue())
-					{
-						if (subobject.second->GetTypedDefaultValue<std::uint64_t>() != 0)
-						{
-							count++;
-							mappingObjCount++;
-						}
 					}
 				}
 			}
@@ -627,14 +611,6 @@ std::uint32_t ControlledNode::GetConfigurationObjectSize()
 						size += 2 * subobject.second->GetBitSize(); //Add size of NrOfEntries set and reset
 						mappingObjNrOfEntries = subobject.second->GetTypedActualValue<uint16_t>(); //Set actual nr of mapping objects
 					}
-					else if (subobject.second->HasDefaultValue())
-					{
-						if (subobject.second->GetTypedDefaultValue<std::uint16_t>() != 0)
-						{
-							size += 2 * subobject.second->GetBitSize(); //Add size of NrOfEntries set and reset
-							mappingObjNrOfEntries = subobject.second->GetTypedDefaultValue<uint16_t>(); //Set actual nr of mapping objects
-						}
-					}
 				}
 				else if (mappingObjCount < mappingObjNrOfEntries)
 				{
@@ -642,14 +618,6 @@ std::uint32_t ControlledNode::GetConfigurationObjectSize()
 					{
 						size += subobject.second->GetBitSize();
 						mappingObjCount++;
-					}
-					else if (subobject.second->HasDefaultValue())
-					{
-						if (subobject.second->GetTypedDefaultValue<std::uint64_t>() != 0)
-						{
-							size += subobject.second->GetBitSize();
-							mappingObjCount++;
-						}
 					}
 				}
 			}
