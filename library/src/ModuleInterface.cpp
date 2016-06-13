@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace IndustrialNetwork::POWERLINK::Core::ModularNode;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 
-ModuleInterface::ModuleInterface(const std::string& childId, const std::string& type, ModuleAddressing moduleAddressing, std::uint16_t minPosition, std::uint16_t maxPosition, std::uint16_t minAddress, std::uint16_t maxAddress, std::uint16_t maxCount) :
+ModuleInterface::ModuleInterface(const std::string& childId, const std::string& type, const ModuleAddressing& moduleAddressing, std::uint16_t minPosition, std::uint16_t maxPosition, std::uint16_t minAddress, std::uint16_t maxAddress, std::uint16_t maxCount) :
 	IBaseInterface(childId, type, moduleAddressing),
 	minPosition(minPosition),
 	maxPosition(maxPosition),

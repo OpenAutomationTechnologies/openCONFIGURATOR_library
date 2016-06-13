@@ -20,6 +20,11 @@ The library produces four files which can be used by the openPOWERLINK stack and
   includes all configuration data of the MN and all CNs including the network
   mapping information. This file is provided for diagnostic purposes only.
 
+* `mnobd_char.txt`
+
+  This file describes the stack configuration hexadecimal format for targets
+  with no operating system.
+
 * `xap.xml`
 
   The xml file contains the structure definition of the process image. It
@@ -49,11 +54,11 @@ The library produces four files which can be used by the openPOWERLINK stack and
 	- Java JDK - 1.7.0.75 or higher - (http://www.oracle.com/technetwork/java/index.html) (required for Java wrapper build)
 
 2. External libraries needed:
-	- BOOST C++ libraries (log, date_time, filesystem, system, thread) - 1.54.0 (prefered) or 1.59.0 - (http://www.boost.org/)
+	- BOOST C++ libraries (log, date_time, filesystem, system, thread, atomic, chrono) - 1.58.0 (prefered) or higher - (http://www.boost.org/)
 
 \subsection build Building process
 1. Download <a href="http://sourceforge.net/projects/openconf/">openCONFIGURATOR</a> source code
-2. Open CMAKE and choose a toolchain (Tested: Visual Studio 11, Visual Studio 12, Visual Studio 13, Unix Makefiles (GCC 4.8.3 or higher)
+2. Open CMAKE and choose a toolchain (Tested: Visual Studio 11 (minimum required or higher), Unix Makefiles (GCC 4.8.3 or higher)
 3. Choose the %openCONFIGURATOR root directory as source directory and a custom build directory.
 4. After the CMAKE configuration additional build options are available:
 	- OPEN_CONFIGURATOR_CORE_DOCUMENTATION (adds documentation target to build)
@@ -70,6 +75,7 @@ The library produces four files which can be used by the openPOWERLINK stack and
 \subsection links Links and References
 - http://sourceforge.net/projects/openpowerlink
 - http://sourceforge.net/projects/openconf
+- https://marketplace.eclipse.org/content/ethernet-powerlink-openconfigurator
 - http://www.ethernet-powerlink.org
 */
 
@@ -80,7 +86,7 @@ The library produces four files which can be used by the openPOWERLINK stack and
 /**
 \page lic Licence
 \verbatim
-Copyright (c) 2015, Bernecker+Rainer Industrie-Elektronik Ges.m.b.H. (B&R)
+Copyright (c) 2016, Bernecker+Rainer Industrie-Elektronik Ges.m.b.H. (B&R)
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -143,6 +149,10 @@ openCONFIGURATOR core library API
 	@defgroup build Configuration Build API
 	@{
 		\brief Provides functionality to generate the %POWERLINK network configuration and process image.
+	@}
+	@defgroup modularnode Modular Node API
+	@{
+		\brief Provides functionality for handling modular node concepts.
 	@}
 	@defgroup apireturn Return Value
 	@{

@@ -237,7 +237,7 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 					% dynChannel->GetStartIndex()
 					% dynChannel->GetEndIndex()
 					% GetPlkDataTypeName(dynChannel->GetDataType())
-					% DirectionTypeValues[(std::uint8_t) dir];
+					% DirectionTypeValues[static_cast<std::underlying_type<Direction>::type>(dir)];
 					LOG_WARN() << formatter.str();
 				}
 
@@ -258,7 +258,7 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 					{
 						boost::format formatter(kMsgChannelExceeded);
 						formatter
-						% DirectionTypeValues[(std::uint8_t) dir]
+						% DirectionTypeValues[static_cast<std::underlying_type<Direction>::type>(dir)]
 						% node->GetName()
 						% (std::uint32_t) node->GetNodeId();
 						LOG_WARN() << formatter.str();
@@ -361,7 +361,7 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 								% dynChannel->GetStartIndex()
 								% dynChannel->GetEndIndex()
 								% GetPlkDataTypeName(dynChannel->GetDataType())
-								% DirectionTypeValues[(std::uint8_t) dir];
+								% DirectionTypeValues[static_cast<std::underlying_type<Direction>::type>(dir)];
 								LOG_WARN() << formatter.str();
 							}
 

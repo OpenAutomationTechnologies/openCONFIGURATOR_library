@@ -43,7 +43,7 @@ namespace IndustrialNetwork
 		{
 			namespace ObjectDictionary
 			{
-				BaseObject::BaseObject(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode) : IBaseObject(id, objectType, name),
+				BaseObject::BaseObject(std::uint32_t id, const ObjectType& objectType, const std::string& name, std::uint8_t containingNode) : IBaseObject(id, objectType, name),
 					forceToCDC(false),
 					highLimit(boost::optional<boost::any>()),
 					lowLimit(boost::optional<boost::any>()),
@@ -58,7 +58,7 @@ namespace IndustrialNetwork
 					rangeSelector(boost::optional<std::string>())
 				{}
 
-				BaseObject::BaseObject(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping) : IBaseObject(id, objectType, name),
+				BaseObject::BaseObject(std::uint32_t id, const ObjectType& objectType, const std::string& name, std::uint8_t containingNode, const PlkDataType& dataType, const AccessType& accessType, const PDOMapping& pdoMapping) : IBaseObject(id, objectType, name),
 					forceToCDC(false),
 					highLimit(boost::optional<boost::any>()),
 					lowLimit(boost::optional<boost::any>()),
@@ -73,7 +73,7 @@ namespace IndustrialNetwork
 					rangeSelector(boost::optional<std::string>())
 				{}
 
-				BaseObject::BaseObject(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode, const std::string& uniqueIdRef) : IBaseObject(id, objectType, name),
+				BaseObject::BaseObject(std::uint32_t id, const ObjectType& objectType, const std::string& name, std::uint8_t containingNode, const std::string& uniqueIdRef) : IBaseObject(id, objectType, name),
 					forceToCDC(false),
 					highLimit(boost::optional<boost::any>()),
 					lowLimit(boost::optional<boost::any>()),
@@ -509,6 +509,7 @@ namespace IndustrialNetwork
 							{
 								return boost::any_cast<std::string>(value);
 							}
+						case PlkDataType::UNDEFINED:
 						default:
 							break;
 					}
@@ -729,6 +730,7 @@ namespace IndustrialNetwork
 										valueToSet = valueStr;
 									break;
 								}
+							case PlkDataType::UNDEFINED:
 							default:
 								{
 									return Result(ErrorCode::OBJECT_TYPE_DOES_NOT_SUPPORT_VALUES);
@@ -1230,7 +1232,7 @@ namespace IndustrialNetwork
 										this->SetActualValue(boost::any(value));
 										if (this->GetDefaultValue().empty())
 											this->actualValueNotDefaultValue = true;
-										else if (this->GetTypedDefaultValue<float>() != value)
+										else if (std::fabs(this->GetTypedDefaultValue<float>() - value) > std::numeric_limits<float>::epsilon())
 											this->actualValueNotDefaultValue = true;
 										else
 											this->actualValueNotDefaultValue = false;
@@ -1254,7 +1256,7 @@ namespace IndustrialNetwork
 										this->SetActualValue(boost::any(value));
 										if (this->GetDefaultValue().empty())
 											this->actualValueNotDefaultValue = true;
-										else if (this->GetTypedDefaultValue<double>() != value)
+										else if (std::fabs(this->GetTypedDefaultValue<double>() - value) > std::numeric_limits<double>::epsilon())
 											this->actualValueNotDefaultValue = true;
 										else
 											this->actualValueNotDefaultValue = false;
@@ -1394,6 +1396,7 @@ namespace IndustrialNetwork
 									}
 									break;
 								}
+							case PlkDataType::UNDEFINED:
 							default:
 								break;
 						}
@@ -1485,6 +1488,7 @@ namespace IndustrialNetwork
 							case PlkDataType::REAL64:
 							case PlkDataType::NETTIME:
 								return 64;
+							case PlkDataType::UNDEFINED:
 							default:
 								break;
 						}

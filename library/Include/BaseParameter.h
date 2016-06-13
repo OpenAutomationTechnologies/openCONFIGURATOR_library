@@ -66,8 +66,8 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						BaseParameter(const std::string& uniqueID, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess parameterAccess, const std::string& dataTypeUniqueIDRef = "");
-						BaseParameter(const std::string& uniqueID, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess parameterAccess, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype datatype);
+						BaseParameter(const std::string& uniqueID, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess& parameterAccess, const std::string& dataTypeUniqueIDRef = "");
+						BaseParameter(const std::string& uniqueID, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess& parameterAccess, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype& datatype);
 						explicit BaseParameter(const std::string& uniqueID);
 						virtual ~BaseParameter();
 

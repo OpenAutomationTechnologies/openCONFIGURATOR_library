@@ -34,10 +34,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 
-ParameterTemplate::ParameterTemplate(const std::string& uniqueID, ParameterAccess parameterAccess, const std::string& dataTypeUniqueIDRef) : BaseParameter(uniqueID, parameterAccess, dataTypeUniqueIDRef)
+ParameterTemplate::ParameterTemplate(const std::string& uniqueID, const ParameterAccess& parameterAccess, const std::string& dataTypeUniqueIDRef) : BaseParameter(uniqueID, parameterAccess, dataTypeUniqueIDRef)
 {}
 
-ParameterTemplate::ParameterTemplate(const std::string& uniqueID, ParameterAccess parameterAccess, IEC_Datatype dataType) : BaseParameter(uniqueID, parameterAccess,
+ParameterTemplate::ParameterTemplate(const std::string& uniqueID, const ParameterAccess& parameterAccess, const IEC_Datatype& dataType) : BaseParameter(uniqueID, parameterAccess,
 	        dataType)
 {}
 

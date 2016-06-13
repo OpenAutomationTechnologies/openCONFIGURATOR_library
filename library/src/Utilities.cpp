@@ -423,6 +423,7 @@ namespace IndustrialNetwork
 						case IEC_Datatype::LINT:
 							return std::string("Int64");
 						case IEC_Datatype::UINT:
+						case IEC_Datatype::WORD:
 							return std::string("UInt16");
 						case IEC_Datatype::REAL:
 							return std::string("float");
@@ -430,6 +431,7 @@ namespace IndustrialNetwork
 							return std::string("double");
 						case IEC_Datatype::STRING:
 						case IEC_Datatype::WSTRING:
+						case IEC_Datatype::UNDEFINED:
 						default:
 							return "";
 					}

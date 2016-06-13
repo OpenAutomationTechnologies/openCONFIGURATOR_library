@@ -59,9 +59,9 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						Object(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode);
-						Object(std::uint32_t id, ObjectType objectType, const std::string&, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping);
-						Object(std::uint32_t id, ObjectType objectType, const std::string&, std::uint8_t containingNode, const std::string& uniqueIdRef);
+						Object(std::uint32_t id, const ObjectType& objectType, const std::string& name, std::uint8_t containingNode);
+						Object(std::uint32_t id, const ObjectType& objectType, const std::string&, std::uint8_t containingNode, const PlkDataType& dataType, const AccessType& accessType, const PDOMapping& pdoMapping);
+						Object(std::uint32_t id, const ObjectType& objectType, const std::string&, std::uint8_t containingNode, const std::string& uniqueIdRef);
 
 						virtual ~Object();
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddSubobject(std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::SubObject>& ref);

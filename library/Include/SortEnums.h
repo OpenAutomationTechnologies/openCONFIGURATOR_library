@@ -48,21 +48,21 @@ namespace IndustrialNetwork
 				*/
 				enum class SortNumber : std::uint8_t
 				{
-					CONTINUOUS = 0,
-					ADDRESS
+					CONTINUOUS = 0, //!< A new index or subindex is created continuously for module objects.
+					ADDRESS //!< A new index is created depending on the address of the module. The new index is calculated baseIndex plus address minus 1.
 				};
 
 				enum class SortMode : std::uint8_t
 				{
-					INDEX = 0,
-					SUBINDEX
+					INDEX = 0, //!< A new index is created for any new object.
+					SUBINDEX //!< A new subindex is created for any new object.
 				};
 
 				enum class ModuleAddressing : std::uint8_t
 				{
-					POSITION = 0,
-					MANUAL,
-					NEXT
+					POSITION = 0, //!< Modules shall receive an address which is equal with the position on the bus.
+					MANUAL, //!< Modules can receive an address which might differ with the position on the bus.
+					NEXT //!< Modules must receive the next free address on the bus.
 				};
 			}
 		}

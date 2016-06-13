@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 
-BaseProcessImageObject::BaseProcessImageObject(const std::string& name, IEC_Datatype dataType, std::uint32_t piOffset, std::uint32_t size) :
+BaseProcessImageObject::BaseProcessImageObject(const std::string& name, const IEC_Datatype& dataType, std::uint32_t piOffset, std::uint32_t size) :
 	name(name),
 	dataType(dataType),
 	size(size),
@@ -45,7 +45,7 @@ BaseProcessImageObject::BaseProcessImageObject(const std::string& name, IEC_Data
 		this->size = GetIECDataTypeBitSize(this->dataType);
 }
 
-BaseProcessImageObject::BaseProcessImageObject(const std::string& name, IEC_Datatype dataType, std::uint32_t piOffset, std::uint32_t bitOffset, std::uint32_t size) :
+BaseProcessImageObject::BaseProcessImageObject(const std::string& name, const IEC_Datatype& dataType, std::uint32_t piOffset, std::uint32_t bitOffset, std::uint32_t size) :
 	name(name),
 	dataType(dataType),
 	size(size),

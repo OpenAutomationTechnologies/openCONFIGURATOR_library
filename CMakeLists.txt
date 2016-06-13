@@ -78,9 +78,9 @@ ELSEIF(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 	ELSE()
 		SET(INSTALL_DIR "${CMAKE_SOURCE_DIR}/bin/linux/x86")
 	ENDIF()
-	IF(MINGW)
+	IF(MINGW OR CYGWIN)
 		SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -U__STRICT_ANSI__ -D__NO_INLINE__ -Wl,--kill-at")
-	ENDIF(MINGW)
+	ENDIF()
 ENDIF(MSVC)
 ###############################################################################
 # Find BOOST libraries

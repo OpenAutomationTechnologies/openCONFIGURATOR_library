@@ -57,7 +57,7 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						IBaseInterface(const std::string& uniqueId, const std::string& type, ModuleAddressing addressing) :
+						IBaseInterface(const std::string& uniqueId, const std::string& type, const ModuleAddressing& addressing) :
 							uniqueId(uniqueId),
 							type(type),
 							moduleAddressing(addressing)

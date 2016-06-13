@@ -44,7 +44,7 @@ namespace IndustrialNetwork
 		{
 			namespace ObjectDictionary
 			{
-				BaseParameter::BaseParameter(const std::string& uniqueID, ParameterAccess parameterAccess, const std::string& dataTypeUniqueIDRef) :
+				BaseParameter::BaseParameter(const std::string& uniqueID, const ParameterAccess& parameterAccess, const std::string& dataTypeUniqueIDRef) :
 					uniqueID(uniqueID),
 					dataTypeUniqueIDRef(dataTypeUniqueIDRef),
 					complexDataType(std::shared_ptr<ComplexDataType>()),
@@ -58,7 +58,7 @@ namespace IndustrialNetwork
 					actualValueNotDefaultValue(false)
 				{}
 
-				BaseParameter::BaseParameter(const std::string& uniqueID, ParameterAccess parameterAccess, IEC_Datatype dataType) :
+				BaseParameter::BaseParameter(const std::string& uniqueID, const ParameterAccess& parameterAccess, const IEC_Datatype& dataType) :
 					uniqueID(uniqueID),
 					dataTypeUniqueIDRef(""),
 					complexDataType(std::shared_ptr<ComplexDataType>()),
@@ -189,6 +189,40 @@ namespace IndustrialNetwork
 					return Result();
 				}
 
+				template<> Result BaseParameter::ValidateParameterValue<float>(float actualValueToValidate)
+				{
+					for (auto& allowedValue : this->allowedValues)
+					{
+						if (std::fabs(boost::any_cast<float>(allowedValue) - actualValueToValidate) < std::numeric_limits<float>::epsilon())
+							return Result();
+					}
+
+					for (auto& range : this->allowedRanges)
+					{
+						//Check minimum value
+						if (actualValueToValidate > boost::any_cast<float>(range.first) && actualValueToValidate < boost::any_cast<float>(range.second))
+							return Result();
+					}
+					return Result();
+				}
+
+				template<> Result BaseParameter::ValidateParameterValue<double>(double actualValueToValidate)
+				{
+					for (auto& allowedValue : this->allowedValues)
+					{
+						if (std::fabs(boost::any_cast<double>(allowedValue) - actualValueToValidate) < std::numeric_limits<double>::epsilon())
+							return Result();
+					}
+
+					for (auto& range : this->allowedRanges)
+					{
+						//Check minimum value
+						if (actualValueToValidate > boost::any_cast<double>(range.first) && actualValueToValidate < boost::any_cast<double>(range.second))
+							return Result();
+					}
+					return Result();
+				}
+
 				template<> Result BaseParameter::ValidateParameterValue<std::string>(std::string actualValueToValidate)
 				{
 					for (auto& allowedValue : this->allowedValues)
@@ -206,7 +240,6 @@ namespace IndustrialNetwork
 				template Result BaseParameter::ValidateParameterValue<std::int16_t>(std::int16_t actualValueToValidate);
 				template Result BaseParameter::ValidateParameterValue<std::int32_t>(std::int32_t actualValueToValidate);
 				template Result BaseParameter::ValidateParameterValue<std::int64_t>(std::int64_t actualValueToValidate);
-				template Result BaseParameter::ValidateParameterValue<double>(double actualValueToValidate);
 
 				template<typename T>
 				T BaseParameter::GetTypedParameterActualValue()
@@ -472,7 +505,6 @@ namespace IndustrialNetwork
 									this->allowedRanges.push_back(std::make_pair(minValueNr, maxValueNr));
 									break;
 								}
-								break;
 							case IEC_Datatype::UINT:
 							case IEC_Datatype::WORD:
 								{
@@ -769,7 +801,7 @@ namespace IndustrialNetwork
 									{
 										if (!this->GetParameterDefaultValue().is_initialized())
 											this->actualValueNotDefaultValue = true;
-										else if (this->GetTypedParameterDefaultValue<float>() != value)
+										else if (std::fabs(this->GetTypedParameterDefaultValue<float>() - value) > std::numeric_limits<float>::epsilon())
 											this->actualValueNotDefaultValue = true;
 										else
 											this->actualValueNotDefaultValue = false;
@@ -790,7 +822,7 @@ namespace IndustrialNetwork
 									{
 										if (!this->GetParameterDefaultValue().is_initialized())
 											this->actualValueNotDefaultValue = true;
-										else if (this->GetTypedParameterDefaultValue<double>() != value)
+										else if (std::fabs(this->GetTypedParameterDefaultValue<double>() - value) > std::numeric_limits<double>::epsilon())
 											this->actualValueNotDefaultValue = true;
 										else
 											this->actualValueNotDefaultValue = false;
@@ -1026,6 +1058,7 @@ namespace IndustrialNetwork
 								{
 									this->actualValueBitset.append(unsigned(actualValue.at(i)));
 								}
+								break;
 							}
 						case IEC_Datatype::BITSTRING:
 						case IEC_Datatype::UNDEFINED:

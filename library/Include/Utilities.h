@@ -79,7 +79,7 @@ namespace IndustrialNetwork
 				/************************************************************************
 				\brief Convert a std::string in std::hex-representation to an integral datatype
 
-				\param std::hexString	String representing an integral number in std::hexadecimal representation. Prefix "0x" is optional.
+				\param hexString String representing an integral number in std::hexadecimal representation. Prefix "0x" is optional.
 
 				\return The std::string converted to an integral datatype.
 				************************************************************************/

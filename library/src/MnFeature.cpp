@@ -43,7 +43,7 @@ namespace IndustrialNetwork
 		{
 			namespace Node
 			{
-				MnFeature::MnFeature(MNFeatureEnum type) : PlkFeature<MNFeatureEnum>(type)
+				MnFeature::MnFeature(const MNFeatureEnum& type) : PlkFeature<MNFeatureEnum>(type)
 				{
 					SetTypedValues(PlkFeatureDefaultValues[type], "");
 				}
@@ -102,14 +102,13 @@ namespace IndustrialNetwork
 									{
 										bool value = StringToBool(defaultValue);
 										this->SetUntypedDefaultValue(boost::any(value));
-										break;
 									}
 									if (!actualValue.empty())
 									{
 										bool value = StringToBool(actualValue);
 										this->SetUntypedActualValue(boost::any(value));
-										break;
 									}
+									break;
 								}
 							case MNFeatureEnum::NMTMNASnd2SoC:
 							case MNFeatureEnum::NMTMNPRes2PReq:
@@ -123,14 +122,13 @@ namespace IndustrialNetwork
 									{
 										std::uint32_t value = HexToInt<std::uint32_t>(defaultValue);
 										this->SetUntypedDefaultValue(boost::any(value));
-										break;
 									}
 									if (!actualValue.empty())
 									{
 										std::uint32_t value = HexToInt<std::uint32_t>(actualValue);
 										this->SetUntypedActualValue(boost::any(value));
-										break;
 									}
+									break;
 								}
 							case MNFeatureEnum::PDOTPDOChannels:
 							case MNFeatureEnum::NMTMNMultiplCycMax:
@@ -140,14 +138,13 @@ namespace IndustrialNetwork
 									{
 										std::uint16_t value = HexToInt<std::uint16_t>(defaultValue);
 										this->SetUntypedDefaultValue(boost::any(value));
-										break;
 									}
 									if (!actualValue.empty())
 									{
 										std::uint16_t value = HexToInt<std::uint16_t>(actualValue);
 										this->SetUntypedActualValue(boost::any(value));
-										break;
 									}
+									break;
 								}
 							default:
 								break;

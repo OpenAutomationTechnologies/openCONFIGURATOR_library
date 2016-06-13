@@ -57,8 +57,8 @@ namespace IndustrialNetwork
 				class DLLEXPORT BaseProcessImageObject
 				{
 					public:
-						BaseProcessImageObject(const std::string& name, IEC_Datatype dataType, std::uint32_t piOffset, std::uint32_t size);
-						BaseProcessImageObject(const std::string& name, IEC_Datatype dataType, std::uint32_t piOffset, std::uint32_t bitOffset, std::uint32_t size);
+						BaseProcessImageObject(const std::string& name, const IEC_Datatype& dataType, std::uint32_t piOffset, std::uint32_t size);
+						BaseProcessImageObject(const std::string& name, const IEC_Datatype& dataType, std::uint32_t piOffset, std::uint32_t bitOffset, std::uint32_t size);
 						virtual ~BaseProcessImageObject();
 
 						const std::string& GetName() const;

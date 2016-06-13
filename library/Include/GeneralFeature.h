@@ -58,7 +58,7 @@ namespace IndustrialNetwork
 				class GeneralFeature : public PlkFeature<GeneralFeatureEnum>
 				{
 					public:
-						explicit GeneralFeature(GeneralFeatureEnum type);
+						explicit GeneralFeature(const GeneralFeatureEnum& type);
 						virtual ~GeneralFeature();
 
 						const std::string& GetName() const;

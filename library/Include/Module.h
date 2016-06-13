@@ -60,8 +60,8 @@ namespace IndustrialNetwork
 				class Module : public IndustrialNetwork::POWERLINK::Core::Node::BaseNode
 				{
 					public:
-						Module(std::uint8_t containingNode, const std::string& moduleId, const std::string& moduleType, ModuleAddressing addressing, std::uint32_t address, std::uint32_t position, const std::string& moduleName);
-						Module(std::uint8_t containingNode, const std::string& moduleId, const std::string& moduleType, ModuleAddressing addressing, std::uint32_t address, std::uint32_t position, const std::string& moduleName, std::uint16_t minPosition, std::uint16_t maxPosition, std::uint16_t minAddress, std::uint16_t maxAddress, std::uint16_t maxCount);
+						Module(std::uint8_t containingNode, const std::string& moduleId, const std::string& moduleType, const ModuleAddressing& addressing, std::uint32_t address, std::uint32_t position, const std::string& moduleName);
+						Module(std::uint8_t containingNode, const std::string& moduleId, const std::string& moduleType, const ModuleAddressing& addressing, std::uint32_t address, std::uint32_t position, const std::string& moduleName, std::uint16_t minPosition, std::uint16_t maxPosition, std::uint16_t minAddress, std::uint16_t maxAddress, std::uint16_t maxCount);
 						virtual ~Module();
 
 						const std::string& GetModuleId() const;

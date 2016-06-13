@@ -216,8 +216,8 @@ namespace IndustrialNetwork
 
 					public:
 						Result();
-						explicit Result(ErrorCode errorCode);
-						Result(ErrorCode errorCode, const std::string& errorMessage);
+						explicit Result(const ErrorCode& errorCode);
+						Result(const ErrorCode& errorCode, const std::string& errorMessage);
 
 						virtual ~Result();
 						/**

@@ -35,7 +35,7 @@ using namespace IndustrialNetwork::POWERLINK::Core::ModularNode;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 
-Interface::Interface(const std::string& uniqueId, const std::string& type, ModuleAddressing moduleAddressing, std::uint32_t maxModules, bool unusedSlots, bool multipleModules) :
+Interface::Interface(const std::string& uniqueId, const std::string& type, const ModuleAddressing& moduleAddressing, std::uint32_t maxModules, bool unusedSlots, bool multipleModules) :
 	IBaseInterface(uniqueId, type, moduleAddressing),
 	unusedSlots(unusedSlots),
 	multipleModules(multipleModules),

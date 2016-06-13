@@ -48,9 +48,9 @@ namespace IndustrialNetwork
 				*/
 				enum class PlkOperationMode : std::uint8_t
 				{
-					NORMAL = 0, // < Normal station
-					MULTIPLEXED, //< Multiplexed station
-					CHAINED //< Chained station
+					NORMAL = 0, //!< Normal station
+					MULTIPLEXED, //!< Multiplexed station
+					CHAINED //!< Chained station
 				};
 			}
 		}

@@ -37,7 +37,7 @@ using namespace IndustrialNetwork::POWERLINK::Core::Node;
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 
-Module::Module(std::uint8_t containingNode, const std::string& moduleId, const std::string& moduleType, ModuleAddressing addressing, std::uint32_t address, std::uint32_t position, const std::string& moduleName): BaseNode(containingNode, moduleName),
+Module::Module(std::uint8_t containingNode, const std::string& moduleId, const std::string& moduleType, const ModuleAddressing& addressing, std::uint32_t address, std::uint32_t position, const std::string& moduleName): BaseNode(containingNode, moduleName),
 	position(position),
 	address(address),
 	moduleInterface(std::shared_ptr<ModuleInterface>(new ModuleInterface(moduleId, moduleType, addressing, 0, 0, 0, 0, 0))),
@@ -45,7 +45,7 @@ Module::Module(std::uint8_t containingNode, const std::string& moduleId, const s
 	disabledSubindices(std::map<std::pair<std::uint32_t, std::uint32_t>, std::shared_ptr<SubObject>>())
 {}
 
-Module::Module(std::uint8_t containingNode, const std::string& moduleId, const std::string& moduleType, ModuleAddressing addressing, std::uint32_t address, std::uint32_t position, const std::string& moduleName, std::uint16_t minPosition, std::uint16_t maxPosition, std::uint16_t minAddress, std::uint16_t maxAddress, std::uint16_t maxCount) : BaseNode(containingNode, moduleName),
+Module::Module(std::uint8_t containingNode, const std::string& moduleId, const std::string& moduleType, const ModuleAddressing& addressing, std::uint32_t address, std::uint32_t position, const std::string& moduleName, std::uint16_t minPosition, std::uint16_t maxPosition, std::uint16_t minAddress, std::uint16_t maxAddress, std::uint16_t maxCount) : BaseNode(containingNode, moduleName),
 	position(position),
 	address(address),
 	moduleInterface(std::shared_ptr<ModuleInterface>(new ModuleInterface(moduleId, moduleType, addressing, minPosition, maxPosition, minAddress, maxAddress, maxCount))),

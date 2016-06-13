@@ -91,7 +91,7 @@ namespace IndustrialNetwork
 
 						/**
 						\brief Retrieve a copied list of all managed network configuration.
-						\param[out] networkList& to the network list.
+						\param[out] networkList to the network list.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetNetworks(std::map<std::string, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::NetworkHandling::Network>>& networkList);

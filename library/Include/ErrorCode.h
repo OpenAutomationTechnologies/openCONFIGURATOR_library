@@ -160,11 +160,11 @@ namespace IndustrialNetwork
 					PARAMETER_HAS_NO_DATATYPE, //!< Parameter has no IEC datatype
 					PARAMETER_HAS_NO_ACTUAL_VALUE, //!< Parameter does not have an actual value
 					PARAMETER_HAS_NO_DEFAULT_VALUE, //!< Parameter has no default value
-					PARAMETER_EXISTS, //<! Parameter already exists
-					PARAMETER_GROUP_EXISTS, //<! Parameter group already exists
-					PARAMETER_TEMPLATE_EXISTS, //<! Parameter template already exists
-					PARAMETER_GROUP_DOES_NOT_EXIST, //<! Parameter group does not exist
-					PARAMETER_TEMPLATE_DOES_NOT_EXIST, //<! Parameter template does not exist
+					PARAMETER_EXISTS, //!< Parameter already exists
+					PARAMETER_GROUP_EXISTS, //!< Parameter group already exists
+					PARAMETER_TEMPLATE_EXISTS, //!< Parameter template already exists
+					PARAMETER_GROUP_DOES_NOT_EXIST, //!< Parameter group does not exist
+					PARAMETER_TEMPLATE_DOES_NOT_EXIST, //!< Parameter template does not exist
 					COMPLEX_DATATYPE_ALREADY_EXIST, //!< A complex datatype already exists on a node.
 					NODE_IS_NOT_MODULAR_CONTROLLED_NODE, //!< Node is not a modular head node
 					INTERFACE_ALREADY_EXISTS, //!< Interface already exists on modular head node

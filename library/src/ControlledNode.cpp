@@ -168,7 +168,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 				% index
 				% subindex
 				% (std::uint32_t) this->GetNodeId()
-				% ParameterAccessValues[(std::uint8_t) access];
+				% ParameterAccessValues[static_cast<std::underlying_type<ParameterAccess>::type>(access)];
 				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::PARAMETER_ACCESS_INVALID, formatter.str());
 			}
@@ -185,7 +185,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 				% index
 				% subindex
 				% (std::uint32_t) this->GetNodeId()
-				% ParameterAccessValues[(std::uint8_t) access];
+				% ParameterAccessValues[static_cast<std::underlying_type<ParameterAccess>::type>(access)];
 				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::PARAMETER_ACCESS_INVALID, formatter.str());
 			}
@@ -206,7 +206,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 				% index
 				% subindex
 				% (std::uint32_t) this->GetNodeId()
-				% PDOMappingValues[(std::uint8_t) objToMap->GetPDOMapping().get()];
+				% PDOMappingValues[static_cast<std::underlying_type<PDOMapping>::type>(objToMap->GetPDOMapping().get())];
 				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::MAPPING_TYPE_FOR_PDO_INVALID, formatter.str());
 			}
@@ -222,7 +222,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 				% index
 				% subindex
 				% (std::uint32_t) this->GetNodeId()
-				% PDOMappingValues[(std::uint8_t) objToMap->GetPDOMapping().get()];
+				% PDOMappingValues[static_cast<std::underlying_type<PDOMapping>::type>(objToMap->GetPDOMapping().get())];
 				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::MAPPING_TYPE_FOR_PDO_INVALID, formatter.str());
 			}
@@ -255,7 +255,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 				% index
 				% subindex
 				% (std::uint32_t) this->GetNodeId()
-				% AccessTypeValues[(std::uint8_t) objToMap->GetAccessType().get()];
+				% AccessTypeValues[static_cast<std::underlying_type<AccessType>::type>(objToMap->GetAccessType().get())];
 				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::ACCESS_TYPE_FOR_PDO_INVALID, formatter.str());
 			}
@@ -271,7 +271,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 				% index
 				% subindex
 				% (std::uint32_t) this->GetNodeId()
-				% AccessTypeValues[(std::uint8_t) objToMap->GetAccessType().get()];
+				% AccessTypeValues[static_cast<std::underlying_type<AccessType>::type>(objToMap->GetAccessType().get())];
 				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::ACCESS_TYPE_FOR_PDO_INVALID, formatter.str());
 			}
@@ -285,7 +285,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 		% index
 		% subindex
 		% (std::uint32_t) this->GetNodeId()
-		% PDOMappingValues[(std::uint8_t) objToMap->GetPDOMapping().get()];
+		% PDOMappingValues[static_cast<std::underlying_type<PDOMapping>::type>(objToMap->GetPDOMapping().get())];
 		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::MAPPING_TYPE_FOR_PDO_INVALID, formatter.str());
 	}
@@ -371,7 +371,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 				boost::format formatter(kMsgIsochronousMaxPayloadExceeded);
 				formatter
 				% (std::uint32_t) this->GetNodeId()
-				% DirectionTypeValues[(std::uint8_t) dir]
+				% DirectionTypeValues[static_cast<std::underlying_type<Direction>::type>(dir)]
 				% ((offset + objToMap->GetBitSize()) / 8);
 				LOG_FATAL() << formatter.str();
 				return Result(ErrorCode::CHANNEL_PAYLOAD_LIMIT_EXCEEDED, formatter.str());
@@ -1159,7 +1159,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 							boost::format formatter(kMsgIsochronousMaxPayloadExceeded);
 							formatter
 							% (std::uint32_t) this->GetNodeId()
-							% DirectionTypeValues[(std::uint8_t) dir]
+							% DirectionTypeValues[static_cast<std::underlying_type<Direction>::type>(dir)]
 							% ((expectedOffset + mappingPtr->GetMappingLength()) / 8);
 							LOG_FATAL() << formatter.str();
 							return Result(ErrorCode::CHANNEL_PAYLOAD_LIMIT_EXCEEDED, formatter.str());
@@ -1193,7 +1193,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 							boost::format formatter(kMsgIsochronousMaxPayloadExceeded);
 							formatter
 							% (std::uint32_t) this->GetNodeId()
-							% DirectionTypeValues[(std::uint8_t) dir]
+							% DirectionTypeValues[static_cast<std::underlying_type<Direction>::type>(dir)]
 							% ((expectedOffset + mappingPtr->GetMappingLength()) / 8);
 							LOG_FATAL() << formatter.str();
 							return Result(ErrorCode::CHANNEL_PAYLOAD_LIMIT_EXCEEDED, formatter.str());
@@ -1338,7 +1338,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 				% dataIndex
 				% dataSubindex
 				% (std::uint32_t) this->GetNodeId()
-				% ParameterAccessValues[(std::uint8_t) access];
+				% ParameterAccessValues[static_cast<std::underlying_type<ParameterAccess>::type>(access)];
 				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::PARAMETER_ACCESS_INVALID, formatter.str());
 			}
@@ -1355,7 +1355,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 				% dataIndex
 				% dataSubindex
 				% (std::uint32_t) this->GetNodeId()
-				% ParameterAccessValues[(std::uint8_t) access];
+				% ParameterAccessValues[static_cast<std::underlying_type<ParameterAccess>::type>(access)];
 				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::PARAMETER_ACCESS_INVALID, formatter.str());
 			}
@@ -1390,7 +1390,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 				% dataIndex
 				% dataSubindex
 				% (std::uint32_t) this->GetNodeId()
-				% PDOMappingValues[(std::uint8_t) foundObject->GetPDOMapping().get()];
+				% PDOMappingValues[static_cast<std::underlying_type<PDOMapping>::type>(foundObject->GetPDOMapping().get())];
 				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::MAPPING_TYPE_FOR_PDO_INVALID, formatter.str());
 			}
@@ -1406,7 +1406,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 				% dataIndex
 				% dataSubindex
 				% (std::uint32_t) this->GetNodeId()
-				% PDOMappingValues[(std::uint8_t) foundObject->GetPDOMapping().get()];
+				% PDOMappingValues[static_cast<std::underlying_type<PDOMapping>::type>(foundObject->GetPDOMapping().get())];
 				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::MAPPING_TYPE_FOR_PDO_INVALID, formatter.str());
 			}
@@ -1438,7 +1438,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 				% dataIndex
 				% dataSubindex
 				% (std::uint32_t) this->GetNodeId()
-				% AccessTypeValues[(std::uint8_t) foundObject->GetAccessType().get()];
+				% AccessTypeValues[static_cast<std::underlying_type<AccessType>::type>(foundObject->GetAccessType().get())];
 				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::ACCESS_TYPE_FOR_PDO_INVALID, formatter.str());
 			}
@@ -1454,7 +1454,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 				% dataIndex
 				% dataSubindex
 				% (std::uint32_t) this->GetNodeId()
-				% AccessTypeValues[(std::uint8_t) foundObject->GetAccessType().get()];
+				% AccessTypeValues[static_cast<std::underlying_type<AccessType>::type>(foundObject->GetAccessType().get())];
 				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::ACCESS_TYPE_FOR_PDO_INVALID, formatter.str());
 			}
@@ -1467,7 +1467,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 		% dataIndex
 		% dataSubindex
 		% (std::uint32_t) this->GetNodeId()
-		% AccessTypeValues[(std::uint8_t) foundObject->GetAccessType().get()];
+		% AccessTypeValues[static_cast<std::underlying_type<AccessType>::type>(foundObject->GetAccessType().get())];
 		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::ACCESS_TYPE_FOR_PDO_INVALID, formatter.str());
 	}
@@ -1624,10 +1624,10 @@ Result ControlledNode::ProcessParameterGroup(const std::shared_ptr<ParameterGrou
 				{
 					ProcessComplexDatatype(arrayDt, dataName, dir, piOffset, domainCount);
 				}
-				else if (enumDt.get())
+				/*else if (enumDt.get())
 				{
-					//ProcessComplexDatatype(enumDt, dataName, dir, piOffset, domainCount);
-				}
+					ProcessComplexDatatype(enumDt, dataName, dir, piOffset, domainCount);
+				}*/
 			}
 			else if (paramRef->GetReferencedParameter()->GetDataType().is_initialized())
 				ProcessComplexDatatype(paramRef->GetReferencedParameter(), dataName, dir, piOffset, bitOffset, domainCount);

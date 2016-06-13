@@ -57,7 +57,7 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						DynamicChannel(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::DynamicChannelAccessType accessType, std::uint32_t startIndex, std::uint32_t endIndex, std::uint32_t maxNumber, std::uint32_t addressOffset, std::uint8_t bitAlignment = 0);
+						DynamicChannel(const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType& dataType, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::DynamicChannelAccessType& accessType, std::uint32_t startIndex, std::uint32_t endIndex, std::uint32_t maxNumber, std::uint32_t addressOffset, std::uint8_t bitAlignment = 0);
 						virtual ~DynamicChannel();
 
 						const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType& GetDataType() const;

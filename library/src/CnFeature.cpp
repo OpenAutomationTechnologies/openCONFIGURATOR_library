@@ -43,7 +43,7 @@ namespace IndustrialNetwork
 		{
 			namespace Node
 			{
-				CnFeature::CnFeature(CNFeatureEnum type) : PlkFeature<CNFeatureEnum>(type)
+				CnFeature::CnFeature(const CNFeatureEnum& type) : PlkFeature<CNFeatureEnum>(type)
 				{
 					SetTypedValues(PlkFeatureDefaultValues[type], "");
 				}
@@ -91,14 +91,13 @@ namespace IndustrialNetwork
 									{
 										bool value = StringToBool(defaultValue);
 										this->SetUntypedDefaultValue(boost::any(value));
-										break;
 									}
 									if (!actualValue.empty())
 									{
 										bool value = StringToBool(actualValue);
 										this->SetUntypedActualValue(boost::any(value));
-										break;
 									}
+									break;
 								}
 							case CNFeatureEnum::NMTCNPreOp2ToReady2Op:
 							case CNFeatureEnum::NMTCNSoC2PReq:
@@ -109,14 +108,13 @@ namespace IndustrialNetwork
 									{
 										std::uint32_t value = HexToInt<std::uint32_t>(defaultValue);
 										this->SetUntypedDefaultValue(boost::any(value));
-										break;
 									}
 									if (!actualValue.empty())
 									{
 										std::uint32_t value = HexToInt<std::uint32_t>(actualValue);
 										this->SetUntypedActualValue(boost::any(value));
-										break;
 									}
+									break;
 								}
 							default:
 								break;

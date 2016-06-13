@@ -54,7 +54,7 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						explicit PlkFeature(I type) :
+						explicit PlkFeature(const I& type) :
 							featureId(type),
 							defaultValue(),
 							actualValue()

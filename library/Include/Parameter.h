@@ -60,8 +60,8 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						Parameter(const std::string& uniqueID, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess parameterAccess, const std::string& dataTypeUniqueIDRef = "");
-						Parameter(const std::string& uniqueID, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess parameterAccess, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype datatype);
+						Parameter(const std::string& uniqueID, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess& parameterAccess, const std::string& dataTypeUniqueIDRef = "");
+						Parameter(const std::string& uniqueID, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess& parameterAccess, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype& datatype);
 						Parameter(const std::string& uniqueID, const std::string& parameterTemplateUniqueIdRef);
 						virtual ~Parameter();
 

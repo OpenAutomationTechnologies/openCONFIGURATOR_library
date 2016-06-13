@@ -36,7 +36,7 @@ using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 
-Range::Range(const std::string& name, std::uint32_t baseIndex, std::uint32_t maxIndex, std::uint32_t maxSubIndex, std::uint32_t sortStep, SortMode sortMode, SortNumber sortNumber, PDOMapping pdoMapping) :
+Range::Range(const std::string& name, std::uint32_t baseIndex, std::uint32_t maxIndex, std::uint32_t maxSubIndex, std::uint32_t sortStep, const SortMode& sortMode, const SortNumber& sortNumber, const PDOMapping& pdoMapping) :
 	name(name),
 	baseIndex(baseIndex),
 	maxIndex(maxIndex),

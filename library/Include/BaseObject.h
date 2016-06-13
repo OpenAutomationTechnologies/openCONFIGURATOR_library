@@ -73,9 +73,9 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						BaseObject(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode);
-						BaseObject(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping);
-						BaseObject(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode, const std::string& uniqueIdRef);
+						BaseObject(std::uint32_t id, const ObjectType& objectType, const std::string& name, std::uint8_t containingNode);
+						BaseObject(std::uint32_t id, const ObjectType& objectType, const std::string& name, std::uint8_t containingNode, const PlkDataType& dataType, const AccessType& accessType, const PDOMapping& pdoMapping);
+						BaseObject(std::uint32_t id, const ObjectType& objectType, const std::string& name, std::uint8_t containingNode, const std::string& uniqueIdRef);
 
 						bool operator== (const BaseObject& BaseObject) const;
 						virtual ~BaseObject();

@@ -51,7 +51,7 @@ namespace IndustrialNetwork
 							bitOffset(bitOffset)
 						{}
 
-						virtual ~IParameterGroupEntry() {};
+						virtual ~IParameterGroupEntry() {}
 
 						std::uint16_t GetBitOffset() const
 						{

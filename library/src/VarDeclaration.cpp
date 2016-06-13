@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 
-VarDeclaration::VarDeclaration(const std::string& uniqueID, const std::string& name, IEC_Datatype dataType, std::uint32_t size, const std::string& initialValue) : ComplexDataType(uniqueID, name, size),
+VarDeclaration::VarDeclaration(const std::string& uniqueID, const std::string& name, const IEC_Datatype& dataType, std::uint32_t size, const std::string& initialValue) : ComplexDataType(uniqueID, name, size),
 	initialValue(initialValue),
 	dataType(dataType)
 {}

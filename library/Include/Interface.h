@@ -60,7 +60,7 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						Interface(const std::string& uniqueId, const std::string& type, ModuleAddressing moduleAddressing, std::uint32_t maxModules, bool unusedSlots, bool multipleModules);
+						Interface(const std::string& uniqueId, const std::string& type, const ModuleAddressing& moduleAddressing, std::uint32_t maxModules, bool unusedSlots, bool multipleModules);
 						virtual ~Interface();
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddRange(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ModularNode::Range>& range);

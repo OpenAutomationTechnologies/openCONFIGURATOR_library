@@ -70,7 +70,7 @@ namespace IndustrialNetwork
 				{
 					public:
 
-						virtual ~ConfigurationGenerator(void);
+						virtual ~ConfigurationGenerator();
 						static ConfigurationGenerator& GetInstance();
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GenerateNetworkConfiguration(const std::shared_ptr<Network>& net, std::stringstream& configurationOutput, std::stringstream& hexOutput);

@@ -472,7 +472,7 @@ Result ModularControlledNode::GetModuleObjectCurrentIndex(const std::string& int
 					{
 						if ((std::int32_t) subObj.second->GetOriginalId() == originalSubObjectId && subObj.second->GetModulePosition() == module->GetPosition())
 						{
-							subObjectId = subObj.first;
+							subObjectId = (std::int32_t) subObj.first;
 							objectId = moduleOd.find(originalObjectId)->second->GetObjectId();
 							return Result();
 						}

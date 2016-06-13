@@ -58,7 +58,7 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						explicit CnFeature(CNFeatureEnum type);
+						explicit CnFeature(const CNFeatureEnum& type);
 						virtual ~CnFeature();
 
 						const std::string& GetName() const;

@@ -43,7 +43,7 @@ namespace IndustrialNetwork
 		{
 			namespace Node
 			{
-				GeneralFeature::GeneralFeature(GeneralFeatureEnum type) : PlkFeature<GeneralFeatureEnum>(type)
+				GeneralFeature::GeneralFeature(const GeneralFeatureEnum& type) : PlkFeature<GeneralFeatureEnum>(type)
 				{
 					SetTypedValues(PlkFeatureDefaultValues[type], "");
 				}
@@ -133,14 +133,13 @@ namespace IndustrialNetwork
 									{
 										bool value = StringToBool(defaultValue);
 										this->SetUntypedDefaultValue(boost::any(value));
-										break;
 									}
 									if (!actualValue.empty())
 									{
 										bool value = StringToBool(actualValue);
 										this->SetUntypedActualValue(boost::any(value));
-										break;
 									}
+									break;
 								}
 							case GeneralFeatureEnum::NMTBootTimeNotActive:
 							case GeneralFeatureEnum::NMTCycleTimeGranularity:
@@ -163,15 +162,13 @@ namespace IndustrialNetwork
 									{
 										std::uint32_t value = HexToInt<std::uint32_t>(defaultValue);
 										this->SetUntypedDefaultValue(boost::any(value));
-										break;
 									}
 									if (!actualValue.empty())
 									{
 										std::uint32_t value = HexToInt<std::uint32_t>(actualValue);
 										this->SetUntypedActualValue(boost::any(value));
-										break;
 									}
-
+									break;
 								}
 							case GeneralFeatureEnum::NMTMaxCNNodeID:
 							case GeneralFeatureEnum::NMTMaxCNNumber:
@@ -189,14 +186,13 @@ namespace IndustrialNetwork
 									{
 										std::uint16_t value = HexToInt<std::uint16_t>(defaultValue);
 										this->SetUntypedDefaultValue(boost::any(value));
-										break;
 									}
 									if (!actualValue.empty())
 									{
 										std::uint16_t value = HexToInt<std::uint16_t>(actualValue);
 										this->SetUntypedActualValue(boost::any(value));
-										break;
 									}
+									break;
 								}
 							default:
 								break;

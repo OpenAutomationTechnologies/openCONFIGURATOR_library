@@ -58,7 +58,7 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						Range(const std::string& name, std::uint32_t baseIndex, std::uint32_t maxIndex, std::uint32_t maxSubIndex, std::uint32_t sortStep = 1, SortMode sortMode = SortMode::INDEX, SortNumber sortNumber = SortNumber::CONTINUOUS, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping pdoMapping = IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping::UNDEFINED);
+						Range(const std::string& name, std::uint32_t baseIndex, std::uint32_t maxIndex, std::uint32_t maxSubIndex, std::uint32_t sortStep = 1, const SortMode& sortMode = SortMode::INDEX, const SortNumber& sortNumber = SortNumber::CONTINUOUS, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping& pdoMapping = IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping::UNDEFINED);
 						virtual ~Range();
 
 						const std::string& GetName() const;

@@ -57,7 +57,7 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						ModuleInterface(const std::string& childId, const std::string& type, ModuleAddressing moduleAddressing, std::uint16_t minPosition, std::uint16_t maxPosition, std::uint16_t minAddress, std::uint16_t maxAddress, std::uint16_t maxCount);
+						ModuleInterface(const std::string& childId, const std::string& type, const ModuleAddressing& moduleAddressing, std::uint16_t minPosition, std::uint16_t maxPosition, std::uint16_t minAddress, std::uint16_t maxAddress, std::uint16_t maxCount);
 						virtual ~ModuleInterface();
 
 						std::uint16_t GetMinPosition() const;

@@ -43,15 +43,15 @@ namespace IndustrialNetwork
 		{
 			namespace ObjectDictionary
 			{
-				Object::Object(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode) : BaseObject(id, objectType, name, containingNode),
+				Object::Object(std::uint32_t id, const ObjectType& objectType, const std::string& name, std::uint8_t containingNode) : BaseObject(id, objectType, name, containingNode),
 					subIndexCollection(std::map<uint32_t, std::shared_ptr<SubObject>>())
 				{}
 
-				Object::Object(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode, PlkDataType dataType, AccessType accessType, PDOMapping pdoMapping) : BaseObject(id, objectType, name, containingNode, dataType, accessType, pdoMapping),
+				Object::Object(std::uint32_t id, const ObjectType& objectType, const std::string& name, std::uint8_t containingNode, const PlkDataType& dataType, const AccessType& accessType, const PDOMapping& pdoMapping) : BaseObject(id, objectType, name, containingNode, dataType, accessType, pdoMapping),
 					subIndexCollection(std::map<uint32_t, std::shared_ptr<SubObject>>())
 				{}
 
-				Object::Object(std::uint32_t id, ObjectType objectType, const std::string& name, std::uint8_t containingNode, const std::string& uniqueIdRef) : BaseObject(id, objectType, name, containingNode, uniqueIdRef),
+				Object::Object(std::uint32_t id, const ObjectType& objectType, const std::string& name, std::uint8_t containingNode, const std::string& uniqueIdRef) : BaseObject(id, objectType, name, containingNode, uniqueIdRef),
 					subIndexCollection(std::map<std::uint32_t, std::shared_ptr<SubObject>>())
 				{}
 

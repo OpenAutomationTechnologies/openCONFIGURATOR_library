@@ -65,10 +65,11 @@ Result ManagingNode::AddNodeAssignment(const NodeAssignment& assign)
 		case NodeAssignment::NMT_NODEASSIGN_SWVERSIONCHECK:
 		case NodeAssignment::NMT_NODEASSIGN_SWUPDATE:
 		case NodeAssignment::NMT_NODEASSIGN_MULTIPLEXED_CN:
+		case NodeAssignment::NMT_NODEASSIGN_PRES_CHAINING:
 			{
 				boost::format formatter(kMsgNodeAssignmentNotSupported);
 				formatter
-				% (std::uint32_t) assign
+				% static_cast<std::underlying_type<NodeAssignment>::type>(assign)
 				% (std::uint32_t) this->GetNodeId();
 				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::NODE_ASSIGNMENT_NOT_SUPPORTED, formatter.str());
@@ -91,12 +92,11 @@ Result ManagingNode::AddNodeAssignment(const NodeAssignment& assign)
 				{
 					boost::format formatter(kMsgNodeAssignmentAlreadyExists);
 					formatter
-					% (std::uint32_t) assign
+					% static_cast<std::underlying_type<NodeAssignment>::type>(assign)
 					% (std::uint32_t) this->GetNodeId();
 					LOG_INFO() << formatter.str();
 					return Result();
 				}
-				break;
 			}
 		default:
 			break;
@@ -155,7 +155,7 @@ Result ManagingNode::GetDynamicChannel(PlkDataType dataType, Direction dir, std:
 	boost::format formatter(kMsgDynamicChannelNotFound);
 	formatter
 	% GetPlkDataTypeName(dataType)
-	% DirectionTypeValues[(std::uint8_t) dir];
+	% DirectionTypeValues[static_cast<std::underlying_type<Direction>::type>(dir)];
 	LOG_ERROR() << formatter.str();
 	return Result(ErrorCode::DYNAMIC_CHANNEL_NOT_FOUND, formatter.str());
 }
