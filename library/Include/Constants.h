@@ -45,8 +45,8 @@ const char kPathSeparator =
 #endif
 
 const char kVersionMajor = '2';
-const char kVersionMinor = '0';
-const char kVersionFix = '1';
-const std::string kReleaseType = "release";
+const char kVersionMinor = '1';
+const char kVersionFix = '0';
+const std::string kReleaseType = "beta";
 
 #endif // CONSTANTS_H_
