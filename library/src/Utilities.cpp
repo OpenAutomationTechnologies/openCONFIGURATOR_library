@@ -203,9 +203,9 @@ namespace IndustrialNetwork
 					union
 					{
 						float output;
-						std::int32_t input;
+						std::uint32_t input;
 					} data;
-					data.input = HexToInt<std::int32_t>(hexString);
+					data.input = HexToInt<std::uint32_t>(hexString);
 
 					return data.output;
 				}
@@ -215,9 +215,9 @@ namespace IndustrialNetwork
 					union
 					{
 						double output;
-						std::int64_t input;
+						std::uint64_t input;
 					} data;
-					data.input = HexToInt<std::int64_t>(hexString);
+					data.input = HexToInt<std::uint64_t>(hexString);
 
 					return data.output;
 				}
