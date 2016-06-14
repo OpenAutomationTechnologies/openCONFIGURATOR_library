@@ -72,13 +72,13 @@ namespace IndustrialNetwork
 						                       ? hexString.substr(2)
 						                       : hexString;
 
-						stream << std::hex << valueStr;
-						stream >> value;
+						stream << valueStr;
+						stream >> std::hex >> value;
 					}
 					else if ((hexString.find_first_not_of("-0123456789") == std::string::npos))
 					{
-						stream << std::dec << hexString;
-						stream >> value;
+						stream << hexString;
+						stream >> std::dec >> value;
 					}
 					else
 						throw std::range_error("Value format incorrect");
