@@ -203,6 +203,7 @@ namespace IndustrialNetwork
 				const std::string kMsgModuleAlreadyExists = "Module \"%s\" already exists on position \"%d\".";
 				const std::string kMsgModuleDoesNotMatch = "Module \"%s\" does not match module \"%s\" on position \"%d\".";
 				const std::string kMsgModulePositionOccupied = "Module \"%s\" cannot be added to the position \"%d\" because it is already occupied.";
+				const std::string kMsgModuleAddressOccupied = "Address of Module \"%s\" cannot be changed to \"%d\" because it is already occupied.";
 
 				/** \addtogroup apireturn
 				* @{

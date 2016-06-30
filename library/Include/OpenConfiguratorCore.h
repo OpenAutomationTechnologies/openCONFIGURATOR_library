@@ -1287,6 +1287,17 @@ namespace IndustrialNetwork
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetModuleParameterCurrentName(const std::string& networkId, const std::uint8_t nodeId, const std::string& interfaceId, const std::string& moduleId, std::uint32_t position, const std::string& originalParamName, std::string& parameterName);
+						//! Member to set the sub-bus address of a module during runtime.
+						/*!
+						\param networkId Specifies the identifier for the network.
+						\param nodeId Specifies the node identifier.
+						\param interfaceId Defines interface if parameter.
+						\param moduleId Defines the module id if the parameter.
+						\param position Defines the module position if the parameter.
+						\param address Adress to be set.
+						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
+						*/
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetModuleAddress(const std::string& networkId, const std::uint8_t nodeId, const std::string& interfaceId, const std::string& moduleId, std::uint32_t position, std::uint32_t address);
 						/** @} */
 
 

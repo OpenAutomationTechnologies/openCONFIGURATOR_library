@@ -3877,3 +3877,38 @@ Result OpenConfiguratorCore::GetModuleParameterCurrentName(const std::string& ne
 		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
 	}
 }
+
+Result OpenConfiguratorCore::SetModuleAddress(const std::string& networkId, const std::uint8_t nodeId, const std::string& interfaceId, const std::string& moduleId, std::uint32_t position, std::uint32_t address)
+{
+	try
+	{
+		std::shared_ptr<Network> network;
+		Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		std::shared_ptr<BaseNode> nodePtr;
+		res = network->GetBaseNode(nodeId, nodePtr);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		std::shared_ptr<ModularControlledNode> cn = std::dynamic_pointer_cast<ModularControlledNode>(nodePtr);
+		if (cn)
+		{
+			res = cn->SetModuleAddress(interfaceId, moduleId, position, address);
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+		}
+		else
+		{
+			boost::format formatter(kMsgNodeIsNotAModularControlledNode);
+			formatter
+			% (std::uint32_t) cn->GetNodeId();
+			LOG_ERROR() << formatter.str();
+			return Result(ErrorCode::NODE_IS_NOT_MODULAR_CONTROLLED_NODE, "[" + networkId + "] " + formatter.str());
+		}
+	}
+	catch (const std::exception& ex)
+	{
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+	}
+}

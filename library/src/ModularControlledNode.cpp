@@ -523,3 +523,37 @@ Result ModularControlledNode::GetParameterCurrentName(const std::string& interfa
 	LOG_ERROR() << formatter.str();
 	return Result(ErrorCode::INTERFACE_DOES_NOT_EXIST, formatter.str());
 }
+
+Result ModularControlledNode::SetModuleAddress(const std::string& interfaceId, const std::string& moduleId, std::uint32_t modulePosition, std::uint32_t address)
+{
+	for (auto& interf : this->interfaceList)
+	{
+		if (interf->GetUniqueId() == interfaceId)
+		{
+			for (auto& module : interf->GetModuleCollection())
+			{
+				if (module.second->GetAddress() == address)
+				{
+					boost::format formatter(kMsgModuleAddressOccupied);
+					formatter
+					% moduleId
+					% address;
+					LOG_ERROR() << formatter.str();
+					return Result(ErrorCode::ADDRESS_OCCUPIED, formatter.str());
+				}
+			}
+			std::shared_ptr<Module> module;
+			Result res = this->GetModule(interfaceId, moduleId, modulePosition, module);
+			if (!res.IsSuccessful())
+				return res;
+
+			module->SetAddress(address);
+			return this->UpdateControlledNodeOd();
+		}
+	}
+	boost::format formatter(kMsgInterfaceDoesNotExists);
+	formatter
+	% interfaceId;
+	LOG_ERROR() << formatter.str();
+	return Result(ErrorCode::INTERFACE_DOES_NOT_EXIST, formatter.str());
+}

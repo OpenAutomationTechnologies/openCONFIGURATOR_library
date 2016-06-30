@@ -177,7 +177,8 @@ namespace IndustrialNetwork
 					RANGE_HAS_NO_FREE_OBJECTS, //!< A range has no free objects for any module indices or subindices
 					RANGE_INVALID, //!< Range is invalid
 					RANGE_INDEX_ALREADY_TAKEN, //!< The range index is already taken.
-					POSITION_OCCUPIED //!< Position on the interface is already occupied
+					POSITION_OCCUPIED, //!< Position on the interface is already occupied
+					ADDRESS_OCCUPIED //!< Address on the interface is already occupied
 				};
 				/** @} */
 			}
