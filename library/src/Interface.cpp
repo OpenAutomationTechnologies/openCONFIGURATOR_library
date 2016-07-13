@@ -195,7 +195,23 @@ Result Interface::ChangeModulePosition(const std::string& moduleId, std::uint32_
 	if (this->moduleCollection.find(oldPos) != this->moduleCollection.end() && this->moduleCollection.find(newPos) == this->moduleCollection.end())
 	{
 		auto it = this->moduleCollection.find(oldPos);
+		it->second->SetPosition(newPos);
 		this->moduleCollection.insert(std::pair<std::uint32_t, std::shared_ptr<Module>>(newPos, it->second));
+
+		for (auto& obj : it->second->GetObjectDictionary())
+		{
+			std::shared_ptr<Range> range;
+			Result res = this->GetRange(obj.second->GetRangeSelector().get(), range);
+			if (!res.IsSuccessful())
+				return res;
+			if (range->GetSortMode() == SortMode::INDEX)
+			{
+				for (auto& subObj : obj.second->GetSubObjectDictionary())
+				{
+					subObj.second->SetModulePosition(newPos);
+				}
+			}
+		}
 		this->moduleCollection.erase(it);
 		return Result();
 	}
@@ -210,17 +226,41 @@ Result Interface::ChangeModulePosition(const std::string& moduleId, std::uint32_
 		oldModule->second->SetPosition(newPos);
 		newModule->second->SetPosition(oldPos);
 
-		if (this->GetModuleAddressing() == ModuleAddressing::POSITION)
-		{
-			oldModule->second->SetAddress(newPos);
-			newModule->second->SetAddress(oldPos);
-		}
-
 		this->moduleCollection.erase(oldModule);
 		this->moduleCollection.erase(newModule);
 
 		this->moduleCollection.insert(switchedNewModule);
 		this->moduleCollection.insert(switchedOldModule);
+
+		for (auto& obj : switchedOldModule.second->GetObjectDictionary())
+		{
+			std::shared_ptr<Range> range;
+			Result res = this->GetRange(obj.second->GetRangeSelector().get(), range);
+			if (!res.IsSuccessful())
+				return res;
+			if (range->GetSortMode() == SortMode::INDEX)
+			{
+				for (auto& subObj : obj.second->GetSubObjectDictionary())
+				{
+					subObj.second->SetModulePosition(oldPos);
+				}
+			}
+		}
+
+		for (auto& obj : switchedNewModule.second->GetObjectDictionary())
+		{
+			std::shared_ptr<Range> range;
+			Result res = this->GetRange(obj.second->GetRangeSelector().get(), range);
+			if (!res.IsSuccessful())
+				return res;
+			if (range->GetSortMode() == SortMode::INDEX)
+			{
+				for (auto& subObj : obj.second->GetSubObjectDictionary())
+				{
+					subObj.second->SetModulePosition(newPos);
+				}
+			}
+		}
 		return Result();
 	}
 	boost::format formatter(kMsgModuleDoesNotExists);

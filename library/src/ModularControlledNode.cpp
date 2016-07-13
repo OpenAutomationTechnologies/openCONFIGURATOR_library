@@ -385,30 +385,32 @@ Result ModularControlledNode::UpdateControlledNodeOd()
 
 				if (range->GetSortMode() == SortMode::SUBINDEX && inter->GetModuleAddressing() == ModuleAddressing::POSITION)
 				{
-					for (auto it = obj.second->GetSubObjectDictionary().begin(); it != obj.second->GetSubObjectDictionary().end(); ++it)
+					for (auto subObj = obj.second->GetSubObjectDictionary().begin(); subObj != obj.second->GetSubObjectDictionary().end(); ++subObj)
 					{
 						bool moduleDisabled = false;
 
 						for (auto& mod : inter->GetModuleCollection())
 						{
-							if (mod.first == it->first && mod.second->IsEnabled() == false)
+							if (mod.first == subObj->first && mod.second->IsEnabled() == false)
 								moduleDisabled = true;
 						}
 
 						//Module has been disabled
 						if (moduleDisabled == true)
 						{
-							inter->GetModuleCollection().at(it->first)->GetDisabledSubindices().clear();
-							if (inter->GetModuleCollection().find(it->first) != inter->GetModuleCollection().end())
+							if (inter->GetModuleCollection().find(subObj->first) != inter->GetModuleCollection().end())
 							{
-								std::pair<std::uint32_t, std::uint32_t> position = std::pair<std::uint32_t, std::uint32_t>(obj.first, it->first);
-								inter->GetModuleCollection().at(it->first)->GetDisabledSubindices().insert(std::pair<std::pair<std::uint32_t, std::uint32_t>, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::SubObject>>(position, it->second));
+								std::shared_ptr<Module> module = inter->GetModuleCollection().at(subObj->first);
+								module->GetDisabledSubindices().clear();
 
-								it = obj.second->GetSubObjectDictionary().erase(it);
+								std::pair<std::uint32_t, std::uint32_t> position = std::pair<std::uint32_t, std::uint32_t>(obj.first, subObj->first);
+								module->GetDisabledSubindices().insert(std::pair<std::pair<std::uint32_t, std::uint32_t>, std::shared_ptr<SubObject>>(position, subObj->second));
+
+								subObj = obj.second->GetSubObjectDictionary().erase(subObj);
 							}
 						}
 
-						if (it == obj.second->GetSubObjectDictionary().end())
+						if (subObj == obj.second->GetSubObjectDictionary().end())
 							break;
 					}
 				}
@@ -530,6 +532,15 @@ Result ModularControlledNode::SetModuleAddress(const std::string& interfaceId, c
 	{
 		if (interf->GetUniqueId() == interfaceId)
 		{
+			std::shared_ptr<Module> module;
+			Result res = this->GetModule(interfaceId, moduleId, modulePosition, module);
+			if (!res.IsSuccessful())
+				return res;
+
+			//Adress is already correct
+			if (module->GetAddress() == address)
+				return Result();
+
 			for (auto& module : interf->GetModuleCollection())
 			{
 				if (module.second->GetAddress() == address)
@@ -542,10 +553,6 @@ Result ModularControlledNode::SetModuleAddress(const std::string& interfaceId, c
 					return Result(ErrorCode::ADDRESS_OCCUPIED, formatter.str());
 				}
 			}
-			std::shared_ptr<Module> module;
-			Result res = this->GetModule(interfaceId, moduleId, modulePosition, module);
-			if (!res.IsSuccessful())
-				return res;
 
 			module->SetAddress(address);
 			return this->UpdateControlledNodeOd();
