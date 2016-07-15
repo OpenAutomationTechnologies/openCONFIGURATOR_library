@@ -142,7 +142,6 @@ namespace IndustrialNetwork
 						logging::core::get()->add_global_attribute("Scope", logging::attributes::named_scope());
 						logging::add_common_attributes();
 
-						sev_logger::get();
 						return Result();
 					}
 					catch (const boost::exception& ex)
@@ -195,7 +194,6 @@ namespace IndustrialNetwork
 
 						);
 
-						sev_logger::get();
 						return Result();
 					}
 					catch (const boost::exception& ex)

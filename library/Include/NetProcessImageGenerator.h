@@ -43,6 +43,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "IEC_Datatype.h"
 #include "Utilities.h"
 #include "Constants.h"
+#include "LoggingConfiguration.h"
 
 namespace IndustrialNetwork
 {

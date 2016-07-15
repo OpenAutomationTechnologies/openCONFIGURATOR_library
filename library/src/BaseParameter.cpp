@@ -252,7 +252,7 @@ namespace IndustrialNetwork
 							return boost::any_cast<T>(this->GetParameterActualValue().get());
 						}
 						//Datatype does not match
-						boost::format formatter(kMsgObjectDatatypeMismatch);
+						boost::format formatter(kMsgBaseObjectDataTypeMismatch);
 						formatter
 						% this->GetUniqueID()
 						% typeid(T).name()
@@ -372,7 +372,7 @@ namespace IndustrialNetwork
 							return boost::any_cast<T>(this->GetParameterDefaultValue().get());
 						}
 						//Datatype does not match
-						boost::format formatter(kMsgObjectDatatypeMismatch);
+						boost::format formatter(kMsgBaseObjectDataTypeMismatch);
 						formatter
 						% this->GetUniqueID()
 						% typeid(T).name()
@@ -489,7 +489,11 @@ namespace IndustrialNetwork
 
 						if (!this->GetDataType().is_initialized())
 						{
-							return Result(ErrorCode::PARAMETER_HAS_NO_DATATYPE);
+							boost::format formatter(kMsgParameterDataTypeInvalid);
+							formatter
+							% this->GetUniqueID();
+							LOG_FATAL() << formatter.str();
+							return Result(ErrorCode::PARAMETER_HAS_NO_DATATYPE, formatter.str());
 						}
 
 						switch (this->GetDataType().get())
@@ -501,7 +505,14 @@ namespace IndustrialNetwork
 									std::uint16_t minValueNr = HexToInt<std::uint16_t>(minValue);
 									std::uint16_t maxValueNr = HexToInt<std::uint16_t>(maxValue);
 									if (minValueNr > 255 || maxValueNr > 255)
-										return Result(ErrorCode::PARAMETER_VALUE_INVALID);
+									{
+										boost::format formatter(kMsgParameterMinMaxValueInvalid);
+										formatter
+										% minValue
+										% maxValue
+										% IECDatatypeValues[static_cast<std::underlying_type<IEC_Datatype>::type>(this->GetDataType().get())];
+										return Result(ErrorCode::VALUE_NOT_WITHIN_RANGE, formatter.str());
+									}
 									this->allowedRanges.push_back(std::make_pair(minValueNr, maxValueNr));
 									break;
 								}
@@ -534,7 +545,14 @@ namespace IndustrialNetwork
 									std::int16_t minValueNr = HexToInt<std::int16_t>(minValue);
 									std::int16_t maxValueNr = HexToInt<std::int16_t>(maxValue);
 									if (minValueNr < -128 || minValueNr > 127 || maxValueNr < -128 || maxValueNr > 127)
-										return Result(ErrorCode::PARAMETER_VALUE_INVALID);
+									{
+										boost::format formatter(kMsgParameterMinMaxValueInvalid);
+										formatter
+										% minValue
+										% maxValue
+										% IECDatatypeValues[static_cast<std::underlying_type<IEC_Datatype>::type>(this->GetDataType().get())];
+										return Result(ErrorCode::VALUE_NOT_WITHIN_RANGE, formatter.str());
+									}
 									this->allowedRanges.push_back(std::make_pair(minValueNr, maxValueNr));
 									break;
 								}
@@ -580,13 +598,31 @@ namespace IndustrialNetwork
 							case IEC_Datatype::BOOL:
 							default:
 								{
-									return Result(ErrorCode::DATATYPE_DOES_NOT_SUPPORT_LIMITS);
+									boost::format formatter(kMsgBaseObjectDoesNotSupportLimits);
+									formatter
+									% IECDatatypeValues[static_cast<std::underlying_type<IEC_Datatype>::type>(this->GetDataType().get())];
+									LOG_FATAL() << formatter.str();
+									return Result(ErrorCode::DATATYPE_DOES_NOT_SUPPORT_LIMITS, formatter.str());
 								}
 						}
 					}
-					catch (const std::exception& e)
+					catch (const std::exception&)
 					{
-						return Result(ErrorCode::VALUE_NOT_WITHIN_RANGE, e.what());
+						std::string dataTypeStr = "";
+						if (this->GetDataType().is_initialized())
+						{
+							dataTypeStr = IECDatatypeValues[static_cast<std::underlying_type<IEC_Datatype>::type>(this->GetDataType().get())];
+						}
+						else if (this->GetComplexDataType())
+						{
+							dataTypeStr = this->GetComplexDataType()->GetUniqueID();
+						}
+						boost::format formatter(kMsgParameterMinMaxValueInvalid);
+						formatter
+						% minValue
+						% maxValue
+						% dataTypeStr;
+						return Result(ErrorCode::VALUE_NOT_WITHIN_RANGE, formatter.str());
 					}
 					return Result();
 				}
@@ -605,7 +641,11 @@ namespace IndustrialNetwork
 						if (!this->GetDataType().is_initialized())
 						{
 							// Object has not datatype defined
-							return Result(ErrorCode::PARAMETER_HAS_NO_DATATYPE);
+							boost::format formatter(kMsgParameterDataTypeInvalid);
+							formatter
+							% this->GetUniqueID();
+							LOG_FATAL() << formatter.str();
+							return Result(ErrorCode::PARAMETER_HAS_NO_DATATYPE, formatter.str());
 						}
 						boost::any any;
 
@@ -617,7 +657,13 @@ namespace IndustrialNetwork
 								{
 									std::uint16_t value = HexToInt<std::uint16_t>(valueToSet);
 									if (value > 255)
-										return Result(ErrorCode::PARAMETER_VALUE_INVALID);
+									{
+										boost::format formatter(kMsgParameterValueInvalid);
+										formatter
+										% valueToSet
+										% IECDatatypeValues[static_cast<std::underlying_type<IEC_Datatype>::type>(this->GetDataType().get())];
+										return Result(ErrorCode::PARAMETER_VALUE_INVALID, formatter.str());
+									}
 									if (type == ValueType::DEFAULT || type == ValueType::ACTUAL)
 									{
 										Result res = ValidateParameterValue<std::uint16_t>(value);
@@ -876,7 +922,11 @@ namespace IndustrialNetwork
 							case IEC_Datatype::BITSTRING:
 							default:
 								{
-									return Result(ErrorCode::PARAMETER_VALUE_INVALID);
+									boost::format formatter(kMsgParameterValueInvalid);
+									formatter
+									% valueToSet
+									% IECDatatypeValues[static_cast<std::underlying_type<IEC_Datatype>::type>(this->GetDataType().get())];
+									return Result(ErrorCode::PARAMETER_VALUE_INVALID, formatter.str());
 								}
 						}
 
@@ -901,9 +951,22 @@ namespace IndustrialNetwork
 								break;
 						}
 					}
-					catch (const std::exception& e)
+					catch (const std::exception&)
 					{
-						return Result(ErrorCode::PARAMETER_VALUE_INVALID, e.what());
+						std::string dataTypeStr = "";
+						if (this->GetDataType().is_initialized())
+						{
+							dataTypeStr = IECDatatypeValues[static_cast<std::underlying_type<IEC_Datatype>::type>(this->GetDataType().get())];
+						}
+						else if (this->GetComplexDataType())
+						{
+							dataTypeStr = this->GetComplexDataType()->GetUniqueID();
+						}
+						boost::format formatter(kMsgParameterValueInvalid);
+						formatter
+						% valueToSet
+						% dataTypeStr;
+						return Result(ErrorCode::PARAMETER_VALUE_INVALID, formatter.str());
 					}
 					return Result();
 				}

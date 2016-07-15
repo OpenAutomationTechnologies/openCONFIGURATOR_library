@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "NetworkManagement.h"
 
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
+using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 
 namespace IndustrialNetwork
 {
@@ -74,7 +75,11 @@ namespace IndustrialNetwork
 							return feature->GetActualValue<I>(actualValue);
 						}
 					}
-					return Result(ErrorCode::FEATURE_VALUE_NOT_FOUND);
+					boost::format formatter(kMsgFeatureActualValue);
+					formatter
+					% PlkFeatureStrings[featureid];
+					LOG_ERROR() << formatter.str();
+					return Result(ErrorCode::FEATURE_VALUE_NOT_FOUND, formatter.str());
 				}
 				template Result NetworkManagement::GetFeatureActualValue<bool>(CNFeatureEnum feature, bool& actualValue);
 				template Result NetworkManagement::GetFeatureActualValue<std::uint32_t>(CNFeatureEnum feature, std::uint32_t& actualValue);
@@ -126,7 +131,11 @@ namespace IndustrialNetwork
 							return feature->GetActualValue<I>(actualValue);
 						}
 					}
-					return Result(ErrorCode::FEATURE_VALUE_NOT_FOUND);
+					boost::format formatter(kMsgFeatureActualValue);
+					formatter
+					% PlkFeatureStrings[featureid];
+					LOG_ERROR() << formatter.str();
+					return Result(ErrorCode::FEATURE_VALUE_NOT_FOUND, formatter.str());
 				}
 				template Result NetworkManagement::GetFeatureActualValue<bool>(MNFeatureEnum feature, bool& actualValue);
 				template Result NetworkManagement::GetFeatureActualValue<std::uint16_t>(MNFeatureEnum feature, std::uint16_t& actualValue);
@@ -179,7 +188,11 @@ namespace IndustrialNetwork
 							return feature->GetActualValue<I>(actualValue);
 						}
 					}
-					return Result(ErrorCode::FEATURE_VALUE_NOT_FOUND);
+					boost::format formatter(kMsgFeatureActualValue);
+					formatter
+					% PlkFeatureStrings[featureid];
+					LOG_ERROR() << formatter.str();
+					return Result(ErrorCode::FEATURE_VALUE_NOT_FOUND, formatter.str());
 				}
 				template Result NetworkManagement::GetFeatureActualValue<bool>(GeneralFeatureEnum feature, bool& actualValue);
 				template Result NetworkManagement::GetFeatureActualValue<std::uint16_t>(GeneralFeatureEnum feature, std::uint16_t& actualValue);

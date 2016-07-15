@@ -103,9 +103,8 @@ Result OpenConfiguratorCore::GetNetwork(const std::string& networkId, Network& n
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
-
 }
 
 Result OpenConfiguratorCore::SetCycleTime(const std::string& networkId, std::uint32_t cycleTime)
@@ -149,7 +148,7 @@ Result OpenConfiguratorCore::SetCycleTime(const std::string& networkId, std::uin
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -179,7 +178,7 @@ Result OpenConfiguratorCore::SetAsyncMtu(const std::string& networkId, std::uint
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -209,7 +208,7 @@ Result OpenConfiguratorCore::SetMultiplexedCycleCount(const std::string& network
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -239,7 +238,7 @@ Result OpenConfiguratorCore::SetPrescaler(const std::string& networkId, std::uin
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -267,7 +266,7 @@ Result OpenConfiguratorCore::BuildConfiguration(const std::string& networkId, st
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -292,7 +291,7 @@ Result OpenConfiguratorCore::BuildXMLProcessImage(const std::string& networkId, 
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -316,7 +315,7 @@ Result OpenConfiguratorCore::BuildNETProcessImage(const std::string& networkId, 
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -340,7 +339,7 @@ Result OpenConfiguratorCore::BuildCProcessImage(const std::string& networkId, co
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -384,7 +383,7 @@ Result OpenConfiguratorCore::CreateNode(const std::string& networkId, const std:
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -401,7 +400,7 @@ Result OpenConfiguratorCore::RemoveNode(const std::string& networkId, const std:
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -421,14 +420,20 @@ Result OpenConfiguratorCore::GetControlledNode(const std::string& networkId, con
 				if (cn)
 					node = *cn.get();
 				else
-					return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE);
+				{
+					boost::format formatter(kMsgNonControlledNode);
+					formatter
+					% nodeID;
+					LOG_ERROR() << "[" + networkId + "] " + formatter.str();
+					return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE, "[" + networkId + "] " + formatter.str());
+				}
 			}
 		}
 		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -451,7 +456,7 @@ Result OpenConfiguratorCore::GetManagingNode(const std::string& networkId, Manag
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -468,7 +473,7 @@ Result OpenConfiguratorCore::GetAvailableNodeIds(const std::string& networkId, s
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -485,7 +490,7 @@ Result OpenConfiguratorCore::CreateConfiguration(const std::string& networkId, c
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -502,7 +507,7 @@ Result OpenConfiguratorCore::RemoveConfiguration(const std::string& networkId, c
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -519,7 +524,7 @@ Result OpenConfiguratorCore::ReplaceConfigurationName(const std::string& network
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -533,11 +538,10 @@ Result OpenConfiguratorCore::CreateConfigurationSetting(const std::string& netwo
 			res = network->AddConfigurationSetting(configID, std::make_shared<BuildConfigurationSetting>(name, value));
 
 		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
-
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -554,7 +558,7 @@ Result OpenConfiguratorCore::RemoveConfigurationSetting(const std::string& netwo
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -571,7 +575,7 @@ Result OpenConfiguratorCore::SetConfigurationSettingEnabled(const std::string& n
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -597,7 +601,7 @@ Result OpenConfiguratorCore::GetConfigurationSettings(const std::string& network
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -614,7 +618,7 @@ Result OpenConfiguratorCore::GetActiveConfiguration(const std::string& networkId
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -631,7 +635,7 @@ Result OpenConfiguratorCore::SetActiveConfiguration(const std::string& networkId
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -657,7 +661,7 @@ Result OpenConfiguratorCore::GetBuildConfigurations(const std::string& networkId
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -708,7 +712,7 @@ Result OpenConfiguratorCore::CreateObject(const std::string& networkId, const st
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -740,7 +744,7 @@ Result OpenConfiguratorCore::SetObjectLimits(const std::string& networkId, const
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -753,7 +757,7 @@ Result OpenConfiguratorCore::CreateDomainObject(const std::string& networkId, co
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -824,7 +828,7 @@ Result OpenConfiguratorCore::CreateParameterObject(const std::string& networkId,
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -874,7 +878,7 @@ Result OpenConfiguratorCore::CreateSubObject(const std::string& networkId, const
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -906,7 +910,7 @@ Result OpenConfiguratorCore::SetSubObjectLimits(const std::string& networkId, co
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -919,7 +923,7 @@ Result OpenConfiguratorCore::CreateDomainSubObject(const std::string& networkId,
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -990,7 +994,7 @@ Result OpenConfiguratorCore::CreateParameterSubObject(const std::string& network
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -1018,7 +1022,7 @@ Result OpenConfiguratorCore::GetObjectSize(const std::string& networkId, const s
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -1046,7 +1050,7 @@ Result OpenConfiguratorCore::GetSubObjectSize(const std::string& networkId, cons
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -1085,7 +1089,7 @@ Result OpenConfiguratorCore::SetFeatureValue(const std::string& networkId, const
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -1108,7 +1112,7 @@ Result OpenConfiguratorCore::SetFeatureValue(const std::string& networkId, const
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -1131,7 +1135,7 @@ Result OpenConfiguratorCore::SetFeatureValue(const std::string& networkId, const
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -1180,7 +1184,7 @@ Result OpenConfiguratorCore::CreateParameter(const std::string& networkId, const
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -1236,7 +1240,7 @@ Result OpenConfiguratorCore::CreateParameter(const std::string& networkId, const
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -1300,7 +1304,7 @@ Result OpenConfiguratorCore::CreateParameter(const std::string& networkId, const
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -1341,7 +1345,7 @@ Result OpenConfiguratorCore::CreateStructDatatype(const std::string& networkId, 
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -1393,7 +1397,7 @@ Result OpenConfiguratorCore::CreateVarDeclaration(const std::string& networkId, 
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -1434,7 +1438,7 @@ Result OpenConfiguratorCore::CreateArrayDatatype(const std::string& networkId, c
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -1475,7 +1479,7 @@ Result OpenConfiguratorCore::CreateEnumDatatype(const std::string& networkId, co
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -1528,7 +1532,7 @@ Result OpenConfiguratorCore::CreateEnumValue(const std::string& networkId, const
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -1561,7 +1565,7 @@ Result OpenConfiguratorCore::SetParameterAllowedValues(const std::string& networ
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -1589,7 +1593,7 @@ Result OpenConfiguratorCore::SetParameterDefaultValue(const std::string& network
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -1612,7 +1616,7 @@ Result OpenConfiguratorCore::SetParameterActualValue(const std::string& networkI
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -1640,7 +1644,7 @@ Result OpenConfiguratorCore::SetParameterAllowedRange(const std::string& network
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -1681,7 +1685,7 @@ Result OpenConfiguratorCore::CreateParameterGroup(const std::string& networkId, 
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -1737,7 +1741,7 @@ Result OpenConfiguratorCore::CreateParameterGroup(const std::string& networkId, 
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -1807,7 +1811,7 @@ Result OpenConfiguratorCore::CreateParameterGroup(const std::string& networkId, 
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -1861,7 +1865,7 @@ Result OpenConfiguratorCore::CreateParameterReference(const std::string& network
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -1888,7 +1892,7 @@ Result OpenConfiguratorCore::GetDatatypeSize(const std::string& networkId, const
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -1918,7 +1922,7 @@ Result OpenConfiguratorCore::CreateDynamicChannel(const std::string& networkId, 
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -1941,7 +1945,7 @@ Result OpenConfiguratorCore::SetObjectActualValue(const std::string& networkId, 
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -1964,7 +1968,7 @@ Result OpenConfiguratorCore::SetSubObjectActualValue(const std::string& networkI
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -1982,7 +1986,7 @@ Result OpenConfiguratorCore::ResetOperationMode(const std::string& networkId, co
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -2000,7 +2004,7 @@ Result OpenConfiguratorCore::SetOperationModeChained(const std::string& networkI
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -2018,7 +2022,7 @@ Result OpenConfiguratorCore::SetOperationModeMultiplexed(const std::string& netw
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -2041,7 +2045,7 @@ Result OpenConfiguratorCore::AddNodeAssignment(const std::string& networkId, con
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -2064,7 +2068,7 @@ Result OpenConfiguratorCore::RemoveNodeAssignment(const std::string& networkId, 
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -2081,7 +2085,7 @@ Result OpenConfiguratorCore::EnableNode(const std::string& networkId, const std:
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -2121,7 +2125,7 @@ Result OpenConfiguratorCore::GetObjectActualValue(const std::string& networkId, 
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -2157,12 +2161,12 @@ Result OpenConfiguratorCore::GetSubObjectActualValue(const std::string& networkI
 		% objectId
 		% (std::uint32_t) subObjectId
 		% (std::uint32_t) nodeId;
-		LOG_ERROR() << formatter.str();
+		LOG_INFO() << formatter.str();
 		return Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE, "[" + networkId + "] " + formatter.str());
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -2202,7 +2206,7 @@ Result OpenConfiguratorCore::GetObjectsWithActualValue(const std::string& networ
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -2238,7 +2242,7 @@ Result OpenConfiguratorCore::SetNodeName(const std::string& networkId, const std
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -2278,7 +2282,7 @@ Result OpenConfiguratorCore::SetAsyncSlotTimeout(const std::string& networkId, c
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -2318,7 +2322,7 @@ Result OpenConfiguratorCore::SetAsndMaxNr(const std::string& networkId, const st
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -2356,7 +2360,7 @@ Result OpenConfiguratorCore::SetPResTimeOut(const std::string& networkId, const 
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -2396,7 +2400,7 @@ Result OpenConfiguratorCore::SetRedundantManagingNodeWaitNotActive(const std::st
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -2436,7 +2440,7 @@ Result OpenConfiguratorCore::SetRedundantManagingNodePriority(const std::string&
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -2473,7 +2477,7 @@ Result OpenConfiguratorCore::GetCycleTime(const std::string& networkId, std::uin
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -2512,7 +2516,7 @@ Result OpenConfiguratorCore::GetAsyncMtu(const std::string& networkId, std::uint
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -2551,7 +2555,7 @@ Result OpenConfiguratorCore::GetMultiplexedCycleCount(const std::string& network
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 Result OpenConfiguratorCore::GetPrescaler(const std::string& networkId, std::uint16_t& prescaler)
@@ -2589,7 +2593,7 @@ Result OpenConfiguratorCore::GetPrescaler(const std::string& networkId, std::uin
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -2640,7 +2644,7 @@ Result OpenConfiguratorCore::GetAsyncSlotTimeout(const std::string& networkId, c
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -2691,7 +2695,7 @@ Result OpenConfiguratorCore::GetAsndMaxNr(const std::string& networkId, const st
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -2731,7 +2735,7 @@ Result OpenConfiguratorCore::GetPResTimeOut(const std::string& networkId, const 
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -2782,7 +2786,7 @@ Result OpenConfiguratorCore::GetRedundantManagingNodeWaitNotActive(const std::st
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -2833,7 +2837,7 @@ Result OpenConfiguratorCore::GetRedundantManagingNodePriority(const std::string&
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -2859,7 +2863,7 @@ Result OpenConfiguratorCore::GetNodeAssignment(const std::string& networkId, con
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -2877,7 +2881,7 @@ Result OpenConfiguratorCore::SetLossOfSocTolerance(const std::string& networkId,
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -2895,7 +2899,7 @@ Result OpenConfiguratorCore::GetLossOfSocTolerance(const std::string& networkId,
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -2938,7 +2942,7 @@ Result OpenConfiguratorCore::MapAllObjectsToChannel(const std::string& networkId
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -2968,7 +2972,7 @@ Result OpenConfiguratorCore::MapObjectToChannel(const std::string& networkId, co
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -2997,7 +3001,7 @@ Result OpenConfiguratorCore::MapSubObjectToChannel(const std::string& networkId,
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -3073,7 +3077,7 @@ Result OpenConfiguratorCore::GetChannelSize(const std::string& networkId, const 
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -3118,7 +3122,7 @@ Result OpenConfiguratorCore::GetChannelActualValues(const std::string& networkId
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -3147,7 +3151,7 @@ Result OpenConfiguratorCore::MoveMappingObject(const std::string& networkId, con
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -3211,7 +3215,7 @@ Result OpenConfiguratorCore::ClearMappingObject(const std::string& networkId, co
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -3263,7 +3267,7 @@ Result OpenConfiguratorCore::ClearMappingChannel(const std::string& networkId, c
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -3286,7 +3290,7 @@ Result OpenConfiguratorCore::CreateModuleObject(const std::string& networkId, co
 		{
 			boost::format formatter(kMsgNodeIsNotAModularControlledNode);
 			formatter
-			% (std::uint32_t) node->GetNodeId();
+			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::NODE_IS_NOT_MODULAR_CONTROLLED_NODE, "[" + networkId + "] " + formatter.str());
 		}
@@ -3324,7 +3328,7 @@ Result OpenConfiguratorCore::CreateModuleObject(const std::string& networkId, co
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -3347,7 +3351,7 @@ Result OpenConfiguratorCore::CreateModuleParameterObject(const std::string& netw
 		{
 			boost::format formatter(kMsgNodeIsNotAModularControlledNode);
 			formatter
-			% (std::uint32_t) node->GetNodeId();
+			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::NODE_IS_NOT_MODULAR_CONTROLLED_NODE, "[" + networkId + "] " + formatter.str());
 		}
@@ -3412,7 +3416,7 @@ Result OpenConfiguratorCore::CreateModuleParameterObject(const std::string& netw
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -3435,7 +3439,7 @@ Result OpenConfiguratorCore::CreateModuleSubObject(const std::string& networkId,
 		{
 			boost::format formatter(kMsgNodeIsNotAModularControlledNode);
 			formatter
-			% (std::uint32_t) node->GetNodeId();
+			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::NODE_IS_NOT_MODULAR_CONTROLLED_NODE, "[" + networkId + "] " + formatter.str());
 		}
@@ -3472,7 +3476,7 @@ Result OpenConfiguratorCore::CreateModuleSubObject(const std::string& networkId,
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -3495,7 +3499,7 @@ Result OpenConfiguratorCore::CreateModuleParameterSubObject(const std::string& n
 		{
 			boost::format formatter(kMsgNodeIsNotAModularControlledNode);
 			formatter
-			% (std::uint32_t) node->GetNodeId();
+			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::NODE_IS_NOT_MODULAR_CONTROLLED_NODE, "[" + networkId + "] " + formatter.str());
 		}
@@ -3560,7 +3564,7 @@ Result OpenConfiguratorCore::CreateModuleParameterSubObject(const std::string& n
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -3591,7 +3595,7 @@ Result OpenConfiguratorCore::CreateModularHeadNode(const std::string& networkId,
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -3619,14 +3623,14 @@ Result OpenConfiguratorCore::CreateInterface(const std::string& networkId, const
 		{
 			boost::format formatter(kMsgNodeIsNotAModularControlledNode);
 			formatter
-			% (std::uint32_t) cn->GetNodeId();
+			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::NODE_IS_NOT_MODULAR_CONTROLLED_NODE, "[" + networkId + "] " + formatter.str());
 		}
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -3654,14 +3658,14 @@ Result OpenConfiguratorCore::CreateRange(const std::string& networkId, const std
 		{
 			boost::format formatter(kMsgNodeIsNotAModularControlledNode);
 			formatter
-			% (std::uint32_t) cn->GetNodeId();
+			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::NODE_IS_NOT_MODULAR_CONTROLLED_NODE, "[" + networkId + "] " + formatter.str());
 		}
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -3689,14 +3693,14 @@ Result OpenConfiguratorCore::CreateModule(const std::string& networkId, const st
 		{
 			boost::format formatter(kMsgNodeIsNotAModularControlledNode);
 			formatter
-			% (std::uint32_t) cn->GetNodeId();
+			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::NODE_IS_NOT_MODULAR_CONTROLLED_NODE, "[" + networkId + "] " + formatter.str());
 		}
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -3724,14 +3728,14 @@ Result OpenConfiguratorCore::RemoveModule(const std::string& networkId, const st
 		{
 			boost::format formatter(kMsgNodeIsNotAModularControlledNode);
 			formatter
-			% (std::uint32_t) cn->GetNodeId();
+			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::NODE_IS_NOT_MODULAR_CONTROLLED_NODE, "[" + networkId + "] " + formatter.str());
 		}
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -3759,14 +3763,14 @@ Result OpenConfiguratorCore::EnableModule(const std::string& networkId, const st
 		{
 			boost::format formatter(kMsgNodeIsNotAModularControlledNode);
 			formatter
-			% (std::uint32_t) cn->GetNodeId();
+			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::NODE_IS_NOT_MODULAR_CONTROLLED_NODE, "[" + networkId + "] " + formatter.str());
 		}
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -3797,14 +3801,14 @@ Result OpenConfiguratorCore::MoveModule(const std::string& networkId, const std:
 		{
 			boost::format formatter(kMsgNodeIsNotAModularControlledNode);
 			formatter
-			% (std::uint32_t) cn->GetNodeId();
+			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::NODE_IS_NOT_MODULAR_CONTROLLED_NODE, "[" + networkId + "] " + formatter.str());
 		}
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -3832,14 +3836,14 @@ Result OpenConfiguratorCore::GetModuleObjectCurrentIndex(const std::string& netw
 		{
 			boost::format formatter(kMsgNodeIsNotAModularControlledNode);
 			formatter
-			% (std::uint32_t) cn->GetNodeId();
+			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::NODE_IS_NOT_MODULAR_CONTROLLED_NODE, "[" + networkId + "] " + formatter.str());
 		}
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -3867,14 +3871,14 @@ Result OpenConfiguratorCore::GetModuleParameterCurrentName(const std::string& ne
 		{
 			boost::format formatter(kMsgNodeIsNotAModularControlledNode);
 			formatter
-			% (std::uint32_t) cn->GetNodeId();
+			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::NODE_IS_NOT_MODULAR_CONTROLLED_NODE, "[" + networkId + "] " + formatter.str());
 		}
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
 
@@ -3902,13 +3906,13 @@ Result OpenConfiguratorCore::SetModuleAddress(const std::string& networkId, cons
 		{
 			boost::format formatter(kMsgNodeIsNotAModularControlledNode);
 			formatter
-			% (std::uint32_t) cn->GetNodeId();
+			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::NODE_IS_NOT_MODULAR_CONTROLLED_NODE, "[" + networkId + "] " + formatter.str());
 		}
 	}
 	catch (const std::exception& ex)
 	{
-		return Result(ErrorCode::UNHANDLED_EXCEPTION, ex.what());
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }

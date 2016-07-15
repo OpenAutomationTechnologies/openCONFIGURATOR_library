@@ -51,8 +51,13 @@ ManagingNodeMappingBuilder::~ManagingNodeMappingBuilder(void)
 
 Result ManagingNodeMappingBuilder::GenerateConfiguration(const std::string& value, const std::map<std::uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
-	//Get Managing Node (this must not fail)
 	const std::shared_ptr<ManagingNode>& mn = std::dynamic_pointer_cast<ManagingNode>(nodeCollection.at(240));
+	if (!mn)
+	{
+		LOG_ERROR() << kMsgNoManagingNode;
+		return Result(ErrorCode::NO_MANAGING_NODE_CONFIGURED, kMsgNoManagingNode);
+	}
+
 	mn->ClearMappingObjects(); //clear MN mapping
 	inputOffsets->clear();
 	outputOffsets->clear();
@@ -565,7 +570,17 @@ Result ManagingNodeMappingBuilder::WriteMappingToForNode(std::uint16_t nodeId, D
 							if (nodeId == 0) //Overflow only for PResMN
 								continue;
 							else
-								return Result(ErrorCode::INSUFFICIENT_MAPPING_OBJECTS);
+							{
+								boost::format formatter(kMsgInsufficientMappingObjects);
+								formatter
+								% nodeId
+								% nrOfEntriesObj->GetTypedActualValue<uint16_t>()
+								% (std::uint32_t) mappingObject->GetSubObjectDictionary().size();
+								std::string errorMessage =  formatter.str();
+								errorMessage.append(" Mapping object overflow is only supported for PRes MN.");
+								LOG_FATAL() << errorMessage;
+								return Result(ErrorCode::INSUFFICIENT_MAPPING_OBJECTS, errorMessage);
+							}
 						}
 					}
 					useNewMappingParameter = false; // Mapping parameter already exist for node
@@ -590,7 +605,15 @@ Result ManagingNodeMappingBuilder::WriteMappingToForNode(std::uint16_t nodeId, D
 	}
 	//Check for no available channels
 	if (noChannelAvailable)
-		return Result(ErrorCode::CHANNEL_OBJECT_LIMIT_EXCEEDED);
+	{
+		boost::format formatter(kMsgChannelExceeded);
+		formatter
+		% DirectionTypeValues[static_cast<std::underlying_type<Direction>::type>(dir)]
+		% "CN"
+		% nodeId;
+		LOG_ERROR() << formatter.str();
+		return Result(ErrorCode::CHANNEL_OBJECT_LIMIT_EXCEEDED, formatter.str());
+	}
 
 	//Create new mapping parameter for node
 	if (useNewMappingParameter)

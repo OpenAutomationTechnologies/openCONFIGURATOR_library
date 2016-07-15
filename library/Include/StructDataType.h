@@ -39,6 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ComplexDataType.h"
 #include "VarDeclaration.h"
 #include "Result.h"
+#include "LoggingConfiguration.h"
 
 namespace IndustrialNetwork
 {

@@ -169,7 +169,7 @@ Result Module::CreateParamMapping(const std::string& paramName, const std::strin
 			formatter
 			% paramName;
 			LOG_ERROR() << formatter.str();
-			return Result(ErrorCode::PARAMETER_EXISTS);
+			return Result(ErrorCode::PARAMETER_EXISTS, formatter.str());
 		}
 	}
 	this->parameterNameMapping.insert(std::pair<std::string, std::string>(paramName, mappedParamName));

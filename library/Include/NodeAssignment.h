@@ -65,6 +65,43 @@ namespace IndustrialNetwork
 					MNT_NODEASSIGN_VALID = 0x80000000
 				};
 
+				inline const std::string GetNodeAssignmentName(NodeAssignment assign)
+				{
+					switch (assign)
+					{
+						case NodeAssignment::NMT_NODEASSIGN_NODE_EXISTS:
+							return "NMT_NODEASSIGN_NODE_EXISTS";
+						case NodeAssignment::NMT_NODEASSIGN_NODE_IS_CN:
+							return "NMT_NODEASSIGN_NODE_IS_CN";
+						case NodeAssignment::NMT_NODEASSIGN_START_CN:
+							return "NMT_NODEASSIGN_START_CN";
+						case NodeAssignment::NMT_NODEASSIGN_MANDATORY_CN:
+							return "NMT_NODEASSIGN_MANDATORY_CN";
+						case NodeAssignment::NMT_NODEASSIGN_KEEPALIVE:
+							return "NMT_NODEASSIGN_KEEPALIVE";
+						case NodeAssignment::NMT_NODEASSIGN_SWVERSIONCHECK:
+							return "NMT_NODEASSIGN_SWVERSIONCHECK";
+						case NodeAssignment::NMT_NODEASSIGN_SWUPDATE:
+							return "NMT_NODEASSIGN_SWUPDATE";
+						case NodeAssignment::NMT_NODEASSIGN_ASYNCONLY_NODE:
+							return "NMT_NODEASSIGN_ASYNCONLY_NODE";
+						case NodeAssignment::NMT_NODEASSIGN_MULTIPLEXED_CN:
+							return "NMT_NODEASSIGN_MULTIPLEXED_CN";
+						case NodeAssignment::NMT_NODEASSIGN_RT1:
+							return "NMT_NODEASSIGN_RT1";
+						case NodeAssignment::NMT_NODEASSIGN_RT2:
+							return "NMT_NODEASSIGN_RT2";
+						case NodeAssignment::NMT_NODEASSIGN_MN_PRES:
+							return "NMT_NODEASSIGN_MN_PRES";
+						case NodeAssignment::NMT_NODEASSIGN_PRES_CHAINING:
+							return "NMT_NODEASSIGN_PRES_CHAINING";
+						case NodeAssignment::MNT_NODEASSIGN_VALID:
+							return "MNT_NODEASSIGN_VALID";
+						default:
+							return "";
+					}
+				}
+
 				inline NodeAssignment operator | (NodeAssignment lhs, NodeAssignment rhs)
 				{
 					return (NodeAssignment)(static_cast<std::underlying_type<NodeAssignment>::type>(lhs) | static_cast<std::underlying_type<NodeAssignment>::type>(rhs));

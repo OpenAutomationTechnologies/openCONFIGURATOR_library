@@ -178,7 +178,13 @@ Result ParameterGroup::GetParameterGroupAccess(ParameterAccess& access)
 			accessVector.push_back(paramRef->GetReferencedParameter()->GetParameterAccess());
 	}
 	if (accessVector.size() == 0)
-		return Result(ErrorCode::ARGUMENT_INVALID_EMPTY);
+	{
+		boost::format formatter(kMsgParameterGroupEmpty);
+		formatter
+		% this->GetUniqueId();
+		LOG_ERROR() << formatter.str();
+		return Result(ErrorCode::PARAMETER_GROUP_EMPTY, formatter.str());
+	}
 
 	if (std::adjacent_find(accessVector.begin(), accessVector.end(), std::not_equal_to<ParameterAccess>()) == accessVector.end())
 	{

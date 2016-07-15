@@ -105,7 +105,7 @@ Result ModularControlledNode::AddRange(const std::string& interfaceId, const std
 				formatter
 				% name;
 				LOG_ERROR() << formatter.str();
-				return Result(ErrorCode::RANGE_INVALID);
+				return Result(ErrorCode::RANGE_INVALID, formatter.str());
 			}
 			std::shared_ptr<Range> range = std::shared_ptr<Range>(new Range(name, baseIndex, maxIndex, maxSubIndex, sortStep, sortMode, sortNumber, pdoMapping));
 			return interf->AddRange(range);

@@ -46,45 +46,48 @@ namespace IndustrialNetwork
 		{
 			namespace ErrorHandling
 			{
-				const std::string kMsgEmptyArgument = "Argument(s) \"%s\" must not be empty.";
 				const std::string kMsgLoggingInitialised = "Logging has been initialised with configuration: \"%s\".";
+				const std::string kMsgDateTimeNotInitialised = "Date / Time variable cannot be initialised.";
 
 				const std::string kMsgExistingNetwork = "Network with id \"%s\" already exists.";
 				const std::string kMsgNonExistingNetwork = "Network with id \"%s\" does not exists.";
 				const std::string kMsgNetworkCreated = "Network with id \"%s\" created.";
 				const std::string kMsgNetworkRemoved = "Network with id \"%s\" removed.";
 
-				const std::string kMsgExistingNode = "Node with id %d already exists.";
-				const std::string kMsgNonExistingNode = "Node with id %d does not exist.";
-				const std::string kMsgNonManagingNode = "Node with id %d is not a managing node or redundant managing node.";
-				const std::string kMsgNonControlledNode = "Node with id %d is not a controlled node.";
-				const std::string kMsgNonRedundantManagingNode = "Node with id %d is not a redundant managing node.";
+				const std::string kMsgExistingNode = "Node with id \"%d\" already exists.";
+				const std::string kMsgNonExistingNode = "Node with id \"%d\" does not exist.";
+				const std::string kMsgNonManagingNode = "Node with id \"%d\" is not a managing node or redundant managing node.";
+				const std::string kMsgNoManagingNode = "Network has no managing node configured.";
+				const std::string kMsgRemoveManagingNode = "Removal of managing node from network is not allowed.";
+				const std::string kMsgNonControlledNode = "Node with id \"%d\" is not a controlled node.";
+				const std::string kMsgNonRedundantManagingNode = "Node with id \"%d\" is not a redundant managing node.";
 
-				const std::string kMsgNodeCreated = "Node with id %d created.";
-				const std::string kMsgNodeRemoved = "Node with id %d removed.";
-				const std::string kMsgNodeObjectCount = "Node with id %d has %d configuration objects.";
-				const std::string kMsgNodeObjectCountSize = "Node with id %d has %d configuration objects size.";
+				const std::string kMsgNodeCreated = "Node with id \"%d\" created.";
+				const std::string kMsgNodeRemoved = "Node with id \"%d\" removed.";
+				const std::string kMsgNodeObjectCount = "Node with id \"%d\" has \"%d\" configuration objects.";
+				const std::string kMsgNodeObjectCountSize = "Node with id \"%d\" has \"%d\" configuration objects size.";
 				const std::string kMsgManagingNodeDisable = "Managing node of network \"%s\" cannot be disabled.";
-				const std::string kMsgNodeDisable = "Node with Id \"%d\" set enabled to \"%s\".";
+				const std::string kMsgNodeDisable = "Node with id \"%d\" set enabled to \"%s\".";
 				const std::string kMsgMultiplexingNotSupported = "Multiplexing is not supported by controlled node \"%d\"";
 				const std::string kMsgChainingNotSupported = "PRes Chaining is not supported by controlled node \"%d\"";
-				const std::string kMsgMultiplexCycleAssignInvalid = "Multiplexed cycle \"%d\" assigned to node %d exceeds multiplexed cycle length (%d).";
+				const std::string kMsgMultiplexCycleAssignInvalid = "Multiplexed cycle \"%d\" assigned to node \"%d\" exceeds multiplexed cycle length (%d).";
 				const std::string kMsgMultiplexCycleAlreadyAssigned = "Multiplexed cycle \"%d\" already assigned.";
+				const std::string kMsgInsufficientMappingObjects = "Node with id \"%d\" has \"%d\" available mapping objects but \"%d\" are requested.";
 
 				const std::string kMsgExistingObject = "Object 0x%X already exists on node %d.";
 				const std::string kMsgExistingSubObject = "Subobject 0x%X/0x%X already exists on node %d.";
 				const std::string kMsgObjectCreated = "Object 0x%X created on node %d.";
 				const std::string kMsgSubObjectCreated = "Subobject 0x%X/0x%X created on node %d.";
-				const std::string kMsgObjectNoActualValue = "Object 0x%X on node %d does not have an actual value.";
-				const std::string kMsgSubObjectNoActualValue = "Subobject 0x%X/0x%X on node %d does not have an actual value.";
+				const std::string kMsgObjectNoActualValue = "Object 0x%X on node \"%d\" does not have an actual value.";
+				const std::string kMsgSubObjectNoActualValue = "Subobject 0x%X/0x%X on node \"%d\" does not have an actual value.";
 				const std::string kMsgNonExistingObject = "Object 0x%X does not exist on node %d.";
 				const std::string kMsgNonExistingSubObject = "Subobject 0x%X/0x%X does not exist on node %d.";
-				const std::string kMsgForceObject = "Set force flag on object 0x%X on node %d to \"%s\".";
-				const std::string kMsgForceSubObject = "Set force flag on subobject 0x%X/0x%X on node %d to \"%s\".";
+				const std::string kMsgForceObject = "Set force flag on object 0x%X on node \"%d\" to \"%s\".";
+				const std::string kMsgForceSubObject = "Set force flag on subobject 0x%X/0x%X on node \"%d\" to \"%s\".";
 				const std::string kMsgSetObjectActualValue = "Set actual value: \"%s\" on object 0x%X on node %d.";
 				const std::string kMsgSetSubObjectActualValue = "Set actual value: \"%s\" on subobject 0x%X/0x%X on node %d.";
 				const std::string kMsgDatatypeMismatch = "Datatype \"%s\" does not match expected datatype \"%s\".";
-				const std::string kMsgObjectDatatypeMismatch = "BaseObject \"%s\" datatype \"%s\" does not match expected datatype \"%s\".";
+				const std::string kMsgBaseObjectDataTypeMismatch = "BaseObject \"%s\" datatype \"%s\" does not match expected datatype \"%s\".";
 				const std::string kMsgActualValueDatatypeError = "Actual value \"%s\" with datatype \"%s\" does not fit the datatype limits or format.";
 				const std::string kMsgDefaultValueDatatypeError = "Default value \"%s\" with datatype \"%s\" does not fit the datatype limits or format.";
 				const std::string kMsgHighLimitDatatypeError = "Highlimit \"%s\" with datatype \"%s\" exceeds the datatype limits.";
@@ -96,16 +99,19 @@ namespace IndustrialNetwork
 				const std::string kMsgBaseObjectDataTypeError = "Object \"%s\" with id \"0x%X\" on node \"%d\" does not have a specified datatype.";
 				const std::string kMsgBaseObjectDefaultValue = "Object \"%s\" with id \"0x%X\" on node \"%d\" does not have a default value.";
 				const std::string kMsgBaseObjectActualValue = "Object \"%s\" with id \"0x%X\" on node \"%d\" does not have an actual value.";
-				const std::string kMsgBaseObjectValueSupport = "Object \"0x%X\" on node %d does not support actual values.";
-				const std::string kMsgBaseSubObjectValueSupport = "Subobject \"0x%X/0x%X\" on node %d does not support actual values.";
+				const std::string kMsgBaseObjectValueSupport = "Object \"0x%X\" on node \"%d\" does not support actual values.";
+				const std::string kMsgBaseSubObjectValueSupport = "Subobject \"0x%X/0x%X\" on node \"%d\" does not support actual values.";
 				const std::string kMsgBaseObjectHighLimit = "Object \"%s\" with id \"0x%X\" on node \"%d\" does not have a high limit.";
 				const std::string kMsgBaseObjectLowLimit = "Object \"%s\" with id \"0x%X\" on node \"%d\" does not have a low limit.";
+				const std::string kMsgBaseObjectDoesNotSupportLimits = "Datatype \"%s\" does not support the definition of high or low limit.";
+				const std::string kMsgBaseObjectDoesNotSupportValues = "Datatype \"%s\" does not support the definition of an actual or default value.";
 
 				const std::string kMsgConfigurationSettingNotSupported = "Configuration setting \"%s\" is not supported by the library.";
 				const std::string kMsgConfigurationNonExisting = "Build configuration \"%s\" does not exist in network \"%s\".";
 				const std::string kMsgConfigurationExisting = "Build configuration \"%s\" does already exist in network \"%s\".";
 				const std::string kMsgConfigurationAdded = "Build configuration \"%s\" added to network \"%s\".";
 				const std::string kMsgConfigurationRemoved = "Build configuration \"%s\" removed from network \"%s\".";
+				const std::string kMsgActiveConfigurationRemove = "Active build configuration \"%s\" cannot be removed from network \"%s\".";
 				const std::string kMsgConfigurationActive = "Build configuration \"%s\" is active for network \"%s\".";
 				const std::string kMsgConfigurationRenamed = "Build configuration \"%s\" is renamed to \"%s\" in network \"%s\".";
 				const std::string kMsgConfigurationSettingNonExisting = "Build configuration setting \"%s\" does not exist in configuration \"%s\" in network \"%s\".";
@@ -114,13 +120,15 @@ namespace IndustrialNetwork
 				const std::string kMsgConfigurationSettingRemoved = "Build configuration setting \"%s\" removed from configuration \"%s\" in network \"%s\".";
 				const std::string kMsgConfigurationSettingEnabled = "Build configuration setting \"%s\" in configuration \"%s\" in network \"%s\" set enabled: \"%s\".";
 
-				const std::string kMsgComplexDatatypeNotFoundOnNode = "Complex datatype with uniqueID \"%s\" in node %d not found.";
+				const std::string kMsgComplexDatatypeNotFoundOnNode = "Complex datatype with uniqueID \"%s\" in node \"%d\" not found.";
 				const std::string kMsgComplexDatatypeNotFound = "Complex datatype with uniqueID \"%s\" not found.";
 				const std::string kMsgComplexDataTypeAlreadyExist = "Complex datatype with uniqueID \"%s\" already exists.";
 				const std::string kMsgComplexDataTypeSizeInvalid = "Complex datatype with uniqueID \"%s\" size calculation failed.";
 				const std::string kMsgComplexDataTypeCreated = "Complex datatype with uniqueID \"%s\" created.";
 
-				const std::string kMsgStructDatatypeNotFound = "Struct with uniqueID \"%s\" in node %d not found.";
+				const std::string kMsgStructDatatypeNotFound = "Struct with uniqueID \"%s\" in node \"%d\" not found.";
+				const std::string kMsgEnumValueExists = "Enum datatype with uniqueID \"%s\" value \"%s\" already exists.";
+				const std::string kMsgVarDeclarationExists = "Var declaration \"%s\" in struct datatype with uniqueID \"%s\" already exists.";
 
 				const std::string kMsgParameterCreated = "Parameter with uniqueID \"%s\" created.";
 				const std::string kMsgParameterReturned = "Parameter with uniqueID \"%s\" returned.";
@@ -130,6 +138,7 @@ namespace IndustrialNetwork
 				const std::string kMsgParameterGroupAlreadyExist = "ParameterGroup with uniqueID \"%s\" already exists.";
 				const std::string kMsgParameterTemplateAlreadyExist = "ParameterTemplate with uniqueID \"%s\" already exists.";
 				const std::string kMsgParameterGroupNonExisting = "ParameterGroup with uniqueID \"%s\" does not exist.";
+				const std::string kMsgParameterGroupEmpty = "ParameterGroup with uniqueID \"%s\" has no parameter references or included parameter groups.";
 				const std::string kMsgParameterTemplateNonExisting = "ParameterTemplate with uniqueID \"%s\" does not exist.";
 
 				const std::string kMsgNodeIdInvalid = "NodeId \"%d\" invalid.";
@@ -139,13 +148,13 @@ namespace IndustrialNetwork
 				const std::string kMsgCycleTimeOnMnNotSet = "Cycle time has to be set on the managing node of the POWERLINK network.";
 				const std::string kMsgCycleTimeDefaultValue = "Cycle time forced to configuration because default and actual value are equal on the managing node.";
 
-				const std::string kMsgObjectActualValueNotSet = "Object 0x%X on node %d does not have a defined actual value.";
-				const std::string kMsgObjectDataTypeMismatch = "Object 0x%X datatype on node %d does not match the datatype to be retrieved.";
-				const std::string kMsgSubObjectActualValueNotSet = "Object 0x%X on node %d does not have a defined actual value.";
-				const std::string kMsgSubObjectDataTypeMismatch = "Object 0x%X datatype on node %d does not match the datatype to be retrieved.";
+				const std::string kMsgObjectActualValueNotSet = "Object 0x%X on node \"%d\" does not have a defined actual value.";
+				const std::string kMsgObjectDataTypeMismatch = "Object 0x%X datatype on node \"%d\" does not match the datatype to be retrieved.";
+				const std::string kMsgSubObjectActualValueNotSet = "Object 0x%X on node \"%d\" does not have a defined actual value.";
+				const std::string kMsgSubObjectDataTypeMismatch = "Object 0x%X datatype on node \"%d\" does not match the datatype to be retrieved.";
 
-				const std::string kMsgForcedValueOverwriteObject = "Overwrite actual value: \"%s\" on object 0x%X on node %d failed because value has been forced.";
-				const std::string kMsgForcedValueOverwriteSubObject = "Overwrite actual value: \"%s\" on subobject 0x%X/0x%X on node %d failed because value has been forced.";
+				const std::string kMsgForcedValueOverwriteObject = "Overwrite actual value: \"%s\" on object 0x%X on node \"%d\" failed because value has been forced.";
+				const std::string kMsgForcedValueOverwriteSubObject = "Overwrite actual value: \"%s\" on subobject 0x%X/0x%X on node \"%d\" failed because value has been forced.";
 
 				const std::string kMsgWriteManagingNodeObjectCount = "Managing node object count configuration write successful.";
 				const std::string kMsgWriteNodeAssignment = "Node assignment configuration write successful.";
@@ -161,25 +170,31 @@ namespace IndustrialNetwork
 				const std::string kMsgGeneralFeatureDatatypeError = "General feature \"%s\" actual / default value does not match datatype.";
 				const std::string kMsgCnFeatureDatatypeError = "CN feature \"%s\" actual / default value does not match datatype.";
 				const std::string kMsgMnFeatureDatatypeError = "MN feature \"%s\" actual / default value does not match datatype.";
+				const std::string kMsgFeatureActualValue = "Feature \"%s\" does not have an actual value.";
 
-				const std::string kMsgNodeAssignmentNotSupported = "Node assignement \"%X\" is not supported on node \"%d\".";
-				const std::string kMsgNodeAssignmentAlreadyExists = "Node assignement \"%X\" already exists on node \"%d\".";
+				const std::string kMsgNodeAssignmentNotSupported = "Node assignment \"%s\" is not supported on node \"%d\".";
+				const std::string kMsgNodeAssignmentAlreadyExists = "Node assignment \"%s\" already exists on node \"%d\".";
 
 				const std::string kMsgDynamicChannelNotFound = "Dynamic channel for datatype: \"%s\" and direction: \"%s\" not found on MN.";
 				const std::string kMsgNonExistingMappedObject = "Mapped object 0x%X does not exist on node %d.";
 				const std::string kMsgNonExistingMappedSubObject = "Mapped subobject 0x%X/0x%X does not exist on node %d.";
-				const std::string kMsgAccessTypeForParameterInvalid = "Parameter with uniqueId \"%s\", referenced by mapped index 0x%X/0x%s on node %d, has invalid access type (\"%s\").";
+				const std::string kMsgMappedObjectSizeInvalid = "Mapped subobject 0x%X/0x%X has size \"%d\" but \"%d\" is expected on node %d.";
+				const std::string kMsgAccessTypeForParameterInvalid = "Parameter with uniqueId \"%s\", referenced by mapped index 0x%X/0x%X on node %d, has invalid access type (\"%s\").";
 				const std::string kMsgAccessTypeForParameterGroupInvalid = "ParameterGroup with uniqueId \"%s\" must not have multiple access types.";
-				const std::string kMsgMappingTypeForPdoInvalid = "(Sub)Index 0x%X/0x%s on node %d cannot be mapped. Wrong PDOMapping attribute \"%s\" for mapping.";
-				const std::string kMsgAccessTypeForPdoInvalid = "(Sub)Index 0x%X/0x%s on node %d cannot be mapped. Invalid access type \"%s\" (RPDOs must be writeable, TPDOs readable).";
-				const std::string kMsgPdoOffsetInvalid = "Mapping-Object 0x%X/0x%X on node %d: Mapping offset invalid. Actual: %d bits, expected %d bits.";
+				const std::string kMsgMappingTypeForPdoInvalid = "(Sub)Index 0x%X/0x%X on node \"%d\" cannot be mapped. Wrong PDOMapping attribute \"%s\" for mapping.";
+				const std::string kMsgAccessTypeForPdoInvalid = "(Sub)Index 0x%X/0x%X on node \"%d\" cannot be mapped. Invalid access type \"%s\" (RPDOs must be writeable, TPDOs readable).";
+				const std::string kMsgPdoOffsetInvalid = "Mapping-Object 0x%X/0x%X on node %d: Mapping offset invalid. Actual: \"%d\" bits, expected \"%d\" bits.";
 				const std::string kMsgNoNodesConfigured = "Network does not contain any POWERLINK controlled nodes.";
-				const std::string kMsgLowCnPresTimeout = "PResTimeout (%dns) (sub-object 0x1F92/0x%X on MN) of node %d is less than PresMaxLatency (subIndex 0x1F98/0x03 on CN).";
-				const std::string kMsgLowCnPresTimeoutDefault = "PResTimeout (%dns) (sub-object 0x1F92/0x%X on MN) of node %d is less than specification default value (25000ns).";
-				const std::string kMsgDefaultCnPresTimeout = "PResTimeout (sub-object 0x1F92/0x%X on MN) of node %d does not a have a default value. Error according to DS 301.";
+				const std::string kMsgLowCnPresTimeout = "PResTimeout (%dns) (sub-object 0x1F92/0x%X on MN) of node \"%d\" is less than PresMaxLatency (subIndex 0x1F98/0x03 on CN).";
+				const std::string kMsgLowCnPresTimeoutDefault = "PResTimeout (%dns) (sub-object 0x1F92/0x%X on MN) of node \"%d\" is less than specification default value (25000ns).";
+				const std::string kMsgDefaultCnPresTimeout = "PResTimeout (sub-object 0x1F92/0x%X on MN) of node \"%d\" does not a have a default value. Error according to DS 301.";
+				const std::string kMsgParameterValueInvalid = "Parameter actual or default value \"%s\" with datatype \"%s\" does not fit the datatype limits or format.";
+				const std::string kMsgParameterMinMaxValueInvalid = "Parameter minimum (\"%s\") or maximum value (\"%s\") with datatype \"%s\" does not fit the datatype limits or format.";
+				const std::string kMsgParameterDataTypeInvalid = "Parameter (\"%s\") does not have a datatype.";
 
 				const std::string kMsgManagingNodeTransmitPres = "Managing node transmits PRes but no controlled node is receiving any data.";
 				const std::string kMsgMappingOperationNotSupported = "Mapping operation is not supported for managing or redundant managing node.";
+				const std::string kMsgMappingObjectInvalid = "Mapping-Object 0x%X/0x%X on node %d: Enabled mapping entry does not have a valid object value.";
 
 				const std::string kMsgNrOfEntriesInvalid = "Channel 0x%X on node %d: NrOfEntries invalid. Valid mapping entries: %d, Mapping entries enabled: %d.";
 				const std::string kMsgDynamicChannelExceeded = "Object \"0x%X/0x%X\" exceeds object range (0x%X - 0x%X) of MN dynamic channel for datatype: \"%s\" and direction: \"%s\".";
@@ -190,15 +205,17 @@ namespace IndustrialNetwork
 				const std::string kMsgCycleTimeGran = "Cycle time \"%d\" does not fit to the cycle time granularity \"%d\" of node \"%s\" (%d).";
 				const std::string kMsgIsochronousMaxPayloadExceeded = "Node %d: No. of %s-bytes mapped (%d) exceeds limit (1490, C_DLL_ISOCHR_MAX_PAYL).";
 				const std::string kMsgChainingRmnNotSupported = "PRes Chaining is not supported in combination with Redundant Managing Nodes.";
+				const std::string kMsgChainingMnNotSupported = "PRes Chaining is not supported by the managing node.";
+				const std::string kMsgMultiplexingMnNotSupported = "Multiplexing is not supported by the managing node.";
 
-				const std::string kMsgNodeIsNotAModularControlledNode = "Node with id %d is not a modular head node.";
+				const std::string kMsgNodeIsNotAModularControlledNode = "Node with id \"%d\" is not a modular head node.";
 				const std::string kMsgInterfaceDoesNotExists = "Interface \"%s\" does not exist.";
 				const std::string kMsgInterfaceAlreadyExists = "Interface \"%s\" already exists.";
 				const std::string kMsgRangeAlreadyExists = "Range \"%s\" already exists.";
 				const std::string kMsgRangeDoesNotExists = "Range \"%s\" does not exist.";
 				const std::string kMsgRangeInvalid = "Range \"%s\" cannot be added because it has invalid attributes.";
 				const std::string kMsgRangeHasNoFreeObjects = "Range \"%s\" has no free objects.";
-				const std::string kMsgRangeIndexAlreadyTaken = "The index 0x%X  is already taken in range \"%s\".";
+				const std::string kMsgRangeIndexAlreadyTaken = "The index 0x%X is already taken in range \"%s\".";
 				const std::string kMsgModuleDoesNotExists = "Module \"%s\" does not exist on position \"%d\".";
 				const std::string kMsgModuleAlreadyExists = "Module \"%s\" already exists on position \"%d\".";
 				const std::string kMsgModuleDoesNotMatch = "Module \"%s\" does not match module \"%s\" on position \"%d\".";

@@ -122,11 +122,12 @@ Result ConfigurationGenerator::WriteManagingNodeObjectCount(const std::shared_pt
 	//Write Managing Node Object Count
 	std::shared_ptr<ManagingNode> mn;
 	Result res = net->GetManagingNode(mn);
-	if (res.IsSuccessful())
-	{
-		configurationOutput << std::setfill('0') << std::setw(8) << std::hex << std::uppercase << mn->GetConfigurationObjectCount() << std::endl;
-		hexOutput << ReverseHex(mn->GetConfigurationObjectCount(), 8);
-	}
+	if (!res.IsSuccessful())
+		return res;
+
+	configurationOutput << std::setfill('0') << std::setw(8) << std::hex << std::uppercase << mn->GetConfigurationObjectCount() << std::endl;
+	hexOutput << ReverseHex(mn->GetConfigurationObjectCount(), 8);
+
 	LOG_INFO() << kMsgWriteManagingNodeObjectCount;
 	return res;
 }
@@ -224,7 +225,15 @@ Result ConfigurationGenerator::WriteManagingNodeConfiguration(const std::shared_
 
 Result ConfigurationGenerator::WriteRedundantManagingNodeConfiguration(const std::shared_ptr<Network>& net, const std::shared_ptr<BaseNode>& node, std::stringstream& configurationOutput, std::stringstream& hexOutput)
 {
-	auto rmn = std::dynamic_pointer_cast<ManagingNode>(node); //This should not fail because it can either be MN or CN
+	auto rmn = std::dynamic_pointer_cast<ManagingNode>(node);
+	if (!rmn)
+	{
+		boost::format formatter(kMsgNonManagingNode);
+		formatter
+		% node->GetNodeId();
+		LOG_ERROR() << formatter.str();
+		return Result(ErrorCode::NODE_IS_NOT_MANAGING_NODE, formatter.str());
+	}
 
 	// BitSize / 8 + 7 Byte per Object (2 Byte Index / 1 Byte SubIndex / 4 Byte Size) + 4 Byte NrOfObjects
 	std::uint32_t rmnDomainSize = (rmn->GetConfigurationObjectSize() / 8) + (rmn->GetConfigurationObjectCount() * 7) + 4;

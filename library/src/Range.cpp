@@ -116,6 +116,7 @@ Result Range::GetNextIndex(std::uint32_t& index, std::uint32_t address)
 				boost::format formatter(kMsgRangeHasNoFreeObjects);
 				formatter
 				% this->GetName();
+				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::RANGE_HAS_NO_FREE_OBJECTS, formatter.str());
 			}
 
@@ -133,7 +134,7 @@ Result Range::GetNextIndex(std::uint32_t& index, std::uint32_t address)
 			formatter
 			% this->currentIndex
 			% this->GetName();
-			return Result(ErrorCode::RANGE_INDEX_ALREADY_TAKEN);
+			return Result(ErrorCode::RANGE_INDEX_ALREADY_TAKEN, formatter.str());
 		}
 
 		this->takenIndices.insert(std::pair<std::uint32_t, std::int64_t>(this->currentIndex, -1));
@@ -177,6 +178,7 @@ Result Range::GetNextSubIndex(std::uint32_t& index, std::uint16_t& subindex, std
 					boost::format formatter(kMsgRangeHasNoFreeObjects);
 					formatter
 					% this->GetName();
+					LOG_ERROR() << formatter.str();
 					return Result(ErrorCode::RANGE_HAS_NO_FREE_OBJECTS, formatter.str());
 				}
 
@@ -195,7 +197,7 @@ Result Range::GetNextSubIndex(std::uint32_t& index, std::uint16_t& subindex, std
 	formatter
 	% name;
 	LOG_ERROR() << formatter.str();
-	return Result(ErrorCode::RANGE_INVALID);
+	return Result(ErrorCode::RANGE_INVALID, formatter.str());
 }
 
 void Range::Reset()

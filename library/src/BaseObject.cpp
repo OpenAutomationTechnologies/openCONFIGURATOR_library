@@ -297,7 +297,7 @@ namespace IndustrialNetwork
 							break;
 					}
 					//Datatype does not match
-					boost::format formatter(kMsgObjectDatatypeMismatch);
+					boost::format formatter(kMsgBaseObjectDataTypeMismatch);
 					formatter
 					% this->GetName()
 					% typeid(T).name()
@@ -697,7 +697,13 @@ namespace IndustrialNetwork
 							case PlkDataType::MAC_ADDRESS:
 								{
 									if (type == ValueType::LOWLIMIT || type == ValueType::HIGHLIMIT)
-										return Result(ErrorCode::DATATYPE_DOES_NOT_SUPPORT_LIMITS);
+									{
+										boost::format formatter(kMsgBaseObjectDoesNotSupportLimits);
+										formatter
+										% GetPlkDataTypeName(GetDataType().get());
+										LOG_FATAL() << formatter.str();
+										return Result(ErrorCode::DATATYPE_DOES_NOT_SUPPORT_LIMITS, formatter.str());
+									}
 								}
 							case PlkDataType::UNSIGNED40:
 							case PlkDataType::UNSIGNED48:
@@ -725,7 +731,13 @@ namespace IndustrialNetwork
 							case PlkDataType::Domain:
 								{
 									if (type == ValueType::LOWLIMIT || type == ValueType::HIGHLIMIT)
-										return Result(ErrorCode::DATATYPE_DOES_NOT_SUPPORT_LIMITS);
+									{
+										boost::format formatter(kMsgBaseObjectDoesNotSupportLimits);
+										formatter
+										% GetPlkDataTypeName(GetDataType().get());
+										LOG_FATAL() << formatter.str();
+										return Result(ErrorCode::DATATYPE_DOES_NOT_SUPPORT_LIMITS, formatter.str());
+									}
 									else
 										valueToSet = valueStr;
 									break;
@@ -733,7 +745,11 @@ namespace IndustrialNetwork
 							case PlkDataType::UNDEFINED:
 							default:
 								{
-									return Result(ErrorCode::OBJECT_TYPE_DOES_NOT_SUPPORT_VALUES);
+									boost::format formatter(kMsgBaseObjectDoesNotSupportValues);
+									formatter
+									% GetPlkDataTypeName(GetDataType().get());
+									LOG_FATAL() << formatter.str();
+									return Result(ErrorCode::OBJECT_TYPE_DOES_NOT_SUPPORT_VALUES, formatter.str());
 								}
 						}
 

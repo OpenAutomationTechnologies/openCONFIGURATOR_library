@@ -75,6 +75,7 @@
 %ignore PlkFeatureDefaultValues;
 %ignore DirectionTypeValues;
 %ignore GetPlkDataTypeName();
+%ignore GetNodeAssignmentName();
 %ignore IECDatatypeValues;
 %ignore PlkFeatureStrings;
 %ignore SetComplexDataType(std::shared_ptr<Parameter>& parameter);

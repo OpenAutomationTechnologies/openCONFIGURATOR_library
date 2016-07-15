@@ -36,6 +36,7 @@ using namespace IndustrialNetwork::POWERLINK::Core::Node;
 using namespace IndustrialNetwork::POWERLINK::Core::NetworkHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
+using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 
 XmlProcessImageGenerator::XmlProcessImageGenerator() : ProcessImageGenerator(),
 	processImageStream()
@@ -60,7 +61,16 @@ const std::string XmlProcessImageGenerator::Generate(std::uint8_t nodeid, std::s
 
 	fullProcessImage << WriteXMLHeader();
 	std::shared_ptr<BaseNode> node;
-	network->GetBaseNode(nodeid, node);
+	Result res = network->GetBaseNode(nodeid, node);
+	if (!res.IsSuccessful())
+	{
+		boost::format formatter(kMsgNonExistingNode);
+		formatter
+		% (std::uint32_t) nodeid;
+		LOG_FATAL() << formatter.str();
+		return "";
+	}
+
 	fullProcessImage << "<!-- Project: " << network->GetNetworkId() << " -->" << std::endl;
 	fullProcessImage << "<!-- Application process for " << node->GetName() << "(";
 	fullProcessImage << std::dec << (std::uint32_t) node->GetNodeId();

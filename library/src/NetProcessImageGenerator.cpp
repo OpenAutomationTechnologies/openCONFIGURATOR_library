@@ -36,6 +36,7 @@ using namespace IndustrialNetwork::POWERLINK::Core::Node;
 using namespace IndustrialNetwork::POWERLINK::Core::NetworkHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
+using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 
 NetProcessImageGenerator::NetProcessImageGenerator() : ProcessImageGenerator(),
 	processImageStream()
@@ -55,7 +56,15 @@ const std::string NetProcessImageGenerator::Generate(std::uint8_t nodeid, std::s
 	std::stringstream fullProcessImage;
 	std::uint32_t size = 0;
 	std::shared_ptr<BaseNode> node;
-	network->GetBaseNode(nodeid, node);
+	Result res = network->GetBaseNode(nodeid, node);
+	if (!res.IsSuccessful())
+	{
+		boost::format formatter(kMsgNonExistingNode);
+		formatter
+		% (std::uint32_t) nodeid;
+		LOG_FATAL() << formatter.str();
+		return "";
+	}
 
 	fullProcessImage << WriteNETHeader(network->GetNetworkId(), node);
 

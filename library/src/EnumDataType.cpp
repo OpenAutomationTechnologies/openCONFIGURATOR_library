@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
 using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
+using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 
 EnumDataType::EnumDataType(const std::string& uniqueID, const std::string& name, const IEC_Datatype& dataType, std::uint32_t size) : ComplexDataType(uniqueID, name, size),
 	dataType(dataType),
@@ -53,7 +54,14 @@ const IEC_Datatype& EnumDataType::GetDataType() const
 Result EnumDataType::AddEnumValue(const std::string& name, const std::string& value)
 {
 	if (this->enumValues.find(name) != this->enumValues.end())
-		return Result(ErrorCode::ENUM_VALUE_EXISTS);
+	{
+		boost::format formatter(kMsgEnumValueExists);
+		formatter
+		% this->GetUniqueID()
+		% name;
+		LOG_ERROR() << formatter.str();
+		return Result(ErrorCode::ENUM_VALUE_EXISTS, formatter.str());
+	}
 
 	this->enumValues.insert(std::pair<std::string, std::string>(name, value));
 	return Result();

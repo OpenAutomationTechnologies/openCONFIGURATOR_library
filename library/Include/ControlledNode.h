@@ -82,7 +82,7 @@ namespace IndustrialNetwork
 						const IndustrialNetwork::POWERLINK::Core::Node::PlkOperationMode& GetOperationMode() const;
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapObject(std::uint32_t index, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir, std::uint16_t channelNr = 0, std::uint32_t position = 0, std::uint16_t fromNode = 0, bool updateNrOfEntries = false);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapSubObject(std::uint32_t index, std::uint16_t subindex, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir,  std::uint16_t channelNr = 0, uint32_t position = 0, std::uint16_t fromNode = 0, bool updateNrOfEntries = false);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapSubObject(std::uint32_t index, std::uint16_t subindex, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir, std::uint16_t channelNr = 0, uint32_t position = 0, std::uint16_t fromNode = 0, bool updateNrOfEntries = false);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapAllRxObjects(std::uint16_t channelNr, bool updateNrOfEntries);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapAllTxObjects(std::uint16_t channelNr, bool updateNrOfEntries);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MoveMappingObject(const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir, std::uint16_t channelNr, std::uint16_t oldPosition, std::uint16_t newPosition);

@@ -202,6 +202,14 @@ Result Network::GetManagingNode(std::shared_ptr<ManagingNode>& node)
 		if (var.first == 240)
 		{
 			node = std::dynamic_pointer_cast<ManagingNode>(var.second);
+			if (!node)
+			{
+				boost::format formatter(kMsgNonManagingNode);
+				formatter
+				% 240;
+				LOG_ERROR() << formatter.str();
+				return Result(ErrorCode::NODE_IS_NOT_MANAGING_NODE, formatter.str());
+			}
 			return Result();
 		}
 	}
@@ -217,7 +225,10 @@ Result Network::GetManagingNode(std::shared_ptr<ManagingNode>& node)
 Result Network::RemoveNode(const std::uint8_t nodeID)
 {
 	if (nodeID == 240)
-		return Result(ErrorCode::NODEID_INVALID);
+	{
+		LOG_WARN() << "[" + networkId + "] " + kMsgRemoveManagingNode;
+		return Result(ErrorCode::NODEID_INVALID, kMsgRemoveManagingNode);
+	}
 
 	auto it = this->nodeCollection.find(nodeID);
 	if (it == this->nodeCollection.end())
@@ -287,7 +298,13 @@ Result Network::RemoveNode(const std::uint8_t nodeID)
 Result Network::SetNodeId(const std::uint8_t nodeId, const std::uint8_t newNodeId)
 {
 	if (nodeId == 240)
-		return Result(ErrorCode::NODEID_INVALID);
+	{
+		boost::format formatter(kMsgExistingNode);
+		formatter
+		% (std::uint32_t) newNodeId;
+		LOG_ERROR() << "[" + networkId + "] " + formatter.str();
+		return Result(ErrorCode::NODE_EXISTS, formatter.str());
+	}
 
 	auto it = this->nodeCollection.find(nodeId);
 	if (it == this->nodeCollection.end())
@@ -303,7 +320,7 @@ Result Network::SetNodeId(const std::uint8_t nodeId, const std::uint8_t newNodeI
 	auto ite = this->nodeCollection.find(newNodeId);
 	if (ite != this->nodeCollection.end())
 	{
-		//Node does not exist
+		//Node does exist
 		boost::format formatter(kMsgExistingNode);
 		formatter
 		% (std::uint32_t) newNodeId;
@@ -632,7 +649,15 @@ Result Network::AddConfiguration(const std::string& configID)
 Result Network::RemoveConfiguration(const std::string& configID)
 {
 	if (this->activeConfiguration == configID)
-		return Result(ErrorCode::BUILD_CONFIGURATION_IS_ACTIVE);
+	{
+		boost::format formatter(kMsgActiveConfigurationRemove);
+		formatter
+		% configID
+		% this->networkId;
+		LOG_ERROR() << "[" + networkId + "] " + formatter.str();
+		return Result(ErrorCode::BUILD_CONFIGURATION_IS_ACTIVE, formatter.str());
+	}
+
 
 	std::vector<std::shared_ptr<PlkConfiguration>>::iterator it;
 	for (it = this->buildConfigurations.begin() ; it != this->buildConfigurations.end(); ++it)
@@ -648,7 +673,7 @@ Result Network::RemoveConfiguration(const std::string& configID)
 		% configID
 		% this->networkId;
 		LOG_ERROR() << "[" + networkId + "] " + formatter.str();
-		return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST);
+		return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST, formatter.str());
 	}
 
 	this->buildConfigurations.erase(it);
@@ -684,7 +709,7 @@ Result Network::ReplaceConfigurationName(const std::string& oldConfigID, const s
 	% oldConfigID
 	% this->networkId;
 	LOG_ERROR() << "[" + networkId + "] " + formatter.str();
-	return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST);
+	return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST, formatter.str());
 }
 
 Result Network::GetConfigurationSettings(const std::string& configID, std::vector<std::shared_ptr<BuildConfigurationSetting>>& returnRef)
@@ -703,7 +728,7 @@ Result Network::GetConfigurationSettings(const std::string& configID, std::vecto
 	% configID
 	% this->networkId;
 	LOG_ERROR() << "[" + networkId + "] " + formatter.str();
-	return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST);
+	return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST, formatter.str());
 }
 
 Result Network::GetBuildConfigurations(std::vector<std::shared_ptr<PlkConfiguration>>& bcfgs)
@@ -739,7 +764,7 @@ Result Network::SetActiveConfiguration(const std::string& configID)
 	% configID
 	% this->networkId;
 	LOG_ERROR() << "[" + networkId + "] " + formatter.str();
-	return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST);
+	return Result(ErrorCode::BUILD_CONFIGURATION_DOES_NOT_EXIST, formatter.str());
 }
 
 Result Network::GenerateConfiguration()
@@ -852,17 +877,26 @@ Result Network::SetOperationMode(const std::uint8_t nodeID, const PlkOperationMo
 		{
 			mn->GetNetworkManagement()->GetFeatureActualValue<bool>(MNFeatureEnum::DLLMNPResChaining, operationModeSupported);
 			if (!operationModeSupported)
-				return Result(ErrorCode::CHAINING_NOT_SUPPORTED);
+			{
+				LOG_ERROR() << "[" + networkId + "] " + kMsgChainingMnNotSupported;
+				return Result(ErrorCode::CHAINING_NOT_SUPPORTED, kMsgChainingMnNotSupported);
+			}
 
 			if (mn->GetRmnCount() > 0)
+			{
+				LOG_WARN() << "[" + networkId + "] " + kMsgChainingRmnNotSupported;
 				return Result(ErrorCode::CHAINING_NOT_SUPPORTED, kMsgChainingRmnNotSupported);
+			}
 
 		}
 		else if (mode == PlkOperationMode::MULTIPLEXED)
 		{
 			mn->GetNetworkManagement()->GetFeatureActualValue<bool>(MNFeatureEnum::DLLMNFeatureMultiplex, operationModeSupported);
 			if (!operationModeSupported)
-				return Result(ErrorCode::MULTIPLEXING_NOT_SUPPORTED);
+			{
+				LOG_ERROR() << "[" + networkId + "] " + kMsgMultiplexingMnNotSupported;
+				return Result(ErrorCode::MULTIPLEXING_NOT_SUPPORTED, kMsgMultiplexingMnNotSupported);
+			}
 		}
 
 		res = cn->SetOperationMode(mode);
@@ -926,8 +960,13 @@ Result Network::SetOperationMode(const std::uint8_t nodeID, const PlkOperationMo
 		}
 	}
 	else
-		return Result(ErrorCode::NODE_CONFIGURATION_ERROR);
-
+	{
+		boost::format formatter(kMsgNonControlledNode);
+		formatter
+		% nodeID;
+		LOG_ERROR() << "[" + networkId + "] " + formatter.str();
+		return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE, formatter.str());
+	}
 	return res;
 }
 
@@ -1009,9 +1048,9 @@ Result Network::EnableNode(const std::uint8_t nodeID, bool enable)
 				//Reset 0x1F8D / nodeID from all CNs
 				node.second->ForceSubObject(0x1F8D, nodeID, false, false, "", false);
 				//Reset 0x1F8B / nodeID
-				node.second->ForceSubObject(0x1F8B, nodeID, false, false,  "", false);
+				node.second->ForceSubObject(0x1F8B, nodeID, false, false, "", false);
 				//Reset 0x1F9B / nodeID from all CNs
-				node.second->ForceSubObject(0x1F9B, nodeID, false, false,  "", false);
+				node.second->ForceSubObject(0x1F9B, nodeID, false, false, "", false);
 			}
 
 			node.second->ClearMappingChannelforNode(nodeID);

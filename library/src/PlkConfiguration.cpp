@@ -173,7 +173,10 @@ Result PlkConfiguration::DistributeDateTimeStamps(const std::map<std::uint8_t, s
 	time_t tnow = std::chrono::system_clock::to_time_t(now);
 	tm* date = localtime(&tnow); // today
 	if (date == NULL)
-		return Result(ErrorCode::ARGUMENT_INVALID_NULL);
+	{
+		LOG_ERROR() << kMsgDateTimeNotInitialised;
+		return Result(ErrorCode::ARGUMENT_INVALID_NULL, kMsgDateTimeNotInitialised);
+	}
 
 	date->tm_hour = 0; // set to midnight
 	date->tm_min = 0;
@@ -294,7 +297,10 @@ Result PlkConfiguration::DistributeCycleTime(const std::map<std::uint8_t, std::s
 	}
 	//0x1006 has to be written so return error if not
 	else
+	{
+		LOG_WARN() << kMsgCycleTimeOnMnNotSet;
 		return Result(ErrorCode::CYCLE_TIME_NOT_SET, kMsgCycleTimeOnMnNotSet);
+	}
 
 	//Warn if cycle time has a default value on MN
 	if (cycleTimeObject->HasDefaultValue())
@@ -701,6 +707,9 @@ Result PlkConfiguration::DistributePResPayloadLimit(const std::map<std::uint8_t,
 
 		for (auto& cn : nodeCollection)
 		{
+			if (cn.first == 240)
+				continue;
+
 			//Always distribute for RMNs
 			if (std::dynamic_pointer_cast<ManagingNode>(cn.second))
 			{
@@ -735,7 +744,11 @@ Result PlkConfiguration::DistributePResPayloadLimit(const std::map<std::uint8_t,
 			}
 			if (crossTrafficForNode == false)
 			{
-				cn.second->SetSubObjectActualValue(0x1F8D, node.first, "");
+				std::shared_ptr<SubObject> subObj;
+				res = cn.second->GetSubObject(0x1F8D, node.first, subObj, false);
+				if (!res.IsSuccessful())
+					continue;
+				subObj->ClearActualValue();
 				if (!std::dynamic_pointer_cast<ManagingNode>(cn.second))
 					cn.second->ForceSubObject(0x1F81, node.first, false, false, "", false);
 			}
@@ -798,7 +811,10 @@ Result PlkConfiguration::SyncRedundantManagingNodes(const std::map<std::uint8_t,
 	//Get managing node
 	std::shared_ptr<ManagingNode> mn = std::dynamic_pointer_cast<ManagingNode>(nodeCollection.at(240));
 	if (!mn)
-		return Result(ErrorCode::NO_MANAGING_NODE_CONFIGURED);
+	{
+		LOG_ERROR() << kMsgNoManagingNode;
+		return Result(ErrorCode::NO_MANAGING_NODE_CONFIGURED, kMsgNoManagingNode);
+	}
 
 	for (auto& node : nodeCollection)
 	{

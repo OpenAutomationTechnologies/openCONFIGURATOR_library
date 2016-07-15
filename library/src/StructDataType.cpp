@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
+using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 
 StructDataType::StructDataType(const std::string& uniqueID, const std::string& name) : ComplexDataType(uniqueID, name),
 	varDeclarationList(std::vector<std::shared_ptr<VarDeclaration>>())
@@ -59,7 +60,12 @@ Result StructDataType::AddVarDeclaration(std::shared_ptr<VarDeclaration>& varDec
 	{
 		if (var->GetUniqueID() == varDecl->GetUniqueID())
 		{
-			return Result(ErrorCode::VAR_DECLARATION_EXISTS);
+			boost::format formatter(kMsgVarDeclarationExists);
+			formatter
+			% varDecl->GetUniqueID()
+			% this->GetUniqueID();
+			LOG_ERROR() << formatter.str();
+			return Result(ErrorCode::VAR_DECLARATION_EXISTS, formatter.str());
 		}
 	}
 	this->varDeclarationList.push_back(varDecl);

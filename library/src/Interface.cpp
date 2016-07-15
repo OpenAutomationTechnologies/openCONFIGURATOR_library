@@ -146,7 +146,6 @@ Result Interface::AddModule(std::uint32_t position, const std::shared_ptr<Module
 			% position;
 			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::MODULE_ALREADY_EXISTS, formatter.str());
-
 		}
 	}
 

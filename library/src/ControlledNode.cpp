@@ -58,7 +58,7 @@ Result ControlledNode::AddNodeAssignment(const NodeAssignment& assign)
 	{
 		boost::format formatter(kMsgNodeAssignmentNotSupported);
 		formatter
-		% (std::uint32_t) assign
+		% GetNodeAssignmentName(assign)
 		% (std::uint32_t) this->GetNodeId();
 		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::NODE_ASSIGNMENT_NOT_SUPPORTED, formatter.str());
@@ -71,7 +71,7 @@ Result ControlledNode::AddNodeAssignment(const NodeAssignment& assign)
 	{
 		boost::format formatter(kMsgNodeAssignmentAlreadyExists);
 		formatter
-		% (std::uint32_t) assign
+		% GetNodeAssignmentName(assign)
 		% (std::uint32_t) this->GetNodeId();
 		LOG_INFO() << formatter.str();
 		return Result();
@@ -111,7 +111,7 @@ Result ControlledNode::MapObject(std::uint32_t index, const Direction& dir, std:
 	return this->MapBaseObject(objToMap, index, 0, dir, updateNrOfEntries, channelNr, position, fromNode);
 }
 
-Result ControlledNode::MapSubObject(std::uint32_t index, std::uint16_t subindex, const Direction& dir,  std::uint16_t channelNr, std::uint32_t position, std::uint16_t fromNode, bool updateNrOfEntries)
+Result ControlledNode::MapSubObject(std::uint32_t index, std::uint16_t subindex, const Direction& dir, std::uint16_t channelNr, std::uint32_t position, std::uint16_t fromNode, bool updateNrOfEntries)
 {
 	//retrieve sub object to be mapped
 	std::shared_ptr<SubObject> objToMap;
@@ -332,7 +332,13 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 
 	if (mappingObj->GetSubObjectDictionary().size() < position)
 	{
-		return Result(ErrorCode::INSUFFICIENT_MAPPING_OBJECTS);
+		boost::format formatter(kMsgInsufficientMappingObjects);
+		formatter
+		% (std::uint32_t) this->GetNodeId()
+		% (std::uint32_t) mappingObj->GetSubObjectDictionary().size()
+		% position;
+		LOG_FATAL() << formatter.str();
+		return Result(ErrorCode::INSUFFICIENT_MAPPING_OBJECTS, formatter.str());
 	}
 
 	for (auto& tMapping : mappingObj->GetSubObjectDictionary())
@@ -895,7 +901,7 @@ Result ControlledNode::UpdateProcessImage(const Direction& dir)
 			//Check parameter access
 			std::shared_ptr<StructDataType> structDt = std::dynamic_pointer_cast<StructDataType>(dataObject->GetReferencedParameter()->GetComplexDataType());
 			std::shared_ptr<ArrayDataType> arrayDt = std::dynamic_pointer_cast<ArrayDataType>(dataObject->GetReferencedParameter()->GetComplexDataType());
-			std::shared_ptr<EnumDataType> enumDt = std::dynamic_pointer_cast<EnumDataType>(dataObject->GetReferencedParameter()->GetComplexDataType());
+			//std::shared_ptr<EnumDataType> enumDt = std::dynamic_pointer_cast<EnumDataType>(dataObject->GetReferencedParameter()->GetComplexDataType());
 			if (structDt.get())
 			{
 				ProcessComplexDatatype(structDt, dataName, dir, piOffset, domainCount);
@@ -904,30 +910,15 @@ Result ControlledNode::UpdateProcessImage(const Direction& dir)
 			{
 				ProcessComplexDatatype(arrayDt, dataName, dir, piOffset, domainCount);
 			}
-			else if (enumDt.get())
+			/*else if (enumDt.get())
 			{
-				//ProcessComplexDatatype(enumDt, dataName, dir, piOffset, domainCount);
-			}
+				ProcessComplexDatatype(enumDt, dataName, dir, piOffset, domainCount);
+			}*/
 			else
 			{
 				ProcessComplexDatatype(dataObject->GetReferencedParameter(), dataName, dir, piOffset, bitOffset, domainCount);
 			}
 			domainCount++;
-
-			if (dir == Direction::RX)
-			{
-				if (this->GetReceiveProcessImage().back()->GetDataType() == IEC_Datatype::BOOL ||
-				        this->GetReceiveProcessImage().back()->GetDataType() == IEC_Datatype::BITSTRING)
-				{
-					piOffset++;
-				}
-			}
-			else if (dir == Direction::TX)
-				if (this->GetTransmitProcessImage().back()->GetDataType() == IEC_Datatype::BOOL ||
-				        this->GetTransmitProcessImage().back()->GetDataType() == IEC_Datatype::BITSTRING)
-				{
-					piOffset++;
-				}
 		}
 		else
 		{
@@ -1014,7 +1005,11 @@ Result ControlledNode::UpdateProcessImage(const Direction& dir)
 		if (it != piCollection->end() - 1)
 		{
 			std::uint32_t targetPiOffset = (it + 1)->get()->GetPiOffset();
-			std::uint32_t calculatedTargetPiOffset = it->get()->GetPiOffset() + (Utilities::GetIECDataTypeBitSize(it->get()->GetDataType()) / 8);
+			std::uint32_t calculatedTargetPiOffset = 0;
+			if (it->get()->GetDataType() == IEC_Datatype::BITSTRING || it->get()->GetDataType() == IEC_Datatype::BOOL)
+				calculatedTargetPiOffset = it->get()->GetPiOffset() + 1;
+			else
+				calculatedTargetPiOffset = it->get()->GetPiOffset() + (Utilities::GetIECDataTypeBitSize(it->get()->GetDataType()) / 8);
 			if (calculatedTargetPiOffset != targetPiOffset)
 			{
 				std::uint32_t targetPiOffset = (it + 1)->get()->GetPiOffset();
@@ -1165,11 +1160,27 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 							return Result(ErrorCode::CHANNEL_PAYLOAD_LIMIT_EXCEEDED, formatter.str());
 						}
 
-						mappingPtr->SetMappingOffset(expectedOffset);
-						mapping.second->SetTypedObjectActualValue(IntToHex<std::uint64_t>(mappingPtr->GetValue(), 16, "0x"));
+						if (mappingPtr->GetMappingOffset() != expectedOffset)
+						{
+							boost::format formatter(kMsgPdoOffsetInvalid);
+							formatter
+							% mappingObject->GetObjectId()
+							% mapping.first
+							% (std::uint32_t) this->GetNodeId()
+							% mappingPtr->GetMappingOffset()
+							% expectedOffset;
+							if (GetOperationMode() != PlkOperationMode::CHAINED)
+							{
+								LOG_WARN() << formatter.str() << " Mapping value has been recalculated.";
+							}
+							mappingPtr->SetMappingOffset(expectedOffset);
+						}
+
 						res = CheckProcessDataMapping(mappingPtr, expectedOffset, dir);
 						if (!res.IsSuccessful())
 							return res;
+
+						mapping.second->SetTypedObjectActualValue(IntToHex<std::uint64_t>(mappingPtr->GetValue(), 16, "0x"));
 
 						if (dir == Direction::RX)
 							this->GetReceiveMapping().push_back(mappingPtr);
@@ -1219,7 +1230,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 				this->nodeDataPresMnCurrentOffset = expectedOffset;
 
 			//correct NrOfEntries if there are too much mappings validated
-			if (nrOfEntries  > countNrOfEntries)
+			if (nrOfEntries > countNrOfEntries)
 			{
 				nrOfEntriesObj->SetTypedObjectActualValue(IntToHex<std::uint16_t>(countNrOfEntries, 2, "0x"));
 
@@ -1290,7 +1301,15 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 	{
 		if (foundObject->GetBitSize() != mapping_size)
 		{
-			return Result(ErrorCode::OBJECT_SIZE_MAPPED_INVALID);
+			boost::format formatter(kMsgMappedObjectSizeInvalid);
+			formatter
+			% dataIndex
+			% dataSubindex
+			% foundObject->GetBitSize()
+			% mapping_size
+			% (std::uint32_t) this->GetNodeId();
+			LOG_ERROR() << formatter.str();
+			return Result(ErrorCode::OBJECT_SIZE_MAPPED_INVALID, formatter.str());
 		}
 	}
 	//Check complex data type size
@@ -1316,7 +1335,15 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 
 		if (foundObject->GetBitSize() != size)
 		{
-			return Result(ErrorCode::OBJECT_SIZE_MAPPED_INVALID);
+			boost::format formatter(kMsgMappedObjectSizeInvalid);
+			formatter
+			% dataIndex
+			% dataSubindex
+			% foundObject->GetBitSize()
+			% size
+			% (std::uint32_t) this->GetNodeId();
+			LOG_ERROR() << formatter.str();
+			return Result(ErrorCode::OBJECT_SIZE_MAPPED_INVALID, formatter.str());
 		}
 		//Correct size if a parameter has changed the size of the PI
 		else if (mapping_size != size && foundObject->GetBitSize() == size)
@@ -1615,7 +1642,7 @@ Result ControlledNode::ProcessParameterGroup(const std::shared_ptr<ParameterGrou
 			{
 				std::shared_ptr<StructDataType> structDt = std::dynamic_pointer_cast<StructDataType>(paramRef->GetReferencedParameter()->GetComplexDataType());
 				std::shared_ptr<ArrayDataType> arrayDt = std::dynamic_pointer_cast<ArrayDataType>(paramRef->GetReferencedParameter()->GetComplexDataType());
-				std::shared_ptr<EnumDataType> enumDt = std::dynamic_pointer_cast<EnumDataType>(paramRef->GetReferencedParameter()->GetComplexDataType());
+				//std::shared_ptr<EnumDataType> enumDt = std::dynamic_pointer_cast<EnumDataType>(paramRef->GetReferencedParameter()->GetComplexDataType());
 				if (structDt.get())
 				{
 					ProcessComplexDatatype(structDt, dataName, dir, piOffset, domainCount);

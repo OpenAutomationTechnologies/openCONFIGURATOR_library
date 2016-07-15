@@ -42,6 +42,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "MnFeature.h"
 #include "Result.h"
 #include "Constants.h"
+#include "LoggingConfiguration.h"
 
 namespace IndustrialNetwork
 {

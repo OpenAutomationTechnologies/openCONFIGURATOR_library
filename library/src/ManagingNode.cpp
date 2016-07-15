@@ -69,7 +69,7 @@ Result ManagingNode::AddNodeAssignment(const NodeAssignment& assign)
 			{
 				boost::format formatter(kMsgNodeAssignmentNotSupported);
 				formatter
-				% static_cast<std::underlying_type<NodeAssignment>::type>(assign)
+				% GetNodeAssignmentName(assign)
 				% (std::uint32_t) this->GetNodeId();
 				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::NODE_ASSIGNMENT_NOT_SUPPORTED, formatter.str());
@@ -92,7 +92,7 @@ Result ManagingNode::AddNodeAssignment(const NodeAssignment& assign)
 				{
 					boost::format formatter(kMsgNodeAssignmentAlreadyExists);
 					formatter
-					% static_cast<std::underlying_type<NodeAssignment>::type>(assign)
+					% GetNodeAssignmentName(assign)
 					% (std::uint32_t) this->GetNodeId();
 					LOG_INFO() << formatter.str();
 					return Result();
@@ -118,7 +118,7 @@ std::uint32_t ManagingNode::GetNodeAssignmentValue()
 	NodeAssignment assign = this->GetNodeAssignment()[0];
 	for (auto var : this->GetNodeAssignment())
 	{
-		assign |=  var;
+		assign |= var;
 	}
 
 	return static_cast<std::underlying_type<NodeAssignment>::type>(assign);
@@ -619,7 +619,17 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::UpdatePr
 				continue;
 
 			if (nodeID->HasActualValue())
+			{
 				mappedFromNode = nodeID->GetTypedActualValue<std::uint16_t>();
+				if (mappedFromNode > 250)
+				{
+					boost::format formatter(kMsgNonExistingNode);
+					formatter
+					% mappedFromNode;
+					LOG_ERROR() << formatter.str();
+					return Result(ErrorCode::NODE_DOES_NOT_EXIST, formatter.str());
+				}
+			}
 			else
 				continue;
 
@@ -770,7 +780,13 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::UpdatePr
 					}
 					else
 					{
-						return Result(ErrorCode::MAPPING_INVALID);
+						boost::format formatter(kMsgMappingObjectInvalid);
+						formatter
+						% obj.first
+						% mapping.first
+						% (std::uint32_t) this->GetNodeId();
+						LOG_FATAL() << formatter.str();
+						return Result(ErrorCode::MAPPING_INVALID, formatter.str());
 					}
 				}
 			}
@@ -863,7 +879,14 @@ Result ManagingNode::CheckProcessDataMapping(const std::shared_ptr<BaseNode>& no
 
 	if (foundMapping)
 		return Result();
-	return Result(ErrorCode::MAPPING_INVALID);
+
+	boost::format formatter(kMsgMappingObjectInvalid);
+	formatter
+	% mnMappingObject->GetMappingIndex()
+	% mnMappingObject->GetMappingSubIndex()
+	% (std::uint32_t) this->GetNodeId();
+	LOG_FATAL() << formatter.str();
+	return Result(ErrorCode::MAPPING_INVALID, formatter.str());
 }
 
 void ManagingNode::ClearMappingObjects()

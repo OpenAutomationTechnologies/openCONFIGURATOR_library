@@ -149,7 +149,7 @@ namespace IndustrialNetwork
 					MN_FEATURE_VALUE_INVALID, //!< MN Feature value invalid for datatype.
 					NODE_ASSIGNMENT_NOT_SUPPORTED, //!< Node assignment not supported by node.
 					NODE_ASSIGNMENT_EXISTS, //!< Node assignment is already set.
-					MANAGING_NODE_DISABLE_INVALID, //!<  The managing node cannot be disabled.
+					MANAGING_NODE_DISABLE_INVALID, //!< The managing node cannot be disabled.
 					NODE_IS_NOT_MANAGING_NODE, //!< The node is not a managing node.
 					NODE_IS_NOT_CONTROLLED_NODE, //!< The node is not a controlled node.
 					NODE_IS_NOT_REDUNDANT_MANAGING_NODE, //!< The node is not a redundant managing node.
@@ -162,6 +162,7 @@ namespace IndustrialNetwork
 					PARAMETER_HAS_NO_DEFAULT_VALUE, //!< Parameter has no default value
 					PARAMETER_EXISTS, //!< Parameter already exists
 					PARAMETER_GROUP_EXISTS, //!< Parameter group already exists
+					PARAMETER_GROUP_EMPTY, //!< Parameter group is empty
 					PARAMETER_TEMPLATE_EXISTS, //!< Parameter template already exists
 					PARAMETER_GROUP_DOES_NOT_EXIST, //!< Parameter group does not exist
 					PARAMETER_TEMPLATE_DOES_NOT_EXIST, //!< Parameter template does not exist
