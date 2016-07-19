@@ -239,7 +239,7 @@ Result ConfigurationGenerator::WriteRedundantManagingNodeConfiguration(const std
 	std::uint32_t rmnDomainSize = (rmn->GetConfigurationObjectSize() / 8) + (rmn->GetConfigurationObjectCount() * 7) + 4;
 
 	//Write the 1F22 object for RMN
-	configurationOutput << "////Configuration Data for CN: " << node->GetName() << "(" << std::dec << (std::uint32_t) node->GetNodeId() << ")" << std::endl;
+	configurationOutput << "////Configuration Data for RMN: " << node->GetName() << "(" << std::dec << (std::uint32_t) node->GetNodeId() << ")" << std::endl;
 	configurationOutput << std::hex << std::uppercase << 0x1F22;
 	configurationOutput << "\t";
 	configurationOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << (std::uint32_t) node->GetNodeId();
