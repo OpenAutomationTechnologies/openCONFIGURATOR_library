@@ -69,7 +69,8 @@ namespace IndustrialNetwork
 					Ring_Redundancy = 0x10000,
 					PResChaining = 0x20000,
 					Multiple_PReq_PRes = 0x40000,
-					Dynamic_Node_Allocation = 0x80000
+					Dynamic_Node_Allocation = 0x80000,
+					Modular_Device = 0x100000
 				};
 
 				inline FeatureFlags operator | (FeatureFlags lhs, FeatureFlags rhs)
