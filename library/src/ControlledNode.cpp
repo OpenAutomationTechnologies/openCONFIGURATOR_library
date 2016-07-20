@@ -364,7 +364,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 			{
 				if (tMapping.second->GetTypedActualValue<std::uint64_t>() != 0)
 				{
-					BaseProcessDataMapping object = BaseProcessDataMapping(tMapping.second->GetTypedActualValue<std::string>(), this->GetNodeId(), false);
+					BaseProcessDataMapping object = BaseProcessDataMapping(tMapping.second->GetTypedActualValue<std::string>(), this->GetNodeId());
 					offset = object.GetMappingOffset();
 				}
 			}
@@ -414,7 +414,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 		{
 			if (tMapping.second->GetTypedActualValue<std::uint64_t>() != 0)
 			{
-				BaseProcessDataMapping object = BaseProcessDataMapping(tMapping.second->GetTypedActualValue<std::string>(), this->GetNodeId(), false);
+				BaseProcessDataMapping object = BaseProcessDataMapping(tMapping.second->GetTypedActualValue<std::string>(), this->GetNodeId());
 
 				//offset is ok go on
 				if (expectedOffset >= object.GetMappingOffset())
@@ -1147,7 +1147,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 					if (mapping.second->GetTypedActualValue<std::uint64_t>() != 0)
 					{
 						std::shared_ptr<BaseProcessDataMapping> mappingPtr = std::shared_ptr<BaseProcessDataMapping>(new BaseProcessDataMapping(mappingObject->GetObjectId(),
-						        mapping.second->GetObjectId(), mapping.second, mapping.second->GetTypedActualValue<std::string>(), mappedFromNode, false));
+						        mapping.second->GetObjectId(), mapping.second, mapping.second->GetTypedActualValue<std::string>(), mappedFromNode));
 
 						if (expectedOffset + mappingPtr->GetMappingLength() > (1490 * 8))
 						{
@@ -1197,7 +1197,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 					if (mapping.second->GetTypedDefaultValue<std::uint64_t>() != 0)
 					{
 						std::shared_ptr<BaseProcessDataMapping> mappingPtr = std::shared_ptr<BaseProcessDataMapping>(new BaseProcessDataMapping(mappingObject->GetObjectId(),
-						        mapping.second->GetObjectId(), mapping.second, mapping.second->GetTypedDefaultValue<std::string>(), mappedFromNode, true));
+						        mapping.second->GetObjectId(), mapping.second, mapping.second->GetTypedDefaultValue<std::string>(), mappedFromNode));
 
 						if (expectedOffset + mappingPtr->GetMappingLength() > (1490 * 8))
 						{

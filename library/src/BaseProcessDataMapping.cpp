@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 
-BaseProcessDataMapping::BaseProcessDataMapping(std::uint32_t object, std::uint32_t subobject, const std::shared_ptr<BaseObject>& obj, std::uint32_t index, std::uint16_t subindex, std::uint16_t offset, std::uint16_t length, std::uint16_t nodeId, bool staticMapping) :
+BaseProcessDataMapping::BaseProcessDataMapping(std::uint32_t object, std::uint32_t subobject, const std::shared_ptr<BaseObject>& obj, std::uint32_t index, std::uint16_t subindex, std::uint16_t offset, std::uint16_t length, std::uint16_t nodeId) :
 	object(object),
 	subobject(subobject),
 	relatedObject(obj),
@@ -43,11 +43,10 @@ BaseProcessDataMapping::BaseProcessDataMapping(std::uint32_t object, std::uint32
 	subindex(subindex),
 	offset(offset),
 	length(length),
-	staticMapping(staticMapping),
 	offsetGap(0)
 {}
 
-BaseProcessDataMapping::BaseProcessDataMapping(std::uint32_t object, std::uint32_t subobject, const std::shared_ptr<BaseObject>& obj, std::uint64_t actualValue, std::uint16_t nodeId, bool staticMapping) :
+BaseProcessDataMapping::BaseProcessDataMapping(std::uint32_t object, std::uint32_t subobject, const std::shared_ptr<BaseObject>& obj, std::uint64_t actualValue, std::uint16_t nodeId) :
 	object(object),
 	subobject(subobject),
 	relatedObject(obj),
@@ -56,13 +55,12 @@ BaseProcessDataMapping::BaseProcessDataMapping(std::uint32_t object, std::uint32
 	subindex(0),
 	offset(0),
 	length(0),
-	staticMapping(staticMapping),
 	offsetGap(0)
 {
 	InitMappingObject(actualValue);
 }
 
-BaseProcessDataMapping::BaseProcessDataMapping(std::uint32_t object, std::uint32_t subobject, const std::shared_ptr<BaseObject>& obj, const std::string& actualValue, std::uint16_t nodeId, bool staticMapping) :
+BaseProcessDataMapping::BaseProcessDataMapping(std::uint32_t object, std::uint32_t subobject, const std::shared_ptr<BaseObject>& obj, const std::string& actualValue, std::uint16_t nodeId) :
 	object(object),
 	subobject(subobject),
 	relatedObject(obj),
@@ -71,13 +69,12 @@ BaseProcessDataMapping::BaseProcessDataMapping(std::uint32_t object, std::uint32
 	subindex(0),
 	offset(0),
 	length(0),
-	staticMapping(staticMapping),
 	offsetGap(0)
 {
 	InitMappingObject(actualValue);
 }
 
-BaseProcessDataMapping::BaseProcessDataMapping(const std::string& actualValue, std::uint16_t nodeId, bool staticMapping) :
+BaseProcessDataMapping::BaseProcessDataMapping(const std::string& actualValue, std::uint16_t nodeId) :
 	object(0),
 	subobject(0),
 	relatedObject(0),
@@ -86,7 +83,6 @@ BaseProcessDataMapping::BaseProcessDataMapping(const std::string& actualValue, s
 	subindex(0),
 	offset(0),
 	length(0),
-	staticMapping(staticMapping),
 	offsetGap(0)
 {
 	InitMappingObject(actualValue);

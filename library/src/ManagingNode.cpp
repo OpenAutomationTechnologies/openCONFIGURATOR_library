@@ -673,7 +673,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::UpdatePr
 							if (mapping->GetTypedActualValue<std::uint64_t>() != 0)
 							{
 								std::shared_ptr<BaseProcessDataMapping> mappingPtr = std::shared_ptr<BaseProcessDataMapping>(new BaseProcessDataMapping(node.first,
-								        mapping->GetObjectId(), mapping, mapping->GetTypedActualValue<std::string>(), this->GetNodeId(), false));
+								        mapping->GetObjectId(), mapping, mapping->GetTypedActualValue<std::string>(), this->GetNodeId()));
 
 								if (cn->GetNodeDataPresMnOffset() > mappingPtr->GetMappingOffset())
 									continue;
@@ -694,7 +694,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::UpdatePr
 							if (mapping->GetTypedDefaultValue<std::uint64_t>() != 0)
 							{
 								std::shared_ptr<BaseProcessDataMapping> mappingPtr = std::shared_ptr<BaseProcessDataMapping>(new BaseProcessDataMapping(node.first,
-								        mapping->GetObjectId(), mapping, mapping->GetTypedDefaultValue<std::string>(), this->GetNodeId(), true));
+								        mapping->GetObjectId(), mapping, mapping->GetTypedDefaultValue<std::string>(), this->GetNodeId()));
 
 								if (cn->GetNodeDataPresMnOffset() > mappingPtr->GetMappingOffset())
 									continue;
@@ -737,7 +737,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::UpdatePr
 						if (mapping.second->GetTypedActualValue<std::uint64_t>() != 0)
 						{
 							std::shared_ptr<BaseProcessDataMapping> mappingPtr = std::shared_ptr<BaseProcessDataMapping>(new BaseProcessDataMapping(mappedFromNode,
-							        mapping.second->GetObjectId(), mapping.second, mapping.second->GetTypedActualValue<std::string>(), this->GetNodeId(), false));
+							        mapping.second->GetObjectId(), mapping.second, mapping.second->GetTypedActualValue<std::string>(), this->GetNodeId()));
 
 							Direction nodeDir = Direction::RX;
 							if (dir == Direction::RX)
@@ -760,7 +760,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::UpdatePr
 						if (mapping.second->GetTypedDefaultValue<std::uint64_t>() != 0)
 						{
 							std::shared_ptr<BaseProcessDataMapping> mappingPtr = std::shared_ptr<BaseProcessDataMapping>(new BaseProcessDataMapping(mappedFromNode,
-							        mapping.second->GetObjectId(), mapping.second, mapping.second->GetTypedDefaultValue<std::string>(), this->GetNodeId(), true));
+							        mapping.second->GetObjectId(), mapping.second, mapping.second->GetTypedDefaultValue<std::string>(), this->GetNodeId()));
 
 							Direction nodeDir = Direction::RX;
 							if (dir == Direction::RX)

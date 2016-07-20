@@ -56,10 +56,10 @@ namespace IndustrialNetwork
 				class DLLEXPORT BaseProcessDataMapping
 				{
 					public:
-						BaseProcessDataMapping(std::uint32_t object, std::uint32_t subobject, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject>& obj, std::uint32_t index, std::uint16_t subindex, std::uint16_t offset, std::uint16_t length, std::uint16_t nodeId, bool staticMapping = false);
-						BaseProcessDataMapping(std::uint32_t object, std::uint32_t subobject, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject>& obj, std::uint64_t actualValue, std::uint16_t nodeId, bool staticMapping = false);
-						BaseProcessDataMapping(std::uint32_t object, std::uint32_t subobject, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject>& obj, const std::string& actualValue, std::uint16_t nodeId, bool staticMapping = false);
-						BaseProcessDataMapping(const std::string& actualValue, std::uint16_t nodeId, bool staticMapping = false);
+						BaseProcessDataMapping(std::uint32_t object, std::uint32_t subobject, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject>& obj, std::uint32_t index, std::uint16_t subindex, std::uint16_t offset, std::uint16_t length, std::uint16_t nodeId);
+						BaseProcessDataMapping(std::uint32_t object, std::uint32_t subobject, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject>& obj, std::uint64_t actualValue, std::uint16_t nodeId);
+						BaseProcessDataMapping(std::uint32_t object, std::uint32_t subobject, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject>& obj, const std::string& actualValue, std::uint16_t nodeId);
+						BaseProcessDataMapping(const std::string& actualValue, std::uint16_t nodeId);
 
 						virtual ~BaseProcessDataMapping();
 
@@ -105,7 +105,6 @@ namespace IndustrialNetwork
 						std::uint32_t offset;
 						std::uint32_t length;
 
-						bool staticMapping;
 						std::uint32_t offsetGap;
 
 				};
