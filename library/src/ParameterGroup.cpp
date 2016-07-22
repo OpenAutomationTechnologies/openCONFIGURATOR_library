@@ -92,8 +92,10 @@ std::uint32_t ParameterGroup::GetBitSize()
 		}
 	}
 	//Byte Align
-	if (size % 8 != 0)
-		size += (size % 8);
+	while (size % 8 != 0)
+	{
+		size++;
+	}
 	return size;
 }
 
