@@ -1365,6 +1365,61 @@ Result OpenConfiguratorCore::CreateVarDeclaration(const std::string& networkId, 
 		if (!res.IsSuccessful())
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
+		//if BITSTRING > 8 is added split into more VarDeclarations
+		if (datatype == IEC_Datatype::BITSTRING && size > 8)
+		{
+			std::uint32_t count = 0;
+			while (size != 0)
+			{
+				std::string uniqueIdNew = uniqueId;
+				if (count != 0)
+					uniqueIdNew = uniqueId + "_" + Utilities::IntToHex<std::uint32_t>(count, 2);
+
+				if (size >= 64)
+				{
+					res = this->CreateVarDeclaration(networkId, nodeId, structUniqueId, uniqueIdNew, uniqueIdNew, IEC_Datatype::ULINT, 1, initialValue, interfaceId, moduleId, modulePosition);
+					if (!res.IsSuccessful())
+						return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+					size -= 64;
+				}
+				else if (size >= 32 && size < 64)
+				{
+					res = this->CreateVarDeclaration(networkId, nodeId, structUniqueId, uniqueIdNew, uniqueIdNew, IEC_Datatype::UDINT, 1, initialValue, interfaceId, moduleId, modulePosition);
+					if (!res.IsSuccessful())
+						return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+					size -= 32;
+				}
+				else if (size >= 16 && size < 32)
+				{
+					res = this->CreateVarDeclaration(networkId, nodeId, structUniqueId, uniqueIdNew, uniqueIdNew, IEC_Datatype::UINT, 1, initialValue, interfaceId, moduleId, modulePosition);
+					if (!res.IsSuccessful())
+						return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+					size -= 16;
+				}
+				else if (size >= 8 && size < 16)
+				{
+					res = this->CreateVarDeclaration(networkId, nodeId, structUniqueId, uniqueIdNew, uniqueIdNew, IEC_Datatype::USINT, 1, initialValue, interfaceId, moduleId, modulePosition);
+					if (!res.IsSuccessful())
+						return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+					size -= 8;
+				}
+				else if (size < 8)
+				{
+					res = this->CreateVarDeclaration(networkId, nodeId, structUniqueId, uniqueIdNew, uniqueIdNew, IEC_Datatype::BITSTRING, size, initialValue, interfaceId, moduleId, modulePosition);
+					if (!res.IsSuccessful())
+						return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+					uniqueIdNew += "_UnusedData";
+					res = this->CreateVarDeclaration(networkId, nodeId, structUniqueId, uniqueIdNew, uniqueIdNew, IEC_Datatype::BITSTRING, 8 - size, initialValue, interfaceId, moduleId, modulePosition);
+					if (!res.IsSuccessful())
+						return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+					size -= size;
+				}
+				count++;
+			}
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+		}
+
 		std::shared_ptr<ModularControlledNode> cn = std::dynamic_pointer_cast<ModularControlledNode>(node);
 		if (cn && !interfaceId.empty() && !moduleId.empty() && modulePosition != 0)
 		{
