@@ -102,10 +102,21 @@ namespace IndustrialNetwork
 				{
 					std::string boolString = str;
 					std::transform(boolString.begin(), boolString.end(), boolString.begin(), ::tolower);
-					std::istringstream is(boolString);
-					bool b;
-					is >> std::boolalpha >> b;
-					return b;
+					if (boolString == "true" || boolString == "false")
+					{
+						bool returnValue = false;
+						std::istringstream is(boolString);
+						is >> std::boolalpha >> returnValue;
+						return returnValue;
+					}
+					else
+					{
+						std::uint16_t value = Utilities::HexToInt<std::uint16_t>(str);
+						if (value == 1)
+							return true;
+						else
+							return false;
+					}
 				}
 
 				std::uint32_t GetIECDataTypeBitSize(const IEC_Datatype& dataType)
