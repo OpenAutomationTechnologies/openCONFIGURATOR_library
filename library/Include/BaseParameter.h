@@ -80,7 +80,7 @@ namespace IndustrialNetwork
 						void SetComplexDataType(const std::shared_ptr<ComplexDataType>& complexType);
 
 						const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess& GetParameterAccess() const;
-						void SetParameterAccess(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess access);
+						void SetParameterAccess(const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess& access);
 						std::uint32_t GetBitSize() const;
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddParameterAllowedRange(const std::string& minValue, const std::string& maxValue);
@@ -104,7 +104,7 @@ namespace IndustrialNetwork
 						const boost::optional<boost::any>& GetParameterActualValue() const;
 
 						const boost::optional<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype>& GetDataType() const;
-						void SetDataType(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType);
+						void SetDataType(const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype& dataType);
 
 						bool HasActualValue() const;
 						bool HasDefaultValue() const;

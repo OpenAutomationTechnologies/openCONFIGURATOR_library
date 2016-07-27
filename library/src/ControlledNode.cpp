@@ -650,27 +650,27 @@ std::uint32_t ControlledNode::GetConfigurationObjectSize()
 	return size;
 }
 
-Result ControlledNode::SetOperationMode(const PlkOperationMode& operationMode)
+Result ControlledNode::SetOperationMode(const PlkOperationMode& _operationMode)
 {
-	if (operationMode == this->operationMode)
+	if (_operationMode == this->operationMode)
 		return Result();
 
-	if (operationMode == PlkOperationMode::NORMAL)
+	if (_operationMode == PlkOperationMode::NORMAL)
 	{
 
 		this->RemoveNodeAssignment(NodeAssignment::NMT_NODEASSIGN_MULTIPLEXED_CN);
 		this->RemoveNodeAssignment(NodeAssignment::NMT_NODEASSIGN_PRES_CHAINING);
 
-		this->operationMode = operationMode;
+		this->operationMode = _operationMode;
 	}
-	else if (operationMode == PlkOperationMode::MULTIPLEXED)
+	else if (_operationMode == PlkOperationMode::MULTIPLEXED)
 	{
 		bool operationModeSupported = false;
 		this->GetNetworkManagement()->GetFeatureActualValue<bool>(CNFeatureEnum::DLLCNFeatureMultiplex, operationModeSupported);
 
 		if (operationModeSupported)
 		{
-			this->operationMode = operationMode;
+			this->operationMode = _operationMode;
 			this->AddNodeAssignment(NodeAssignment::NMT_NODEASSIGN_MULTIPLEXED_CN);
 		}
 		else
@@ -683,14 +683,14 @@ Result ControlledNode::SetOperationMode(const PlkOperationMode& operationMode)
 		}
 
 	}
-	else if (operationMode == PlkOperationMode::CHAINED)
+	else if (_operationMode == PlkOperationMode::CHAINED)
 	{
 		bool operationModeSupported = false;
 		this->GetNetworkManagement()->GetFeatureActualValue<bool>(CNFeatureEnum::DLLCNPResChaining, operationModeSupported);
 
 		if (operationModeSupported)
 		{
-			this->operationMode = operationMode;
+			this->operationMode = _operationMode;
 			this->AddNodeAssignment(NodeAssignment::NMT_NODEASSIGN_PRES_CHAINING);
 			this->UpdateProcessImage(Direction::RX);
 		}
@@ -813,7 +813,7 @@ Result ControlledNode::GetDataObjectFromMapping(const std::shared_ptr<BaseProces
 	std::shared_ptr<SubObject> dataSubObject;
 	if (dataSubindex == 0)
 	{
-		Result res = this->GetSubObject(dataIndex, dataSubindex, dataSubObject, false);
+		res = this->GetSubObject(dataIndex, dataSubindex, dataSubObject, false);
 		if (!res.IsSuccessful())
 			returnObject = dataObject;
 		else
@@ -824,7 +824,7 @@ Result ControlledNode::GetDataObjectFromMapping(const std::shared_ptr<BaseProces
 	}
 	else
 	{
-		Result res = this->GetSubObject(dataIndex, dataSubindex, dataSubObject);
+		res = this->GetSubObject(dataIndex, dataSubindex, dataSubObject);
 		if (!res.IsSuccessful())
 		{
 			boost::format formatter(kMsgNonExistingMappedSubObject);
@@ -868,7 +868,7 @@ Result ControlledNode::UpdateProcessImage(const Direction& dir)
 	{
 		std::shared_ptr<BaseObject> dataObject;
 		std::string dataName;
-		Result res = GetDataObjectFromMapping(mapObj, dataObject, dataName);
+		res = GetDataObjectFromMapping(mapObj, dataObject, dataName);
 		if (!res.IsSuccessful())
 			return res;
 
@@ -956,7 +956,7 @@ Result ControlledNode::UpdateProcessImage(const Direction& dir)
 	//Align bit data objects
 	std::uint32_t bitCount = 0;
 	piOffset = 0;
-	std::string name = "";
+	std::string piName = "";
 	for (auto it = piCollection->begin(); it != piCollection->end(); ++it)
 	{
 		if (it->get()->GetPiOffset() != piOffset)
@@ -964,7 +964,7 @@ Result ControlledNode::UpdateProcessImage(const Direction& dir)
 			if (bitCount != 0)
 			{
 				std::shared_ptr<BaseProcessImageObject> piObj = std::make_shared<BaseProcessImageObject>(
-				            name,
+				            piName,
 				            IEC_Datatype::BITSTRING,
 				            piOffset,
 				            bitCount,
@@ -981,14 +981,14 @@ Result ControlledNode::UpdateProcessImage(const Direction& dir)
 			if (bitCount == 8)
 				bitCount = 0;
 
-			name = it->get()->GetName().substr(0, it->get()->GetName().find_first_of("_"));
-			name = name + "_Unused_Data";
+			piName = it->get()->GetName().substr(0, it->get()->GetName().find_first_of("_"));
+			piName = piName + "_Unused_Data";
 		}
 
 		if (it == (piCollection->end() - 1) && bitCount != 0)
 		{
 			std::shared_ptr<BaseProcessImageObject> piObj = std::make_shared<BaseProcessImageObject>(
-			            name,
+			            piName,
 			            IEC_Datatype::BITSTRING,
 			            piOffset,
 			            bitCount,
@@ -1012,11 +1012,11 @@ Result ControlledNode::UpdateProcessImage(const Direction& dir)
 				calculatedTargetPiOffset = it->get()->GetPiOffset() + (Utilities::GetIECDataTypeBitSize(it->get()->GetDataType()) / 8);
 			if (calculatedTargetPiOffset != targetPiOffset)
 			{
-				std::uint32_t targetPiOffset = (it + 1)->get()->GetPiOffset();
-				for (std::uint32_t i = it->get()->GetPiOffset() + 1; i < targetPiOffset; i++)
+				std::uint32_t newtargetPiOffset = (it + 1)->get()->GetPiOffset();
+				for (std::uint32_t i = it->get()->GetPiOffset() + 1; i < newtargetPiOffset; i++)
 				{
 					std::shared_ptr<BaseProcessImageObject> piObj = std::make_shared<BaseProcessImageObject>(
-					            name,
+					            piName,
 					            IEC_Datatype::USINT,
 					            i,
 					            8);

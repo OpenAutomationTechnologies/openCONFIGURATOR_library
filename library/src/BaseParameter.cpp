@@ -102,9 +102,9 @@ namespace IndustrialNetwork
 					return this->dataTypeUniqueIDRef;
 				}
 
-				void BaseParameter::SetDataTypeUniqueIDRef(const std::string& dataTypeUniqueIDRef)
+				void BaseParameter::SetDataTypeUniqueIDRef(const std::string& _dataTypeUniqueIDRef)
 				{
-					this->dataTypeUniqueIDRef = dataTypeUniqueIDRef;
+					this->dataTypeUniqueIDRef = _dataTypeUniqueIDRef;
 				}
 
 				const std::shared_ptr<ComplexDataType>& BaseParameter::GetComplexDataType() const
@@ -122,9 +122,9 @@ namespace IndustrialNetwork
 					return this->parameterAccess;
 				}
 
-				void BaseParameter::SetParameterAccess(ParameterAccess access)
+				void BaseParameter::SetParameterAccess(const ParameterAccess& _access)
 				{
-					this->parameterAccess = access;
+					this->parameterAccess = _access;
 				}
 
 				std::uint32_t BaseParameter::GetBitSize() const
@@ -150,9 +150,9 @@ namespace IndustrialNetwork
 					return this->dataType;
 				}
 
-				void BaseParameter::SetDataType(IEC_Datatype dataType)
+				void BaseParameter::SetDataType(const IEC_Datatype& _dataType)
 				{
-					this->dataType = dataType;
+					this->dataType = _dataType;
 				}
 
 				bool BaseParameter::HasActualValue() const
@@ -1116,10 +1116,10 @@ namespace IndustrialNetwork
 						case IEC_Datatype::STRING:
 						case IEC_Datatype::WSTRING:
 							{
-								std::string actualValue = boost::any_cast<std::string>(this->GetParameterActualValue().get());
-								for (std::uint32_t i = 0; i < actualValue.length(); ++i)
+								std::string actVal = boost::any_cast<std::string>(this->GetParameterActualValue().get());
+								for (std::uint32_t i = 0; i < actVal.length(); ++i)
 								{
-									this->actualValueBitset.append(unsigned(actualValue.at(i)));
+									this->actualValueBitset.append(unsigned(actVal.at(i)));
 								}
 								break;
 							}

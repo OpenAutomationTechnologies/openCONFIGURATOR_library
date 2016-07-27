@@ -335,9 +335,9 @@ void ManagingNode::ClearRmnList()
 	this->rmnList.clear();
 }
 
-void ManagingNode::RemoveRmnId(std::uint16_t nodeId)
+void ManagingNode::RemoveRmnId(std::uint16_t _nodeId)
 {
-	this->rmnList.erase(std::remove(this->rmnList.begin(), this->rmnList.end(), nodeId), this->rmnList.end());
+	this->rmnList.erase(std::remove(this->rmnList.begin(), this->rmnList.end(), _nodeId), this->rmnList.end());
 }
 
 const std::vector<std::uint16_t>& ManagingNode::GetRmnList()

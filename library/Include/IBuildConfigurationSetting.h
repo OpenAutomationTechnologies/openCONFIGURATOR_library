@@ -72,9 +72,9 @@ namespace IndustrialNetwork
 					return this->description;
 				}
 
-				void SetDescription(const std::string& description)
+				void SetDescription(const std::string& _description)
 				{
-					this->description = description;
+					this->description = _description;
 				}
 
 				const std::string& GetName() const
@@ -82,9 +82,9 @@ namespace IndustrialNetwork
 					return this->name;
 				}
 
-				void SetName(const std::string& name)
+				void SetName(const std::string& _name)
 				{
-					this->name = name;
+					this->name = _name;
 				}
 
 				const std::string& GetValue() const
@@ -92,9 +92,9 @@ namespace IndustrialNetwork
 					return this->value;
 				}
 
-				void SetValue(const std::string& value)
+				void SetValue(const std::string& _value)
 				{
-					this->value = value;
+					this->value = _value;
 				}
 
 			private:

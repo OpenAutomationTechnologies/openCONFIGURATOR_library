@@ -71,9 +71,9 @@ namespace IndustrialNetwork
 					return this->id;
 				}
 
-				void SetId(const T id)
+				void SetId(const T _id)
 				{
-					this->id = id;
+					this->id = _id;
 				}
 
 				const std::string& GetName() const
@@ -81,9 +81,9 @@ namespace IndustrialNetwork
 					return this->name;
 				}
 
-				void SetName(const std::string& name)
+				void SetName(const std::string& _name)
 				{
-					this->name = name;
+					this->name = _name;
 				}
 
 				const boost::any& GetActualValue() const
@@ -91,9 +91,9 @@ namespace IndustrialNetwork
 					return this->actualValue;
 				}
 
-				void SetActualValue(const boost::any& actualValue)
+				void SetActualValue(const boost::any& _actualValue)
 				{
-					this->actualValue = actualValue;
+					this->actualValue = _actualValue;
 				}
 
 				const boost::any& GetDefaultValue() const
@@ -101,9 +101,9 @@ namespace IndustrialNetwork
 					return this->defaultValue;
 				}
 
-				void SetDefaultValue(const boost::any& defaultValue)
+				void SetDefaultValue(const boost::any& _defaultValue)
 				{
-					this->defaultValue = defaultValue;
+					this->defaultValue = _defaultValue;
 				}
 
 				const D GetObjectType() const

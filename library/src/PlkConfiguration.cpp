@@ -254,12 +254,12 @@ Result PlkConfiguration::DistributeNodeAssignment(const std::map<std::uint8_t, s
 			continue;
 
 		nodeAssignmentStr << node.second->GetNodeAssignmentValue(); //Retrieve assignment from CN or RMN
-		for (auto& mn : nodeCollection)
+		for (auto& mNode : nodeCollection)
 		{
 			//Distribute to MN and RMNs
-			if (std::dynamic_pointer_cast<ManagingNode>(mn.second)) //Set MN or RMN node assignment objects
+			if (std::dynamic_pointer_cast<ManagingNode>(mNode.second)) //Set MN or RMN node assignment objects
 			{
-				Result res = mn.second->SetSubObjectActualValue(0x1F81, node.first, nodeAssignmentStr.str()); //Set actual value with assignment
+				Result res = mNode.second->SetSubObjectActualValue(0x1F81, node.first, nodeAssignmentStr.str()); //Set actual value with assignment
 				if (!res.IsSuccessful())
 					return res;
 			}
@@ -437,7 +437,7 @@ Result PlkConfiguration::DistributePrescaler(const std::map<std::uint8_t, std::s
 		if (node.first != 240)
 		{
 			std::shared_ptr<SubObject> cnPrescalerObject;
-			Result res = node.second->GetSubObject(0x1F98, 0x9, cnPrescalerObject, false);
+			res = node.second->GetSubObject(0x1F98, 0x9, cnPrescalerObject, false);
 			if (!res.IsSuccessful())
 				continue;
 

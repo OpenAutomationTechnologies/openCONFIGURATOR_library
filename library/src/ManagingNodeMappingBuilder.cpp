@@ -553,7 +553,7 @@ Result ManagingNodeMappingBuilder::WriteMappingToForNode(std::uint16_t nodeId, D
 
 					//Get according mapping object - Check if mappings are available
 					std::shared_ptr<Object> mappingObject;
-					Result res = mn->GetObject(mappingObjectIndex, mappingObject);
+					res = mn->GetObject(mappingObjectIndex, mappingObject);
 					if (!res.IsSuccessful())
 						return res;
 

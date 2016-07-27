@@ -112,9 +112,9 @@ Result ProjectManager::RemoveNetwork(const std::string& networkId)
 	}
 }
 
-Result ProjectManager::GetNetworks(std::map<std::string, std::shared_ptr<Network>>& networkList)
+Result ProjectManager::GetNetworks(std::map<std::string, std::shared_ptr<Network>>& _networkList)
 {
-	networkList = this->networkList;
+	_networkList = this->networkList;
 	return Result();
 }
 

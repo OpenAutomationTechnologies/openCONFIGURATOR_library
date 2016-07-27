@@ -59,7 +59,7 @@ PROJECT (OPEN_CONFIGURATOR)
 # Compiler flags for MS Visual Studio
 ###############################################################################
 IF(MSVC)
-	SET(CMAKE_CXX_FLAGS "/wd\"4512\" /wd\"4251\" /Zi /nologo /W4 /WX- /Od /Oy- /Ob0 /D_CRT_SECURE_NO_WARNINGS /D_SCL_SECURE_NO_WARNINGS /Gm- /EHsc /GS /fp:precise /Zc:wchar_t /Zc:forScope /Gd /analyze- /errorReport:queue /GR")
+	SET(CMAKE_CXX_FLAGS "/wd\"4512\" /wd\"4251\" /wd\"4091\" /Zi /nologo /W4 /WX- /Od /Oy- /Ob0 /D_CRT_SECURE_NO_WARNINGS /D_SCL_SECURE_NO_WARNINGS /Gm- /EHsc /GS /fp:precise /Zc:wchar_t /Zc:forScope /Gd /analyze- /errorReport:queue /GR")
 	SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MD")
 	SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd /DDEBUG")
 	STRING(FIND "${CMAKE_GENERATOR}" "Win64" FOUND)

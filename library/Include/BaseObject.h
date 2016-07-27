@@ -101,13 +101,13 @@ namespace IndustrialNetwork
 						void SetUniqueIdRef(const std::string& uniqueIdRef);
 
 						const boost::optional<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType>& GetAccessType() const;
-						void SetAccessType(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType accessType);
+						void SetAccessType(const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType& accessType);
 
 						const boost::optional<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType>& GetDataType() const;
-						void SetDataType(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType);
+						void SetDataType(const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType& dataType);
 
 						const boost::optional<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping>& GetPDOMapping() const;
-						void SetPDOMapping(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping pdoMapping);
+						void SetPDOMapping(const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PDOMapping& pdoMapping);
 
 						template<typename T>
 						T GetTypedActualValue();

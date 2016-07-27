@@ -71,9 +71,9 @@ std::uint16_t ModuleInterface::GetMaxCount() const
 	return this->maxCount;
 }
 
-bool ModuleInterface::ValidateModuleType(const std::string& type) const
+bool ModuleInterface::ValidateModuleType(const std::string& _type) const
 {
-	if (this->GetType() == type)
+	if (this->GetType() == _type)
 		return true;
 	return false;
 }

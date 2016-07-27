@@ -77,7 +77,7 @@ namespace IndustrialNetwork
 				template Result GeneralFeature::GetDefaultValue(std::uint16_t& value);
 				template Result GeneralFeature::GetDefaultValue(std::uint32_t& value);
 
-				Result GeneralFeature::SetTypedValues(const std::string& defaultValue, const std::string& actualValue)
+				Result GeneralFeature::SetTypedValues(const std::string& _defaultValue, const std::string& _actualValue)
 				{
 					try
 					{
@@ -129,14 +129,14 @@ namespace IndustrialNetwork
 							case GeneralFeatureEnum::SDOSupportUdpIp:
 							case GeneralFeatureEnum::DLLMultiplePReqPRes:
 								{
-									if (!defaultValue.empty())
+									if (!_defaultValue.empty())
 									{
-										bool value = StringToBool(defaultValue);
+										bool value = StringToBool(_defaultValue);
 										this->SetUntypedDefaultValue(boost::any(value));
 									}
-									if (!actualValue.empty())
+									if (!_actualValue.empty())
 									{
-										bool value = StringToBool(actualValue);
+										bool value = StringToBool(_actualValue);
 										this->SetUntypedActualValue(boost::any(value));
 									}
 									break;
@@ -158,14 +158,14 @@ namespace IndustrialNetwork
 							case GeneralFeatureEnum::SDOMaxConnections:
 							case GeneralFeatureEnum::SDOMaxParallelConnections:
 								{
-									if (!defaultValue.empty())
+									if (!_defaultValue.empty())
 									{
-										std::uint32_t value = HexToInt<std::uint32_t>(defaultValue);
+										std::uint32_t value = HexToInt<std::uint32_t>(_defaultValue);
 										this->SetUntypedDefaultValue(boost::any(value));
 									}
-									if (!actualValue.empty())
+									if (!_actualValue.empty())
 									{
-										std::uint32_t value = HexToInt<std::uint32_t>(actualValue);
+										std::uint32_t value = HexToInt<std::uint32_t>(_actualValue);
 										this->SetUntypedActualValue(boost::any(value));
 									}
 									break;
@@ -182,14 +182,14 @@ namespace IndustrialNetwork
 							case GeneralFeatureEnum::PDOTPDOOverallObjects:
 							case GeneralFeatureEnum::SDOSeqLayerTxHistorySize:
 								{
-									if (!defaultValue.empty())
+									if (!_defaultValue.empty())
 									{
-										std::uint16_t value = HexToInt<std::uint16_t>(defaultValue);
+										std::uint16_t value = HexToInt<std::uint16_t>(_defaultValue);
 										this->SetUntypedDefaultValue(boost::any(value));
 									}
-									if (!actualValue.empty())
+									if (!_actualValue.empty())
 									{
-										std::uint16_t value = HexToInt<std::uint16_t>(actualValue);
+										std::uint16_t value = HexToInt<std::uint16_t>(_actualValue);
 										this->SetUntypedActualValue(boost::any(value));
 									}
 									break;

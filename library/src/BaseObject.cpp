@@ -116,9 +116,9 @@ namespace IndustrialNetwork
 					return uniqueIdRef;
 				}
 
-				void BaseObject::SetUniqueIdRef(const std::string& uniqueIdRef)
+				void BaseObject::SetUniqueIdRef(const std::string& _uniqueIdRef)
 				{
-					this->uniqueIdRef = uniqueIdRef;
+					this->uniqueIdRef = _uniqueIdRef;
 				}
 
 				const boost::optional<AccessType>& BaseObject::GetAccessType() const
@@ -136,19 +136,19 @@ namespace IndustrialNetwork
 					return pdoMapping;
 				}
 
-				void BaseObject::SetAccessType(AccessType accessType)
+				void BaseObject::SetAccessType(const AccessType& _accessType)
 				{
-					this->accessType = accessType;
+					this->accessType = _accessType;
 				}
 
-				void BaseObject::SetDataType(PlkDataType dataType)
+				void BaseObject::SetDataType(const PlkDataType& _dataType)
 				{
-					this->dataType = dataType;
+					this->dataType = _dataType;
 				}
 
-				void BaseObject::SetPDOMapping(PDOMapping pdoMapping)
+				void BaseObject::SetPDOMapping(const PDOMapping& _pdoMapping)
 				{
-					this->pdoMapping = pdoMapping;
+					this->pdoMapping = _pdoMapping;
 				}
 
 				const boost::optional<boost::any>& BaseObject::GetLowLimit() const
@@ -199,14 +199,14 @@ namespace IndustrialNetwork
 							//LOG_FATAL() << bitSet;
 							for (boost::dynamic_bitset<>::size_type bit = 0; bit <= bitSet.size() - 4; bit += 4)
 							{
-								std::stringstream actualValue;
+								std::stringstream actValue;
 								boost::dynamic_bitset<> hexDigit(4);
 								hexDigit[0] = bitSet[bit];
 								hexDigit[1] = bitSet[bit + 1];
 								hexDigit[2] = bitSet[bit + 2];
 								hexDigit[3] = bitSet[bit + 3];
-								actualValue << std::hex << hexDigit.to_ulong();
-								actualValueStr.insert(0, actualValue.str());
+								actValue << std::hex << hexDigit.to_ulong();
+								actualValueStr.insert(0, actValue.str());
 							}
 							this->SetTypedObjectActualValue("0x" + actualValueStr);
 						}
@@ -326,14 +326,14 @@ namespace IndustrialNetwork
 							//LOG_FATAL() << bitSet;
 							for (boost::dynamic_bitset<>::size_type bit = 0; bit <= bitSet.size() - 4; bit += 4)
 							{
-								std::stringstream actualValue;
+								std::stringstream actVal;
 								boost::dynamic_bitset<> hexDigit(4);
 								hexDigit[0] = bitSet[bit];
 								hexDigit[1] = bitSet[bit + 1];
 								hexDigit[2] = bitSet[bit + 2];
 								hexDigit[3] = bitSet[bit + 3];
-								actualValue << std::hex << hexDigit.to_ulong();
-								actualValueStr.insert(0, actualValue.str());
+								actVal << std::hex << hexDigit.to_ulong();
+								actualValueStr.insert(0, actVal.str());
 							}
 							this->SetTypedObjectActualValue("0x" + actualValueStr);
 						}
@@ -477,24 +477,24 @@ namespace IndustrialNetwork
 						case PlkDataType::OCTET_STRING:
 						case PlkDataType::UNICODE_STRING:
 							{
-								std::string actualValue = boost::any_cast<std::string>(value);
-								for (std::uint32_t i = 0; i < actualValue.length(); ++i)
+								std::string actVal = boost::any_cast<std::string>(value);
+								for (std::uint32_t i = 0; i < actVal.length(); ++i)
 								{
-									convertString << std::uppercase << std::hex << unsigned(actualValue.at(i));
+									convertString << std::uppercase << std::hex << unsigned(actVal.at(i));
 								}
 								return convertString.str();
 							}
 						case PlkDataType::IP_ADDRESS:
 							{
-								std::string actualValue = boost::any_cast<std::string>(value);
-								if (actualValue.substr(0, 2) == "0x")
+								std::string actVal = boost::any_cast<std::string>(value);
+								if (actVal.substr(0, 2) == "0x")
 								{
-									convertString << std::uppercase << std::setw(8) << std::setfill('0') << std::hex << HexToInt<std::uint32_t>(actualValue);
+									convertString << std::uppercase << std::setw(8) << std::setfill('0') << std::hex << HexToInt<std::uint32_t>(actVal);
 								}
 								else
 								{
 									std::vector<std::string> ipAddressParts;
-									boost::split(ipAddressParts, actualValue, boost::is_any_of("."));
+									boost::split(ipAddressParts, actVal, boost::is_any_of("."));
 
 									for (auto& part : ipAddressParts)
 									{
@@ -815,22 +815,22 @@ namespace IndustrialNetwork
 					}
 				}
 
-				Result BaseObject::SetHighLimit(const std::string& highLimit)
+				Result BaseObject::SetHighLimit(const std::string& _highLimit)
 				{
-					return SetValue(highLimit, ValueType::HIGHLIMIT);
+					return SetValue(_highLimit, ValueType::HIGHLIMIT);
 				}
 
-				Result BaseObject::SetLowLimit(const std::string& lowLimit)
+				Result BaseObject::SetLowLimit(const std::string& _lowLimit)
 				{
-					return SetValue(lowLimit, ValueType::LOWLIMIT);
+					return SetValue(_lowLimit, ValueType::LOWLIMIT);
 				}
 
-				Result BaseObject::SetTypedObjectDefaultValue(const std::string& defaultValue)
+				Result BaseObject::SetTypedObjectDefaultValue(const std::string& _defaultValue)
 				{
-					return SetValue(defaultValue, ValueType::DEFAULT);
+					return SetValue(_defaultValue, ValueType::DEFAULT);
 				}
 
-				Result BaseObject::SetTypedObjectActualValue(const std::string& actualValue, bool validateOnly)
+				Result BaseObject::SetTypedObjectActualValue(const std::string& _actualValue, bool validateOnly)
 				{
 					try
 					{
@@ -853,7 +853,7 @@ namespace IndustrialNetwork
 						{
 							case PlkDataType::BOOLEAN:
 								{
-									bool value = StringToBool(actualValue);
+									bool value = StringToBool(_actualValue);
 									if (validateOnly == false)
 									{
 										this->SetActualValue(boost::any(value));
@@ -868,7 +868,7 @@ namespace IndustrialNetwork
 								}
 							case PlkDataType::INTEGER8:
 								{
-									std::int16_t value = HexToInt<std::int16_t>(actualValue);
+									std::int16_t value = HexToInt<std::int16_t>(_actualValue);
 									if (value < -128 || value > 127)
 										throw std::range_error("");
 
@@ -881,7 +881,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
-											% actualValue
+											% _actualValue
 											% this->GetTypedHighLimit<std::int16_t>();
 											if (validateOnly == false)
 											{
@@ -899,7 +899,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
-											% actualValue
+											% _actualValue
 											% this->GetTypedLowLimit<std::int16_t>();
 											if (validateOnly == false)
 											{
@@ -922,7 +922,7 @@ namespace IndustrialNetwork
 								}
 							case PlkDataType::INTEGER16:
 								{
-									std::int16_t value = HexToInt<std::int16_t>(actualValue);
+									std::int16_t value = HexToInt<std::int16_t>(_actualValue);
 									if (this->highLimit.is_initialized())
 									{
 										if (value > this->GetTypedHighLimit<std::int16_t>())
@@ -932,7 +932,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
-											% actualValue
+											% _actualValue
 											% this->GetTypedHighLimit<std::int16_t>();
 											if (validateOnly == false)
 											{
@@ -950,7 +950,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
-											% actualValue
+											% _actualValue
 											% this->GetTypedLowLimit<std::int16_t>();
 											if (validateOnly == false)
 											{
@@ -973,7 +973,7 @@ namespace IndustrialNetwork
 								}
 							case PlkDataType::INTEGER32:
 								{
-									std::int32_t value = HexToInt<std::int32_t>(actualValue);
+									std::int32_t value = HexToInt<std::int32_t>(_actualValue);
 									if (this->highLimit.is_initialized())
 									{
 										if (value > this->GetTypedHighLimit<std::int32_t>())
@@ -983,7 +983,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
-											% actualValue
+											% _actualValue
 											% this->GetTypedHighLimit<std::int32_t>();
 											if (validateOnly == false)
 											{
@@ -1001,7 +1001,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
-											% actualValue
+											% _actualValue
 											% this->GetTypedLowLimit<std::int32_t>();
 											if (validateOnly == false)
 											{
@@ -1022,7 +1022,7 @@ namespace IndustrialNetwork
 								}
 							case PlkDataType::UNSIGNED8:
 								{
-									std::uint16_t value = HexToInt<std::uint16_t>(actualValue);
+									std::uint16_t value = HexToInt<std::uint16_t>(_actualValue);
 									if (value > 255)
 										throw std::range_error("");
 
@@ -1035,7 +1035,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
-											% actualValue
+											% _actualValue
 											% this->GetTypedHighLimit<std::uint16_t>();
 											if (validateOnly == false)
 											{
@@ -1053,7 +1053,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
-											% actualValue
+											% _actualValue
 											% this->GetTypedLowLimit<std::uint16_t>();
 											if (validateOnly == false)
 											{
@@ -1076,7 +1076,7 @@ namespace IndustrialNetwork
 								}
 							case PlkDataType::UNSIGNED16:
 								{
-									uint16_t value = HexToInt<std::uint16_t>(actualValue);
+									uint16_t value = HexToInt<std::uint16_t>(_actualValue);
 									if (this->highLimit.is_initialized())
 									{
 										if (value > this->GetTypedHighLimit<std::uint16_t>())
@@ -1086,7 +1086,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
-											% actualValue
+											% _actualValue
 											% this->GetTypedHighLimit<std::uint16_t>();
 											if (validateOnly == false)
 											{
@@ -1104,7 +1104,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
-											% actualValue
+											% _actualValue
 											% this->GetTypedLowLimit<std::uint16_t>();
 											if (validateOnly == false)
 											{
@@ -1128,7 +1128,7 @@ namespace IndustrialNetwork
 							case PlkDataType::UNSIGNED24:
 							case PlkDataType::UNSIGNED32:
 								{
-									std::uint32_t value = HexToInt<std::uint32_t>(actualValue);
+									std::uint32_t value = HexToInt<std::uint32_t>(_actualValue);
 									if (this->highLimit.is_initialized())
 									{
 										if (value > this->GetTypedHighLimit<std::uint32_t>())
@@ -1138,7 +1138,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
-											% actualValue
+											% _actualValue
 											% this->GetTypedHighLimit<std::uint32_t>();
 											if (validateOnly == false)
 											{
@@ -1156,7 +1156,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
-											% actualValue
+											% _actualValue
 											% this->GetTypedLowLimit<std::uint32_t>();
 											if (validateOnly == false)
 											{
@@ -1182,7 +1182,7 @@ namespace IndustrialNetwork
 								break;
 							case PlkDataType::INTEGER24:
 								{
-									std::int32_t value = HexToInt<std::int32_t>(actualValue);
+									std::int32_t value = HexToInt<std::int32_t>(_actualValue);
 									if (this->highLimit.is_initialized())
 									{
 										if (value > this->GetTypedHighLimit<std::int32_t>())
@@ -1192,7 +1192,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
-											% actualValue
+											% _actualValue
 											% this->GetTypedHighLimit<std::int32_t>();
 											if (validateOnly == false)
 											{
@@ -1210,7 +1210,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
-											% actualValue
+											% _actualValue
 											% this->GetTypedLowLimit<std::int32_t>();
 											if (validateOnly == false)
 											{
@@ -1234,14 +1234,14 @@ namespace IndustrialNetwork
 							case PlkDataType::REAL32:
 								{
 									float value = 0;
-									if (actualValue.substr(0, 2) == "0x"
-									        || actualValue.substr(0, 2) == "0X")
+									if (_actualValue.substr(0, 2) == "0x"
+									        || _actualValue.substr(0, 2) == "0X")
 									{
-										value = SinglePrecisisionHexToFloat(actualValue);
+										value = SinglePrecisisionHexToFloat(_actualValue);
 									}
 									else
 									{
-										value = boost::lexical_cast<float>(actualValue);
+										value = boost::lexical_cast<float>(_actualValue);
 									}
 									if (validateOnly == false)
 									{
@@ -1258,14 +1258,14 @@ namespace IndustrialNetwork
 							case PlkDataType::REAL64:
 								{
 									double value = 0;
-									if (actualValue.substr(0, 2) == "0x"
-									        || actualValue.substr(0, 2) == "0X")
+									if (_actualValue.substr(0, 2) == "0x"
+									        || _actualValue.substr(0, 2) == "0X")
 									{
-										value = DoublePrecisisionHexToDouble(actualValue);
+										value = DoublePrecisisionHexToDouble(_actualValue);
 									}
 									else
 									{
-										value = boost::lexical_cast<double>(actualValue);
+										value = boost::lexical_cast<double>(_actualValue);
 									}
 									if (validateOnly == false)
 									{
@@ -1284,7 +1284,7 @@ namespace IndustrialNetwork
 							case PlkDataType::INTEGER56:
 							case PlkDataType::INTEGER64:
 								{
-									int64_t value = HexToInt<std::int64_t>(actualValue);
+									int64_t value = HexToInt<std::int64_t>(_actualValue);
 									if (this->highLimit.is_initialized())
 									{
 										if (value > this->GetTypedHighLimit<std::int64_t>())
@@ -1294,7 +1294,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
-											% actualValue
+											% _actualValue
 											% this->GetTypedHighLimit<std::int64_t>();
 											if (validateOnly == false)
 											{
@@ -1312,7 +1312,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
-											% actualValue
+											% _actualValue
 											% this->GetTypedHighLimit<std::int64_t>();
 											if (validateOnly == false)
 											{
@@ -1339,7 +1339,7 @@ namespace IndustrialNetwork
 							case PlkDataType::UNSIGNED56:
 							case PlkDataType::UNSIGNED64:
 								{
-									uint64_t value = HexToInt<std::uint64_t>(actualValue);
+									uint64_t value = HexToInt<std::uint64_t>(_actualValue);
 									if (this->highLimit.is_initialized())
 									{
 										if (value > this->GetTypedHighLimit<std::uint64_t>())
@@ -1349,7 +1349,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
-											% actualValue
+											% _actualValue
 											% this->GetTypedHighLimit<std::uint64_t>();
 											if (validateOnly == false)
 											{
@@ -1367,7 +1367,7 @@ namespace IndustrialNetwork
 											% this->GetName()
 											% this->GetObjectId()
 											% (std::uint32_t) this->GetContainingNode()
-											% actualValue
+											% _actualValue
 											% this->GetTypedLowLimit<std::uint64_t>();
 											if (validateOnly == false)
 											{
@@ -1390,7 +1390,7 @@ namespace IndustrialNetwork
 								}
 							case PlkDataType::IP_ADDRESS:
 								{
-									if (!IsIPAddress(actualValue))
+									if (!IsIPAddress(_actualValue))
 										throw std::range_error("");
 								}
 							case PlkDataType::NETTIME:
@@ -1402,10 +1402,10 @@ namespace IndustrialNetwork
 								{
 									if (validateOnly == false)
 									{
-										this->SetActualValue(boost::any(actualValue));
+										this->SetActualValue(boost::any(_actualValue));
 										if (this->GetDefaultValue().empty())
 											this->actualValueNotDefaultValue = true;
-										else if (this->GetTypedDefaultValue<std::string>() != actualValue)
+										else if (this->GetTypedDefaultValue<std::string>() != _actualValue)
 											this->actualValueNotDefaultValue = true;
 										else
 											this->actualValueNotDefaultValue = false;
@@ -1421,7 +1421,7 @@ namespace IndustrialNetwork
 					{
 						boost::format formatter(kMsgActualValueDatatypeError);
 						formatter
-						% actualValue
+						% _actualValue
 						% GetPlkDataTypeName(GetDataType().get());
 						if (validateOnly == false)
 						{
@@ -1595,9 +1595,9 @@ namespace IndustrialNetwork
 					return this->rangeSelector;
 				}
 
-				void BaseObject::SetRangeSelector(const std::string& rangeSelector)
+				void BaseObject::SetRangeSelector(const std::string& _rangeSelector)
 				{
-					this->rangeSelector = rangeSelector;
+					this->rangeSelector = _rangeSelector;
 				}
 			}
 		}

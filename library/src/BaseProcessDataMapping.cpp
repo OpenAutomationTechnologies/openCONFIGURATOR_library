@@ -121,9 +121,9 @@ std::uint32_t BaseProcessDataMapping::GetOffsetGap() const
 	return this->offsetGap;
 }
 
-void BaseProcessDataMapping::SetOffsetGap(std::uint32_t offsetGap)
+void BaseProcessDataMapping::SetOffsetGap(std::uint32_t _offsetGap)
 {
-	this->offsetGap = offsetGap;
+	this->offsetGap = _offsetGap;
 }
 
 std::uint16_t BaseProcessDataMapping::GetDestinationNode() const
@@ -141,9 +141,9 @@ std::uint32_t BaseProcessDataMapping::GetMappingIndex() const
 	return this->index;
 }
 
-void BaseProcessDataMapping::SetMappingIndex(std::uint32_t index)
+void BaseProcessDataMapping::SetMappingIndex(std::uint32_t _index)
 {
-	this->index = index;
+	this->index = _index;
 }
 
 std::uint16_t BaseProcessDataMapping::GetMappingSubIndex() const
@@ -151,9 +151,9 @@ std::uint16_t BaseProcessDataMapping::GetMappingSubIndex() const
 	return this->subindex;
 }
 
-void BaseProcessDataMapping::SetMappinSubgIndex(std::uint16_t subindex)
+void BaseProcessDataMapping::SetMappinSubgIndex(std::uint16_t _subindex)
 {
-	this->subindex = subindex;
+	this->subindex = _subindex;
 }
 
 std::uint32_t BaseProcessDataMapping::GetMappingOffset() const
@@ -161,9 +161,9 @@ std::uint32_t BaseProcessDataMapping::GetMappingOffset() const
 	return this->offset;
 }
 
-void BaseProcessDataMapping::SetMappingOffset(std::uint32_t offset)
+void BaseProcessDataMapping::SetMappingOffset(std::uint32_t _offset)
 {
-	this->offset = offset;
+	this->offset = _offset;
 }
 
 std::uint32_t BaseProcessDataMapping::GetMappingLength() const
@@ -171,9 +171,9 @@ std::uint32_t BaseProcessDataMapping::GetMappingLength() const
 	return this->length;
 }
 
-void BaseProcessDataMapping::SetMappingLength(std::uint32_t length)
+void BaseProcessDataMapping::SetMappingLength(std::uint32_t _length)
 {
-	this->length = length;
+	this->length = _length;
 }
 
 const std::string BaseProcessDataMapping::ToString(bool addPrefix)
@@ -216,7 +216,7 @@ const std::shared_ptr<BaseObject>& BaseProcessDataMapping::GetRelatedObject() co
 	return this->relatedObject;
 }
 
-void BaseProcessDataMapping::SetRelatedObject(std::shared_ptr<BaseObject>& object)
+void BaseProcessDataMapping::SetRelatedObject(std::shared_ptr<BaseObject>& _object)
 {
-	this->relatedObject = object;
+	this->relatedObject = _object;
 }

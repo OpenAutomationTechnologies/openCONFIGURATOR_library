@@ -93,7 +93,7 @@ Result ModularControlledNode::AddModule(const std::string& interfaceId, const st
 	return Result(ErrorCode::INTERFACE_DOES_NOT_EXIST, formatter.str());
 }
 
-Result ModularControlledNode::AddRange(const std::string& interfaceId, const std::string& name, std::uint32_t baseIndex, std::uint32_t maxIndex, std::uint32_t maxSubIndex, std::uint32_t sortStep, SortMode sortMode, SortNumber sortNumber, PDOMapping pdoMapping)
+Result ModularControlledNode::AddRange(const std::string& interfaceId, const std::string& _name, std::uint32_t baseIndex, std::uint32_t maxIndex, std::uint32_t maxSubIndex, std::uint32_t sortStep, const SortMode& sortMode, const SortNumber& sortNumber, const PDOMapping& pdoMapping)
 {
 	for (auto& interf : this->interfaceList)
 	{
@@ -103,11 +103,11 @@ Result ModularControlledNode::AddRange(const std::string& interfaceId, const std
 			{
 				boost::format formatter(kMsgRangeInvalid);
 				formatter
-				% name;
+				% _name;
 				LOG_ERROR() << formatter.str();
 				return Result(ErrorCode::RANGE_INVALID, formatter.str());
 			}
-			std::shared_ptr<Range> range = std::shared_ptr<Range>(new Range(name, baseIndex, maxIndex, maxSubIndex, sortStep, sortMode, sortNumber, pdoMapping));
+			std::shared_ptr<Range> range = std::shared_ptr<Range>(new Range(_name, baseIndex, maxIndex, maxSubIndex, sortStep, sortMode, sortNumber, pdoMapping));
 			return interf->AddRange(range);
 		}
 	}
@@ -170,7 +170,7 @@ Result ModularControlledNode::RemoveModule(const std::string& interfaceId, const
 			if (module->GetObjectDictionary().size() != 0)
 			{
 				std::shared_ptr<Range> range;
-				Result res = interf->GetRange(module->GetObjectDictionary().begin()->second->GetRangeSelector().get(), range);
+				res = interf->GetRange(module->GetObjectDictionary().begin()->second->GetRangeSelector().get(), range);
 				if (!res.IsSuccessful())
 					return res;
 
@@ -400,11 +400,11 @@ Result ModularControlledNode::UpdateControlledNodeOd()
 						{
 							if (inter->GetModuleCollection().find(subObj->first) != inter->GetModuleCollection().end())
 							{
-								std::shared_ptr<Module> module = inter->GetModuleCollection().at(subObj->first);
-								module->GetDisabledSubindices().clear();
+								std::shared_ptr<Module> mod = inter->GetModuleCollection().at(subObj->first);
+								mod->GetDisabledSubindices().clear();
 
 								std::pair<std::uint32_t, std::uint32_t> position = std::pair<std::uint32_t, std::uint32_t>(obj.first, subObj->first);
-								module->GetDisabledSubindices().insert(std::pair<std::pair<std::uint32_t, std::uint32_t>, std::shared_ptr<SubObject>>(position, subObj->second));
+								mod->GetDisabledSubindices().insert(std::pair<std::pair<std::uint32_t, std::uint32_t>, std::shared_ptr<SubObject>>(position, subObj->second));
 
 								subObj = obj.second->GetSubObjectDictionary().erase(subObj);
 							}
@@ -541,9 +541,9 @@ Result ModularControlledNode::SetModuleAddress(const std::string& interfaceId, c
 			if (module->GetAddress() == address)
 				return Result();
 
-			for (auto& module : interf->GetModuleCollection())
+			for (auto& mod : interf->GetModuleCollection())
 			{
-				if (module.second->GetAddress() == address)
+				if (mod.second->GetAddress() == address)
 				{
 					boost::format formatter(kMsgModuleAddressOccupied);
 					formatter

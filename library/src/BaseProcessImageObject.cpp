@@ -84,12 +84,12 @@ const boost::optional<std::uint32_t>& BaseProcessImageObject::GetBitOffset() con
 	return this->bitOffset;
 }
 
-void BaseProcessImageObject::SetPIOffset(std::uint32_t piOffset)
+void BaseProcessImageObject::SetPIOffset(std::uint32_t _piOffset)
 {
-	this->piOffset = piOffset;
+	this->piOffset = _piOffset;
 }
 
-void BaseProcessImageObject::SetName(const std::string& name)
+void BaseProcessImageObject::SetName(const std::string& _name)
 {
-	this->name = name;
+	this->name = _name;
 }

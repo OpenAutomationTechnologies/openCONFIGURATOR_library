@@ -51,19 +51,19 @@ const IEC_Datatype& EnumDataType::GetDataType() const
 	return this->dataType;
 }
 
-Result EnumDataType::AddEnumValue(const std::string& name, const std::string& value)
+Result EnumDataType::AddEnumValue(const std::string& _name, const std::string& value)
 {
-	if (this->enumValues.find(name) != this->enumValues.end())
+	if (this->enumValues.find(_name) != this->enumValues.end())
 	{
 		boost::format formatter(kMsgEnumValueExists);
 		formatter
 		% this->GetUniqueID()
-		% name;
+		% _name;
 		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::ENUM_VALUE_EXISTS, formatter.str());
 	}
 
-	this->enumValues.insert(std::pair<std::string, std::string>(name, value));
+	this->enumValues.insert(std::pair<std::string, std::string>(_name, value));
 	return Result();
 }
 

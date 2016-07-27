@@ -101,9 +101,9 @@ std::uint32_t Module::GetAddress() const
 	return this->address;
 }
 
-void Module::SetAddress(std::uint32_t address)
+void Module::SetAddress(std::uint32_t _address)
 {
-	this->address = address;
+	this->address = _address;
 }
 
 std::uint32_t Module::GetPosition() const
@@ -111,7 +111,7 @@ std::uint32_t Module::GetPosition() const
 	return this->position;
 }
 
-void Module::SetPosition(std::uint32_t position)
+void Module::SetPosition(std::uint32_t _position)
 {
 	if (this->moduleInterface->GetModuleAddressing() == ModuleAddressing::POSITION)
 	{
@@ -121,15 +121,15 @@ void Module::SetPosition(std::uint32_t position)
 			{
 				if (subObj->first == this->position && this->position == subObj->second->GetModulePosition())
 				{
-					if (obj.second->GetSubObjectDictionary().find(position) != obj.second->GetSubObjectDictionary().end())
+					if (obj.second->GetSubObjectDictionary().find(_position) != obj.second->GetSubObjectDictionary().end())
 					{
 						auto oldSubobject = obj.second->GetSubObjectDictionary().find(this->position);
-						auto newSubobject = obj.second->GetSubObjectDictionary().find(position);
+						auto newSubobject = obj.second->GetSubObjectDictionary().find(_position);
 
-						std::pair<std::uint32_t, std::shared_ptr<SubObject>> switchedoldSubobject(position, oldSubobject->second);
+						std::pair<std::uint32_t, std::shared_ptr<SubObject>> switchedoldSubobject(_position, oldSubobject->second);
 						std::pair<std::uint32_t, std::shared_ptr<SubObject>> switchedNewSubObject(this->position, newSubobject->second);
 
-						oldSubobject->second->SetModulePosition(position);
+						oldSubobject->second->SetModulePosition(_position);
 						newSubobject->second->SetModulePosition(this->position);
 
 						obj.second->GetSubObjectDictionary().erase(oldSubobject);
@@ -141,17 +141,17 @@ void Module::SetPosition(std::uint32_t position)
 					}
 					else
 					{
-						subObj->second->SetModulePosition(position);
-						obj.second->GetSubObjectDictionary().insert(std::pair<std::uint32_t, std::shared_ptr<SubObject>>(position, subObj->second));
+						subObj->second->SetModulePosition(_position);
+						obj.second->GetSubObjectDictionary().insert(std::pair<std::uint32_t, std::shared_ptr<SubObject>>(_position, subObj->second));
 						obj.second->GetSubObjectDictionary().erase(subObj);
 						break;
 					}
 				}
 			}
 		}
-		this->SetAddress(position);
+		this->SetAddress(_position);
 	}
-	this->position = position;
+	this->position = _position;
 }
 
 const std::map<std::string, std::string>& Module::GetParameterNameMapping() const

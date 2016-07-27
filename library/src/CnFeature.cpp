@@ -77,7 +77,7 @@ namespace IndustrialNetwork
 				template Result CnFeature::GetDefaultValue(bool& value);
 				template Result CnFeature::GetDefaultValue(std::uint32_t& value);
 
-				Result CnFeature::SetTypedValues(const std::string& defaultValue, const std::string& actualValue)
+				Result CnFeature::SetTypedValues(const std::string& _defaultValue, const std::string& _actualValue)
 				{
 					try
 					{
@@ -87,14 +87,14 @@ namespace IndustrialNetwork
 							case CNFeatureEnum::DLLCNPResChaining:
 							case CNFeatureEnum::NMTCNDNA:
 								{
-									if (!defaultValue.empty())
+									if (!_defaultValue.empty())
 									{
-										bool value = StringToBool(defaultValue);
+										bool value = StringToBool(_defaultValue);
 										this->SetUntypedDefaultValue(boost::any(value));
 									}
-									if (!actualValue.empty())
+									if (!_actualValue.empty())
 									{
-										bool value = StringToBool(actualValue);
+										bool value = StringToBool(_actualValue);
 										this->SetUntypedActualValue(boost::any(value));
 									}
 									break;
@@ -104,14 +104,14 @@ namespace IndustrialNetwork
 							case CNFeatureEnum::NMTCNSetNodeNumberTime:
 							case CNFeatureEnum::NMTCNMaxAInv:
 								{
-									if (!defaultValue.empty())
+									if (!_defaultValue.empty())
 									{
-										std::uint32_t value = HexToInt<std::uint32_t>(defaultValue);
+										std::uint32_t value = HexToInt<std::uint32_t>(_defaultValue);
 										this->SetUntypedDefaultValue(boost::any(value));
 									}
-									if (!actualValue.empty())
+									if (!_actualValue.empty())
 									{
-										std::uint32_t value = HexToInt<std::uint32_t>(actualValue);
+										std::uint32_t value = HexToInt<std::uint32_t>(_actualValue);
 										this->SetUntypedActualValue(boost::any(value));
 									}
 									break;

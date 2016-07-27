@@ -67,9 +67,9 @@ const std::string& BaseNode::GetName() const
 	return this->name;
 }
 
-void BaseNode::SetName(const std::string& name)
+void BaseNode::SetName(const std::string& _name)
 {
-	this->name = name;
+	this->name = _name;
 }
 
 std::uint8_t BaseNode::GetNodeId() const
@@ -77,9 +77,9 @@ std::uint8_t BaseNode::GetNodeId() const
 	return this->nodeId;
 }
 
-void BaseNode::SetNodeId(std::uint8_t nodeId)
+void BaseNode::SetNodeId(std::uint8_t _nodeId)
 {
-	this->nodeId = nodeId;
+	this->nodeId = _nodeId;
 }
 
 std::map<std::uint32_t, std::shared_ptr<Object>>& BaseNode::GetObjectDictionary()
@@ -474,14 +474,14 @@ bool BaseNode::IsEnabled() const
 	return this->enabled;
 }
 
-void BaseNode::SetEnabled(bool enabled)
+void BaseNode::SetEnabled(bool _enabled)
 {
 	boost::format formatter(kMsgNodeDisable);
 	formatter
 	% (std::uint32_t) this->GetNodeId()
-	% enabled;
+	% _enabled;
 	LOG_INFO() << formatter.str();
-	this->enabled = enabled;
+	this->enabled = _enabled;
 }
 
 std::vector<std::shared_ptr<BaseProcessImageObject>>& BaseNode::GetTransmitProcessImage()
@@ -514,7 +514,7 @@ std::uint32_t BaseNode::GetReceiveProcessImageSize() const
 	return size;
 }
 
-void BaseNode::ChangeMappingChannelNodeId(const std::uint8_t nodeId, const std::uint8_t newNodeId)
+void BaseNode::ChangeMappingChannelNodeId(const std::uint8_t _nodeId, const std::uint8_t newNodeId)
 {
 	for (auto obj : this->GetObjectDictionary())
 	{
@@ -538,18 +538,18 @@ void BaseNode::ChangeMappingChannelNodeId(const std::uint8_t nodeId, const std::
 
 	for (auto map : this->GetReceiveMapping())
 	{
-		if (map->GetDestinationNode() == nodeId)
+		if (map->GetDestinationNode() == _nodeId)
 			map->SetDestinationNode(newNodeId);
 	}
 
 	for (auto map : this->GetTransmitMapping())
 	{
-		if (map->GetDestinationNode() == nodeId)
+		if (map->GetDestinationNode() == _nodeId)
 			map->SetDestinationNode(newNodeId);
 	}
 }
 
-void BaseNode::ClearMappingChannelforNode(const std::uint8_t nodeId)
+void BaseNode::ClearMappingChannelforNode(const std::uint8_t _nodeId)
 {
 	for (auto obj : this->GetObjectDictionary())
 	{
@@ -562,13 +562,13 @@ void BaseNode::ClearMappingChannelforNode(const std::uint8_t nodeId)
 
 			if (subObj->HasActualValue())
 			{
-				if (subObj->GetTypedActualValue<std::uint16_t>() == nodeId)
+				if (subObj->GetTypedActualValue<std::uint16_t>() == _nodeId)
 				{
 					subObj->ClearActualValue();
 
 					std::uint32_t mappingIndex = (obj.first - 0x1400) + 0x1600;
 					std::shared_ptr<Object> mappingObj;
-					Result res = this->GetObject(mappingIndex, mappingObj);
+					res = this->GetObject(mappingIndex, mappingObj);
 					if (!res.IsSuccessful())
 						continue;
 
@@ -588,13 +588,13 @@ void BaseNode::ClearMappingChannelforNode(const std::uint8_t nodeId)
 
 			if (subObj->HasActualValue())
 			{
-				if (subObj->GetTypedActualValue<std::uint16_t>() == nodeId)
+				if (subObj->GetTypedActualValue<std::uint16_t>() == _nodeId)
 				{
 					subObj->ClearActualValue();
 
 					std::uint32_t mappingIndex = (obj.first - 0x1800) + 0x1A00;
 					std::shared_ptr<Object> mappingObj;
-					Result res = this->GetObject(mappingIndex, mappingObj);
+					res = this->GetObject(mappingIndex, mappingObj);
 					if (!res.IsSuccessful())
 						continue;
 

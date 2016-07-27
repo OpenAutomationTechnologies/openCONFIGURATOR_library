@@ -78,14 +78,14 @@ namespace IndustrialNetwork
 							return this->actualValue;
 						}
 
-						void SetUntypedActualValue(const boost::any& actualValue)
+						void SetUntypedActualValue(const boost::any& _actualValue)
 						{
-							this->actualValue = actualValue;
+							this->actualValue = _actualValue;
 						}
 
-						void SetUntypedDefaultValue(const boost::any& defaultValue)
+						void SetUntypedDefaultValue(const boost::any& _defaultValue)
 						{
-							this->defaultValue = defaultValue;
+							this->defaultValue = _defaultValue;
 						}
 
 					private:

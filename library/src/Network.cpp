@@ -396,9 +396,9 @@ Result Network::SetNodeId(const std::uint8_t nodeId, const std::uint8_t newNodeI
 	return Result();
 }
 
-Result Network::GetNodes(std::map<std::uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
+Result Network::GetNodes(std::map<std::uint8_t, std::shared_ptr<BaseNode>>& _nodeCollection)
 {
-	nodeCollection = this->nodeCollection;
+	_nodeCollection = this->nodeCollection;
 	return Result();
 }
 
@@ -441,19 +441,19 @@ std::uint32_t Network::GetLossOfSoCTolerance() const
 	return this->lossOfSoCTolerance;
 }
 
-Result Network::SetCycleTime(const std::uint32_t cycleTime)
+Result Network::SetCycleTime(const std::uint32_t _cycleTime)
 {
-	Result res = CheckCycleTime(cycleTime);
+	Result res = CheckCycleTime(_cycleTime);
 	if (!res.IsSuccessful())
 		return res;
 
-	this->cycleTime = cycleTime;
+	this->cycleTime = _cycleTime;
 	return res;
 }
 
-void Network::SetAsyncMTU(const std::uint16_t asyncMTU)
+void Network::SetAsyncMTU(const std::uint16_t _asyncMTU)
 {
-	this->asyncMTU = asyncMTU;
+	this->asyncMTU = _asyncMTU;
 }
 
 void Network::SetMultiplexedCycleCount(const std::uint16_t multiCycleCount)
@@ -461,9 +461,9 @@ void Network::SetMultiplexedCycleCount(const std::uint16_t multiCycleCount)
 	this->multiplexedCycleCount = multiCycleCount;
 }
 
-void Network::SetPrescaler(const std::uint16_t prescaler)
+void Network::SetPrescaler(const std::uint16_t _prescaler)
 {
-	this->prescaler = prescaler;
+	this->prescaler = _prescaler;
 }
 
 Result Network::SetLossOfSoCTolerance(std::uint32_t lossOfSocTolerance)
@@ -828,12 +828,12 @@ Result Network::GenerateConfiguration()
 
 	for (auto& node : this->nodeCollection)
 	{
-		std::shared_ptr<ManagingNode> mn = std::dynamic_pointer_cast<ManagingNode>(node.second);
+		std::shared_ptr<ManagingNode> managingNode = std::dynamic_pointer_cast<ManagingNode>(node.second);
 		std::shared_ptr<ControlledNode> cn = std::dynamic_pointer_cast<ControlledNode>(node.second);
-		if (mn.get() && node.first == 240) //only managing node
+		if (managingNode.get() && node.first == 240) //only managing node
 		{
-			mn->UpdateProcessImage(this->nodeCollection, Direction::RX);
-			mn->UpdateProcessImage(this->nodeCollection, Direction::TX);
+			managingNode->UpdateProcessImage(this->nodeCollection, Direction::RX);
+			managingNode->UpdateProcessImage(this->nodeCollection, Direction::TX);
 		}
 		else if (cn.get())
 		{
@@ -1072,7 +1072,7 @@ bool Network::HasControlledNodes() const
 	return false;
 }
 
-IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result Network::CheckCycleTime(const std::uint32_t cycleTime)
+IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result Network::CheckCycleTime(const std::uint32_t _cycleTime)
 {
 	std::uint32_t minCycleTimeCN = 0;
 	std::uint32_t maxCycleTimeCN = 0;
@@ -1084,11 +1084,11 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result Network::CheckCycleTim
 		Result res = node.second->GetNetworkManagement()->GetFeatureActualValue<std::uint32_t>(GeneralFeatureEnum::NMTCycleTimeGranularity, currentCycleTimeGranularity);
 		if (res.IsSuccessful())
 		{
-			if (cycleTime % currentCycleTimeGranularity != 0)
+			if (_cycleTime % currentCycleTimeGranularity != 0)
 			{
 				boost::format formatter(kMsgCycleTimeGran);
 				formatter
-				% cycleTime
+				% _cycleTime
 				% currentCycleTimeGranularity
 				% node.second->GetName()
 				% (std::uint32_t) node.first;
@@ -1102,11 +1102,11 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result Network::CheckCycleTim
 		if (!res.IsSuccessful())
 			return res;
 
-		if (cycleTime < minCycleTimeCN)
+		if (_cycleTime < minCycleTimeCN)
 		{
 			boost::format formatter(kMsgCycleTimeMin);
 			formatter
-			% cycleTime
+			% _cycleTime
 			% minCycleTimeCN
 			% node.second->GetName()
 			% (std::uint32_t) node.first;
@@ -1119,11 +1119,11 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result Network::CheckCycleTim
 		if (!res.IsSuccessful())
 			return res;
 
-		if (cycleTime > maxCycleTimeCN)
+		if (_cycleTime > maxCycleTimeCN)
 		{
 			boost::format formatter(kMsgCycleTimeMax);
 			formatter
-			% cycleTime
+			% _cycleTime
 			% maxCycleTimeCN
 			% node.second->GetName()
 			% (std::uint32_t) node.first;
