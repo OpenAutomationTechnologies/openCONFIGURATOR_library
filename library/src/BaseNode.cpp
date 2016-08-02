@@ -50,7 +50,9 @@ BaseNode::BaseNode(std::uint8_t nodeId, const std::string& name) :
 	transmitMapping(std::vector<std::shared_ptr<BaseProcessDataMapping>>()),
 	receiveMapping(std::vector<std::shared_ptr<BaseProcessDataMapping>>()),
 	transmitProcessImage(std::vector<std::shared_ptr<BaseProcessImageObject>>()),
-	receiveProcessImage(std::vector<std::shared_ptr<BaseProcessImageObject>>())
+	receiveProcessImage(std::vector<std::shared_ptr<BaseProcessImageObject>>()),
+	ignoreNonExistingMappingObjects(false),
+	ignoreInvalidMappingOffsets(false)
 {}
 
 BaseNode::~BaseNode()
@@ -606,4 +608,24 @@ void BaseNode::ClearMappingChannelforNode(const std::uint8_t _nodeId)
 			}
 		}
 	}
+}
+
+bool BaseNode::IgnoreNonExistingMappingObjects() const
+{
+	return this->ignoreNonExistingMappingObjects;
+}
+
+void BaseNode::SetIgnoreNonExistingMappingObjects(bool _ignoreNonExistingMappingObjects)
+{
+	this->ignoreNonExistingMappingObjects = _ignoreNonExistingMappingObjects;
+}
+
+bool BaseNode::IgnoreInvalidMappingOffsets() const
+{
+	return this->ignoreInvalidMappingOffsets;
+}
+
+void BaseNode::SetIgnoreInvalidMappingOffsets(bool _ignoreInvalidMappingOffsets)
+{
+	this->ignoreInvalidMappingOffsets = _ignoreInvalidMappingOffsets;
 }

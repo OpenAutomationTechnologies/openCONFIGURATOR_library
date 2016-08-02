@@ -58,6 +58,16 @@ void BuildConfigurationSetting::InitConfigurationSetting(const std::string& id)
 		this->SetDescription(BuildConfigurationIdDescription[BuildConfigurationId::GENERATE_MN_MAPPING_FOR_NODES]);
 		this->configurationBuilder = std::shared_ptr<BuildConfigurationSettingBuilder>(new ManagingNodeMappingBuilder());
 	}
+	else if (id == "IGNORE_INVALID_MAPPING_OBJECT_REFERENCES")
+	{
+		this->SetDescription(BuildConfigurationIdDescription[BuildConfigurationId::IGNORE_INVALID_MAPPING_OBJECT_REFERENCES]);
+		this->configurationBuilder.reset();
+	}
+	else if (id == "IGNORE_INVALID_MAPPING_OBJECT_OFFSETS")
+	{
+		this->SetDescription(BuildConfigurationIdDescription[BuildConfigurationId::IGNORE_INVALID_MAPPING_OBJECT_OFFSETS]);
+		this->configurationBuilder.reset();
+	}
 	// add other supported settings here
 	else
 	{
@@ -71,6 +81,9 @@ void BuildConfigurationSetting::InitConfigurationSetting(const std::string& id)
 
 Result BuildConfigurationSetting::GenerateConfiguration(const std::map<std::uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
-	return this->configurationBuilder->GenerateConfiguration(this->GetValue(), nodeCollection);
+	if (this->configurationBuilder.get())
+		return this->configurationBuilder->GenerateConfiguration(this->GetValue(), nodeCollection);
+	else
+		return Result();
 }
 

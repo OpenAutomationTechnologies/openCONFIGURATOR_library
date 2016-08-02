@@ -71,6 +71,8 @@ namespace IndustrialNetwork
 
 						const std::string& GetConfigurationName() const;
 						void SetConfigurationName(const std::string& config);
+
+						bool EvaluateSettingForNode(const std::string& settingName, std::uint16_t nodeId);
 					private:
 						std::string configurationName;
 

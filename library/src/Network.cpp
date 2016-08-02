@@ -101,6 +101,7 @@ Result Network::AddNode(std::shared_ptr<ModularControlledNode>& node)
 	//Set Node Assignement with actual value "0"
 	mn->SetSubObjectActualValue(0x1F81, node->GetNodeId(), "0");
 
+	this->UpdateBuildConfigurationSettingsOnNodes();
 	return Result();
 }
 
@@ -135,6 +136,7 @@ Result Network::AddNode(std::shared_ptr<ControlledNode>& node)
 	//Set Node Assignement with actual value "0"
 	mn->SetSubObjectActualValue(0x1F81, node->GetNodeId(), "0");
 
+	this->UpdateBuildConfigurationSettingsOnNodes();
 	return Result();
 }
 
@@ -173,6 +175,7 @@ Result Network::AddNode(std::shared_ptr<ManagingNode>& node)
 			}
 		}
 	}
+	this->UpdateBuildConfigurationSettingsOnNodes();
 	return Result();
 }
 
@@ -508,6 +511,7 @@ Result Network::SetConfigurationSettingEnabled(const std::string& configID, cons
 					% this->networkId
 					% enabledStr.str();
 					LOG_INFO() << "[" + networkId + "] " + formatter.str();
+					this->UpdateBuildConfigurationSettingsOnNodes();
 					return Result();
 				}
 			}
@@ -749,6 +753,7 @@ Result Network::SetActiveConfiguration(const std::string& configID)
 		if (config->GetConfigurationName() == configID)
 		{
 			this->activeConfiguration = configID;
+			this->UpdateBuildConfigurationSettingsOnNodes();
 			//Log info configuration is active
 			boost::format formatter(kMsgConfigurationActive);
 			formatter
@@ -1072,7 +1077,7 @@ bool Network::HasControlledNodes() const
 	return false;
 }
 
-IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result Network::CheckCycleTime(const std::uint32_t _cycleTime)
+Result Network::CheckCycleTime(const std::uint32_t _cycleTime)
 {
 	std::uint32_t minCycleTimeCN = 0;
 	std::uint32_t maxCycleTimeCN = 0;
@@ -1133,4 +1138,30 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result Network::CheckCycleTim
 
 	}
 	return Result();
+}
+
+void Network::UpdateBuildConfigurationSettingsOnNodes()
+{
+	for (auto& config : this->buildConfigurations)
+	{
+		if (config->GetConfigurationName() == this->GetActiveConfiguration())
+		{
+			for (auto& node : this->nodeCollection)
+			{
+				if (config->EvaluateSettingForNode("IGNORE_INVALID_MAPPING_OBJECT_REFERENCES", node.first))
+				{
+					node.second->SetIgnoreNonExistingMappingObjects(true);
+				}
+				else
+					node.second->SetIgnoreNonExistingMappingObjects(false);
+
+				if (config->EvaluateSettingForNode("IGNORE_INVALID_MAPPING_OBJECT_OFFSETS", node.first))
+				{
+					node.second->SetIgnoreInvalidMappingOffsets(true);
+				}
+				else
+					node.second->SetIgnoreInvalidMappingOffsets(false);
+			}
+		}
+	}
 }

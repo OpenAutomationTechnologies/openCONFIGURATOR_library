@@ -123,6 +123,12 @@ namespace IndustrialNetwork
 						void ChangeMappingChannelNodeId(const std::uint8_t nodeId, const std::uint8_t newNodeId);
 						void ClearMappingChannelforNode(const std::uint8_t nodeId);
 
+						bool IgnoreNonExistingMappingObjects() const;
+						void SetIgnoreNonExistingMappingObjects(bool _ignoreNonExistingMappingObjects);
+
+						bool IgnoreInvalidMappingOffsets() const;
+						void SetIgnoreInvalidMappingOffsets(bool _ignoreInvalidMappingOffsets);
+
 					private:
 						std::uint8_t nodeId;
 						std::string name;
@@ -139,6 +145,8 @@ namespace IndustrialNetwork
 						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseProcessImageObject>> transmitProcessImage;
 						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseProcessImageObject>> receiveProcessImage;
 
+						bool ignoreNonExistingMappingObjects;
+						bool ignoreInvalidMappingOffsets;
 				};
 			}
 		}

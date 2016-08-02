@@ -240,6 +240,7 @@ namespace IndustrialNetwork
 						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Configuration::PlkConfiguration>> buildConfigurations;
 						std::string activeConfiguration;
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CheckCycleTime(const std::uint32_t cycleTime);
+						void UpdateBuildConfigurationSettingsOnNodes();
 				};
 			}
 		}

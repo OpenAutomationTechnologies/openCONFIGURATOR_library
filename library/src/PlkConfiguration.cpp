@@ -935,3 +935,29 @@ Result PlkConfiguration::ClearActualValues(const std::map<std::uint8_t, std::sha
 	}
 	return Result();
 }
+
+bool PlkConfiguration::EvaluateSettingForNode(const std::string& settingName, std::uint16_t nodeId)
+{
+	for (auto& config_setting : this->GetBuildConfigurationSettings())
+	{
+		if (config_setting->IsEnabled() && config_setting->GetName() == settingName)
+		{
+			if (config_setting->GetValue().empty())
+				return true;
+			else
+			{
+				std::vector<std::string> nodeIds;
+				boost::split(nodeIds, config_setting->GetValue(), boost::is_any_of("; "));
+
+				//Node ids can be hex or dec numbers
+				for (auto& part : nodeIds)
+				{
+					if (HexToInt<std::uint16_t>(part) == nodeId)
+						return true;
+				}
+				return false;
+			}
+		}
+	}
+	return false;
+}

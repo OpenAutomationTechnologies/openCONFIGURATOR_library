@@ -152,7 +152,7 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 
 		if (!value.empty())
 		{
-			if (!this->GenerateForNode(value, node->GetNodeId())) //Check if values have to be generated
+			if (this->GenerateForNode(value, node->GetNodeId()) == false && dir == Direction::RX) //Check if values have to be generated
 				continue;
 		}
 

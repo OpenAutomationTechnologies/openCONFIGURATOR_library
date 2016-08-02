@@ -798,14 +798,21 @@ Result ControlledNode::GetDataObjectFromMapping(const std::shared_ptr<BaseProces
 	std::uint16_t dataSubindex = mapping->GetMappingSubIndex();
 
 	std::shared_ptr<Object> dataObject;
-	Result res = this->GetObject(dataIndex, dataObject);
+	Result res = this->GetObject(dataIndex, dataObject, !this->IgnoreNonExistingMappingObjects());
 	if (!res.IsSuccessful())
 	{
 		boost::format formatter(kMsgNonExistingMappedObject);
 		formatter
 		% dataIndex
 		% (std::uint32_t) this->GetNodeId();
-		LOG_ERROR() << formatter.str();
+		if (this->IgnoreNonExistingMappingObjects())
+		{
+			LOG_WARN() << "Invalid process image ignored : " << formatter.str();
+		}
+		else
+		{
+			LOG_ERROR() << formatter.str();
+		}
 		return Result(ErrorCode::MAPPED_OBJECT_DOES_NOT_EXIST, formatter.str());
 	}
 	retName.append(dataObject->GetName());
@@ -824,7 +831,7 @@ Result ControlledNode::GetDataObjectFromMapping(const std::shared_ptr<BaseProces
 	}
 	else
 	{
-		res = this->GetSubObject(dataIndex, dataSubindex, dataSubObject);
+		res = this->GetSubObject(dataIndex, dataSubindex, dataSubObject, !this->IgnoreNonExistingMappingObjects());
 		if (!res.IsSuccessful())
 		{
 			boost::format formatter(kMsgNonExistingMappedSubObject);
@@ -832,7 +839,14 @@ Result ControlledNode::GetDataObjectFromMapping(const std::shared_ptr<BaseProces
 			% dataIndex
 			% dataSubindex
 			% (std::uint32_t) this->GetNodeId();
-			LOG_ERROR() << formatter.str();
+			if (this->IgnoreNonExistingMappingObjects())
+			{
+				LOG_WARN() << "Invalid process image ignored : " << formatter.str();
+			}
+			else
+			{
+				LOG_ERROR() << formatter.str();
+			}
 			return Result(ErrorCode::MAPPED_SUBOBJECT_DOES_NOT_EXIST, formatter.str());
 		}
 		else
@@ -870,7 +884,12 @@ Result ControlledNode::UpdateProcessImage(const Direction& dir)
 		std::string dataName;
 		res = GetDataObjectFromMapping(mapObj, dataObject, dataName);
 		if (!res.IsSuccessful())
-			return res;
+		{
+			if (this->IgnoreNonExistingMappingObjects())
+				continue;
+			else
+				return res;
+		}
 
 		//Complex data object
 		if (dataObject->GetUniqueIdRef().is_initialized())
@@ -1172,11 +1191,19 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 							% (std::uint32_t) this->GetNodeId()
 							% mappingPtr->GetMappingOffset()
 							% expectedOffset;
-							if (GetOperationMode() != PlkOperationMode::CHAINED)
+							if (this->IgnoreInvalidMappingOffsets())
 							{
-								LOG_WARN() << formatter.str() << " Mapping value has been recalculated.";
+								expectedOffset = mappingPtr->GetMappingOffset();
+								LOG_WARN() << "Invalid mapping offset ignored : " << formatter.str() ;
 							}
-							mappingPtr->SetMappingOffset(expectedOffset);
+							else
+							{
+								if (GetOperationMode() != PlkOperationMode::CHAINED)
+								{
+									LOG_WARN() << formatter.str() << " Mapping value has been recalculated.";
+								}
+								mappingPtr->SetMappingOffset(expectedOffset);
+							}
 						}
 
 						res = CheckProcessDataMapping(mappingPtr, expectedOffset, dir);
@@ -1263,7 +1290,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 	//Check that mapped object exist
 	if (dataSubindex == 0)
 	{
-		Result res = this->GetSubObject(dataIndex, dataSubindex, dataSubObject, false);
+		Result res = this->GetSubObject(dataIndex, dataSubindex, dataSubObject, !this->IgnoreNonExistingMappingObjects());
 		if (!res.IsSuccessful())
 		{
 			res = this->GetObject(dataIndex, dataObject);
@@ -1273,8 +1300,16 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 				formatter
 				% dataIndex
 				% (std::uint32_t) this->GetNodeId();
-				LOG_ERROR() << formatter.str();
-				return Result(ErrorCode::MAPPED_OBJECT_DOES_NOT_EXIST, formatter.str());
+				if (this->IgnoreNonExistingMappingObjects())
+				{
+					LOG_WARN() << "Invalid mapping object reference ignored : " << formatter.str();
+					return Result();
+				}
+				else
+				{
+					LOG_ERROR() << formatter.str();
+					return Result(ErrorCode::MAPPED_OBJECT_DOES_NOT_EXIST, formatter.str());
+				}
 			}
 			else
 				foundObject = dataObject;
@@ -1284,7 +1319,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 	}
 	else
 	{
-		Result res = this->GetSubObject(dataIndex, dataSubindex, dataSubObject);
+		Result res = this->GetSubObject(dataIndex, dataSubindex, dataSubObject, !this->IgnoreNonExistingMappingObjects());
 		if (!res.IsSuccessful())
 		{
 			boost::format formatter(kMsgNonExistingMappedSubObject);
@@ -1292,8 +1327,16 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 			% dataIndex
 			% dataSubindex
 			% (std::uint32_t) this->GetNodeId();
-			LOG_ERROR() << formatter.str();
-			return Result(ErrorCode::MAPPED_SUBOBJECT_DOES_NOT_EXIST, formatter.str());
+			if (this->IgnoreNonExistingMappingObjects())
+			{
+				LOG_WARN() << "Invalid mapping object reference ignored : " << formatter.str();
+				return Result();
+			}
+			else
+			{
+				LOG_ERROR() << formatter.str();
+				return Result(ErrorCode::MAPPED_OBJECT_DOES_NOT_EXIST, formatter.str());
+			}
 		}
 		foundObject = dataSubObject;
 	}

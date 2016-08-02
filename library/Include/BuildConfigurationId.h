@@ -51,16 +51,22 @@ namespace IndustrialNetwork
 				enum BuildConfigurationId
 				{
 					GENERATE_MN_MAPPING_FOR_NODES, ///< Generate the MN mapping for nodes in the POWERLINK network.
+					IGNORE_INVALID_MAPPING_OBJECT_REFERENCES, ///< Ignore mapping object values which reference non-existing objects or subobjects.
+					IGNORE_INVALID_MAPPING_OBJECT_OFFSETS ///< Do not recalculate mapping object offset values.
 				};
 
 				static const std::string BuildConfigurationIdName[] =
 				{
 					"GENERATE_MN_MAPPING_FOR_NODES", ///< Generate the MN mapping for nodes in the POWERLINK network.
+					"IGNORE_INVALID_MAPPING_OBJECT_REFERENCES", ///< Ignore mapping object values which reference non-existing objects or subobjects.
+					"IGNORE_INVALID_MAPPING_OBJECT_OFFSETS" ///< Do not recalculate mapping object offset values.
 				};
 
 				static const std::string BuildConfigurationIdDescription[] =
 				{
 					"Generate the MN mapping for nodes in the POWERLINK network.",
+					"Ignore mapping object values which reference non-existing objects or subobjects.",
+					"Do not recalculate mapping object offset values."
 				};
 			}
 		}
