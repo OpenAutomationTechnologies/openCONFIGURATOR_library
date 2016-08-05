@@ -1090,6 +1090,27 @@ namespace IndustrialNetwork
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CreateParameterReference(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterGroupUniqueId, const std::string& parameterUniqueIdRef, const std::string& actualValue, std::uint16_t bitOffset, const std::string& interfaceId, const std::string& moduleId, std::uint32_t modulePosition);
+						//! Member to retrieve the offset for a mapped object within the managing node process image.
+						/*!
+						\param networkId Specifies the identifier for the network.
+						\param nodeId Specifies the node identifier.
+						\param dir Specifies the direction of the mapping (transmit or receive).
+						\param objectId Specifies the mapping object on the controlled node (0x16XX / 0x1AXX).
+						\param subObjectId Specifies the mapping subobject on the controlled node.
+						\param offset Offset to return.
+						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
+						*/
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetMappingObjectProcessImageOffset(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir, std::uint32_t objectId, std::uint32_t subObjectId, std::uint32_t& offset);
+						//! Member to retrieve the offset for a mapped parameter within the managing node process image.
+						/*!
+						\param networkId Specifies the identifier for the network.
+						\param nodeId Specifies the node identifier.
+						\param dir Specifies the direction of the mapping (transmit or receive).
+						\param paramName Specifies the parameter name.
+						\param offset Offset to return.
+						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
+						*/
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetMappingParameterProcessImageOffset(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir, const std::string& paramName, std::uint32_t& offset);
 
 						/** @} */
 						/** \addtogroup modularnode

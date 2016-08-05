@@ -69,12 +69,27 @@ namespace IndustrialNetwork
 						void SetPIOffset(std::uint32_t piOffset);
 						const boost::optional<std::uint32_t>& GetBitOffset() const;
 
+						void SetSourceNodeId(std::uint16_t nodeId);
+						void SetMappingObjectIndex(std::uint32_t index);
+						void SetMappingObjectSubIndex(std::uint32_t subIndex);
+						void SetMappingObjectParameter(const std::string& parameterName);
+
+						std::uint16_t GetSourceNodeId() const;
+						std::uint32_t GetMappingObjectIndex() const;
+						std::uint32_t GetMappingObjectSubIndex() const;
+						const std::string& GetMappingObjectParameter() const;
+
 					private:
 						std::string name;
 						IEC_Datatype dataType;
 						std::uint32_t size;
 						std::uint32_t piOffset;
 						boost::optional<std::uint32_t> bitOffset;
+
+						std::uint16_t sourceNodeId;
+						std::uint32_t mappingObjectIndex;
+						std::uint32_t mappingObjectSubIndex;
+						std::string mappingObjectParameter;
 				};
 			}
 		}

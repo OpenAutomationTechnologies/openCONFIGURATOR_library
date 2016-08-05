@@ -877,7 +877,7 @@ Result ControlledNode::UpdateProcessImage(const Direction& dir)
 		{
 			if (dataObject->GetReferencedParameterGroup().get())
 			{
-				res = ProcessParameterGroup(dataObject->GetReferencedParameterGroup(), dataName, dir, piOffset, domainCount);
+				res = ProcessParameterGroup(dataObject->GetReferencedParameterGroup()->GetUniqueId(), mapObj, dataObject->GetReferencedParameterGroup(), dataName, dir, piOffset, domainCount);
 				if (!res.IsSuccessful())
 					return res;
 				domainCount++;
@@ -904,19 +904,19 @@ Result ControlledNode::UpdateProcessImage(const Direction& dir)
 			//std::shared_ptr<EnumDataType> enumDt = std::dynamic_pointer_cast<EnumDataType>(dataObject->GetReferencedParameter()->GetComplexDataType());
 			if (structDt.get())
 			{
-				ProcessComplexDatatype(structDt, dataName, dir, piOffset, domainCount);
+				ProcessComplexDatatype(dataObject->GetReferencedParameter()->GetUniqueID(), mapObj, structDt, dataName, dir, piOffset, domainCount);
 			}
 			else if (arrayDt.get())
 			{
-				ProcessComplexDatatype(arrayDt, dataName, dir, piOffset, domainCount);
+				ProcessComplexDatatype(dataObject->GetReferencedParameter()->GetUniqueID(), mapObj, arrayDt, dataName, dir, piOffset, domainCount);
 			}
 			/*else if (enumDt.get())
 			{
-				ProcessComplexDatatype(enumDt, dataName, dir, piOffset, domainCount);
+				ProcessComplexDatatype(dataObject->GetReferencedParameter()->GetUniqueID(), mapObj ,enumDt, dataName, dir, piOffset, domainCount);
 			}*/
 			else
 			{
-				ProcessComplexDatatype(dataObject->GetReferencedParameter(), dataName, dir, piOffset, bitOffset, domainCount);
+				ProcessComplexDatatype(dataObject->GetReferencedParameter()->GetUniqueID(), mapObj, dataObject->GetReferencedParameter(), dataName, dir, piOffset, bitOffset, domainCount);
 			}
 			domainCount++;
 		}
@@ -937,6 +937,9 @@ Result ControlledNode::UpdateProcessImage(const Direction& dir)
 			            GetIECDataType(dataObject->GetDataType().get()),
 			            piOffset,
 			            GetIECDataTypeBitSize(GetIECDataType(dataObject->GetDataType().get())));
+			piObj->SetMappingObjectIndex(mapObj->GetObject());
+			piObj->SetMappingObjectSubIndex(mapObj->GetSubObject());
+			piObj->SetSourceNodeId(this->GetNodeId());
 
 			if (dir == Direction::RX)
 				this->GetReceiveProcessImage().push_back(piObj);
@@ -1617,7 +1620,7 @@ bool ControlledNode::ReceivesPResMN() const
 	return this->receivesPResMN;
 }
 
-Result ControlledNode::ProcessParameterGroup(const std::shared_ptr<ParameterGroup>& grp, const std::string& dataName, const Direction& dir, std::uint32_t& piOffset, std::uint32_t domainCount)
+Result ControlledNode::ProcessParameterGroup(const std::string& paramName, const std::shared_ptr<BaseProcessDataMapping>& mappingObject, const std::shared_ptr<ParameterGroup>& grp, const std::string& dataName, const Direction& dir, std::uint32_t& piOffset, std::uint32_t domainCount)
 {
 	std::uint32_t bitOffset = 0;
 	for (auto& paramGrpEntry : grp->GetParameterGroupEntries())
@@ -1633,7 +1636,7 @@ Result ControlledNode::ProcessParameterGroup(const std::shared_ptr<ParameterGrou
 					piOffset += paramGrp->GetBitOffset() / 8;
 					bitOffset = 0;
 				}
-				ProcessParameterGroup(paramGrp, dataName, dir, piOffset, domainCount);
+				ProcessParameterGroup(paramName, mappingObject, paramGrp, dataName, dir, piOffset, domainCount);
 			}
 		}
 		else if (paramRef)
@@ -1645,25 +1648,25 @@ Result ControlledNode::ProcessParameterGroup(const std::shared_ptr<ParameterGrou
 				//std::shared_ptr<EnumDataType> enumDt = std::dynamic_pointer_cast<EnumDataType>(paramRef->GetReferencedParameter()->GetComplexDataType());
 				if (structDt.get())
 				{
-					ProcessComplexDatatype(structDt, dataName, dir, piOffset, domainCount);
+					ProcessComplexDatatype(paramName, mappingObject, structDt, dataName, dir, piOffset, domainCount);
 				}
 				else if (arrayDt.get())
 				{
-					ProcessComplexDatatype(arrayDt, dataName, dir, piOffset, domainCount);
+					ProcessComplexDatatype(paramName, mappingObject, arrayDt, dataName, dir, piOffset, domainCount);
 				}
 				/*else if (enumDt.get())
 				{
-					ProcessComplexDatatype(enumDt, dataName, dir, piOffset, domainCount);
+					ProcessComplexDatatype(paramName, mappingObject, enumDt, dataName, dir, piOffset, domainCount);
 				}*/
 			}
 			else if (paramRef->GetReferencedParameter()->GetDataType().is_initialized())
-				ProcessComplexDatatype(paramRef->GetReferencedParameter(), dataName, dir, piOffset, bitOffset, domainCount);
+				ProcessComplexDatatype(paramName, mappingObject, paramRef->GetReferencedParameter(), dataName, dir, piOffset, bitOffset, domainCount);
 		}
 	}
 	return Result();
 }
 
-void ControlledNode::ProcessComplexDatatype(const std::shared_ptr<Parameter>& param, const std::string& dataName, const Direction& dir, std::uint32_t& piOffset, std::uint32_t& bitOffset, std::uint32_t domainCount)
+void ControlledNode::ProcessComplexDatatype(const std::string& paramName,  const std::shared_ptr<BaseProcessDataMapping>& mappingObject, const std::shared_ptr<Parameter>& param, const std::string& dataName, const Direction& dir, std::uint32_t& piOffset, std::uint32_t& bitOffset, std::uint32_t domainCount)
 {
 	std::stringstream nameBuilder;
 	nameBuilder << "CN" << (std::uint32_t) this->GetNodeId();
@@ -1695,6 +1698,10 @@ void ControlledNode::ProcessComplexDatatype(const std::shared_ptr<Parameter>& pa
 		            piOffset,
 		            bitOffset,
 		            GetIECDataTypeBitSize(param->GetDataType().get()));
+		piObj->SetMappingObjectIndex(mappingObject->GetObject());
+		piObj->SetMappingObjectSubIndex(mappingObject->GetSubObject());
+		piObj->SetMappingObjectParameter(paramName);
+		piObj->SetSourceNodeId(this->GetNodeId());
 
 		if (dir == Direction::RX)
 			this->GetReceiveProcessImage().push_back(piObj);
@@ -1724,7 +1731,7 @@ void ControlledNode::ProcessComplexDatatype(const std::shared_ptr<Parameter>& pa
 	}
 }
 
-void ControlledNode::ProcessComplexDatatype(const std::shared_ptr<StructDataType>& structDt, const std::string& dataName, const Direction& dir, std::uint32_t& piOffset, std::uint32_t domainCount)
+void ControlledNode::ProcessComplexDatatype(const std::string& paramName, const std::shared_ptr<BaseProcessDataMapping>& mappingObject, const std::shared_ptr<StructDataType>& structDt, const std::string& dataName, const Direction& dir, std::uint32_t& piOffset, std::uint32_t domainCount)
 {
 	std::uint32_t bitOffset = 0;
 	for (auto& varDecl : structDt->GetVarDeclarations())
@@ -1753,6 +1760,10 @@ void ControlledNode::ProcessComplexDatatype(const std::shared_ptr<StructDataType
 			            varDecl->GetDataType(),
 			            piOffset, bitOffset,
 			            varDecl->GetBitSize());
+			piObj->SetMappingObjectIndex(mappingObject->GetObject());
+			piObj->SetMappingObjectSubIndex(mappingObject->GetSubObject());
+			piObj->SetMappingObjectParameter(paramName);
+			piObj->SetSourceNodeId(this->GetNodeId());
 
 			if (dir == Direction::RX)
 				this->GetReceiveProcessImage().push_back(piObj);
@@ -1782,7 +1793,7 @@ void ControlledNode::ProcessComplexDatatype(const std::shared_ptr<StructDataType
 	}
 }
 
-void ControlledNode::ProcessComplexDatatype(const std::shared_ptr<ArrayDataType>& arrayDt, const std::string& dataName, const Direction& dir, std::uint32_t& piOffset, std::uint32_t domainCount)
+void ControlledNode::ProcessComplexDatatype(const std::string& paramName, const std::shared_ptr<BaseProcessDataMapping>& mappingObject, const std::shared_ptr<ArrayDataType>& arrayDt, const std::string& dataName, const Direction& dir, std::uint32_t& piOffset, std::uint32_t domainCount)
 {
 	std::uint32_t bitOffset = 0;
 	for (std::uint32_t i = arrayDt->GetLowerLimit(); i < arrayDt->GetUpperLimit(); i++)
@@ -1810,6 +1821,11 @@ void ControlledNode::ProcessComplexDatatype(const std::shared_ptr<ArrayDataType>
 			            piOffset,
 			            bitOffset,
 			            arrayDt->GetBitSize());
+			piObj->SetMappingObjectIndex(mappingObject->GetObject());
+			piObj->SetMappingObjectSubIndex(mappingObject->GetSubObject());
+			piObj->SetMappingObjectParameter(paramName);
+			piObj->SetSourceNodeId(this->GetNodeId());
+
 			if (dir == Direction::RX)
 				this->GetReceiveProcessImage().push_back(piObj);
 			else if (dir == Direction::TX)
@@ -1829,6 +1845,11 @@ void ControlledNode::ProcessComplexDatatype(const std::shared_ptr<ArrayDataType>
 			            arrayDt->GetDataType(),
 			            piOffset,
 			            arrayDt->GetBitSize());
+			piObj->SetMappingObjectIndex(mappingObject->GetObject());
+			piObj->SetMappingObjectSubIndex(mappingObject->GetSubObject());
+			piObj->SetMappingObjectParameter(paramName);
+			piObj->SetSourceNodeId(this->GetNodeId());
+
 			this->GetTransmitProcessImage().push_back(piObj);
 			piOffset += arrayDt->GetBitSize() / 8 ;
 		}
@@ -1836,7 +1857,7 @@ void ControlledNode::ProcessComplexDatatype(const std::shared_ptr<ArrayDataType>
 }
 
 /*
-void ControlledNode::ProcessComplexDatatype(const std::shared_ptr<EnumDataType>& enumDT, const std::string& dataName, const Direction& dir, std::uint32_t& piOffset, std::uint32_t domainCount)
+void ControlledNode::ProcessComplexDatatype(const std::string& paramName, const std::shared_ptr<BaseProcessDataMapping>& mappingObject, const std::shared_ptr<EnumDataType>& enumDT, const std::string& dataName, const Direction& dir, std::uint32_t& piOffset, std::uint32_t domainCount)
 {
 
 }

@@ -3971,3 +3971,108 @@ Result OpenConfiguratorCore::SetModuleAddress(const std::string& networkId, cons
 		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
 	}
 }
+
+Result OpenConfiguratorCore::GetMappingObjectProcessImageOffset(const std::string& networkId, const std::uint8_t nodeId, const Direction& dir, std::uint32_t objectId, std::uint32_t subObjectId,  std::uint32_t& offset)
+{
+	try
+	{
+		std::shared_ptr<Network> network;
+		Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		std::shared_ptr<ManagingNode> mn;
+		res = network->GetManagingNode(mn);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		std::vector<std::shared_ptr<BaseProcessImageObject>> piCollection;
+		if (dir == Direction::RX)
+			piCollection = mn->GetReceiveProcessImage();
+		else if (dir == Direction::TX)
+			piCollection = mn->GetTransmitProcessImage();
+
+		std::uint32_t piSize = 0;
+		for (auto& piObj : piCollection)
+		{
+			// Align the PI to 8 bit, 16 bit and 32 bit
+			if (piObj->GetSize() % 8 == 0 || piObj->GetSize() % 16 == 0 || piObj->GetSize() % 32 == 0)
+			{
+				if (piSize % piObj->GetSize() != 0)
+				{
+					std::uint32_t paddingSize = piObj->GetSize() - (piSize % piObj->GetSize());
+					piSize += paddingSize;
+				}
+			}
+			if (piObj->GetSourceNodeId() == (std::uint16_t) nodeId &&
+			        piObj->GetMappingObjectIndex() == objectId &&
+			        piObj->GetMappingObjectSubIndex() == subObjectId)
+			{
+				offset = piSize / 8;
+				return Result();
+			}
+			piSize += piObj->GetSize();
+		}
+		boost::format formatter(kMsgNonExistingMappedSubObject);
+		formatter
+		% objectId
+		% subObjectId
+		% (std::uint32_t) nodeId;
+		return Result(ErrorCode::MAPPED_OBJECT_DOES_NOT_EXIST, "[" + networkId + "] " + formatter.str());
+	}
+	catch (const std::exception& ex)
+	{
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
+	}
+}
+
+Result OpenConfiguratorCore::GetMappingParameterProcessImageOffset(const std::string& networkId, const std::uint8_t nodeId, const Direction& dir, const std::string& parameterName, std::uint32_t& offset)
+{
+	try
+	{
+		std::shared_ptr<Network> network;
+		Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		std::shared_ptr<ManagingNode> mn;
+		res = network->GetManagingNode(mn);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		std::vector<std::shared_ptr<BaseProcessImageObject>> piCollection;
+		if (dir == Direction::RX)
+			piCollection = mn->GetReceiveProcessImage();
+		else if (dir == Direction::TX)
+			piCollection = mn->GetTransmitProcessImage();
+
+		std::uint32_t piSize = 0;
+		for (auto& piObj : piCollection)
+		{
+			// Align the PI to 8 bit, 16 bit and 32 bit
+			if (piObj->GetSize() % 8 == 0 || piObj->GetSize() % 16 == 0 || piObj->GetSize() % 32 == 0)
+			{
+				if (piSize % piObj->GetSize() != 0)
+				{
+					std::uint32_t paddingSize = piObj->GetSize() - (piSize % piObj->GetSize());
+					piSize += paddingSize;
+				}
+			}
+			if (piObj->GetSourceNodeId() == (std::uint16_t) nodeId &&
+			        piObj->GetMappingObjectParameter() == parameterName)
+			{
+				offset = piSize / 8;
+				return Result();
+			}
+			piSize += piObj->GetSize();
+		}
+		boost::format formatter(kMsgParameterNotFound);
+		formatter
+		% parameterName;
+		return Result(ErrorCode::PARAMETER_NOT_FOUND, "[" + networkId + "] " + formatter.str());
+	}
+	catch (const std::exception& ex)
+	{
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
+	}
+}

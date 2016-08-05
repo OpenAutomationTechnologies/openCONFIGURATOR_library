@@ -94,6 +94,7 @@
 %apply unsigned int& OUTPUT { unsigned int& objectId };
 %apply unsigned short& OUTPUT { unsigned short& subObjectId };
 %apply unsigned int& OUTPUT { unsigned int& returnIndex };
+%apply unsigned int& OUTPUT { unsigned int& offset };
 %apply int& OUTPUT { int& returnSubIndex };
 
 %ignore GetNetworkManagement();

@@ -39,7 +39,11 @@ BaseProcessImageObject::BaseProcessImageObject(const std::string& name, const IE
 	dataType(dataType),
 	size(size),
 	piOffset(piOffset),
-	bitOffset(boost::optional<std::uint32_t>())
+	bitOffset(boost::optional<std::uint32_t>()),
+	sourceNodeId(0),
+	mappingObjectIndex(0),
+	mappingObjectSubIndex(0),
+	mappingObjectParameter("")
 {
 	if (size == 0)
 		this->size = GetIECDataTypeBitSize(this->dataType);
@@ -50,7 +54,11 @@ BaseProcessImageObject::BaseProcessImageObject(const std::string& name, const IE
 	dataType(dataType),
 	size(size),
 	piOffset(piOffset),
-	bitOffset(bitOffset)
+	bitOffset(bitOffset),
+	sourceNodeId(0),
+	mappingObjectIndex(0),
+	mappingObjectSubIndex(0),
+	mappingObjectParameter("")
 {
 	if (size == 0)
 		this->size = GetIECDataTypeBitSize(this->dataType);
@@ -92,4 +100,44 @@ void BaseProcessImageObject::SetPIOffset(std::uint32_t _piOffset)
 void BaseProcessImageObject::SetName(const std::string& _name)
 {
 	this->name = _name;
+}
+
+void BaseProcessImageObject::SetSourceNodeId(std::uint16_t nodeId)
+{
+	this->sourceNodeId = nodeId;
+}
+
+void BaseProcessImageObject::SetMappingObjectIndex(std::uint32_t index)
+{
+	this->mappingObjectIndex = index;
+}
+
+void BaseProcessImageObject::SetMappingObjectSubIndex(std::uint32_t subIndex)
+{
+	this->mappingObjectSubIndex = subIndex;
+}
+
+void BaseProcessImageObject::SetMappingObjectParameter(const std::string& parameterName)
+{
+	this->mappingObjectParameter = parameterName;
+}
+
+std::uint16_t BaseProcessImageObject::GetSourceNodeId() const
+{
+	return this->sourceNodeId;
+}
+
+std::uint32_t BaseProcessImageObject::GetMappingObjectIndex() const
+{
+	return this->mappingObjectIndex;
+}
+
+std::uint32_t BaseProcessImageObject::GetMappingObjectSubIndex() const
+{
+	return this->mappingObjectSubIndex;
+}
+
+const std::string& BaseProcessImageObject::GetMappingObjectParameter() const
+{
+	return this->mappingObjectParameter;
 }

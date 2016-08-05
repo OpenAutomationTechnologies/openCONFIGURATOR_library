@@ -862,6 +862,10 @@ Result ManagingNode::CheckProcessDataMapping(const std::shared_ptr<BaseNode>& no
 				            cnPIObject->GetPiOffset(),
 				            cnPIObject->GetBitOffset().is_initialized() == true ? cnPIObject->GetBitOffset().get() : 0,
 				            cnPIObject->GetSize());
+				mnPiObj->SetMappingObjectIndex(cnPIObject->GetMappingObjectIndex());
+				mnPiObj->SetMappingObjectSubIndex(cnPIObject->GetMappingObjectSubIndex());
+				mnPiObj->SetMappingObjectParameter(cnPIObject->GetMappingObjectParameter());
+				mnPiObj->SetSourceNodeId(cnPIObject->GetSourceNodeId());
 
 				if (dir == Direction::RX)
 					this->GetTransmitProcessImage().push_back(mnPiObj);
