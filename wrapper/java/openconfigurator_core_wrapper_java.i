@@ -96,6 +96,7 @@
 %apply unsigned int& OUTPUT { unsigned int& returnIndex };
 %apply unsigned int& OUTPUT { unsigned int& offset };
 %apply int& OUTPUT { int& returnSubIndex };
+%apply bool& OUTPUT { bool& conditionMet };
 
 %ignore GetNetworkManagement();
 %ignore PlkFeatureDefaultValues;

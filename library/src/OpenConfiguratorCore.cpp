@@ -1924,6 +1924,48 @@ Result OpenConfiguratorCore::CreateParameterReference(const std::string& network
 	}
 }
 
+Result OpenConfiguratorCore::EvaluateParameterGroupCondition(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterGroupUniqueId, const std::string& interfaceId, const std::string& moduleId, std::uint32_t modulePosition, bool& conditionMet)
+{
+	try
+	{
+		std::string mappedParameterGroupUniqueId = parameterGroupUniqueId;
+		std::shared_ptr<Network> network;
+		Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		std::shared_ptr<BaseNode> node;
+		res = network->GetBaseNode(nodeId, node);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		std::shared_ptr<ModularControlledNode> cn = std::dynamic_pointer_cast<ModularControlledNode>(node);
+		if (cn && !interfaceId.empty() && !moduleId.empty() && modulePosition != 0)
+		{
+			std::shared_ptr<Module> module;
+			res = cn->GetModule(interfaceId, moduleId, modulePosition, module);
+			if (!res.IsSuccessful())
+				return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+			res = module->GetMappedParameterName(parameterGroupUniqueId, mappedParameterGroupUniqueId);
+			if (!res.IsSuccessful())
+				return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+		}
+
+		std::shared_ptr<ParameterGroup> grp;
+		res = node->GetApplicationProcess()->GetParameterGroup(mappedParameterGroupUniqueId, grp);
+		if (!res.IsSuccessful())
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+
+		conditionMet = grp->CheckParameterGroupCondition();
+		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+	}
+	catch (const std::exception& ex)
+	{
+		return Result(ErrorCode::UNHANDLED_EXCEPTION, "[" + networkId + "] " + ex.what());
+	}
+}
+
 Result OpenConfiguratorCore::GetDatatypeSize(const std::string& networkId, const std::uint8_t nodeId, const std::string& dataTypeUniqueId, std::uint32_t& size)
 {
 	try

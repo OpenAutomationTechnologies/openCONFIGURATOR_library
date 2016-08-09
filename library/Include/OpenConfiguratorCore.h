@@ -1111,6 +1111,18 @@ namespace IndustrialNetwork
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetMappingParameterProcessImageOffset(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir, const std::string& paramName, std::uint32_t& offset);
+						//! Member to evaluate whether a parameter group condition is met.
+						/*!
+						\param networkId Specifies the identifier for the network.
+						\param nodeId Specifies the node identifier.
+						\param parameterGroupUniqueId Defines the parameter group unique id.
+						\param interfaceId Defines interface if parameter reference is created for a module.
+						\param moduleId Defines the module id if the parameter reference is created for a module.
+						\param modulePosition Defines the module position if the parameter reference is created for a module.
+						\param conditionMet Returns true if condition is met.
+						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
+						*/
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result EvaluateParameterGroupCondition(const std::string& networkId, const std::uint8_t nodeId, const std::string& parameterGroupUniqueId, const std::string& interfaceId, const std::string& moduleId, std::uint32_t modulePosition, bool& conditionMet);
 
 						/** @} */
 						/** \addtogroup modularnode
