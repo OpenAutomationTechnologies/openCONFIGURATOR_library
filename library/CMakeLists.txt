@@ -106,7 +106,7 @@ IF(WIN32)
 ENDIF()
 
 INSTALL(
-	FILES "${CMAKE_SOURCE_DIR}/resources/boost_log_settings.ini" DESTINATION ${INSTALL_DIR}
+	FILES "${PROJECT_SOURCE_DIR}/../resources/boost_log_settings.ini" DESTINATION ${INSTALL_DIR}
 )
 
 INSTALL(
