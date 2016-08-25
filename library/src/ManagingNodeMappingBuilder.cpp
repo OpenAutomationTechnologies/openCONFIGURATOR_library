@@ -274,7 +274,6 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 				}
 
 				// Increment bitoffset with the length of the added mapping
-				bitoffset += mapping->GetMappingLength();
 				channelBitOffset += mapping->GetMappingLength();
 
 				if (mapping->GetDestinationNode() == 240 && dir == Direction::TX)
@@ -394,7 +393,6 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 							//full byte is reached with bitstrings
 							if (bitCount == 8)
 							{
-								bitoffset += 8; // Add one byte
 								channelBitOffset += 8; // Add one byte
 								fillSize += 8; // Add one byte
 								bitCount = 0; //Reset bitcount
@@ -407,7 +405,6 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 							else //normal datatype
 							{
 								fillSize += cnPIObject->GetSize(); //Add datatype size to fillsize
-								bitoffset += cnPIObject->GetSize(); //Add datatype size to offset
 								channelBitOffset += cnPIObject->GetSize(); //Add datatype size to channel offset
 
 								if (mapping->GetDestinationNode() == 240 && dir == Direction::TX)
