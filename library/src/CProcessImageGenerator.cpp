@@ -87,13 +87,50 @@ const std::string CProcessImageGenerator::Generate(std::uint8_t nodeid, std::sha
 const std::string CProcessImageGenerator::PrintChannel(const std::string& name, const IEC_Datatype& type, const std::uint32_t size, const std::uint32_t, const boost::optional<std::uint32_t>&)
 {
 	std::stringstream channel;
-	if (type == IEC_Datatype::SINT || type == IEC_Datatype::INT || type == IEC_Datatype::DINT || type == IEC_Datatype::LINT)
-		channel << "\tsigned ";
-	else
-		channel << "\tunsigned ";
-	channel << Utilities::ClearModuleParameterUuid(name) << ":";
-	channel << std::dec << size;
-	channel << ";" << std::endl;
+	switch (type)
+	{
+		case IEC_Datatype::SINT:
+		case IEC_Datatype::INT:
+		case IEC_Datatype::DINT:
+		case IEC_Datatype::LINT:
+			channel << "\tsigned ";
+			channel << Utilities::ClearModuleParameterUuid(name) << ":";
+			channel << std::dec << size;
+			channel << ";" << std::endl;
+			break;
+		case IEC_Datatype::USINT:
+		case IEC_Datatype::UINT:
+		case IEC_Datatype::UDINT:
+		case IEC_Datatype::ULINT:
+		case IEC_Datatype::BOOL:
+		case IEC_Datatype::BITSTRING:
+		case IEC_Datatype::BYTE:
+		case IEC_Datatype::_CHAR:
+		case IEC_Datatype::WORD:
+		case IEC_Datatype::DWORD:
+		case IEC_Datatype::LWORD:
+			channel << "\tunsigned ";
+			channel << Utilities::ClearModuleParameterUuid(name) << ":";
+			channel << std::dec << size;
+			channel << ";" << std::endl;
+			break;
+		case IEC_Datatype::REAL:
+			channel << "\tfloat ";
+			channel << Utilities::ClearModuleParameterUuid(name);
+			channel << ";" << std::endl;
+			break;
+		case IEC_Datatype::LREAL:
+			channel << "\tdouble ";
+			channel << Utilities::ClearModuleParameterUuid(name);
+			channel << ";" << std::endl;
+			break;
+		case IEC_Datatype::STRING:
+		case IEC_Datatype::WSTRING:
+		case IEC_Datatype::UNDEFINED:
+		default:
+			channel << "";
+			break;
+	}
 	return channel.str();
 }
 
