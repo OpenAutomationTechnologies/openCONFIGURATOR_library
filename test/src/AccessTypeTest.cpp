@@ -49,29 +49,29 @@ void AccessTypeTest::tearDown()
 
 void AccessTypeTest::testInvalidAccessType()
 {
-	CPPUNIT_ASSERT_EQUAL(static_cast<int>(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType::INVALID), -1);
+	CPPUNIT_ASSERT_EQUAL(static_cast<int>(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType::UNDEFINED), 0);
 }
 void AccessTypeTest::testRWAccessType()
 {
-	CPPUNIT_ASSERT_EQUAL(static_cast<int>(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType::RW), 0);
+	CPPUNIT_ASSERT_EQUAL(static_cast<int>(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType::RW), 1);
 }
 void AccessTypeTest::testWOAccessType()
 {
-	CPPUNIT_ASSERT_EQUAL(static_cast<int>(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType::WO), 1);
+	CPPUNIT_ASSERT_EQUAL(static_cast<int>(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType::WO), 3);
 }
 void AccessTypeTest::testROAccessType()
 {
-	CPPUNIT_ASSERT_EQUAL(static_cast<int>(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType::RO), 2);
+	CPPUNIT_ASSERT_EQUAL(static_cast<int>(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType::RO), 5);
 }
 void AccessTypeTest::testConstAccessType()
 {
-	CPPUNIT_ASSERT_EQUAL(static_cast<int>(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType::CONST), 3);
+	CPPUNIT_ASSERT_EQUAL(static_cast<int>(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType::CONST), 6);
 }
 void AccessTypeTest::testRWSAccessType()
 {
-	CPPUNIT_ASSERT_EQUAL(static_cast<int>(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType::RWS), 4);
+	CPPUNIT_ASSERT_EQUAL(static_cast<int>(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType::RWS), 2);
 }
 void AccessTypeTest::testWOSAccessType()
 {
-	CPPUNIT_ASSERT_EQUAL(static_cast<int>(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType::WOS), 5);
+	CPPUNIT_ASSERT_EQUAL(static_cast<int>(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType::WOS), 4);
 }

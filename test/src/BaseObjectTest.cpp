@@ -32,11 +32,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "BaseObjectTest.h"
 
 using namespace IndustrialNetwork::POWERLINK::Core::Test;
+using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 
 CPPUNIT_TEST_SUITE_REGISTRATION(BaseObjectTest);
 
 BaseObjectTest::BaseObjectTest(void) :
-	objectToTest(1000, PlkDataType::BOOLEAN, 1)
+	objectToTest(1000, ObjectType::VAR, "TestObject", 1, PlkDataType::UNSIGNED32, AccessType::RW, PDOMapping::NO)
 {}
 
 BaseObjectTest::~BaseObjectTest(void)
@@ -48,8 +49,8 @@ void BaseObjectTest::tearDown() {}
 
 void BaseObjectTest::testEqualOperator(void)
 {
-	BaseObject equalTest(1000, PlkDataType::BOOLEAN, 1);
-	BaseObject newEqualTestObject(1000, PlkDataType::BOOLEAN, 1);
+	BaseObject equalTest(1000, ObjectType::VAR, "TestObject", 1, PlkDataType::UNSIGNED32, AccessType::RW, PDOMapping::NO);
+	BaseObject newEqualTestObject(1000, ObjectType::VAR, "TestObject", 1, PlkDataType::UNSIGNED32, AccessType::RW, PDOMapping::NO);
 	CPPUNIT_ASSERT_EQUAL(true, (newEqualTestObject == equalTest));
 }
 void BaseObjectTest::testGetDefaultValue()
@@ -73,8 +74,6 @@ void BaseObjectTest::testSetForceToCDC()
 }
 void BaseObjectTest::testGetHighLimit()
 {
-	objectToTest.SetHighLimit(1000);
-	CPPUNIT_ASSERT_EQUAL(objectToTest.GetHighLimit().get(), (unsigned int) 1000);
 
 }
 void BaseObjectTest::testSetHighLimit()

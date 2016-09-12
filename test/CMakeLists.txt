@@ -64,6 +64,7 @@ FIND_PACKAGE(Boost COMPONENTS log date_time filesystem system thread REQUIRED)
 # Necessary for Auto-Linking under VS, ignored under Unix
 ADD_DEFINITIONS(/DBOOST_ALL_DYN_LINK)
 ### Find Boost Libraries END ###
+MESSAGE(WARNING "Please note that openCONFIGURATOR library unit tests are under development!")
 
 ###############################################################################
 # Set general sources and header of openCONF library
@@ -98,8 +99,8 @@ ADD_EXECUTABLE(openconfigurator_core_test ${LIB_TEST_HEADERS} ${LIB_TEST_SOURCES
 ###############################################################################
 # Link openCONFIGURATOR core test executable to libraries
 ###############################################################################
-TARGET_LINK_LIBRARIES(openconfigurator_core_test debug ${CPPUNIT_DEBUG_LIBRARY} openconfigurator_core_lib)
-TARGET_LINK_LIBRARIES(openconfigurator_core_test optimized ${CPPUNIT_LIBRARY} openconfigurator_core_lib)
+TARGET_LINK_LIBRARIES(openconfigurator_core_test debug ${CPPUNIT_LIBRARY_DEBUG} openconfigurator_core_lib)
+TARGET_LINK_LIBRARIES(openconfigurator_core_test optimized ${CPPUNIT_LIBRARY_RELEASE} openconfigurator_core_lib)
 
 ###############################################################################
 # Copy unit test dependency and execute the tests

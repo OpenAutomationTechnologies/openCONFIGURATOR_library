@@ -50,44 +50,78 @@
 #
 ################################################################################
 
-# This module defines
-# CPPUNIT_INCLUDE_DIR, where to find tiff.h, etc.
-# CPPUNIT_LIBRARIES, the libraries to link against to use CppUnit.
-# CPPUNIT_FOUND, If false, do not try to use CppUnit.
-# CPPUNIT_LIBRARY, where to find the CppUnit library.
-# CPPUNIT_DEBUG_LIBRARY, where to find the CppUnit library in debug
+# - try to find cppunit library
+#
+# Cache Variables: (probably not for direct use in your scripts)
+#  CPPUNIT_INCLUDE_DIR
+#  CPPUNIT_LIBRARY
+#
+# Non-cache variables you might use in your CMakeLists.txt:
+#  CPPUNIT_FOUND
+#  CPPUNIT_INCLUDE_DIRS
+#  CPPUNIT_LIBRARIES
+#
+# Requires these CMake modules:
+#  SelectLibraryConfigurations (included with CMake >= 2.8.0)
+#  FindPackageHandleStandardArgs (known included with CMake >=2.6.2)
+#
+# Original Author:
+# 2009-2011 Ryan Pavlik <rpavlik@iastate.edu> <abiryan@ryand.net>
+# http://academic.cleardefinition.com
+# Iowa State University HCI Graduate Program/VRAC
+#
+# Copyright Iowa State University 2009-2011.
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE_1_0.txt or copy at
+# http://www.boost.org/LICENSE_1_0.txt)
 
-FIND_PATH(CPPUNIT_INCLUDE_DIR cppunit/TestCase.h
-  /usr/local/include
-  /usr/include
-  /cppunit/include
-)
+set(CPPUNIT_ROOT_DIR
+	"${CPPUNIT_ROOT_DIR}"
+	CACHE
+	PATH
+	"Directory to search")
 
-# With Win32, important to have both
-IF(WIN32)
-  FIND_LIBRARY(CPPUNIT_LIBRARY cppunit
-               ${CPPUNIT_INCLUDE_DIR}/../lib
-               /cppunit/lib)
-  FIND_LIBRARY(CPPUNIT_DEBUG_LIBRARY cppunitd
-               ${CPPUNIT_INCLUDE_DIR}/../lib
-               /cppunit/lib)
-ELSE(WIN32)
-  # On unix system, debug and release have the same name
-  FIND_LIBRARY(CPPUNIT_LIBRARY cppunit
-               ${CPPUNIT_INCLUDE_DIR}/../lib
-               /usr/local/lib
-               /usr/lib)
-  FIND_LIBRARY(CPPUNIT_DEBUG_LIBRARY cppunit
-               ${CPPUNIT_INCLUDE_DIR}/../lib
-               /usr/local/lib
-               /usr/lib)
-ENDIF(WIN32)
+find_library(CPPUNIT_LIBRARY_RELEASE
+	NAMES
+	cppunit
+	HINTS
+	"${CPPUNIT_ROOT_DIR}/lib")
 
-IF(CPPUNIT_INCLUDE_DIR)
-  IF(CPPUNIT_LIBRARY)
-    SET(CPPUNIT_FOUND "YES")
-    SET(CPPUNIT_LIBRARIES ${CPPUNIT_LIBRARY} ${CMAKE_DL_LIBS})
-    SET(CPPUNIT_DEBUG_LIBRARIES ${CPPUNIT_DEBUG_LIBRARY}
-${CMAKE_DL_LIBS})
-  ENDIF(CPPUNIT_LIBRARY)
-ENDIF(CPPUNIT_INCLUDE_DIR)
+find_library(CPPUNIT_LIBRARY_DEBUG
+	NAMES
+	cppunitd
+	HINTS
+	"${CPPUNIT_ROOT_DIR}/lib")
+
+include(SelectLibraryConfigurations)
+select_library_configurations(CPPUNIT)
+
+# Might want to look close to the library first for the includes.
+get_filename_component(_libdir "${CPPUNIT_LIBRARY_RELEASE}" PATH)
+
+find_path(CPPUNIT_INCLUDE_DIR
+	NAMES
+	cppunit/TestCase.h
+	HINTS
+	"${_libdir}/.."
+	PATHS
+	"${CPPUNIT_ROOT_DIR}"
+	PATH_SUFFIXES
+	include/)
+
+
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(cppunit
+	DEFAULT_MSG
+	CPPUNIT_LIBRARY
+	CPPUNIT_INCLUDE_DIR)
+
+if(CPPUNIT_FOUND)
+	set(CPPUNIT_LIBRARIES ${CPPUNIT_LIBRARY} ${CMAKE_DL_LIBS})
+	set(CPPUNIT_INCLUDE_DIRS "${CPPUNIT_INCLUDE_DIR}")
+	mark_as_advanced(CPPUNIT_ROOT_DIR)
+endif()
+
+mark_as_advanced(CPPUNIT_INCLUDE_DIR
+	CPPUNIT_LIBRARY_RELEASE
+	CPPUNIT_LIBRARY_DEBUG)
