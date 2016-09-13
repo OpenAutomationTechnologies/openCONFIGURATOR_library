@@ -725,8 +725,11 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Calcul
 			if (!res.IsSuccessful())
 				return res; //0x14XX/ 0x1 NodeID_U8 does not exist
 
-			if (paramObj->WriteToConfiguration())
-				continue; //Cross traffic does not count to PreqPayloadLimit
+			if (paramObj->HasActualValue())
+			{
+				if (paramObj->GetTypedActualValue<std::uint16_t>() != 0)
+					continue; //Cross traffic does not count to PreqPayloadLimit
+			}
 
 			std::uint16_t numberOfIndicesToWrite = 0;
 			auto& nrOfEntriesObj = object.second->GetSubObjectDictionary().at((std::uint16_t) 0); //GetNrOfEntries and only count the valid ones
