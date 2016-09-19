@@ -423,7 +423,7 @@ Result OpenConfiguratorCore::GetControlledNode(const std::string& networkId, con
 				{
 					boost::format formatter(kMsgNonControlledNode);
 					formatter
-					% nodeID;
+					% (std::uint32_t) nodeID;
 					LOG_ERROR() << "[" + networkId + "] " + formatter.str();
 					return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE, "[" + networkId + "] " + formatter.str());
 				}
@@ -2371,7 +2371,7 @@ Result OpenConfiguratorCore::SetAsyncSlotTimeout(const std::string& networkId, c
 		{
 			boost::format formatter(kMsgNonManagingNode);
 			formatter
-			% nodeId;
+			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::NODE_IS_NOT_MANAGING_NODE, "[" + networkId + "] " + formatter.str());
 		}
@@ -2411,7 +2411,7 @@ Result OpenConfiguratorCore::SetAsndMaxNr(const std::string& networkId, const st
 		{
 			boost::format formatter(kMsgNonManagingNode);
 			formatter
-			% nodeId;
+			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::NODE_IS_NOT_MANAGING_NODE, "[" + networkId + "] " + formatter.str());
 		}
@@ -2489,7 +2489,7 @@ Result OpenConfiguratorCore::SetRedundantManagingNodeWaitNotActive(const std::st
 		{
 			boost::format formatter(kMsgNonRedundantManagingNode);
 			formatter
-			% nodeId;
+			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::NODE_IS_NOT_REDUNDANT_MANAGING_NODE, "[" + networkId + "] " + formatter.str());
 		}
@@ -2529,7 +2529,7 @@ Result OpenConfiguratorCore::SetRedundantManagingNodePriority(const std::string&
 		{
 			boost::format formatter(kMsgNonRedundantManagingNode);
 			formatter
-			% nodeId;
+			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::NODE_IS_NOT_REDUNDANT_MANAGING_NODE, "[" + networkId + "] " + formatter.str());
 		}
@@ -2733,7 +2733,7 @@ Result OpenConfiguratorCore::GetAsyncSlotTimeout(const std::string& networkId, c
 		{
 			boost::format formatter(kMsgNonManagingNode);
 			formatter
-			% nodeId;
+			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::NODE_IS_NOT_MANAGING_NODE, "[" + networkId + "] " + formatter.str());
 		}
@@ -2784,7 +2784,7 @@ Result OpenConfiguratorCore::GetAsndMaxNr(const std::string& networkId, const st
 		{
 			boost::format formatter(kMsgNonManagingNode);
 			formatter
-			% nodeId;
+			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::NODE_IS_NOT_MANAGING_NODE, "[" + networkId + "] " + formatter.str());
 		}
@@ -2875,7 +2875,7 @@ Result OpenConfiguratorCore::GetRedundantManagingNodeWaitNotActive(const std::st
 		{
 			boost::format formatter(kMsgNonRedundantManagingNode);
 			formatter
-			% nodeId;
+			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::NODE_IS_NOT_REDUNDANT_MANAGING_NODE, "[" + networkId + "] " + formatter.str());
 		}
@@ -2926,7 +2926,7 @@ Result OpenConfiguratorCore::GetRedundantManagingNodePriority(const std::string&
 		{
 			boost::format formatter(kMsgNonRedundantManagingNode);
 			formatter
-			% nodeId;
+			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
 			return Result(ErrorCode::NODE_IS_NOT_REDUNDANT_MANAGING_NODE, "[" + networkId + "] " + formatter.str());
 		}

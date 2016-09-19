@@ -968,7 +968,7 @@ Result Network::SetOperationMode(const std::uint8_t nodeID, const PlkOperationMo
 	{
 		boost::format formatter(kMsgNonControlledNode);
 		formatter
-		% nodeID;
+		% (std::uint32_t) nodeID;
 		LOG_ERROR() << "[" + networkId + "] " + formatter.str();
 		return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE, formatter.str());
 	}
