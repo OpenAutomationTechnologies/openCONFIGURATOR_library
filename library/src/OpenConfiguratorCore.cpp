@@ -274,7 +274,6 @@ Result OpenConfiguratorCore::BuildXMLProcessImage(const std::string& networkId, 
 {
 	try
 	{
-
 		std::shared_ptr<Network> networkPtr;
 		Result res = ProjectManager::GetInstance().GetNetwork(networkId, networkPtr);
 		if (!res.IsSuccessful())

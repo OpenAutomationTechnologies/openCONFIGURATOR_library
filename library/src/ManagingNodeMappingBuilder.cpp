@@ -608,7 +608,7 @@ Result ManagingNodeMappingBuilder::WriteMappingToForNode(std::uint16_t nodeId, D
 		% DirectionTypeValues[static_cast<std::underlying_type<Direction>::type>(dir)]
 		% "CN"
 		% nodeId;
-		LOG_ERROR() << formatter.str();
+		//LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::CHANNEL_OBJECT_LIMIT_EXCEEDED, formatter.str());
 	}
 

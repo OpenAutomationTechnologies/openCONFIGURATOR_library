@@ -91,7 +91,7 @@ const std::string XmlProcessImageGenerator::Generate(std::uint8_t nodeid, std::s
 		fullProcessImage << this->processImageStream.str();
 	}
 
-	fullProcessImage << "</ApplicationProcess>" << std::endl;
+	fullProcessImage << "</ApplicationProcess>";
 	return fullProcessImage.str();
 }
 
