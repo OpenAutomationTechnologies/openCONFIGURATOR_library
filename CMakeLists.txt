@@ -93,8 +93,11 @@ ADD_DEFINITIONS(/DBOOST_ALL_DYN_LINK)
 IF(NOT Boost_FOUND)
 	MESSAGE(SEND_ERROR "Boost libraries not found. Please add BOOST_ROOT environment variable to system.")
 # Boost version above 1.55.0 require boost regex to be linked
-ELSEIF(Boost_FOUND AND Boost_MINOR_VERSION GREATER 55)
+ELSEIF(Boost_FOUND AND Boost_MINOR_VERSION GREATER 55 AND Boost_MINOR_VERSION LESS 59)
 	FIND_PACKAGE(Boost COMPONENTS log log_setup chrono date_time filesystem system thread regex REQUIRED)
+# Boost version above 1.59.0 require boost atomic to be linked
+ELSEIF(Boost_FOUND AND Boost_MINOR_VERSION GREATER 59)
+	FIND_PACKAGE(Boost COMPONENTS atomic log log_setup chrono date_time filesystem system thread regex REQUIRED)
 ENDIF()
 
 ###############################################################################
