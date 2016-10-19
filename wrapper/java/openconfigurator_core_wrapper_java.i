@@ -116,6 +116,7 @@
 
 %{
 
+#include "Language.h"
 #include "DynamicChannelAccessType.h"
 #include "ErrorCode.h"
 #include "IEC_Datatype.h"
@@ -144,6 +145,7 @@
 
 %}
 
+%include "Language.h"
 %include "ErrorCode.h"
 %include "IResult.h"
 %template(intResult) IndustrialNetwork::Fieldbus::IResult<IndustrialNetwork::POWERLINK::Core::ErrorHandling::ErrorCode>;

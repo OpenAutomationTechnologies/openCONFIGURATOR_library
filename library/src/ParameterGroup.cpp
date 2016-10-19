@@ -181,7 +181,7 @@ Result ParameterGroup::GetParameterGroupAccess(ParameterAccess& access)
 	}
 	if (accessVector.size() == 0)
 	{
-		boost::format formatter(kMsgParameterGroupEmpty);
+		boost::format formatter(kMsgParameterGroupEmpty[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% this->GetUniqueId();
 		LOG_ERROR() << formatter.str();
@@ -196,7 +196,7 @@ Result ParameterGroup::GetParameterGroupAccess(ParameterAccess& access)
 	else
 	{
 		//Parameter access is not equal throughout the group
-		boost::format formatter(kMsgAccessTypeForParameterGroupInvalid);
+		boost::format formatter(kMsgAccessTypeForParameterGroupInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% this->GetUniqueId();
 		LOG_ERROR() << formatter.str();

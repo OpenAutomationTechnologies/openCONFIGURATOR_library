@@ -60,7 +60,7 @@ const std::string CProcessImageGenerator::Generate(std::uint8_t nodeid, std::sha
 	Result res = network->GetBaseNode(nodeid, node);
 	if (!res.IsSuccessful())
 	{
-		boost::format formatter(kMsgNonExistingNode);
+		boost::format formatter(kMsgNonExistingNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% (std::uint32_t) nodeid;
 		LOG_FATAL() << formatter.str();

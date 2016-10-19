@@ -83,7 +83,7 @@ Result Network::AddNode(std::shared_ptr<ModularControlledNode>& node)
 		if (var.first == node->GetNodeId())
 		{
 			//Node already exists
-			boost::format formatter(kMsgExistingNode);
+			boost::format formatter(kMsgExistingNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% (std::uint32_t) var.first;
 			LOG_ERROR() << "[" + networkId + "] " + formatter.str();
@@ -92,7 +92,7 @@ Result Network::AddNode(std::shared_ptr<ModularControlledNode>& node)
 	}
 
 	//Log info node created
-	boost::format formatter(kMsgNodeCreated);
+	boost::format formatter(kMsgNodeCreated[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% (std::uint32_t) node->GetNodeId();
 	LOG_INFO() << "[" + networkId + "] " + formatter.str();
@@ -118,7 +118,7 @@ Result Network::AddNode(std::shared_ptr<ControlledNode>& node)
 		if (var.first == node->GetNodeId())
 		{
 			//Node already exists
-			boost::format formatter(kMsgExistingNode);
+			boost::format formatter(kMsgExistingNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% (std::uint32_t) var.first;
 			LOG_ERROR() << "[" + networkId + "] " + formatter.str();
@@ -127,7 +127,7 @@ Result Network::AddNode(std::shared_ptr<ControlledNode>& node)
 	}
 
 	//Log info node created
-	boost::format formatter(kMsgNodeCreated);
+	boost::format formatter(kMsgNodeCreated[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% (std::uint32_t) node->GetNodeId();
 	LOG_INFO() << "[" + networkId + "] " + formatter.str();
@@ -147,7 +147,7 @@ Result Network::AddNode(std::shared_ptr<ManagingNode>& node)
 		if (var.first == node->GetNodeId())
 		{
 			//Node already exists
-			boost::format formatter(kMsgExistingNode);
+			boost::format formatter(kMsgExistingNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% (std::uint32_t) node->GetNodeId();
 			LOG_ERROR() << "[" + networkId + "] " + formatter.str();
@@ -155,7 +155,7 @@ Result Network::AddNode(std::shared_ptr<ManagingNode>& node)
 		}
 	}
 	//Log info node created
-	boost::format formatter(kMsgNodeCreated);
+	boost::format formatter(kMsgNodeCreated[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% (std::uint32_t) node->GetNodeId();
 	LOG_INFO() << "[" + networkId + "] " + formatter.str();
@@ -191,7 +191,7 @@ Result Network::GetBaseNode(const std::uint8_t nodeID, std::shared_ptr<BaseNode>
 	}
 
 	//Node does not exist
-	boost::format formatter(kMsgNonExistingNode);
+	boost::format formatter(kMsgNonExistingNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% (std::uint32_t) nodeID;
 	LOG_ERROR() << "[" + networkId + "] " + formatter.str();
@@ -207,7 +207,7 @@ Result Network::GetManagingNode(std::shared_ptr<ManagingNode>& node)
 			node = std::dynamic_pointer_cast<ManagingNode>(var.second);
 			if (!node)
 			{
-				boost::format formatter(kMsgNonManagingNode);
+				boost::format formatter(kMsgNonManagingNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 				formatter
 				% 240;
 				LOG_ERROR() << formatter.str();
@@ -218,7 +218,7 @@ Result Network::GetManagingNode(std::shared_ptr<ManagingNode>& node)
 	}
 
 	//Node does not exist
-	boost::format formatter(kMsgNonExistingNode);
+	boost::format formatter(kMsgNonExistingNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% 240;
 	LOG_ERROR() << "[" + networkId + "] " + formatter.str();
@@ -229,15 +229,15 @@ Result Network::RemoveNode(const std::uint8_t nodeID)
 {
 	if (nodeID == 240)
 	{
-		LOG_WARN() << "[" + networkId + "] " + kMsgRemoveManagingNode;
-		return Result(ErrorCode::NODEID_INVALID, kMsgRemoveManagingNode);
+		LOG_WARN() << "[" + networkId + "] " + kMsgRemoveManagingNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())];
+		return Result(ErrorCode::NODEID_INVALID, kMsgRemoveManagingNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	}
 
 	auto it = this->nodeCollection.find(nodeID);
 	if (it == this->nodeCollection.end())
 	{
 		//Node does not exist
-		boost::format formatter(kMsgNonExistingNode);
+		boost::format formatter(kMsgNonExistingNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% (std::uint32_t) nodeID;
 		LOG_ERROR() << "[" + networkId + "] " + formatter.str();
@@ -256,7 +256,7 @@ Result Network::RemoveNode(const std::uint8_t nodeID)
 	this->nodeCollection.erase(it);
 
 	//Log info node removed
-	boost::format formatter(kMsgNodeRemoved);
+	boost::format formatter(kMsgNodeRemoved[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% (std::uint32_t) nodeID;
 	LOG_INFO() << "[" + networkId + "] " + formatter.str();
@@ -302,7 +302,7 @@ Result Network::SetNodeId(const std::uint8_t nodeId, const std::uint8_t newNodeI
 {
 	if (nodeId == 240)
 	{
-		boost::format formatter(kMsgExistingNode);
+		boost::format formatter(kMsgExistingNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% (std::uint32_t) newNodeId;
 		LOG_ERROR() << "[" + networkId + "] " + formatter.str();
@@ -313,7 +313,7 @@ Result Network::SetNodeId(const std::uint8_t nodeId, const std::uint8_t newNodeI
 	if (it == this->nodeCollection.end())
 	{
 		//Node does not exist
-		boost::format formatter(kMsgNonExistingNode);
+		boost::format formatter(kMsgNonExistingNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% (std::uint32_t) nodeId;
 		LOG_ERROR() << "[" + networkId + "] " + formatter.str();
@@ -324,7 +324,7 @@ Result Network::SetNodeId(const std::uint8_t nodeId, const std::uint8_t newNodeI
 	if (ite != this->nodeCollection.end())
 	{
 		//Node does exist
-		boost::format formatter(kMsgExistingNode);
+		boost::format formatter(kMsgExistingNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% (std::uint32_t) newNodeId;
 		LOG_ERROR() << "[" + networkId + "] " + formatter.str();
@@ -504,7 +504,7 @@ Result Network::SetConfigurationSettingEnabled(const std::string& configID, cons
 					std::stringstream enabledStr;
 					enabledStr << std::boolalpha << enabled;
 					//Long info setting enabled
-					boost::format formatter(kMsgConfigurationSettingEnabled);
+					boost::format formatter(kMsgConfigurationSettingEnabled[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 					formatter
 					% configID
 					% settingName
@@ -516,7 +516,7 @@ Result Network::SetConfigurationSettingEnabled(const std::string& configID, cons
 				}
 			}
 			//Configuration setting does not exist
-			boost::format formatter(kMsgConfigurationSettingNonExisting);
+			boost::format formatter(kMsgConfigurationSettingNonExisting[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% configID
 			% settingName
@@ -526,7 +526,7 @@ Result Network::SetConfigurationSettingEnabled(const std::string& configID, cons
 		}
 	}
 	//Configuration does not exist
-	boost::format formatter(kMsgConfigurationNonExisting);
+	boost::format formatter(kMsgConfigurationNonExisting[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% configID
 	% this->networkId;
@@ -545,7 +545,7 @@ Result Network::AddConfigurationSetting(const std::string& configID, std::shared
 				if (setting->GetName() == newSetting->GetName() && setting->GetValue() == newSetting->GetValue())
 				{
 					//Configuration setting already exist
-					boost::format formatter(kMsgConfigurationSettingExisting);
+					boost::format formatter(kMsgConfigurationSettingExisting[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 					formatter
 					% newSetting->GetName()
 					% configID
@@ -557,7 +557,7 @@ Result Network::AddConfigurationSetting(const std::string& configID, std::shared
 			config->AddBuildConfigurationSetting(newSetting);
 
 			//Log info setting added
-			boost::format formatter(kMsgConfigurationSettingAdded);
+			boost::format formatter(kMsgConfigurationSettingAdded[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% newSetting->GetName()
 			% configID
@@ -567,7 +567,7 @@ Result Network::AddConfigurationSetting(const std::string& configID, std::shared
 		}
 	}
 	//Configuration does not exist
-	boost::format formatter(kMsgConfigurationNonExisting);
+	boost::format formatter(kMsgConfigurationNonExisting[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% configID
 	% this->networkId;
@@ -590,7 +590,7 @@ Result Network::RemoveConfigurationSetting(const std::string& configID, const st
 			if (it == config->GetBuildConfigurationSettings().end())
 			{
 				//Setting does not exist
-				boost::format formatter(kMsgConfigurationSettingNonExisting);
+				boost::format formatter(kMsgConfigurationSettingNonExisting[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 				formatter
 				% configID
 				% settingName
@@ -601,7 +601,7 @@ Result Network::RemoveConfigurationSetting(const std::string& configID, const st
 
 			config->GetBuildConfigurationSettings().erase(it);
 			//Log info setting removed
-			boost::format formatter(kMsgConfigurationSettingRemoved);
+			boost::format formatter(kMsgConfigurationSettingRemoved[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% configID
 			% settingName
@@ -611,7 +611,7 @@ Result Network::RemoveConfigurationSetting(const std::string& configID, const st
 		}
 	}
 	//Configuration setting does not exist
-	boost::format formatter(kMsgConfigurationNonExisting);
+	boost::format formatter(kMsgConfigurationNonExisting[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% configID
 	% this->networkId;
@@ -626,7 +626,7 @@ Result Network::AddConfiguration(const std::string& configID)
 		if (config->GetConfigurationName() == configID)
 		{
 			//Configuration setting does not exist
-			boost::format formatter(kMsgConfigurationExisting);
+			boost::format formatter(kMsgConfigurationExisting[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% configID
 			% this->networkId;
@@ -637,7 +637,7 @@ Result Network::AddConfiguration(const std::string& configID)
 	std::shared_ptr<PlkConfiguration> config = std::make_shared<PlkConfiguration>(configID);
 	this->buildConfigurations.push_back(config);
 	//Log info configuration added
-	boost::format formatter(kMsgConfigurationAdded);
+	boost::format formatter(kMsgConfigurationAdded[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% configID
 	% this->networkId;
@@ -654,7 +654,7 @@ Result Network::RemoveConfiguration(const std::string& configID)
 {
 	if (this->activeConfiguration == configID)
 	{
-		boost::format formatter(kMsgActiveConfigurationRemove);
+		boost::format formatter(kMsgActiveConfigurationRemove[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% configID
 		% this->networkId;
@@ -672,7 +672,7 @@ Result Network::RemoveConfiguration(const std::string& configID)
 	if (it == this->buildConfigurations.end())
 	{
 		//Configuration does not exist
-		boost::format formatter(kMsgConfigurationNonExisting);
+		boost::format formatter(kMsgConfigurationNonExisting[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% configID
 		% this->networkId;
@@ -682,7 +682,7 @@ Result Network::RemoveConfiguration(const std::string& configID)
 
 	this->buildConfigurations.erase(it);
 	//Log info configuration removed
-	boost::format formatter(kMsgConfigurationRemoved);
+	boost::format formatter(kMsgConfigurationRemoved[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% configID
 	% this->networkId;
@@ -698,7 +698,7 @@ Result Network::ReplaceConfigurationName(const std::string& oldConfigID, const s
 		{
 			config->SetConfigurationName(newConfigID);
 			//Log info configuration is renamed
-			boost::format formatter(kMsgConfigurationRenamed);
+			boost::format formatter(kMsgConfigurationRenamed[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% oldConfigID
 			% newConfigID
@@ -708,7 +708,7 @@ Result Network::ReplaceConfigurationName(const std::string& oldConfigID, const s
 		}
 	}
 	//Configuration does not exist
-	boost::format formatter(kMsgConfigurationNonExisting);
+	boost::format formatter(kMsgConfigurationNonExisting[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% oldConfigID
 	% this->networkId;
@@ -727,7 +727,7 @@ Result Network::GetConfigurationSettings(const std::string& configID, std::vecto
 		}
 	}
 	//Configuration does not exist
-	boost::format formatter(kMsgConfigurationNonExisting);
+	boost::format formatter(kMsgConfigurationNonExisting[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% configID
 	% this->networkId;
@@ -755,7 +755,7 @@ Result Network::SetActiveConfiguration(const std::string& configID)
 			this->activeConfiguration = configID;
 			this->UpdateBuildConfigurationSettingsOnNodes();
 			//Log info configuration is active
-			boost::format formatter(kMsgConfigurationActive);
+			boost::format formatter(kMsgConfigurationActive[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% configID
 			% this->networkId;
@@ -764,7 +764,7 @@ Result Network::SetActiveConfiguration(const std::string& configID)
 		}
 	}
 	//Configuration setting does not exist
-	boost::format formatter(kMsgConfigurationNonExisting);
+	boost::format formatter(kMsgConfigurationNonExisting[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% configID
 	% this->networkId;
@@ -789,7 +789,7 @@ Result Network::GenerateConfiguration()
 	if (obj->HasActualValue())
 		currCycleTime = obj->GetTypedActualValue<std::uint32_t>();
 	else
-		return Result(ErrorCode::CYCLE_TIME_NOT_SET, kMsgCycleTimeOnMnNotSet);
+		return Result(ErrorCode::CYCLE_TIME_NOT_SET, kMsgCycleTimeOnMnNotSet[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 
 	//Check CycleTime
 	res = CheckCycleTime(currCycleTime);
@@ -826,7 +826,7 @@ Result Network::GenerateConfiguration()
 			if (cn)
 			{
 				if (cn->GetOperationMode() == PlkOperationMode::CHAINED)
-					return Result(ErrorCode::CHAINING_NOT_SUPPORTED, kMsgChainingRmnNotSupported);
+					return Result(ErrorCode::CHAINING_NOT_SUPPORTED, kMsgChainingRmnNotSupported[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			}
 		}
 	}
@@ -883,14 +883,14 @@ Result Network::SetOperationMode(const std::uint8_t nodeID, const PlkOperationMo
 			mn->GetNetworkManagement()->GetFeatureActualValue<bool>(MNFeatureEnum::DLLMNPResChaining, operationModeSupported);
 			if (!operationModeSupported)
 			{
-				LOG_ERROR() << "[" + networkId + "] " + kMsgChainingMnNotSupported;
-				return Result(ErrorCode::CHAINING_NOT_SUPPORTED, kMsgChainingMnNotSupported);
+				LOG_ERROR() << "[" + networkId + "] " + kMsgChainingMnNotSupported[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())];
+				return Result(ErrorCode::CHAINING_NOT_SUPPORTED, kMsgChainingMnNotSupported[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			}
 
 			if (mn->GetRmnCount() > 0)
 			{
-				LOG_WARN() << "[" + networkId + "] " + kMsgChainingRmnNotSupported;
-				return Result(ErrorCode::CHAINING_NOT_SUPPORTED, kMsgChainingRmnNotSupported);
+				LOG_WARN() << "[" + networkId + "] " + kMsgChainingRmnNotSupported[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())];
+				return Result(ErrorCode::CHAINING_NOT_SUPPORTED, kMsgChainingRmnNotSupported[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			}
 
 		}
@@ -899,8 +899,8 @@ Result Network::SetOperationMode(const std::uint8_t nodeID, const PlkOperationMo
 			mn->GetNetworkManagement()->GetFeatureActualValue<bool>(MNFeatureEnum::DLLMNFeatureMultiplex, operationModeSupported);
 			if (!operationModeSupported)
 			{
-				LOG_ERROR() << "[" + networkId + "] " + kMsgMultiplexingMnNotSupported;
-				return Result(ErrorCode::MULTIPLEXING_NOT_SUPPORTED, kMsgMultiplexingMnNotSupported);
+				LOG_ERROR() << "[" + networkId + "] " + kMsgMultiplexingMnNotSupported[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())];
+				return Result(ErrorCode::MULTIPLEXING_NOT_SUPPORTED, kMsgMultiplexingMnNotSupported[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			}
 		}
 
@@ -966,7 +966,7 @@ Result Network::SetOperationMode(const std::uint8_t nodeID, const PlkOperationMo
 	}
 	else
 	{
-		boost::format formatter(kMsgNonControlledNode);
+		boost::format formatter(kMsgNonControlledNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% (std::uint32_t) nodeID;
 		LOG_ERROR() << "[" + networkId + "] " + formatter.str();
@@ -981,7 +981,7 @@ Result Network::EnableNode(const std::uint8_t nodeID, bool enable)
 	{
 		if (enable == false)
 		{
-			boost::format formatter(kMsgManagingNodeDisable);
+			boost::format formatter(kMsgManagingNodeDisable[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% this->networkId;
 			LOG_ERROR() << "[" + networkId + "] " + formatter.str();
@@ -995,7 +995,7 @@ Result Network::EnableNode(const std::uint8_t nodeID, bool enable)
 	if (it == this->nodeCollection.end())
 	{
 		//Node does not exist
-		boost::format formatter(kMsgNonExistingNode);
+		boost::format formatter(kMsgNonExistingNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% (std::uint32_t) nodeID;
 		LOG_ERROR() << "[" + networkId + "] " + formatter.str();
@@ -1091,7 +1091,7 @@ Result Network::CheckCycleTime(const std::uint32_t _cycleTime)
 		{
 			if (_cycleTime % currentCycleTimeGranularity != 0)
 			{
-				boost::format formatter(kMsgCycleTimeGran);
+				boost::format formatter(kMsgCycleTimeGran[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 				formatter
 				% _cycleTime
 				% currentCycleTimeGranularity
@@ -1109,7 +1109,7 @@ Result Network::CheckCycleTime(const std::uint32_t _cycleTime)
 
 		if (_cycleTime < minCycleTimeCN)
 		{
-			boost::format formatter(kMsgCycleTimeMin);
+			boost::format formatter(kMsgCycleTimeMin[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% _cycleTime
 			% minCycleTimeCN
@@ -1126,7 +1126,7 @@ Result Network::CheckCycleTime(const std::uint32_t _cycleTime)
 
 		if (_cycleTime > maxCycleTimeCN)
 		{
-			boost::format formatter(kMsgCycleTimeMax);
+			boost::format formatter(kMsgCycleTimeMax[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% _cycleTime
 			% maxCycleTimeCN

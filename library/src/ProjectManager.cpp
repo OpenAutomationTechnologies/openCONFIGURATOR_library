@@ -54,7 +54,7 @@ Result ProjectManager::AddNetwork(const std::string& networkId, std::shared_ptr<
 	if (this->networkList.find(networkId) != this->networkList.end())
 	{
 		//Network already exists
-		boost::format formatter(kMsgExistingNetwork);
+		boost::format formatter(kMsgExistingNetwork[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% networkId;
 		LOG_ERROR() << "[" + networkId + "] " + formatter.str();
@@ -62,7 +62,7 @@ Result ProjectManager::AddNetwork(const std::string& networkId, std::shared_ptr<
 	}
 	this->networkList.insert(make_pair(networkId, network));
 	//Log info network created
-	boost::format formatter(kMsgNetworkCreated);
+	boost::format formatter(kMsgNetworkCreated[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% networkId;
 	LOG_INFO() << "[" + networkId + "] " + formatter.str();
@@ -75,7 +75,7 @@ Result ProjectManager::GetNetwork(const std::string& networkId, std::shared_ptr<
 	if (got == this->networkList.end())
 	{
 		//Network does not exist
-		boost::format formatter(kMsgNonExistingNetwork);
+		boost::format formatter(kMsgNonExistingNetwork[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% networkId;
 		LOG_ERROR() << "[" + networkId + "] " + formatter.str();
@@ -94,7 +94,7 @@ Result ProjectManager::RemoveNetwork(const std::string& networkId)
 	if (got == this->networkList.end())
 	{
 		//Network does not exist
-		boost::format formatter(kMsgNonExistingNetwork);
+		boost::format formatter(kMsgNonExistingNetwork[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% networkId;
 		LOG_ERROR() << "[" + networkId + "] " + formatter.str();
@@ -104,7 +104,7 @@ Result ProjectManager::RemoveNetwork(const std::string& networkId)
 	{
 		this->networkList.erase(networkId);
 		//Log info network removed
-		boost::format formatter(kMsgNetworkRemoved);
+		boost::format formatter(kMsgNetworkRemoved[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% networkId;
 		LOG_INFO() << "[" + networkId + "] " + formatter.str();
@@ -121,14 +121,14 @@ Result ProjectManager::GetNetworks(std::map<std::string, std::shared_ptr<Network
 Result ProjectManager::ClearNetworkList()
 {
 	this->networkList.clear();
-	LOG_INFO() << "Network list cleared.";
+	LOG_INFO() << kMsgNetworkListCleared[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())];
 	return Result();
 }
 
 const std::vector<std::string> ProjectManager::GetSupportedSettingIds()
 {
 	std::vector<std::string> vect(begin(BuildConfigurationIdName), end(BuildConfigurationIdName));
-	LOG_INFO() << "Returned supported configuration setting ids.";
+	LOG_INFO() << kMsgSupportedSettingIds[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())];
 	return vect;
 }
 
@@ -138,7 +138,7 @@ Result ProjectManager::InitLoggingConfiguration(const std::string& configuration
 	if (res.IsSuccessful())
 	{
 		//Log info logging initialised
-		boost::format formatter(kMsgLoggingInitialised);
+		boost::format formatter(kMsgLoggingInitialised[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% configuration;
 		LOG_INFO() << formatter.str();
@@ -152,7 +152,7 @@ Result ProjectManager::InitEclipseLoggingConfiguration(const std::string& loggin
 	if (res.IsSuccessful())
 	{
 		//Log info logging initialised
-		boost::format formatter(kMsgLoggingInitialised);
+		boost::format formatter(kMsgLoggingInitialised[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% loggingPath;
 		LOG_INFO() << formatter.str();

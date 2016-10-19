@@ -48,6 +48,18 @@ namespace IndustrialNetwork
 		{
 			namespace CoreConfiguration
 			{
+				LoggingConfiguration::LoggingConfiguration() :
+					currentLanguage(Language::EN)
+				{}
+
+				LoggingConfiguration::~LoggingConfiguration()
+				{}
+
+				LoggingConfiguration& LoggingConfiguration::GetInstance()
+				{
+					static LoggingConfiguration instance;
+					return instance;
+				}
 
 				BOOST_LOG_ATTRIBUTE_KEYWORD(timestamp, "TimeStamp", boost::posix_time::ptime)
 
@@ -201,6 +213,16 @@ namespace IndustrialNetwork
 						LOG_FATAL() << boost::diagnostic_information(ex);
 						return Result(ErrorCode::UNHANDLED_EXCEPTION, boost::diagnostic_information(ex));
 					}
+				}
+
+				const Language& LoggingConfiguration::GetCurrentLanguage()
+				{
+					return this->currentLanguage;
+				}
+
+				void LoggingConfiguration::SetCurrentLanguage(const Language& lang)
+				{
+					this->currentLanguage = lang;
 				}
 			}
 		}

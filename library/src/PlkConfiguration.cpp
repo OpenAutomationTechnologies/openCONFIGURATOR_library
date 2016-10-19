@@ -175,7 +175,7 @@ Result PlkConfiguration::DistributeDateTimeStamps(const std::map<std::uint8_t, s
 	if (date == NULL)
 	{
 		LOG_ERROR() << kMsgDateTimeNotInitialised;
-		return Result(ErrorCode::ARGUMENT_INVALID_NULL, kMsgDateTimeNotInitialised);
+		return Result(ErrorCode::ARGUMENT_INVALID_NULL, kMsgDateTimeNotInitialised[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	}
 
 	date->tm_hour = 0; // set to midnight
@@ -299,7 +299,7 @@ Result PlkConfiguration::DistributeCycleTime(const std::map<std::uint8_t, std::s
 	else
 	{
 		LOG_WARN() << kMsgCycleTimeOnMnNotSet;
-		return Result(ErrorCode::CYCLE_TIME_NOT_SET, kMsgCycleTimeOnMnNotSet);
+		return Result(ErrorCode::CYCLE_TIME_NOT_SET, kMsgCycleTimeOnMnNotSet[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	}
 
 	//Warn if cycle time has a default value on MN
@@ -595,7 +595,7 @@ Result PlkConfiguration::DistributePResTimeOut(const std::map<std::uint8_t, std:
 
 		if (presTimoutActualValue < presMaxLatencyActualValue)
 		{
-			boost::format formatter(kMsgLowCnPresTimeout);
+			boost::format formatter(kMsgLowCnPresTimeout[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% (std::uint32_t) presTimoutActualValue
 			% (std::uint32_t) node.first
@@ -813,7 +813,7 @@ Result PlkConfiguration::SyncRedundantManagingNodes(const std::map<std::uint8_t,
 	if (!mn)
 	{
 		LOG_ERROR() << kMsgNoManagingNode;
-		return Result(ErrorCode::NO_MANAGING_NODE_CONFIGURED, kMsgNoManagingNode);
+		return Result(ErrorCode::NO_MANAGING_NODE_CONFIGURED, kMsgNoManagingNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	}
 
 	for (auto& node : nodeCollection)

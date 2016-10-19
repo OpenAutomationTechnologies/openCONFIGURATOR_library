@@ -62,6 +62,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "Constants.h"
 #include "Result.h"
+#include "Language.h"
 
 namespace IndustrialNetwork
 {
@@ -82,6 +83,14 @@ namespace IndustrialNetwork
 				class LoggingConfiguration
 				{
 					public:
+						virtual ~LoggingConfiguration();
+
+						/**
+						\brief Retrieve the singleton instance of the class.
+						\return LoggingConfiguration instance
+						*/
+						static LoggingConfiguration& GetInstance();
+
 						/**
 						\brief Initialises the boost logger with the configuration file.
 						\param[in] configuration Logging configuration.
@@ -89,6 +98,17 @@ namespace IndustrialNetwork
 						static IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result InitConfiguration(const std::string& configuration);
 
 						static IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result InitEclipseConfiguration(const std::string& loggingPath);
+
+						const IndustrialNetwork::POWERLINK::Core::CoreConfiguration::Language& GetCurrentLanguage();
+						void SetCurrentLanguage(const IndustrialNetwork::POWERLINK::Core::CoreConfiguration::Language& lang);
+
+					private:
+						//singleton
+						LoggingConfiguration();
+						LoggingConfiguration(LoggingConfiguration const&);
+						void operator=(LoggingConfiguration const&);
+
+						IndustrialNetwork::POWERLINK::Core::CoreConfiguration::Language currentLanguage;
 				};
 
 				BOOST_LOG_INLINE_GLOBAL_LOGGER_DEFAULT(sev_logger, boost::log::sources::severity_logger_mt<boost::log::trivial::severity_level>)

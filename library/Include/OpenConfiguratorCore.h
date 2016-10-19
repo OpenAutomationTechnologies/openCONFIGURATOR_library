@@ -113,11 +113,18 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result InitLoggingConfiguration(const std::string& configuration);
 						//! Member to pass the logging path for the eclipse style logging.
 						/*!
-						The library will initialize the logging path with an eclipse styl configuration.
+						The library will initialize the logging path with an eclipse style configuration.
 						\param loggingPath Path for the logging output.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result InitEclipseLoggingPath(const std::string& loggingPath);
+						//! Member to set the logging language of the library.
+						/*!
+						The library will initialize the logging with the passed language.
+						\param lang Logging language.
+						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
+						*/
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetLoggingLanguage(const IndustrialNetwork::POWERLINK::Core::CoreConfiguration::Language& lang);
 						/** @} */
 
 						/** \addtogroup network

@@ -119,7 +119,7 @@ Result BaseNode::AddObject(std::shared_ptr<Object>& objRef)
 	if (this->objectDictionary.find(objRef->GetObjectId()) != this->objectDictionary.end())
 	{
 		//Object already exists
-		boost::format formatter(kMsgExistingObject);
+		boost::format formatter(kMsgExistingObject[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% objRef->GetObjectId()
 		% (std::uint32_t) nodeId;
@@ -130,7 +130,7 @@ Result BaseNode::AddObject(std::shared_ptr<Object>& objRef)
 	this->objectDictionary.insert(std::pair<std::uint32_t, std::shared_ptr<Object>>(objRef->GetObjectId(), objRef));
 
 	//Log object creation
-	boost::format formatter(kMsgObjectCreated);
+	boost::format formatter(kMsgObjectCreated[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% objRef->GetObjectId()
 	% (std::uint32_t) nodeId;
@@ -143,7 +143,7 @@ Result BaseNode::AddSubObject(std::uint32_t objectId, std::shared_ptr<SubObject>
 	if (this->objectDictionary.find(objectId) == this->objectDictionary.end())
 	{
 		//Object does not exist
-		boost::format formatter(kMsgNonExistingObject);
+		boost::format formatter(kMsgNonExistingObject[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% objectId
 		% (std::uint32_t) nodeId;
@@ -159,7 +159,7 @@ Result BaseNode::ForceObject(std::uint32_t objectId, bool force, bool validateOn
 	if (iter == this->objectDictionary.end())
 	{
 		//Object does not exist
-		boost::format formatter(kMsgNonExistingObject);
+		boost::format formatter(kMsgNonExistingObject[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% objectId
 		% (std::uint32_t) nodeId;
@@ -172,7 +172,7 @@ Result BaseNode::ForceObject(std::uint32_t objectId, bool force, bool validateOn
 
 	if (iter->second->GetObjectType() != ObjectType::VAR)
 	{
-		boost::format formatter(kMsgBaseObjectValueSupport);
+		boost::format formatter(kMsgBaseObjectValueSupport[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% objectId
 		% (std::uint32_t) nodeId;
@@ -184,7 +184,7 @@ Result BaseNode::ForceObject(std::uint32_t objectId, bool force, bool validateOn
 	        || iter->second->GetAccessType() == AccessType::CONST
 	        || iter->second->GetAccessType() == AccessType::RO)
 	{
-		boost::format formatter(kMsgBaseObjectValueSupport);
+		boost::format formatter(kMsgBaseObjectValueSupport[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% objectId
 		% (std::uint32_t) nodeId;
@@ -196,7 +196,7 @@ Result BaseNode::ForceObject(std::uint32_t objectId, bool force, bool validateOn
 	{
 		iter->second->SetForceToCDC(force);
 		//Log info forced object
-		boost::format log_format(kMsgForceObject);
+		boost::format log_format(kMsgForceObject[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		log_format
 		% objectId
 		% (uint32_t) nodeId
@@ -211,7 +211,7 @@ Result BaseNode::ForceObject(std::uint32_t objectId, bool force, bool validateOn
 			return res;
 
 		//Log info actual value set
-		boost::format formatter(kMsgSetObjectActualValue);
+		boost::format formatter(kMsgSetObjectActualValue[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% actualValue
 		% objectId
@@ -232,7 +232,7 @@ Result BaseNode::SetObjectActualValue(std::uint32_t objectId, const std::string&
 	if (iter == this->objectDictionary.end())
 	{
 		//Object does not exist
-		boost::format formatter(kMsgNonExistingObject);
+		boost::format formatter(kMsgNonExistingObject[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% objectId
 		% (std::uint32_t) nodeId;
@@ -242,7 +242,7 @@ Result BaseNode::SetObjectActualValue(std::uint32_t objectId, const std::string&
 	if (iter->second->GetForceToCDC())
 	{
 		//Actual value must not be set because forced
-		boost::format formatter(kMsgForcedValueOverwriteObject);
+		boost::format formatter(kMsgForcedValueOverwriteObject[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% actualValue
 		% iter->first
@@ -258,7 +258,7 @@ Result BaseNode::SetObjectActualValue(std::uint32_t objectId, const std::string&
 			return res;
 
 		//Log info actual value set
-		boost::format formatter(kMsgSetObjectActualValue);
+		boost::format formatter(kMsgSetObjectActualValue[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% actualValue
 		% objectId
@@ -279,7 +279,7 @@ Result BaseNode::GetObject(std::uint32_t objectId, std::shared_ptr<Object>& objR
 	if (iter == this->objectDictionary.end())
 	{
 		//Object does not exist
-		boost::format formatter(kMsgNonExistingObject);
+		boost::format formatter(kMsgNonExistingObject[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% objectId
 		% (uint32_t) nodeId;
@@ -299,7 +299,7 @@ Result BaseNode::ForceSubObject(std::uint32_t objectId, std::uint32_t subObjectI
 	if (iter == this->objectDictionary.end())
 	{
 		//Object does not exist
-		boost::format formatter(kMsgNonExistingObject);
+		boost::format formatter(kMsgNonExistingObject[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% objectId
 		% (std::uint32_t) nodeId;
@@ -316,7 +316,7 @@ Result BaseNode::ForceSubObject(std::uint32_t objectId, std::uint32_t subObjectI
 	{
 		if (subObject->GetObjectType() != ObjectType::VAR)
 		{
-			boost::format formatter(kMsgBaseSubObjectValueSupport);
+			boost::format formatter(kMsgBaseSubObjectValueSupport[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% objectId
 			% subObject->GetObjectId()
@@ -329,7 +329,7 @@ Result BaseNode::ForceSubObject(std::uint32_t objectId, std::uint32_t subObjectI
 		        || subObject->GetAccessType() == AccessType::CONST
 		        || subObject->GetAccessType() == AccessType::RO)
 		{
-			boost::format formatter(kMsgBaseSubObjectValueSupport);
+			boost::format formatter(kMsgBaseSubObjectValueSupport[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% objectId
 			% subObject->GetObjectId()
@@ -342,7 +342,7 @@ Result BaseNode::ForceSubObject(std::uint32_t objectId, std::uint32_t subObjectI
 		{
 			subObject->SetForceToCDC(force);
 			//Log info forced subobject
-			boost::format log_format(kMsgForceSubObject);
+			boost::format log_format(kMsgForceSubObject[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			log_format
 			% objectId
 			% subObjectId
@@ -358,7 +358,7 @@ Result BaseNode::ForceSubObject(std::uint32_t objectId, std::uint32_t subObjectI
 				return res;
 
 			//Log info actual value set
-			boost::format formatter(kMsgSetSubObjectActualValue);
+			boost::format formatter(kMsgSetSubObjectActualValue[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% actualValue
 			% objectId
@@ -381,7 +381,7 @@ Result BaseNode::SetSubObjectActualValue(std::uint32_t objectId, std::uint32_t s
 	if (iter == this->objectDictionary.end())
 	{
 		//Object does not exist
-		boost::format formatter(kMsgNonExistingObject);
+		boost::format formatter(kMsgNonExistingObject[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% objectId
 		% (std::uint32_t) nodeId;
@@ -396,7 +396,7 @@ Result BaseNode::SetSubObjectActualValue(std::uint32_t objectId, std::uint32_t s
 		if (subObject->GetForceToCDC())
 		{
 			//Actual value must not be set because forced
-			boost::format formatter(kMsgForcedValueOverwriteSubObject);
+			boost::format formatter(kMsgForcedValueOverwriteSubObject[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% actualValue
 			% objectId
@@ -410,7 +410,7 @@ Result BaseNode::SetSubObjectActualValue(std::uint32_t objectId, std::uint32_t s
 			res = subObject->SetTypedObjectActualValue(actualValue);
 			if (res.GetErrorType() == ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT)
 			{
-				boost::format formatter(kMsgBaseObjectHighLimitSubObjectError);
+				boost::format formatter(kMsgBaseObjectHighLimitSubObjectError[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 				formatter
 				% subObject->GetName()
 				% objectId
@@ -422,7 +422,7 @@ Result BaseNode::SetSubObjectActualValue(std::uint32_t objectId, std::uint32_t s
 			}
 			else if (res.GetErrorType() == ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT)
 			{
-				boost::format formatter(kMsgBaseObjectLowLimitSubObjectError);
+				boost::format formatter(kMsgBaseObjectLowLimitSubObjectError[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 				formatter
 				% subObject->GetName()
 				% objectId
@@ -436,7 +436,7 @@ Result BaseNode::SetSubObjectActualValue(std::uint32_t objectId, std::uint32_t s
 				return res;
 
 			//Log info actual value set
-			boost::format formatter(kMsgSetSubObjectActualValue);
+			boost::format formatter(kMsgSetSubObjectActualValue[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% actualValue
 			% objectId
@@ -458,7 +458,7 @@ Result BaseNode::GetSubObject(std::uint32_t objectId, std::uint32_t subObjectId,
 	if (iter == this->objectDictionary.end())
 	{
 		//Object does not exist
-		boost::format formatter(kMsgNonExistingObject);
+		boost::format formatter(kMsgNonExistingObject[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% objectId
 		% (std::uint32_t) nodeId;
@@ -478,7 +478,7 @@ bool BaseNode::IsEnabled() const
 
 void BaseNode::SetEnabled(bool _enabled)
 {
-	boost::format formatter(kMsgNodeDisable);
+	boost::format formatter(kMsgNodeDisable[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% (std::uint32_t) this->GetNodeId()
 	% _enabled;

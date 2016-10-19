@@ -50,7 +50,7 @@ Result ModularControlledNode::AddInterface(const std::string& uniqueId, const st
 	{
 		if (interf->GetUniqueId() == uniqueId)
 		{
-			boost::format formatter(kMsgInterfaceAlreadyExists);
+			boost::format formatter(kMsgInterfaceAlreadyExists[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% uniqueId;
 			LOG_ERROR() << formatter.str();
@@ -70,7 +70,7 @@ Result ModularControlledNode::GetModule(const std::string& interfaceId, const st
 			return interf->GetModule(moduleId, modulePosition, moduleRet);
 		}
 	}
-	boost::format formatter(kMsgInterfaceDoesNotExists);
+	boost::format formatter(kMsgInterfaceDoesNotExists[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% interfaceId;
 	LOG_ERROR() << formatter.str();
@@ -86,7 +86,7 @@ Result ModularControlledNode::AddModule(const std::string& interfaceId, const st
 			return interf->AddModule(modulePosition, std::shared_ptr<Module>(new Module(this->GetNodeId(), moduleId, moduleType, addressing, moduleAddress, modulePosition, moduleName, minPosition, maxPosition, minAddress, maxAddress, maxCount)));
 		}
 	}
-	boost::format formatter(kMsgInterfaceDoesNotExists);
+	boost::format formatter(kMsgInterfaceDoesNotExists[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% interfaceId;
 	LOG_ERROR() << formatter.str();
@@ -101,7 +101,7 @@ Result ModularControlledNode::AddRange(const std::string& interfaceId, const std
 		{
 			if (sortNumber == SortNumber::ADDRESS && sortMode == SortMode::SUBINDEX)
 			{
-				boost::format formatter(kMsgRangeInvalid);
+				boost::format formatter(kMsgRangeInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 				formatter
 				% _name;
 				LOG_ERROR() << formatter.str();
@@ -111,7 +111,7 @@ Result ModularControlledNode::AddRange(const std::string& interfaceId, const std
 			return interf->AddRange(range);
 		}
 	}
-	boost::format formatter(kMsgInterfaceDoesNotExists);
+	boost::format formatter(kMsgInterfaceDoesNotExists[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% interfaceId;
 	LOG_ERROR() << formatter.str();
@@ -130,7 +130,7 @@ Result ModularControlledNode::ChangeModuleOrderOnInterface(const std::string& in
 			return this->UpdateControlledNodeOd();
 		}
 	}
-	boost::format formatter(kMsgInterfaceDoesNotExists);
+	boost::format formatter(kMsgInterfaceDoesNotExists[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% interfaceId;
 	LOG_ERROR() << formatter.str();
@@ -154,7 +154,7 @@ Result ModularControlledNode::RemoveModule(const std::string& interfaceId, const
 			}
 			else
 			{
-				boost::format formatter(kMsgModuleDoesNotExists);
+				boost::format formatter(kMsgModuleDoesNotExists[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 				formatter
 				% moduleId
 				% position;
@@ -189,7 +189,7 @@ Result ModularControlledNode::RemoveModule(const std::string& interfaceId, const
 			return this->UpdateControlledNodeOd();
 		}
 	}
-	boost::format formatter(kMsgInterfaceDoesNotExists);
+	boost::format formatter(kMsgInterfaceDoesNotExists[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% interfaceId;
 	LOG_ERROR() << formatter.str();
@@ -255,7 +255,7 @@ Result ModularControlledNode::AddObjectToModule(const std::string& interfaceId, 
 			}
 		}
 	}
-	boost::format formatter(kMsgInterfaceDoesNotExists);
+	boost::format formatter(kMsgInterfaceDoesNotExists[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% interfaceId;
 	LOG_ERROR() << formatter.str();
@@ -305,7 +305,7 @@ Result ModularControlledNode::AddSubObjectToModule(const std::string& interfaceI
 			return Result();
 		}
 	}
-	boost::format formatter(kMsgInterfaceDoesNotExists);
+	boost::format formatter(kMsgInterfaceDoesNotExists[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% interfaceId;
 	LOG_ERROR() << formatter.str();
@@ -324,7 +324,7 @@ Result ModularControlledNode::EnableModule(const std::string& interfaceId, const
 			return this->UpdateControlledNodeOd();
 		}
 	}
-	boost::format formatter(kMsgInterfaceDoesNotExists);
+	boost::format formatter(kMsgInterfaceDoesNotExists[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% interfaceId;
 	LOG_ERROR() << formatter.str();
@@ -340,7 +340,7 @@ Result ModularControlledNode::RemoveObjectFromOd(std::uint32_t objectId)
 			this->GetObjectDictionary().erase(objectId);
 		return Result();
 	}
-	boost::format formatter(kMsgNonExistingObject);
+	boost::format formatter(kMsgNonExistingObject[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% objectId
 	% (std::uint32_t) this->GetNodeId();
@@ -358,7 +358,7 @@ Result ModularControlledNode::RemoveSubObjectsFromOd(std::uint32_t objectId, std
 		}
 		return Result();
 	}
-	boost::format formatter(kMsgNonExistingObject);
+	boost::format formatter(kMsgNonExistingObject[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% objectId
 	% (std::uint32_t) this->GetNodeId();
@@ -479,7 +479,7 @@ Result ModularControlledNode::GetModuleObjectCurrentIndex(const std::string& int
 							return Result();
 						}
 					}
-					boost::format formatter(kMsgNonExistingSubObject);
+					boost::format formatter(kMsgNonExistingSubObject[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 					formatter
 					% originalObjectId
 					% originalSubObjectId
@@ -489,7 +489,7 @@ Result ModularControlledNode::GetModuleObjectCurrentIndex(const std::string& int
 			}
 			else
 			{
-				boost::format formatter(kMsgNonExistingObject);
+				boost::format formatter(kMsgNonExistingObject[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 				formatter
 				% originalObjectId
 				% (std::uint32_t) this->GetNodeId();
@@ -498,7 +498,7 @@ Result ModularControlledNode::GetModuleObjectCurrentIndex(const std::string& int
 			}
 		}
 	}
-	boost::format formatter(kMsgInterfaceDoesNotExists);
+	boost::format formatter(kMsgInterfaceDoesNotExists[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% interfaceId;
 	LOG_ERROR() << formatter.str();
@@ -519,7 +519,7 @@ Result ModularControlledNode::GetParameterCurrentName(const std::string& interfa
 			return module->GetMappedParameterName(originalParamName, parameterName);
 		}
 	}
-	boost::format formatter(kMsgInterfaceDoesNotExists);
+	boost::format formatter(kMsgInterfaceDoesNotExists[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% interfaceId;
 	LOG_ERROR() << formatter.str();
@@ -545,7 +545,7 @@ Result ModularControlledNode::SetModuleAddress(const std::string& interfaceId, c
 			{
 				if (mod.second->GetAddress() == address)
 				{
-					boost::format formatter(kMsgModuleAddressOccupied);
+					boost::format formatter(kMsgModuleAddressOccupied[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 					formatter
 					% moduleId
 					% address;
@@ -558,7 +558,7 @@ Result ModularControlledNode::SetModuleAddress(const std::string& interfaceId, c
 			return this->UpdateControlledNodeOd();
 		}
 	}
-	boost::format formatter(kMsgInterfaceDoesNotExists);
+	boost::format formatter(kMsgInterfaceDoesNotExists[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% interfaceId;
 	LOG_ERROR() << formatter.str();

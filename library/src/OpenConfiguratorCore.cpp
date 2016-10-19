@@ -63,6 +63,12 @@ Result OpenConfiguratorCore::InitEclipseLoggingPath(const std::string& loggingPa
 	return ProjectManager::GetInstance().InitEclipseLoggingConfiguration(loggingPath);
 }
 
+Result OpenConfiguratorCore::SetLoggingLanguage(const Language& lang)
+{
+	LoggingConfiguration::GetInstance().SetCurrentLanguage(lang);
+	return Result();
+}
+
 Result OpenConfiguratorCore::GetSupportedSettingIds(std::vector<std::string>& supportedSettings)
 {
 	supportedSettings = ProjectManager::GetInstance().GetSupportedSettingIds();
@@ -134,7 +140,7 @@ Result OpenConfiguratorCore::SetCycleTime(const std::string& networkId, std::uin
 		{
 			std::stringstream str;
 			str << cycleTime;
-			boost::format formatter(kMsgForcedValueOverwriteObject);
+			boost::format formatter(kMsgForcedValueOverwriteObject[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% str.str()
 			% obj->GetObjectId()
@@ -254,7 +260,7 @@ Result OpenConfiguratorCore::BuildConfiguration(const std::string& networkId, st
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
 		if (!networkPtr->HasControlledNodes())
-			return Result(ErrorCode::NO_CONTROLLED_NODES_CONFIGURED, "[" + networkId + "] " + kMsgNoNodesConfigured);
+			return Result(ErrorCode::NO_CONTROLLED_NODES_CONFIGURED, "[" + networkId + "] " + kMsgNoNodesConfigured[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 
 		res = networkPtr->GenerateConfiguration();
 		if (res.IsSuccessful())
@@ -280,7 +286,7 @@ Result OpenConfiguratorCore::BuildXMLProcessImage(const std::string& networkId, 
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
 		if (!networkPtr->HasControlledNodes())
-			return Result(ErrorCode::NO_CONTROLLED_NODES_CONFIGURED, "[" + networkId + "] " + kMsgNoNodesConfigured);
+			return Result(ErrorCode::NO_CONTROLLED_NODES_CONFIGURED, "[" + networkId + "] " + kMsgNoNodesConfigured[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 
 		res = networkPtr->GenerateConfiguration();
 		if (res.IsSuccessful())
@@ -304,7 +310,7 @@ Result OpenConfiguratorCore::BuildNETProcessImage(const std::string& networkId, 
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
 		if (!networkPtr->HasControlledNodes())
-			return Result(ErrorCode::NO_CONTROLLED_NODES_CONFIGURED, "[" + networkId + "] " + kMsgNoNodesConfigured);
+			return Result(ErrorCode::NO_CONTROLLED_NODES_CONFIGURED, "[" + networkId + "] " + kMsgNoNodesConfigured[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 
 		res = networkPtr->GenerateConfiguration();
 		if (res.IsSuccessful())
@@ -328,7 +334,7 @@ Result OpenConfiguratorCore::BuildCProcessImage(const std::string& networkId, co
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
 		if (!networkPtr->HasControlledNodes())
-			return Result(ErrorCode::NO_CONTROLLED_NODES_CONFIGURED, "[" + networkId + "] " + kMsgNoNodesConfigured);
+			return Result(ErrorCode::NO_CONTROLLED_NODES_CONFIGURED, "[" + networkId + "] " + kMsgNoNodesConfigured[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 
 		res = networkPtr->GenerateConfiguration();
 		if (res.IsSuccessful())
@@ -371,7 +377,7 @@ Result OpenConfiguratorCore::CreateNode(const std::string& networkId, const std:
 			else
 			{
 				//Nodeid invalid
-				boost::format formatter(kMsgNodeIdInvalid);
+				boost::format formatter(kMsgNodeIdInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 				formatter
 				% (std::uint32_t) nodeID;
 				LOG_ERROR() << formatter.str();
@@ -420,7 +426,7 @@ Result OpenConfiguratorCore::GetControlledNode(const std::string& networkId, con
 					node = *cn.get();
 				else
 				{
-					boost::format formatter(kMsgNonControlledNode);
+					boost::format formatter(kMsgNonControlledNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 					formatter
 					% (std::uint32_t) nodeID;
 					LOG_ERROR() << "[" + networkId + "] " + formatter.str();
@@ -2212,7 +2218,7 @@ Result OpenConfiguratorCore::GetObjectActualValue(const std::string& networkId, 
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 		}
 		//No actual value present
-		boost::format formatter(kMsgObjectNoActualValue);
+		boost::format formatter(kMsgObjectNoActualValue[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% objectId
 		% (std::uint32_t) nodeId;
@@ -2252,7 +2258,7 @@ Result OpenConfiguratorCore::GetSubObjectActualValue(const std::string& networkI
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 		}
 		//No actual value present
-		boost::format formatter(kMsgSubObjectNoActualValue);
+		boost::format formatter(kMsgSubObjectNoActualValue[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% objectId
 		% (std::uint32_t) subObjectId
@@ -2368,7 +2374,7 @@ Result OpenConfiguratorCore::SetAsyncSlotTimeout(const std::string& networkId, c
 		}
 		else
 		{
-			boost::format formatter(kMsgNonManagingNode);
+			boost::format formatter(kMsgNonManagingNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
@@ -2408,7 +2414,7 @@ Result OpenConfiguratorCore::SetAsndMaxNr(const std::string& networkId, const st
 		}
 		else
 		{
-			boost::format formatter(kMsgNonManagingNode);
+			boost::format formatter(kMsgNonManagingNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
@@ -2428,7 +2434,7 @@ Result OpenConfiguratorCore::SetPResTimeOut(const std::string& networkId, const 
 	{
 		if (presTimeout < 25000)
 		{
-			boost::format formatter(kMsgLowCnPresTimeoutDefault);
+			boost::format formatter(kMsgLowCnPresTimeoutDefault[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% presTimeout
 			% (std::uint32_t) nodeId
@@ -2486,7 +2492,7 @@ Result OpenConfiguratorCore::SetRedundantManagingNodeWaitNotActive(const std::st
 		}
 		else
 		{
-			boost::format formatter(kMsgNonRedundantManagingNode);
+			boost::format formatter(kMsgNonRedundantManagingNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
@@ -2526,7 +2532,7 @@ Result OpenConfiguratorCore::SetRedundantManagingNodePriority(const std::string&
 		}
 		else
 		{
-			boost::format formatter(kMsgNonRedundantManagingNode);
+			boost::format formatter(kMsgNonRedundantManagingNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
@@ -2562,7 +2568,7 @@ Result OpenConfiguratorCore::GetCycleTime(const std::string& networkId, std::uin
 			cycleTime = object->GetTypedActualValue<std::uint32_t>();
 		else
 		{
-			boost::format formatter(kMsgObjectNoActualValue);
+			boost::format formatter(kMsgObjectNoActualValue[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% (std::uint32_t) 0x1006
 			% (std::uint32_t) 240;
@@ -2600,7 +2606,7 @@ Result OpenConfiguratorCore::GetAsyncMtu(const std::string& networkId, std::uint
 			asyncMtu = subobject->GetTypedActualValue<std::uint16_t>();
 		else
 		{
-			boost::format formatter(kMsgSubObjectNoActualValue);
+			boost::format formatter(kMsgSubObjectNoActualValue[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% (std::uint32_t) 0x1F98
 			% (std::uint32_t) 0x8
@@ -2639,7 +2645,7 @@ Result OpenConfiguratorCore::GetMultiplexedCycleCount(const std::string& network
 			multiplexedCycleLength = subobject->GetTypedActualValue<std::uint16_t>();
 		else
 		{
-			boost::format formatter(kMsgSubObjectNoActualValue);
+			boost::format formatter(kMsgSubObjectNoActualValue[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% (std::uint32_t) 0x1F98
 			% (std::uint32_t) 0x7
@@ -2677,7 +2683,7 @@ Result OpenConfiguratorCore::GetPrescaler(const std::string& networkId, std::uin
 			prescaler = subobject->GetTypedActualValue<std::uint16_t>();
 		else
 		{
-			boost::format formatter(kMsgSubObjectNoActualValue);
+			boost::format formatter(kMsgSubObjectNoActualValue[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% (std::uint32_t) 0x1F98
 			% (std::uint32_t) 0x9
@@ -2719,7 +2725,7 @@ Result OpenConfiguratorCore::GetAsyncSlotTimeout(const std::string& networkId, c
 				asyncSlotTimeout = subobject->GetTypedActualValue<std::uint32_t>();
 			else
 			{
-				boost::format formatter(kMsgSubObjectNoActualValue);
+				boost::format formatter(kMsgSubObjectNoActualValue[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 				formatter
 				% (std::uint32_t) 0x1F8A
 				% (std::uint32_t) 0x2
@@ -2730,7 +2736,7 @@ Result OpenConfiguratorCore::GetAsyncSlotTimeout(const std::string& networkId, c
 		}
 		else
 		{
-			boost::format formatter(kMsgNonManagingNode);
+			boost::format formatter(kMsgNonManagingNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
@@ -2770,7 +2776,7 @@ Result OpenConfiguratorCore::GetAsndMaxNr(const std::string& networkId, const st
 				asndMaxNr = subobject->GetTypedActualValue<std::uint16_t>();
 			else
 			{
-				boost::format formatter(kMsgSubObjectNoActualValue);
+				boost::format formatter(kMsgSubObjectNoActualValue[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 				formatter
 				% (std::uint32_t) 0x1F8A
 				% (std::uint32_t) 0x3
@@ -2781,7 +2787,7 @@ Result OpenConfiguratorCore::GetAsndMaxNr(const std::string& networkId, const st
 		}
 		else
 		{
-			boost::format formatter(kMsgNonManagingNode);
+			boost::format formatter(kMsgNonManagingNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
@@ -2820,7 +2826,7 @@ Result OpenConfiguratorCore::GetPResTimeOut(const std::string& networkId, const 
 			presTimeout = subobject->GetTypedDefaultValue<std::uint32_t>();
 		else
 		{
-			boost::format formatter(kMsgDefaultCnPresTimeout);
+			boost::format formatter(kMsgDefaultCnPresTimeout[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% (std::uint32_t) nodeId
 			% (std::uint32_t) nodeId;
@@ -2861,7 +2867,7 @@ Result OpenConfiguratorCore::GetRedundantManagingNodeWaitNotActive(const std::st
 				waitNotActive = subobject->GetTypedActualValue<std::uint32_t>();
 			else
 			{
-				boost::format formatter(kMsgSubObjectNoActualValue);
+				boost::format formatter(kMsgSubObjectNoActualValue[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 				formatter
 				% (std::uint32_t) 0x1F89
 				% (std::uint32_t) 0x1
@@ -2872,7 +2878,7 @@ Result OpenConfiguratorCore::GetRedundantManagingNodeWaitNotActive(const std::st
 		}
 		else
 		{
-			boost::format formatter(kMsgNonRedundantManagingNode);
+			boost::format formatter(kMsgNonRedundantManagingNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
@@ -2912,7 +2918,7 @@ Result OpenConfiguratorCore::GetRedundantManagingNodePriority(const std::string&
 				priority = subobject->GetTypedActualValue<std::uint32_t>();
 			else
 			{
-				boost::format formatter(kMsgSubObjectNoActualValue);
+				boost::format formatter(kMsgSubObjectNoActualValue[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 				formatter
 				% (std::uint32_t) 0x1F89
 				% (std::uint32_t) 0xA
@@ -2923,7 +2929,7 @@ Result OpenConfiguratorCore::GetRedundantManagingNodePriority(const std::string&
 		}
 		else
 		{
-			boost::format formatter(kMsgNonRedundantManagingNode);
+			boost::format formatter(kMsgNonRedundantManagingNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
@@ -3034,7 +3040,7 @@ Result OpenConfiguratorCore::MapAllObjectsToChannel(const std::string& networkId
 			}
 		}
 
-		return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE, "[" + networkId + "] " + kMsgMappingOperationNotSupported);
+		return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE, "[" + networkId + "] " + kMsgMappingOperationNotSupported[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	}
 	catch (const std::exception& ex)
 	{
@@ -3063,7 +3069,7 @@ Result OpenConfiguratorCore::MapObjectToChannel(const std::string& networkId, co
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 		}
 		else
-			return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE, "[" + networkId + "] " + kMsgMappingOperationNotSupported);
+			return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE, "[" + networkId + "] " + kMsgMappingOperationNotSupported[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 
 	}
 	catch (const std::exception& ex)
@@ -3093,7 +3099,7 @@ Result OpenConfiguratorCore::MapSubObjectToChannel(const std::string& networkId,
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 		}
 		else
-			return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE, "[" + networkId + "] " + kMsgMappingOperationNotSupported);
+			return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE, "[" + networkId + "] " + kMsgMappingOperationNotSupported[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	}
 	catch (const std::exception& ex)
 	{
@@ -3243,7 +3249,7 @@ Result OpenConfiguratorCore::MoveMappingObject(const std::string& networkId, con
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 		}
 		else
-			return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE, "[" + networkId + "] " + kMsgMappingOperationNotSupported);
+			return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE, "[" + networkId + "] " + kMsgMappingOperationNotSupported[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	}
 	catch (const std::exception& ex)
 	{
@@ -3384,7 +3390,7 @@ Result OpenConfiguratorCore::CreateModuleObject(const std::string& networkId, co
 		std::shared_ptr<ModularControlledNode> modularHead = std::dynamic_pointer_cast<ModularControlledNode>(node);
 		if (!modularHead)
 		{
-			boost::format formatter(kMsgNodeIsNotAModularControlledNode);
+			boost::format formatter(kMsgNodeIsNotAModularControlledNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
@@ -3445,7 +3451,7 @@ Result OpenConfiguratorCore::CreateModuleParameterObject(const std::string& netw
 		std::shared_ptr<ModularControlledNode> modularHead = std::dynamic_pointer_cast<ModularControlledNode>(node);
 		if (!modularHead)
 		{
-			boost::format formatter(kMsgNodeIsNotAModularControlledNode);
+			boost::format formatter(kMsgNodeIsNotAModularControlledNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
@@ -3533,7 +3539,7 @@ Result OpenConfiguratorCore::CreateModuleSubObject(const std::string& networkId,
 		std::shared_ptr<ModularControlledNode> modularHead = std::dynamic_pointer_cast<ModularControlledNode>(node);
 		if (!modularHead)
 		{
-			boost::format formatter(kMsgNodeIsNotAModularControlledNode);
+			boost::format formatter(kMsgNodeIsNotAModularControlledNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
@@ -3593,7 +3599,7 @@ Result OpenConfiguratorCore::CreateModuleParameterSubObject(const std::string& n
 		std::shared_ptr<ModularControlledNode> modularHead = std::dynamic_pointer_cast<ModularControlledNode>(node);
 		if (!modularHead)
 		{
-			boost::format formatter(kMsgNodeIsNotAModularControlledNode);
+			boost::format formatter(kMsgNodeIsNotAModularControlledNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
@@ -3682,7 +3688,7 @@ Result OpenConfiguratorCore::CreateModularHeadNode(const std::string& networkId,
 		else
 		{
 			//Nodeid invalid
-			boost::format formatter(kMsgNodeIdInvalid);
+			boost::format formatter(kMsgNodeIdInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
@@ -3717,7 +3723,7 @@ Result OpenConfiguratorCore::CreateInterface(const std::string& networkId, const
 		}
 		else
 		{
-			boost::format formatter(kMsgNodeIsNotAModularControlledNode);
+			boost::format formatter(kMsgNodeIsNotAModularControlledNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
@@ -3752,7 +3758,7 @@ Result OpenConfiguratorCore::CreateRange(const std::string& networkId, const std
 		}
 		else
 		{
-			boost::format formatter(kMsgNodeIsNotAModularControlledNode);
+			boost::format formatter(kMsgNodeIsNotAModularControlledNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
@@ -3787,7 +3793,7 @@ Result OpenConfiguratorCore::CreateModule(const std::string& networkId, const st
 		}
 		else
 		{
-			boost::format formatter(kMsgNodeIsNotAModularControlledNode);
+			boost::format formatter(kMsgNodeIsNotAModularControlledNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
@@ -3822,7 +3828,7 @@ Result OpenConfiguratorCore::RemoveModule(const std::string& networkId, const st
 		}
 		else
 		{
-			boost::format formatter(kMsgNodeIsNotAModularControlledNode);
+			boost::format formatter(kMsgNodeIsNotAModularControlledNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
@@ -3857,7 +3863,7 @@ Result OpenConfiguratorCore::EnableModule(const std::string& networkId, const st
 		}
 		else
 		{
-			boost::format formatter(kMsgNodeIsNotAModularControlledNode);
+			boost::format formatter(kMsgNodeIsNotAModularControlledNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
@@ -3895,7 +3901,7 @@ Result OpenConfiguratorCore::MoveModule(const std::string& networkId, const std:
 		}
 		else
 		{
-			boost::format formatter(kMsgNodeIsNotAModularControlledNode);
+			boost::format formatter(kMsgNodeIsNotAModularControlledNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
@@ -3930,7 +3936,7 @@ Result OpenConfiguratorCore::GetModuleObjectCurrentIndex(const std::string& netw
 		}
 		else
 		{
-			boost::format formatter(kMsgNodeIsNotAModularControlledNode);
+			boost::format formatter(kMsgNodeIsNotAModularControlledNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
@@ -3965,7 +3971,7 @@ Result OpenConfiguratorCore::GetModuleParameterCurrentName(const std::string& ne
 		}
 		else
 		{
-			boost::format formatter(kMsgNodeIsNotAModularControlledNode);
+			boost::format formatter(kMsgNodeIsNotAModularControlledNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
@@ -4000,7 +4006,7 @@ Result OpenConfiguratorCore::SetModuleAddress(const std::string& networkId, cons
 		}
 		else
 		{
-			boost::format formatter(kMsgNodeIsNotAModularControlledNode);
+			boost::format formatter(kMsgNodeIsNotAModularControlledNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% (std::uint32_t) nodeId;
 			LOG_ERROR() << formatter.str();
@@ -4054,7 +4060,7 @@ Result OpenConfiguratorCore::GetMappingObjectProcessImageOffset(const std::strin
 			}
 			piSize += piObj->GetSize();
 		}
-		boost::format formatter(kMsgNonExistingMappedSubObject);
+		boost::format formatter(kMsgNonExistingMappedSubObject[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% objectId
 		% subObjectId
@@ -4107,7 +4113,7 @@ Result OpenConfiguratorCore::GetMappingParameterProcessImageOffset(const std::st
 			}
 			piSize += piObj->GetSize();
 		}
-		boost::format formatter(kMsgParameterNotFound);
+		boost::format formatter(kMsgParameterNotFound[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% parameterName;
 		return Result(ErrorCode::PARAMETER_NOT_FOUND, "[" + networkId + "] " + formatter.str());

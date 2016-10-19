@@ -216,7 +216,7 @@ Result ConfigurationGenerator::WriteManagingNodeConfiguration(const std::shared_
 	//Write mapping number of entries
 	res = WriteMappingNrOfEntries(mn, configurationOutput, hexOutput);
 
-	boost::format formatter(kMsgWriteManagingNode);
+	boost::format formatter(kMsgWriteManagingNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% (std::uint32_t) mn->GetNodeId();
 	LOG_INFO() << formatter.str();
@@ -228,7 +228,7 @@ Result ConfigurationGenerator::WriteRedundantManagingNodeConfiguration(const std
 	auto rmn = std::dynamic_pointer_cast<ManagingNode>(node);
 	if (!rmn)
 	{
-		boost::format formatter(kMsgNonManagingNode);
+		boost::format formatter(kMsgNonManagingNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% node->GetNodeId();
 		LOG_ERROR() << formatter.str();
@@ -279,7 +279,7 @@ Result ConfigurationGenerator::WriteRedundantManagingNodeConfiguration(const std
 	res = WriteNodeAssignment(net, configurationOutput, hexOutput, true, false);
 	configurationOutput << std::endl;
 
-	boost::format formatter(kMsgWriteRedundantManagingNode);
+	boost::format formatter(kMsgWriteRedundantManagingNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% (uint32_t) rmn->GetNodeId();
 	LOG_INFO() << formatter.str();
@@ -327,7 +327,7 @@ Result ConfigurationGenerator::WriteControlledNodeConfiguration(const std::share
 	res = WriteMappingNrOfEntries(node, configurationOutput, hexOutput);
 	configurationOutput << std::endl;
 
-	boost::format formatter(kMsgWriteControlledNode);
+	boost::format formatter(kMsgWriteControlledNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% (std::uint32_t) cn->GetNodeId();
 	LOG_INFO() << formatter.str();
@@ -367,7 +367,7 @@ Result ConfigurationGenerator::WriteMappingNrOfEntriesZero(const std::shared_ptr
 		}
 	}
 
-	boost::format formatter(kMsgWriteMappingObjectsNrOfEntriesZero);
+	boost::format formatter(kMsgWriteMappingObjectsNrOfEntriesZero[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% (std::uint32_t) node->GetNodeId();
 	LOG_INFO() << formatter.str();
@@ -446,7 +446,7 @@ Result ConfigurationGenerator::WriteMappingObjects(const std::shared_ptr<BaseNod
 		}
 	}
 
-	boost::format formatter(kMsgWriteMappingObjects);
+	boost::format formatter(kMsgWriteMappingObjects[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% (std::uint32_t) node->GetNodeId();
 	LOG_INFO() << formatter.str();
@@ -486,7 +486,7 @@ Result ConfigurationGenerator::WriteMappingNrOfEntries(const std::shared_ptr<Bas
 		}
 	}
 
-	boost::format formatter(kMsgWriteMappingObjectsNrOfEntries);
+	boost::format formatter(kMsgWriteMappingObjectsNrOfEntries[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% (std::uint32_t) node->GetNodeId();
 	LOG_INFO() << formatter.str();
@@ -553,7 +553,7 @@ Result ConfigurationGenerator::WriteCommunicationProfileArea(const std::shared_p
 		}
 	}
 
-	boost::format formatter(kMsgWriteCommunicationRangeObjects);
+	boost::format formatter(kMsgWriteCommunicationRangeObjects[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% (std::uint32_t) node->GetNodeId();
 	LOG_INFO() << formatter.str();
@@ -603,7 +603,7 @@ Result ConfigurationGenerator::WriteManufacturerSpecificProfileArea(const std::s
 		}
 	}
 
-	boost::format formatter(kMsgWriteUserDefinedRangeObjects);
+	boost::format formatter(kMsgWriteUserDefinedRangeObjects[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% (std::uint32_t) node->GetNodeId();
 	LOG_INFO() << formatter.str();

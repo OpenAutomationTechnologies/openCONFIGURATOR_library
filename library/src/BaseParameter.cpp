@@ -252,7 +252,7 @@ namespace IndustrialNetwork
 							return boost::any_cast<T>(this->GetParameterActualValue().get());
 						}
 						//Datatype does not match
-						boost::format formatter(kMsgBaseObjectDataTypeMismatch);
+						boost::format formatter(kMsgBaseObjectDataTypeMismatch[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 						formatter
 						% this->GetUniqueID()
 						% typeid(T).name()
@@ -269,7 +269,7 @@ namespace IndustrialNetwork
 					if (!this->GetDataType().is_initialized() && !this->GetParameterActualValue().is_initialized())
 					{
 						//No actual value present
-						boost::format formatter(kMsgParameterActualValueDoesNotExist);
+						boost::format formatter(kMsgParameterActualValueDoesNotExist[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 						formatter
 						% this->uniqueID;
 						LOG_ERROR() << formatter.str();
@@ -372,7 +372,7 @@ namespace IndustrialNetwork
 							return boost::any_cast<T>(this->GetParameterDefaultValue().get());
 						}
 						//Datatype does not match
-						boost::format formatter(kMsgBaseObjectDataTypeMismatch);
+						boost::format formatter(kMsgBaseObjectDataTypeMismatch[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 						formatter
 						% this->GetUniqueID()
 						% typeid(T).name()
@@ -489,7 +489,7 @@ namespace IndustrialNetwork
 
 						if (!this->GetDataType().is_initialized())
 						{
-							boost::format formatter(kMsgParameterDataTypeInvalid);
+							boost::format formatter(kMsgParameterDataTypeInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 							formatter
 							% this->GetUniqueID();
 							LOG_FATAL() << formatter.str();
@@ -506,7 +506,7 @@ namespace IndustrialNetwork
 									std::uint16_t maxValueNr = HexToInt<std::uint16_t>(maxValue);
 									if (minValueNr > 255 || maxValueNr > 255)
 									{
-										boost::format formatter(kMsgParameterMinMaxValueInvalid);
+										boost::format formatter(kMsgParameterMinMaxValueInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 										formatter
 										% minValue
 										% maxValue
@@ -546,7 +546,7 @@ namespace IndustrialNetwork
 									std::int16_t maxValueNr = HexToInt<std::int16_t>(maxValue);
 									if (minValueNr < -128 || minValueNr > 127 || maxValueNr < -128 || maxValueNr > 127)
 									{
-										boost::format formatter(kMsgParameterMinMaxValueInvalid);
+										boost::format formatter(kMsgParameterMinMaxValueInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 										formatter
 										% minValue
 										% maxValue
@@ -598,7 +598,7 @@ namespace IndustrialNetwork
 							case IEC_Datatype::BOOL:
 							default:
 								{
-									boost::format formatter(kMsgBaseObjectDoesNotSupportLimits);
+									boost::format formatter(kMsgBaseObjectDoesNotSupportLimits[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 									formatter
 									% IECDatatypeValues[static_cast<std::underlying_type<IEC_Datatype>::type>(this->GetDataType().get())];
 									LOG_FATAL() << formatter.str();
@@ -617,7 +617,7 @@ namespace IndustrialNetwork
 						{
 							dataTypeStr = this->GetComplexDataType()->GetUniqueID();
 						}
-						boost::format formatter(kMsgParameterMinMaxValueInvalid);
+						boost::format formatter(kMsgParameterMinMaxValueInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 						formatter
 						% minValue
 						% maxValue
@@ -641,7 +641,7 @@ namespace IndustrialNetwork
 						if (!this->GetDataType().is_initialized())
 						{
 							// Object has not datatype defined
-							boost::format formatter(kMsgParameterDataTypeInvalid);
+							boost::format formatter(kMsgParameterDataTypeInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 							formatter
 							% this->GetUniqueID();
 							LOG_FATAL() << formatter.str();
@@ -658,7 +658,7 @@ namespace IndustrialNetwork
 									std::uint16_t value = HexToInt<std::uint16_t>(valueToSet);
 									if (value > 255)
 									{
-										boost::format formatter(kMsgParameterValueInvalid);
+										boost::format formatter(kMsgParameterValueInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 										formatter
 										% valueToSet
 										% IECDatatypeValues[static_cast<std::underlying_type<IEC_Datatype>::type>(this->GetDataType().get())];
@@ -922,7 +922,7 @@ namespace IndustrialNetwork
 							case IEC_Datatype::BITSTRING:
 							default:
 								{
-									boost::format formatter(kMsgParameterValueInvalid);
+									boost::format formatter(kMsgParameterValueInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 									formatter
 									% valueToSet
 									% IECDatatypeValues[static_cast<std::underlying_type<IEC_Datatype>::type>(this->GetDataType().get())];
@@ -962,7 +962,7 @@ namespace IndustrialNetwork
 						{
 							dataTypeStr = this->GetComplexDataType()->GetUniqueID();
 						}
-						boost::format formatter(kMsgParameterValueInvalid);
+						boost::format formatter(kMsgParameterValueInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 						formatter
 						% valueToSet
 						% dataTypeStr;
@@ -1021,7 +1021,7 @@ namespace IndustrialNetwork
 					if (!this->GetDataType().is_initialized() && !this->GetParameterActualValue().is_initialized())
 					{
 						//No actual value present
-						boost::format formatter(kMsgParameterActualValueDoesNotExist);
+						boost::format formatter(kMsgParameterActualValueDoesNotExist[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 						formatter
 						% this->uniqueID;
 						LOG_ERROR() << formatter.str();

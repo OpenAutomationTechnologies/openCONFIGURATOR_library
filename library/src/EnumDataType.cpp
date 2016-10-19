@@ -55,7 +55,7 @@ Result EnumDataType::AddEnumValue(const std::string& _name, const std::string& v
 {
 	if (this->enumValues.find(_name) != this->enumValues.end())
 	{
-		boost::format formatter(kMsgEnumValueExists);
+		boost::format formatter(kMsgEnumValueExists[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% this->GetUniqueID()
 		% _name;

@@ -113,7 +113,7 @@ Result Range::GetNextIndex(std::uint32_t& index, std::uint32_t address)
 
 			if (this->currentIndex > this->maxIndex)
 			{
-				boost::format formatter(kMsgRangeHasNoFreeObjects);
+				boost::format formatter(kMsgRangeHasNoFreeObjects[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 				formatter
 				% this->GetName();
 				LOG_ERROR() << formatter.str();
@@ -130,7 +130,7 @@ Result Range::GetNextIndex(std::uint32_t& index, std::uint32_t address)
 		this->currentIndex = this->baseIndex + index + (address - 1);
 		if (this->takenIndices.find(this->currentIndex) != this->takenIndices.end())
 		{
-			boost::format formatter(kMsgRangeIndexAlreadyTaken);
+			boost::format formatter(kMsgRangeIndexAlreadyTaken[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% this->currentIndex
 			% this->GetName();
@@ -175,7 +175,7 @@ Result Range::GetNextSubIndex(std::uint32_t& index, std::uint16_t& subindex, std
 				this->currentIndex++;
 				if (this->currentIndex > this->maxIndex)
 				{
-					boost::format formatter(kMsgRangeHasNoFreeObjects);
+					boost::format formatter(kMsgRangeHasNoFreeObjects[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 					formatter
 					% this->GetName();
 					LOG_ERROR() << formatter.str();
@@ -193,7 +193,7 @@ Result Range::GetNextSubIndex(std::uint32_t& index, std::uint16_t& subindex, std
 		subindex = (std::uint16_t) this->currentSubIndex;
 		return Result();
 	}
-	boost::format formatter(kMsgRangeInvalid);
+	boost::format formatter(kMsgRangeInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% name;
 	LOG_ERROR() << formatter.str();

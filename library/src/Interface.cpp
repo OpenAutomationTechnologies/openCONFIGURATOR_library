@@ -82,7 +82,7 @@ Result Interface::GetModule(const std::string& moduleId, std::uint32_t modulePos
 		}
 		else
 		{
-			boost::format formatter(kMsgModuleDoesNotMatch);
+			boost::format formatter(kMsgModuleDoesNotMatch[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% moduleId
 			% module->GetModuleId()
@@ -91,7 +91,7 @@ Result Interface::GetModule(const std::string& moduleId, std::uint32_t modulePos
 			return Result(ErrorCode::MODULE_ID_DOES_NOT_MATCH, formatter.str());
 		}
 	}
-	boost::format formatter(kMsgModuleDoesNotExists);
+	boost::format formatter(kMsgModuleDoesNotExists[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% moduleId
 	% modulePosition;
@@ -105,7 +105,7 @@ Result Interface::AddRange(const std::shared_ptr<Range>& rangeToAdd)
 	{
 		if (range->GetName() == rangeToAdd->GetName())
 		{
-			boost::format formatter(kMsgRangeAlreadyExists);
+			boost::format formatter(kMsgRangeAlreadyExists[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% rangeToAdd->GetName();
 			LOG_ERROR() << formatter.str();
@@ -126,7 +126,7 @@ Result Interface::GetRange(const std::string& name, std::shared_ptr<Range>& retR
 			return Result();
 		}
 	}
-	boost::format formatter(kMsgRangeDoesNotExists);
+	boost::format formatter(kMsgRangeDoesNotExists[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% name;
 	LOG_ERROR() << formatter.str();
@@ -140,7 +140,7 @@ Result Interface::AddModule(std::uint32_t position, const std::shared_ptr<Module
 	{
 		if (module.second->GetModuleId() == moduleToAdd->GetModuleId() && this->GetMultipleModules() == false)
 		{
-			boost::format formatter(kMsgModuleAlreadyExists);
+			boost::format formatter(kMsgModuleAlreadyExists[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% moduleToAdd->GetModuleId()
 			% position;
@@ -152,7 +152,7 @@ Result Interface::AddModule(std::uint32_t position, const std::shared_ptr<Module
 	//Module position is already taken
 	if (this->moduleCollection.find(position) != this->moduleCollection.end())
 	{
-		boost::format formatter(kMsgModulePositionOccupied);
+		boost::format formatter(kMsgModulePositionOccupied[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% moduleToAdd->GetModuleId()
 		% position;
@@ -174,7 +174,7 @@ Result Interface::RemoveModule(const std::string& moduleId,  std::uint32_t modul
 			return Result();
 		}
 	}
-	boost::format formatter(kMsgModuleDoesNotExists);
+	boost::format formatter(kMsgModuleDoesNotExists[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% moduleId
 	% modulePosition;
@@ -262,7 +262,7 @@ Result Interface::ChangeModulePosition(const std::string& moduleId, std::uint32_
 		}
 		return Result();
 	}
-	boost::format formatter(kMsgModuleDoesNotExists);
+	boost::format formatter(kMsgModuleDoesNotExists[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% moduleId
 	% oldPos;
@@ -282,7 +282,7 @@ Result Interface::EnableModule(const std::string& moduleId, std::uint32_t module
 		}
 		else
 		{
-			boost::format formatter(kMsgModuleDoesNotMatch);
+			boost::format formatter(kMsgModuleDoesNotMatch[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% moduleId
 			% module->GetModuleId()
@@ -291,7 +291,7 @@ Result Interface::EnableModule(const std::string& moduleId, std::uint32_t module
 			return Result(ErrorCode::MODULE_ID_DOES_NOT_MATCH, formatter.str());
 		}
 	}
-	boost::format formatter(kMsgModuleDoesNotExists);
+	boost::format formatter(kMsgModuleDoesNotExists[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% moduleId
 	% modulePosition;

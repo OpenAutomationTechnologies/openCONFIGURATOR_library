@@ -75,7 +75,7 @@ namespace IndustrialNetwork
 							return feature->GetActualValue<I>(actualValue);
 						}
 					}
-					boost::format formatter(kMsgFeatureActualValue);
+					boost::format formatter(kMsgFeatureActualValue[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 					formatter
 					% PlkFeatureStrings[featureid];
 					LOG_ERROR() << formatter.str();
@@ -131,7 +131,7 @@ namespace IndustrialNetwork
 							return feature->GetActualValue<I>(actualValue);
 						}
 					}
-					boost::format formatter(kMsgFeatureActualValue);
+					boost::format formatter(kMsgFeatureActualValue[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 					formatter
 					% PlkFeatureStrings[featureid];
 					LOG_ERROR() << formatter.str();
@@ -188,7 +188,7 @@ namespace IndustrialNetwork
 							return feature->GetActualValue<I>(actualValue);
 						}
 					}
-					boost::format formatter(kMsgFeatureActualValue);
+					boost::format formatter(kMsgFeatureActualValue[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 					formatter
 					% PlkFeatureStrings[featureid];
 					LOG_ERROR() << formatter.str();

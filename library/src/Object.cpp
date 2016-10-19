@@ -63,7 +63,7 @@ namespace IndustrialNetwork
 					if (this->subIndexCollection.find(ref->GetObjectId()) != this->subIndexCollection.end())
 					{
 						//SubObject does already exists
-						boost::format formatter(kMsgExistingSubObject);
+						boost::format formatter(kMsgExistingSubObject[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 						formatter
 						% this->GetObjectId()
 						% ref->GetObjectId()
@@ -74,7 +74,7 @@ namespace IndustrialNetwork
 
 					this->subIndexCollection.insert(std::pair<std::uint32_t, std::shared_ptr<SubObject>>(ref->GetObjectId(), ref));
 					//Log info subobject created
-					boost::format formatter(kMsgSubObjectCreated);
+					boost::format formatter(kMsgSubObjectCreated[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 					formatter
 					% this->GetObjectId()
 					% ref->GetObjectId()
@@ -89,7 +89,7 @@ namespace IndustrialNetwork
 					if (iter == this->subIndexCollection.end())
 					{
 						//Subobject does not exist
-						boost::format formatter(kMsgNonExistingSubObject);
+						boost::format formatter(kMsgNonExistingSubObject[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 						formatter
 						% this->GetObjectId()
 						% subObjectId

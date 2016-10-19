@@ -56,7 +56,7 @@ Result ApplicationProcess::AddComplexDataType(std::shared_ptr<ComplexDataType>& 
 	{
 		if (currentDt->GetUniqueID() == dt->GetUniqueID())
 		{
-			boost::format formatter(kMsgComplexDataTypeAlreadyExist);
+			boost::format formatter(kMsgComplexDataTypeAlreadyExist[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% dt->GetUniqueID();
 			LOG_ERROR() << formatter.str();
@@ -78,7 +78,7 @@ Result ApplicationProcess::GetComplexDataType(const std::string& uniqueId, std::
 		}
 	}
 
-	boost::format formatter(kMsgComplexDatatypeNotFound);
+	boost::format formatter(kMsgComplexDatatypeNotFound[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% uniqueId;
 	LOG_ERROR() << formatter.str();
@@ -91,7 +91,7 @@ Result ApplicationProcess::AddParameter(std::shared_ptr<Parameter>& param)
 	{
 		if (currentParam->GetUniqueID() == param->GetUniqueID())
 		{
-			boost::format formatter(kMsgParameterAlreadyExist);
+			boost::format formatter(kMsgParameterAlreadyExist[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% param->GetUniqueID();
 			LOG_ERROR() << formatter.str();
@@ -100,7 +100,7 @@ Result ApplicationProcess::AddParameter(std::shared_ptr<Parameter>& param)
 	}
 	this->parameterList.push_back(param);
 	//Parameter created
-	boost::format formatter(kMsgParameterCreated);
+	boost::format formatter(kMsgParameterCreated[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% param->GetUniqueID();
 	LOG_INFO() << formatter.str();
@@ -113,7 +113,7 @@ Result ApplicationProcess::AddParameterGroup(std::shared_ptr<ParameterGroup>& pa
 	{
 		if (currentParamGrp->GetUniqueId() == paramGrp->GetUniqueId())
 		{
-			boost::format formatter(kMsgParameterGroupAlreadyExist);
+			boost::format formatter(kMsgParameterGroupAlreadyExist[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% paramGrp->GetUniqueId();
 			LOG_ERROR() << formatter.str();
@@ -130,7 +130,7 @@ Result ApplicationProcess::AddParameterTemplate(std::shared_ptr<ParameterTemplat
 	{
 		if (currentParamTempl->GetUniqueID() == paramTempl->GetUniqueID())
 		{
-			boost::format formatter(kMsgParameterTemplateAlreadyExist);
+			boost::format formatter(kMsgParameterTemplateAlreadyExist[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% paramTempl->GetUniqueID();
 			LOG_ERROR() << formatter.str();
@@ -149,7 +149,7 @@ Result ApplicationProcess::GetParameter(const std::string& uniqueId, std::shared
 		{
 			returnParam = param;
 			//Parameter returned
-			boost::format formatter(kMsgParameterReturned);
+			boost::format formatter(kMsgParameterReturned[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% param->GetUniqueID();
 			LOG_INFO() << formatter.str();
@@ -157,7 +157,7 @@ Result ApplicationProcess::GetParameter(const std::string& uniqueId, std::shared
 		}
 	}
 
-	boost::format formatter(kMsgParameterNotFound);
+	boost::format formatter(kMsgParameterNotFound[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% uniqueId;
 	//LOG_ERROR() << formatter.str();
@@ -175,7 +175,7 @@ Result ApplicationProcess::GetParameterGroup(const std::string& uniqueId, std::s
 		}
 	}
 
-	boost::format formatter(kMsgParameterGroupNonExisting);
+	boost::format formatter(kMsgParameterGroupNonExisting[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% uniqueId;
 	//LOG_ERROR() << formatter.str();
@@ -192,7 +192,7 @@ Result ApplicationProcess::GetParameterTemplate(const std::string& uniqueId, std
 		}
 	}
 
-	boost::format formatter(kMsgParameterTemplateNonExisting);
+	boost::format formatter(kMsgParameterTemplateNonExisting[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% uniqueId;
 	LOG_ERROR() << formatter.str();
@@ -206,7 +206,7 @@ Result ApplicationProcess::SetParameterActualValue(const std::string& uniqueId, 
 		if (currentParam->GetUniqueID() == uniqueId)
 			return currentParam->SetParameterActualValue(actualValue);
 	}
-	boost::format formatter(kMsgParameterNotFound);
+	boost::format formatter(kMsgParameterNotFound[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% uniqueId;
 	LOG_ERROR() << formatter.str();
@@ -226,7 +226,7 @@ Result ApplicationProcess::GetParameterActualValue(const std::string& uniqueId, 
 			}
 			else
 			{
-				boost::format formatter(kMsgParameterActualValueDoesNotExist);
+				boost::format formatter(kMsgParameterActualValueDoesNotExist[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 				formatter
 				% uniqueId;
 				LOG_ERROR() << formatter.str();
@@ -234,7 +234,7 @@ Result ApplicationProcess::GetParameterActualValue(const std::string& uniqueId, 
 			}
 		}
 	}
-	boost::format formatter(kMsgParameterNotFound);
+	boost::format formatter(kMsgParameterNotFound[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% uniqueId;
 	LOG_ERROR() << formatter.str();
@@ -249,7 +249,7 @@ std::uint32_t ApplicationProcess::GetBitSize(const std::string& uniqueId) const
 			return param->GetBitSize();
 	}
 
-	boost::format formatter(kMsgParameterNotFound);
+	boost::format formatter(kMsgParameterNotFound[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% uniqueId;
 	LOG_ERROR() << formatter.str();
@@ -294,7 +294,7 @@ Result ApplicationProcess::RemoveParameter(const std::string& uniqueId)
 		}
 	}
 
-	boost::format formatter(kMsgParameterNotFound);
+	boost::format formatter(kMsgParameterNotFound[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% uniqueId;
 	LOG_ERROR() << formatter.str();

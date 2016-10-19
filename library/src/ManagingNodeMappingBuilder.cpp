@@ -55,7 +55,7 @@ Result ManagingNodeMappingBuilder::GenerateConfiguration(const std::string& valu
 	if (!mn)
 	{
 		LOG_ERROR() << kMsgNoManagingNode;
-		return Result(ErrorCode::NO_MANAGING_NODE_CONFIGURED, kMsgNoManagingNode);
+		return Result(ErrorCode::NO_MANAGING_NODE_CONFIGURED, kMsgNoManagingNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	}
 
 	mn->ClearMappingObjects(); //clear MN mapping
@@ -235,7 +235,7 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 				//MN PI is full
 				if (index > dynChannel->GetEndIndex())
 				{
-					boost::format formatter(kMsgDynamicChannelExceeded);
+					boost::format formatter(kMsgDynamicChannelExceeded[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 					formatter
 					% index
 					% subindex
@@ -261,7 +261,7 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 				{
 					if (res.GetErrorType() == ErrorCode::CHANNEL_OBJECT_LIMIT_EXCEEDED)
 					{
-						boost::format formatter(kMsgChannelExceeded);
+						boost::format formatter(kMsgChannelExceeded[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 						formatter
 						% DirectionTypeValues[static_cast<std::underlying_type<Direction>::type>(dir)]
 						% node->GetName()
@@ -358,7 +358,7 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 							//MN PI is full
 							if (index > dynChannel->GetEndIndex())
 							{
-								boost::format formatter(kMsgDynamicChannelExceeded);
+								boost::format formatter(kMsgDynamicChannelExceeded[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 								formatter
 								% index
 								% subindex
@@ -476,7 +476,7 @@ Result ManagingNodeMappingBuilder::FindMappedObject(const std::shared_ptr<BaseNo
 			res = node->GetObject(dataIndex, dataObject);
 			if (!res.IsSuccessful())
 			{
-				boost::format formatter(kMsgNonExistingMappedObject);
+				boost::format formatter(kMsgNonExistingMappedObject[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 				formatter
 				% dataIndex
 				% (std::uint32_t) node->GetNodeId();
@@ -495,7 +495,7 @@ Result ManagingNodeMappingBuilder::FindMappedObject(const std::shared_ptr<BaseNo
 		Result res = node->GetSubObject(dataIndex, dataSubindex, dataSubObject);
 		if (!res.IsSuccessful())
 		{
-			boost::format formatter(kMsgNonExistingMappedSubObject);
+			boost::format formatter(kMsgNonExistingMappedSubObject[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% dataIndex
 			% dataSubindex
@@ -568,7 +568,7 @@ Result ManagingNodeMappingBuilder::WriteMappingToForNode(std::uint16_t nodeId, D
 								continue;
 							else
 							{
-								boost::format formatter(kMsgInsufficientMappingObjects);
+								boost::format formatter(kMsgInsufficientMappingObjects[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 								formatter
 								% nodeId
 								% nrOfEntriesObj->GetTypedActualValue<uint16_t>()
@@ -603,7 +603,7 @@ Result ManagingNodeMappingBuilder::WriteMappingToForNode(std::uint16_t nodeId, D
 	//Check for no available channels
 	if (noChannelAvailable)
 	{
-		boost::format formatter(kMsgChannelExceeded);
+		boost::format formatter(kMsgChannelExceeded[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% DirectionTypeValues[static_cast<std::underlying_type<Direction>::type>(dir)]
 		% "CN"

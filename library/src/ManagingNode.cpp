@@ -67,7 +67,7 @@ Result ManagingNode::AddNodeAssignment(const NodeAssignment& assign)
 		case NodeAssignment::NMT_NODEASSIGN_MULTIPLEXED_CN:
 		case NodeAssignment::NMT_NODEASSIGN_PRES_CHAINING:
 			{
-				boost::format formatter(kMsgNodeAssignmentNotSupported);
+				boost::format formatter(kMsgNodeAssignmentNotSupported[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 				formatter
 				% GetNodeAssignmentName(assign)
 				% (std::uint32_t) this->GetNodeId();
@@ -90,7 +90,7 @@ Result ManagingNode::AddNodeAssignment(const NodeAssignment& assign)
 				}
 				else
 				{
-					boost::format formatter(kMsgNodeAssignmentAlreadyExists);
+					boost::format formatter(kMsgNodeAssignmentAlreadyExists[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 					formatter
 					% GetNodeAssignmentName(assign)
 					% (std::uint32_t) this->GetNodeId();
@@ -152,7 +152,7 @@ Result ManagingNode::GetDynamicChannel(PlkDataType dataType, Direction dir, std:
 		}
 	}
 
-	boost::format formatter(kMsgDynamicChannelNotFound);
+	boost::format formatter(kMsgDynamicChannelNotFound[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% GetPlkDataTypeName(dataType)
 	% DirectionTypeValues[static_cast<std::underlying_type<Direction>::type>(dir)];
@@ -233,7 +233,7 @@ std::uint32_t ManagingNode::GetConfigurationObjectCount()
 	//Remove reassignment count for RMNs
 	count -= this->GetRmnCount();
 
-	boost::format formatter(kMsgNodeObjectCount);
+	boost::format formatter(kMsgNodeObjectCount[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% (std::uint32_t) this->GetNodeId()
 	% count;
@@ -309,7 +309,7 @@ std::uint32_t ManagingNode::GetConfigurationObjectSize()
 	//Remove reassignment size count for RMNs
 	size -= 32 * this->GetRmnCount();
 
-	boost::format formatter(kMsgNodeObjectCountSize);
+	boost::format formatter(kMsgNodeObjectCountSize[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% (std::uint32_t) this->GetNodeId()
 	% size;
@@ -360,7 +360,7 @@ Result ManagingNode::SetMultiplexedCycle(const std::uint8_t nodeID, const std::u
 
 	if (multiplexedCycle > cycle_count)
 	{
-		boost::format formatter(kMsgMultiplexCycleAssignInvalid);
+		boost::format formatter(kMsgMultiplexCycleAssignInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% (std::uint32_t) multiplexedCycle
 		% (std::uint32_t) nodeID
@@ -376,7 +376,7 @@ Result ManagingNode::SetMultiplexedCycle(const std::uint8_t nodeID, const std::u
 
 	if (MultiplexedCycleAlreadyAssigned(multiplexedCycle))
 	{
-		boost::format formatter(kMsgMultiplexCycleAlreadyAssigned);
+		boost::format formatter(kMsgMultiplexCycleAlreadyAssigned[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% (std::uint32_t) multiplexedCycle;
 		LOG_ERROR() << formatter.str();
@@ -623,7 +623,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::UpdatePr
 				mappedFromNode = nodeID->GetTypedActualValue<std::uint16_t>();
 				if (mappedFromNode > 250)
 				{
-					boost::format formatter(kMsgNonExistingNode);
+					boost::format formatter(kMsgNonExistingNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 					formatter
 					% mappedFromNode;
 					LOG_ERROR() << formatter.str();
@@ -780,7 +780,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ManagingNode::UpdatePr
 					}
 					else
 					{
-						boost::format formatter(kMsgMappingObjectInvalid);
+						boost::format formatter(kMsgMappingObjectInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 						formatter
 						% obj.first
 						% mapping.first
@@ -884,7 +884,7 @@ Result ManagingNode::CheckProcessDataMapping(const std::shared_ptr<BaseNode>& no
 	if (foundMapping)
 		return Result();
 
-	boost::format formatter(kMsgMappingObjectInvalid);
+	boost::format formatter(kMsgMappingObjectInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% mnMappingObject->GetMappingIndex()
 	% mnMappingObject->GetMappingSubIndex()

@@ -165,7 +165,7 @@ Result Module::CreateParamMapping(const std::string& paramName, const std::strin
 	{
 		if (this->parameterNameMapping.find(paramName) != this->parameterNameMapping.end())
 		{
-			boost::format formatter(kMsgParameterAlreadyExist);
+			boost::format formatter(kMsgParameterAlreadyExist[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% paramName;
 			LOG_ERROR() << formatter.str();
@@ -182,7 +182,7 @@ Result Module::GetMappedParameterName(const std::string& parameterName, std::str
 	{
 		if (this->parameterNameMapping.find(parameterName) == this->parameterNameMapping.end())
 		{
-			boost::format formatter(kMsgParameterNotFound);
+			boost::format formatter(kMsgParameterNotFound[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% parameterName;
 			LOG_ERROR() << formatter.str();
@@ -191,7 +191,7 @@ Result Module::GetMappedParameterName(const std::string& parameterName, std::str
 	}
 	else
 	{
-		boost::format formatter(kMsgParameterNotFound);
+		boost::format formatter(kMsgParameterNotFound[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% parameterName;
 		LOG_ERROR() << formatter.str();

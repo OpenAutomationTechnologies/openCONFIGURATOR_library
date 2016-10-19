@@ -56,7 +56,7 @@ Result ControlledNode::AddNodeAssignment(const NodeAssignment& assign)
 {
 	if (assign == NodeAssignment::NMT_NODEASSIGN_MN_PRES)
 	{
-		boost::format formatter(kMsgNodeAssignmentNotSupported);
+		boost::format formatter(kMsgNodeAssignmentNotSupported[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% GetNodeAssignmentName(assign)
 		% (std::uint32_t) this->GetNodeId();
@@ -69,7 +69,7 @@ Result ControlledNode::AddNodeAssignment(const NodeAssignment& assign)
 		this->GetNodeAssignment().push_back(assign);
 	else
 	{
-		boost::format formatter(kMsgNodeAssignmentAlreadyExists);
+		boost::format formatter(kMsgNodeAssignmentAlreadyExists[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% GetNodeAssignmentName(assign)
 		% (std::uint32_t) this->GetNodeId();
@@ -162,7 +162,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 			        || access == ParameterAccess::read)
 			{
 				//Parameter access does not match mapping direction
-				boost::format formatter(kMsgAccessTypeForParameterInvalid);
+				boost::format formatter(kMsgAccessTypeForParameterInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 				formatter
 				% uniqueID
 				% index
@@ -179,7 +179,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 			        || access == ParameterAccess::write)
 			{
 				//Parameter access does not match mapping direction
-				boost::format formatter(kMsgAccessTypeForParameterInvalid);
+				boost::format formatter(kMsgAccessTypeForParameterInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 				formatter
 				% uniqueID
 				% index
@@ -201,7 +201,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 			        && objToMap->GetPDOMapping().get() != PDOMapping::OPTIONAL
 			        && objToMap->GetPDOMapping().get() != PDOMapping::DEFAULT)
 			{
-				boost::format formatter(kMsgMappingTypeForPdoInvalid);
+				boost::format formatter(kMsgMappingTypeForPdoInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 				formatter
 				% index
 				% subindex
@@ -217,7 +217,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 			        && objToMap->GetPDOMapping().get() != PDOMapping::OPTIONAL
 			        && objToMap->GetPDOMapping().get() != PDOMapping::DEFAULT)
 			{
-				boost::format formatter(kMsgMappingTypeForPdoInvalid);
+				boost::format formatter(kMsgMappingTypeForPdoInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 				formatter
 				% index
 				% subindex
@@ -231,7 +231,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 	//Every object to be mapped needs a PDOMapping attribute
 	else
 	{
-		boost::format formatter(kMsgMappingTypeForPdoInvalid);
+		boost::format formatter(kMsgMappingTypeForPdoInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% index
 		% subindex
@@ -250,7 +250,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 			        && objToMap->GetAccessType().get() != AccessType::WOS
 			        && objToMap->GetAccessType().get() != AccessType::RW)
 			{
-				boost::format formatter(kMsgAccessTypeForPdoInvalid);
+				boost::format formatter(kMsgAccessTypeForPdoInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 				formatter
 				% index
 				% subindex
@@ -266,7 +266,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 			        && objToMap->GetAccessType().get() != AccessType::RW
 			        && objToMap->GetAccessType().get() != AccessType::RWS)
 			{
-				boost::format formatter(kMsgAccessTypeForPdoInvalid);
+				boost::format formatter(kMsgAccessTypeForPdoInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 				formatter
 				% index
 				% subindex
@@ -280,7 +280,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 	//Domain object must not have an access type all the other must have an access type attribute
 	else if (!objToMap->GetUniqueIdRef().is_initialized())
 	{
-		boost::format formatter(kMsgAccessTypeForParameterInvalid);
+		boost::format formatter(kMsgAccessTypeForParameterInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% index
 		% subindex
@@ -332,7 +332,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 
 	if (mappingObj->GetSubObjectDictionary().size() < position)
 	{
-		boost::format formatter(kMsgInsufficientMappingObjects);
+		boost::format formatter(kMsgInsufficientMappingObjects[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% (std::uint32_t) this->GetNodeId()
 		% (std::uint32_t) mappingObj->GetSubObjectDictionary().size()
@@ -374,7 +374,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 
 			if (offset + objToMap->GetBitSize() > (1490 * 8))
 			{
-				boost::format formatter(kMsgIsochronousMaxPayloadExceeded);
+				boost::format formatter(kMsgIsochronousMaxPayloadExceeded[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 				formatter
 				% (std::uint32_t) this->GetNodeId()
 				% DirectionTypeValues[static_cast<std::underlying_type<Direction>::type>(dir)]
@@ -462,7 +462,7 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 			std::uint16_t enabledMappingEntries = nrOfEntriesObj->GetTypedActualValue<std::uint16_t>();
 			if (enabledMappingEntries > validMappings)
 			{
-				boost::format formatter(kMsgNrOfEntriesInvalid);
+				boost::format formatter(kMsgNrOfEntriesInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 				formatter
 				% mappingObj->GetObjectId()
 				% (std::uint32_t) this->GetNodeId()
@@ -593,7 +593,7 @@ std::uint32_t ControlledNode::GetConfigurationObjectCount()
 		}
 	}
 
-	boost::format formatter(kMsgNodeObjectCount);
+	boost::format formatter(kMsgNodeObjectCount[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% (std::uint32_t) this->GetNodeId()
 	% count;
@@ -642,7 +642,7 @@ std::uint32_t ControlledNode::GetConfigurationObjectSize()
 		}
 	}
 
-	boost::format formatter(kMsgNodeObjectCountSize);
+	boost::format formatter(kMsgNodeObjectCountSize[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% (std::uint32_t) this->GetNodeId()
 	% size;
@@ -675,7 +675,7 @@ Result ControlledNode::SetOperationMode(const PlkOperationMode& _operationMode)
 		}
 		else
 		{
-			boost::format formatter(kMsgMultiplexingNotSupported);
+			boost::format formatter(kMsgMultiplexingNotSupported[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% (std::uint32_t) this->GetNodeId();
 			LOG_ERROR() << formatter.str();
@@ -696,7 +696,7 @@ Result ControlledNode::SetOperationMode(const PlkOperationMode& _operationMode)
 		}
 		else
 		{
-			boost::format formatter(kMsgChainingNotSupported);
+			boost::format formatter(kMsgChainingNotSupported[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% (std::uint32_t) this->GetNodeId();
 			LOG_ERROR() << formatter.str();
@@ -804,7 +804,7 @@ Result ControlledNode::GetDataObjectFromMapping(const std::shared_ptr<BaseProces
 	Result res = this->GetObject(dataIndex, dataObject, !this->IgnoreNonExistingMappingObjects());
 	if (!res.IsSuccessful())
 	{
-		boost::format formatter(kMsgNonExistingMappedObject);
+		boost::format formatter(kMsgNonExistingMappedObject[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% dataIndex
 		% (std::uint32_t) this->GetNodeId();
@@ -837,14 +837,14 @@ Result ControlledNode::GetDataObjectFromMapping(const std::shared_ptr<BaseProces
 		res = this->GetSubObject(dataIndex, dataSubindex, dataSubObject, !this->IgnoreNonExistingMappingObjects());
 		if (!res.IsSuccessful())
 		{
-			boost::format formatter(kMsgNonExistingMappedSubObject);
+			boost::format formatter(kMsgNonExistingMappedSubObject[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% dataIndex
 			% dataSubindex
 			% (std::uint32_t) this->GetNodeId();
 			if (this->IgnoreNonExistingMappingObjects())
 			{
-				LOG_WARN() << "Invalid process image ignored : " << formatter.str();
+				LOG_WARN() << kMsgInvalidProcessImage[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())] << formatter.str();
 			}
 			else
 			{
@@ -1176,7 +1176,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 
 						if (expectedOffset + mappingPtr->GetMappingLength() > (1490 * 8))
 						{
-							boost::format formatter(kMsgIsochronousMaxPayloadExceeded);
+							boost::format formatter(kMsgIsochronousMaxPayloadExceeded[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 							formatter
 							% (std::uint32_t) this->GetNodeId()
 							% DirectionTypeValues[static_cast<std::underlying_type<Direction>::type>(dir)]
@@ -1187,7 +1187,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 
 						if (mappingPtr->GetMappingOffset() != expectedOffset)
 						{
-							boost::format formatter(kMsgPdoOffsetInvalid);
+							boost::format formatter(kMsgPdoOffsetInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 							formatter
 							% mappingObject->GetObjectId()
 							% mapping.first
@@ -1197,13 +1197,13 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 							if (this->IgnoreInvalidMappingOffsets())
 							{
 								expectedOffset = mappingPtr->GetMappingOffset();
-								LOG_WARN() << "Invalid mapping offset ignored : " << formatter.str() ;
+								LOG_WARN() << kMsgInvalidMappingOffset[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())] << formatter.str();
 							}
 							else
 							{
 								if (GetOperationMode() != PlkOperationMode::CHAINED)
 								{
-									LOG_WARN() << formatter.str() << " Mapping value has been recalculated.";
+									LOG_WARN() << formatter.str() << kMsgInvalidMappingRecalculated[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())];
 								}
 								mappingPtr->SetMappingOffset(expectedOffset);
 							}
@@ -1234,7 +1234,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 
 						if (expectedOffset + mappingPtr->GetMappingLength() > (1490 * 8))
 						{
-							boost::format formatter(kMsgIsochronousMaxPayloadExceeded);
+							boost::format formatter(kMsgIsochronousMaxPayloadExceeded[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 							formatter
 							% (std::uint32_t) this->GetNodeId()
 							% DirectionTypeValues[static_cast<std::underlying_type<Direction>::type>(dir)]
@@ -1267,7 +1267,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 			{
 				nrOfEntriesObj->SetTypedObjectActualValue(IntToHex<std::uint16_t>(countNrOfEntries, 2, "0x"));
 
-				boost::format formatter(kMsgNrOfEntriesInvalid);
+				boost::format formatter(kMsgNrOfEntriesInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 				formatter
 				% mappingObject->GetObjectId()
 				% (std::uint32_t) this->GetNodeId()
@@ -1299,13 +1299,13 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 			res = this->GetObject(dataIndex, dataObject);
 			if (!res.IsSuccessful())
 			{
-				boost::format formatter(kMsgNonExistingMappedObject);
+				boost::format formatter(kMsgNonExistingMappedObject[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 				formatter
 				% dataIndex
 				% (std::uint32_t) this->GetNodeId();
 				if (this->IgnoreNonExistingMappingObjects())
 				{
-					LOG_WARN() << "Invalid mapping object reference ignored : " << formatter.str();
+					LOG_WARN() << kMsgInvalidMappingReference[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())] << formatter.str();
 					return Result();
 				}
 				else
@@ -1325,14 +1325,14 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 		Result res = this->GetSubObject(dataIndex, dataSubindex, dataSubObject, !this->IgnoreNonExistingMappingObjects());
 		if (!res.IsSuccessful())
 		{
-			boost::format formatter(kMsgNonExistingMappedSubObject);
+			boost::format formatter(kMsgNonExistingMappedSubObject[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% dataIndex
 			% dataSubindex
 			% (std::uint32_t) this->GetNodeId();
 			if (this->IgnoreNonExistingMappingObjects())
 			{
-				LOG_WARN() << "Invalid mapping object reference ignored : " << formatter.str();
+				LOG_WARN() << kMsgInvalidMappingReference[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())] << formatter.str();
 				return Result();
 			}
 			else
@@ -1350,7 +1350,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 	{
 		if (foundObject->GetBitSize() != mapping_size)
 		{
-			boost::format formatter(kMsgMappedObjectSizeInvalid);
+			boost::format formatter(kMsgMappedObjectSizeInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% dataIndex
 			% dataSubindex
@@ -1384,7 +1384,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 
 		if (foundObject->GetBitSize() != size)
 		{
-			boost::format formatter(kMsgMappedObjectSizeInvalid);
+			boost::format formatter(kMsgMappedObjectSizeInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% dataIndex
 			% dataSubindex
@@ -1408,7 +1408,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 			        || access == ParameterAccess::read)
 			{
 				//Parameter access does not match mapping direction
-				boost::format formatter(kMsgAccessTypeForParameterInvalid);
+				boost::format formatter(kMsgAccessTypeForParameterInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 				formatter
 				% uniqueID
 				% dataIndex
@@ -1425,7 +1425,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 			        || access == ParameterAccess::write)
 			{
 				//Parameter access does not match mapping direction
-				boost::format formatter(kMsgAccessTypeForParameterInvalid);
+				boost::format formatter(kMsgAccessTypeForParameterInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 				formatter
 				% uniqueID
 				% dataIndex
@@ -1441,7 +1441,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 	//Check mapping offset
 	if (mapping->GetMappingOffset() < expectedOffset) //Allow offset gaps
 	{
-		boost::format formatter(kMsgPdoOffsetInvalid);
+		boost::format formatter(kMsgPdoOffsetInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% dataIndex
 		% dataSubindex
@@ -1461,7 +1461,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 			        && foundObject->GetPDOMapping().get() != PDOMapping::OPTIONAL
 			        && foundObject->GetPDOMapping().get() != PDOMapping::DEFAULT)
 			{
-				boost::format formatter(kMsgMappingTypeForPdoInvalid);
+				boost::format formatter(kMsgMappingTypeForPdoInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 				formatter
 				% dataIndex
 				% dataSubindex
@@ -1477,7 +1477,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 			        && foundObject->GetPDOMapping().get() != PDOMapping::OPTIONAL
 			        && foundObject->GetPDOMapping().get() != PDOMapping::DEFAULT)
 			{
-				boost::format formatter(kMsgMappingTypeForPdoInvalid);
+				boost::format formatter(kMsgMappingTypeForPdoInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 				formatter
 				% dataIndex
 				% dataSubindex
@@ -1490,7 +1490,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 	}
 	else
 	{
-		boost::format formatter(kMsgMappingTypeForPdoInvalid);
+		boost::format formatter(kMsgMappingTypeForPdoInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% dataIndex
 		% dataSubindex
@@ -1509,7 +1509,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 			        && foundObject->GetAccessType().get() != AccessType::WOS
 			        && foundObject->GetAccessType().get() != AccessType::RW)
 			{
-				boost::format formatter(kMsgAccessTypeForPdoInvalid);
+				boost::format formatter(kMsgAccessTypeForPdoInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 				formatter
 				% dataIndex
 				% dataSubindex
@@ -1525,7 +1525,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 			        && foundObject->GetAccessType().get() != AccessType::RW
 			        && foundObject->GetAccessType().get() != AccessType::RWS)
 			{
-				boost::format formatter(kMsgAccessTypeForPdoInvalid);
+				boost::format formatter(kMsgAccessTypeForPdoInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 				formatter
 				% dataIndex
 				% dataSubindex
@@ -1538,7 +1538,7 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 	}
 	else if (!foundObject->GetUniqueIdRef().is_initialized()) //Domain object may not have an access type
 	{
-		boost::format formatter(kMsgAccessTypeForPdoInvalid);
+		boost::format formatter(kMsgAccessTypeForPdoInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% dataIndex
 		% dataSubindex

@@ -72,7 +72,7 @@ void BuildConfigurationSetting::InitConfigurationSetting(const std::string& id)
 	else
 	{
 		this->SetEnabled(false);
-		boost::format formatter(kMsgConfigurationSettingNotSupported);
+		boost::format formatter(kMsgConfigurationSettingNotSupported[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% id;
 		LOG_ERROR() << formatter.str();

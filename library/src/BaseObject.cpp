@@ -172,7 +172,7 @@ namespace IndustrialNetwork
 					if (!this->GetDataType().is_initialized())
 					{
 						// Object has not datatype defined
-						boost::format formatter(kMsgBaseObjectDataTypeError);
+						boost::format formatter(kMsgBaseObjectDataTypeError[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 						formatter
 						% this->GetName()
 						% this->GetObjectId()
@@ -226,7 +226,7 @@ namespace IndustrialNetwork
 									dataTypeName = this->GetActualValue().type().name();
 								}
 								//No actual value present
-								boost::format formatter(kMsgBaseObjectActualValue);
+								boost::format formatter(kMsgBaseObjectActualValue[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 								formatter
 								% this->GetName()
 								% this->GetObjectId()
@@ -246,7 +246,7 @@ namespace IndustrialNetwork
 									break;
 								}
 								//No actual value present
-								boost::format formatter(kMsgBaseObjectDefaultValue);
+								boost::format formatter(kMsgBaseObjectDefaultValue[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 								formatter
 								% this->GetName()
 								% this->GetObjectId()
@@ -265,7 +265,7 @@ namespace IndustrialNetwork
 									dataTypeName = this->GetLowLimit().get().type().name();
 									break;
 								}
-								boost::format formatter(kMsgBaseObjectLowLimit);
+								boost::format formatter(kMsgBaseObjectLowLimit[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 								formatter
 								% this->GetName()
 								% this->GetObjectId()
@@ -285,7 +285,7 @@ namespace IndustrialNetwork
 									dataTypeName = this->GetHighLimit().get().type().name();
 									break;
 								}
-								boost::format formatter(kMsgBaseObjectHighLimit);
+								boost::format formatter(kMsgBaseObjectHighLimit[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 								formatter
 								% this->GetName()
 								% this->GetObjectId()
@@ -297,7 +297,7 @@ namespace IndustrialNetwork
 							break;
 					}
 					//Datatype does not match
-					boost::format formatter(kMsgBaseObjectDataTypeMismatch);
+					boost::format formatter(kMsgBaseObjectDataTypeMismatch[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 					formatter
 					% this->GetName()
 					% typeid(T).name()
@@ -344,7 +344,7 @@ namespace IndustrialNetwork
 						if (this->GetActualValue().empty())
 						{
 							//No actual value present
-							boost::format formatter(kMsgBaseObjectActualValue);
+							boost::format formatter(kMsgBaseObjectActualValue[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 							formatter
 							% this->GetName()
 							% this->GetObjectId()
@@ -359,7 +359,7 @@ namespace IndustrialNetwork
 						if (this->GetDefaultValue().empty())
 						{
 							//No actual value present
-							boost::format formatter(kMsgBaseObjectDefaultValue);
+							boost::format formatter(kMsgBaseObjectDefaultValue[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 							formatter
 							% this->GetName()
 							% this->GetObjectId()
@@ -600,7 +600,7 @@ namespace IndustrialNetwork
 						if (!this->GetDataType().is_initialized())
 						{
 							// Object has not datatype defined
-							boost::format formatter(kMsgBaseObjectDataTypeError);
+							boost::format formatter(kMsgBaseObjectDataTypeError[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 							formatter
 							% this->GetName()
 							% this->GetObjectId()
@@ -698,7 +698,7 @@ namespace IndustrialNetwork
 								{
 									if (type == ValueType::LOWLIMIT || type == ValueType::HIGHLIMIT)
 									{
-										boost::format formatter(kMsgBaseObjectDoesNotSupportLimits);
+										boost::format formatter(kMsgBaseObjectDoesNotSupportLimits[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 										formatter
 										% GetPlkDataTypeName(GetDataType().get());
 										LOG_FATAL() << formatter.str();
@@ -732,7 +732,7 @@ namespace IndustrialNetwork
 								{
 									if (type == ValueType::LOWLIMIT || type == ValueType::HIGHLIMIT)
 									{
-										boost::format formatter(kMsgBaseObjectDoesNotSupportLimits);
+										boost::format formatter(kMsgBaseObjectDoesNotSupportLimits[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 										formatter
 										% GetPlkDataTypeName(GetDataType().get());
 										LOG_FATAL() << formatter.str();
@@ -745,7 +745,7 @@ namespace IndustrialNetwork
 							case PlkDataType::UNDEFINED:
 							default:
 								{
-									boost::format formatter(kMsgBaseObjectDoesNotSupportValues);
+									boost::format formatter(kMsgBaseObjectDoesNotSupportValues[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 									formatter
 									% GetPlkDataTypeName(GetDataType().get());
 									LOG_FATAL() << formatter.str();
@@ -782,7 +782,7 @@ namespace IndustrialNetwork
 						{
 							case ValueType::DEFAULT:
 								{
-									boost::format formatter(kMsgDefaultValueDatatypeError);
+									boost::format formatter(kMsgDefaultValueDatatypeError[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 									formatter
 									% valueStr
 									% GetPlkDataTypeName(GetDataType().get());
@@ -791,7 +791,7 @@ namespace IndustrialNetwork
 								}
 							case ValueType::LOWLIMIT:
 								{
-									boost::format formatter(kMsgLowLimitDatatypeError);
+									boost::format formatter(kMsgLowLimitDatatypeError[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 									formatter
 									% valueStr
 									% GetPlkDataTypeName(GetDataType().get());
@@ -800,7 +800,7 @@ namespace IndustrialNetwork
 								}
 							case ValueType::HIGHLIMIT:
 								{
-									boost::format formatter(kMsgHighLimitDatatypeError);
+									boost::format formatter(kMsgHighLimitDatatypeError[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 									formatter
 									% valueStr
 									% GetPlkDataTypeName(this->GetDataType().get());
@@ -837,7 +837,7 @@ namespace IndustrialNetwork
 						if (!this->GetDataType().is_initialized())
 						{
 							// Object has not datatype defined
-							boost::format formatter(kMsgBaseObjectDataTypeError);
+							boost::format formatter(kMsgBaseObjectDataTypeError[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 							formatter
 							% this->GetName()
 							% this->GetObjectId()
@@ -876,7 +876,7 @@ namespace IndustrialNetwork
 									{
 										if (value > this->GetTypedHighLimit<std::int16_t>())
 										{
-											boost::format formatter(kMsgBaseObjectHighLimitError);
+											boost::format formatter(kMsgBaseObjectHighLimitError[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 											formatter
 											% this->GetName()
 											% this->GetObjectId()
@@ -894,7 +894,7 @@ namespace IndustrialNetwork
 									{
 										if (value < this->GetTypedLowLimit<std::int16_t>())
 										{
-											boost::format formatter(kMsgBaseObjectLowLimitError);
+											boost::format formatter(kMsgBaseObjectLowLimitError[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 											formatter
 											% this->GetName()
 											% this->GetObjectId()
@@ -927,7 +927,7 @@ namespace IndustrialNetwork
 									{
 										if (value > this->GetTypedHighLimit<std::int16_t>())
 										{
-											boost::format formatter(kMsgBaseObjectHighLimitError);
+											boost::format formatter(kMsgBaseObjectHighLimitError[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 											formatter
 											% this->GetName()
 											% this->GetObjectId()
@@ -945,7 +945,7 @@ namespace IndustrialNetwork
 									{
 										if (value < this->GetTypedLowLimit<std::int16_t>())
 										{
-											boost::format formatter(kMsgBaseObjectLowLimitError);
+											boost::format formatter(kMsgBaseObjectLowLimitError[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 											formatter
 											% this->GetName()
 											% this->GetObjectId()
@@ -978,7 +978,7 @@ namespace IndustrialNetwork
 									{
 										if (value > this->GetTypedHighLimit<std::int32_t>())
 										{
-											boost::format formatter(kMsgBaseObjectHighLimitError);
+											boost::format formatter(kMsgBaseObjectHighLimitError[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 											formatter
 											% this->GetName()
 											% this->GetObjectId()
@@ -996,7 +996,7 @@ namespace IndustrialNetwork
 									{
 										if (value < this->GetTypedLowLimit<std::int32_t>())
 										{
-											boost::format formatter(kMsgBaseObjectLowLimitError);
+											boost::format formatter(kMsgBaseObjectLowLimitError[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 											formatter
 											% this->GetName()
 											% this->GetObjectId()
@@ -1030,7 +1030,7 @@ namespace IndustrialNetwork
 									{
 										if (value > this->GetTypedHighLimit<std::uint16_t>())
 										{
-											boost::format formatter(kMsgBaseObjectHighLimitError);
+											boost::format formatter(kMsgBaseObjectHighLimitError[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 											formatter
 											% this->GetName()
 											% this->GetObjectId()
@@ -1048,7 +1048,7 @@ namespace IndustrialNetwork
 									{
 										if (value < this->GetTypedLowLimit<std::uint16_t>())
 										{
-											boost::format formatter(kMsgBaseObjectLowLimitError);
+											boost::format formatter(kMsgBaseObjectLowLimitError[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 											formatter
 											% this->GetName()
 											% this->GetObjectId()
@@ -1081,7 +1081,7 @@ namespace IndustrialNetwork
 									{
 										if (value > this->GetTypedHighLimit<std::uint16_t>())
 										{
-											boost::format formatter(kMsgBaseObjectHighLimitError);
+											boost::format formatter(kMsgBaseObjectHighLimitError[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 											formatter
 											% this->GetName()
 											% this->GetObjectId()
@@ -1099,7 +1099,7 @@ namespace IndustrialNetwork
 									{
 										if (value < this->GetTypedLowLimit<std::uint16_t>())
 										{
-											boost::format formatter(kMsgBaseObjectLowLimitError);
+											boost::format formatter(kMsgBaseObjectLowLimitError[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 											formatter
 											% this->GetName()
 											% this->GetObjectId()
@@ -1133,7 +1133,7 @@ namespace IndustrialNetwork
 									{
 										if (value > this->GetTypedHighLimit<std::uint32_t>())
 										{
-											boost::format formatter(kMsgBaseObjectHighLimitError);
+											boost::format formatter(kMsgBaseObjectHighLimitError[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 											formatter
 											% this->GetName()
 											% this->GetObjectId()
@@ -1151,7 +1151,7 @@ namespace IndustrialNetwork
 									{
 										if (value < this->GetTypedLowLimit<std::uint32_t>())
 										{
-											boost::format formatter(kMsgBaseObjectLowLimitError);
+											boost::format formatter(kMsgBaseObjectLowLimitError[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 											formatter
 											% this->GetName()
 											% this->GetObjectId()
@@ -1187,7 +1187,7 @@ namespace IndustrialNetwork
 									{
 										if (value > this->GetTypedHighLimit<std::int32_t>())
 										{
-											boost::format formatter(kMsgBaseObjectHighLimitError);
+											boost::format formatter(kMsgBaseObjectHighLimitError[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 											formatter
 											% this->GetName()
 											% this->GetObjectId()
@@ -1205,7 +1205,7 @@ namespace IndustrialNetwork
 									{
 										if (value < this->GetTypedLowLimit<std::int32_t>())
 										{
-											boost::format formatter(kMsgBaseObjectLowLimitError);
+											boost::format formatter(kMsgBaseObjectLowLimitError[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 											formatter
 											% this->GetName()
 											% this->GetObjectId()
@@ -1289,7 +1289,7 @@ namespace IndustrialNetwork
 									{
 										if (value > this->GetTypedHighLimit<std::int64_t>())
 										{
-											boost::format formatter(kMsgBaseObjectHighLimitError);
+											boost::format formatter(kMsgBaseObjectHighLimitError[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 											formatter
 											% this->GetName()
 											% this->GetObjectId()
@@ -1307,7 +1307,7 @@ namespace IndustrialNetwork
 									{
 										if (value < this->GetTypedHighLimit<std::int64_t>())
 										{
-											boost::format formatter(kMsgBaseObjectLowLimitError);
+											boost::format formatter(kMsgBaseObjectLowLimitError[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 											formatter
 											% this->GetName()
 											% this->GetObjectId()
@@ -1344,7 +1344,7 @@ namespace IndustrialNetwork
 									{
 										if (value > this->GetTypedHighLimit<std::uint64_t>())
 										{
-											boost::format formatter(kMsgBaseObjectHighLimitError);
+											boost::format formatter(kMsgBaseObjectHighLimitError[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 											formatter
 											% this->GetName()
 											% this->GetObjectId()
@@ -1362,7 +1362,7 @@ namespace IndustrialNetwork
 									{
 										if (value < this->GetTypedLowLimit<std::uint64_t>())
 										{
-											boost::format formatter(kMsgBaseObjectLowLimitError);
+											boost::format formatter(kMsgBaseObjectLowLimitError[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 											formatter
 											% this->GetName()
 											% this->GetObjectId()
@@ -1419,7 +1419,7 @@ namespace IndustrialNetwork
 					}
 					catch (const std::exception&)
 					{
-						boost::format formatter(kMsgActualValueDatatypeError);
+						boost::format formatter(kMsgActualValueDatatypeError[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 						formatter
 						% _actualValue
 						% GetPlkDataTypeName(GetDataType().get());

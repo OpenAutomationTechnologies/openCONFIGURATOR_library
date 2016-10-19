@@ -67,7 +67,7 @@ namespace IndustrialNetwork
 					}
 
 					//Datatype does not match
-					boost::format formatter(kMsgDatatypeMismatch);
+					boost::format formatter(kMsgDatatypeMismatch[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 					formatter
 					% typeid(T).name()
 					% this->GetUntypedDefaultValue().type().name();
@@ -122,7 +122,7 @@ namespace IndustrialNetwork
 					}
 					catch (const std::exception& e)
 					{
-						boost::format formatter(kMsgCnFeatureDatatypeError);
+						boost::format formatter(kMsgCnFeatureDatatypeError[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 						formatter
 						% this->GetName();
 						LOG_FATAL() << formatter.str() << " " << e.what();
@@ -142,7 +142,7 @@ namespace IndustrialNetwork
 					}
 
 					//Datatype does not match
-					boost::format formatter(kMsgDatatypeMismatch);
+					boost::format formatter(kMsgDatatypeMismatch[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 					formatter
 					% typeid(T).name()
 					% this->GetUntypedActualValue().type().name();
@@ -163,7 +163,7 @@ namespace IndustrialNetwork
 					}
 
 					//Datatype does not match
-					boost::format formatter(kMsgDatatypeMismatch);
+					boost::format formatter(kMsgDatatypeMismatch[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 					formatter
 					% typeid(T).name()
 					% this->GetUntypedActualValue().type().name();

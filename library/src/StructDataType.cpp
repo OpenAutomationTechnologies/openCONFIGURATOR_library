@@ -60,7 +60,7 @@ Result StructDataType::AddVarDeclaration(std::shared_ptr<VarDeclaration>& varDec
 	{
 		if (var->GetUniqueID() == varDecl->GetUniqueID())
 		{
-			boost::format formatter(kMsgVarDeclarationExists);
+			boost::format formatter(kMsgVarDeclarationExists[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 			formatter
 			% varDecl->GetUniqueID()
 			% this->GetUniqueID();
