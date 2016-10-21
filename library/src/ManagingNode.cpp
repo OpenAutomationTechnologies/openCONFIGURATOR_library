@@ -40,15 +40,7 @@ using namespace IndustrialNetwork::POWERLINK::Core::Utilities;
 ManagingNode::ManagingNode(std::uint8_t nodeID, const std::string& nodeName) : BaseNode(nodeID, nodeName),
 	dynamicChannelList(std::vector<std::shared_ptr<DynamicChannel>>()),
 	rmnList(std::vector<std::uint16_t>())
-{
-	//this->AddNodeAssignment(NodeAssignment::MNT_NODEASSIGN_VALID);
-	//this->AddNodeAssignment(NodeAssignment::NMT_NODEASSIGN_NODE_EXISTS);
-
-	//if (nodeID != 240) //Add assignments for RMNs only
-	//{
-	//AddNodeAssignment(NodeAssignment::NMT_NODEASSIGN_NODE_IS_CN);
-	//}
-}
+{}
 
 ManagingNode::~ManagingNode()
 {

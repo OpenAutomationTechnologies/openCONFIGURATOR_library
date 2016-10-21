@@ -112,11 +112,10 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProcessParameterGroup(const std::string& paramName, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseProcessDataMapping>& mappingObject, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterGroup>& grp, const std::string& dataName, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir, std::uint32_t& piOffset, std::uint32_t domainCount);
 						void ProcessComplexDatatype(const std::string& paramName, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseProcessDataMapping>& mappingObject, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::StructDataType>& obj, const std::string& dataName, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir, std::uint32_t& piOffset, std::uint32_t domainCount);
 						void ProcessComplexDatatype(const std::string& paramName, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseProcessDataMapping>& mappingObject, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ArrayDataType>& obj, const std::string& dataName, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir, std::uint32_t& piOffset, std::uint32_t domainCount);
-						//void ProcessComplexDatatype(const std::string& paramName,  const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseProcessDataMapping>& mappingObject, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::EnumDataType>& obj, const std::string& dataName, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint32_t& piOffset, std::uint32_t domainCount);
+
 						std::uint32_t nodeDataPresMnOffset;
 						std::uint32_t nodeDataPresMnCurrentOffset;
 						bool receivesPResMN;
-
 				};
 			}
 		}

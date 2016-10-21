@@ -64,7 +64,6 @@ namespace IndustrialNetwork
 						virtual ~BuildConfigurationSettingBuilder()
 						{}
 						virtual IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GenerateConfiguration(const std::string& value, const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection) = 0;
-
 				};
 			}
 		}

@@ -125,34 +125,20 @@ const boost::dynamic_bitset<>& ParameterGroup::GetActualValueBitSet(std::uint32_
 		{
 			if (paramGrp->CheckParameterGroupCondition())
 			{
-				//if (paramGrp->GetBitOffset() > bitSet.size())
-				//	bitSet.resize(paramGrp->GetBitOffset());
-
 				auto paramGrpBitSet = paramGrp->GetActualValueBitSet(paramGrp->GetBitSize());
-				//std::uint32_t start = paramGrp->GetBitOffset() + bitSet.size();
-				//size_t totalSize = paramGrpBitSet.size() + bitSet.size();
-				//bitSet.resize(totalSize);
 				for (boost::dynamic_bitset<>::size_type i = 0; i < paramGrpBitSet.size(); i++)
 				{
 					bitSet[paramGrp->GetBitOffset() + i] = paramGrpBitSet[i];
 				}
-				//LOG_FATAL() << paramGrp->GetUniqueId() << " : " << paramGrp->GetBitOffset() << " : " << bitSet;
 			}
 		}
 		else if (paramRef)
 		{
-			//if (paramRef->GetBitOffset() > bitSet.size())
-			//	bitSet.resize(paramRef->GetBitOffset());
-
 			auto paramRefBitSet = paramRef->GetActualValueBitSet();
-			//std::uint32_t start = paramRef->GetBitOffset() + bitSet.size();
-			//size_t totalSize = paramRefBitSet.size() + bitSet.size();
-			//bitSet.resize(totalSize);
 			for (size_t i = 0; i < paramRefBitSet.size(); i++)
 			{
 				bitSet[paramRef->GetBitOffset() + i] = paramRefBitSet[i];
 			}
-			//LOG_FATAL() << paramRef->GetUniqueId() << " : " << paramRef->GetBitOffset() << " : " << bitSet;
 		}
 	}
 	return this->bitSet;

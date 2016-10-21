@@ -80,7 +80,6 @@ namespace IndustrialNetwork
 					private:
 						std::uint32_t originalId;
 						std::uint32_t modulePosition;
-
 				};
 			}
 		}

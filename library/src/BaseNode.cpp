@@ -123,7 +123,6 @@ Result BaseNode::AddObject(std::shared_ptr<Object>& objRef)
 		formatter
 		% objRef->GetObjectId()
 		% (std::uint32_t) nodeId;
-		//LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::OBJECT_EXISTS, formatter.str());
 	}
 

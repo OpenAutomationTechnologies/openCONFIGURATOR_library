@@ -106,7 +106,6 @@ namespace IndustrialNetwork
 						std::uint32_t length;
 
 						std::uint32_t offsetGap;
-
 				};
 			}
 		}

@@ -55,5 +55,4 @@ namespace IndustrialNetwork
 		}
 	}
 }
-
 #endif

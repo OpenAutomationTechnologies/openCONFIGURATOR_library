@@ -92,7 +92,6 @@ namespace IndustrialNetwork
 						I featureId;
 						boost::any defaultValue;
 						boost::any actualValue;
-
 				};
 			}
 		}

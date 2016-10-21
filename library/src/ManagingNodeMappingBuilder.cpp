@@ -288,12 +288,6 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 				std::uint32_t fillSize = 0;
 				std::uint32_t size = mapping->GetMappingLength();
 
-				//Get domain object parameter
-				//std::shared_ptr<Parameter> param;
-				//res = cn->GetApplicationProcess()->GetParameter(foundObject->GetUniqueIdRef().get(), param);
-				//if (!res.IsSuccessful())
-				//	return res;
-
 				std::vector<std::shared_ptr<BaseProcessImageObject>> processImageCollection;
 				if (dir == Direction::RX)
 				{
@@ -608,7 +602,6 @@ Result ManagingNodeMappingBuilder::WriteMappingToForNode(std::uint16_t nodeId, D
 		% DirectionTypeValues[static_cast<std::underlying_type<Direction>::type>(dir)]
 		% "CN"
 		% nodeId;
-		//LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::CHANNEL_OBJECT_LIMIT_EXCEEDED, formatter.str());
 	}
 

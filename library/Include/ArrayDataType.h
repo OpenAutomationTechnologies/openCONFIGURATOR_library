@@ -68,7 +68,6 @@ namespace IndustrialNetwork
 						std::uint32_t lowerLimit;
 						std::uint32_t upperLimit;
 						IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype dataType;
-
 				};
 			}
 		}

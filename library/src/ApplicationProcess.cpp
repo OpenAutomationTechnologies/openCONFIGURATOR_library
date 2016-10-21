@@ -160,7 +160,6 @@ Result ApplicationProcess::GetParameter(const std::string& uniqueId, std::shared
 	boost::format formatter(kMsgParameterNotFound[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% uniqueId;
-	//LOG_ERROR() << formatter.str();
 	return Result(ErrorCode::PARAMETER_NOT_FOUND, formatter.str());
 }
 
@@ -178,7 +177,6 @@ Result ApplicationProcess::GetParameterGroup(const std::string& uniqueId, std::s
 	boost::format formatter(kMsgParameterGroupNonExisting[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
 	% uniqueId;
-	//LOG_ERROR() << formatter.str();
 	return Result(ErrorCode::PARAMETER_GROUP_DOES_NOT_EXIST, formatter.str());
 }
 Result ApplicationProcess::GetParameterTemplate(const std::string& uniqueId, std::shared_ptr<ParameterTemplate>& returnParam) const

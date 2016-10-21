@@ -196,7 +196,6 @@ namespace IndustrialNetwork
 						{
 							std::string actualValueStr = "";
 							auto bitSet = this->referencedParameterGrp->GetActualValueBitSet(GetBitSize());
-							//LOG_FATAL() << bitSet;
 							for (boost::dynamic_bitset<>::size_type bit = 0; bit <= bitSet.size() - 4; bit += 4)
 							{
 								std::stringstream actValue;
@@ -323,7 +322,6 @@ namespace IndustrialNetwork
 						{
 							std::string actualValueStr = "";
 							auto bitSet = this->referencedParameterGrp->GetActualValueBitSet(GetBitSize());
-							//LOG_FATAL() << bitSet;
 							for (boost::dynamic_bitset<>::size_type bit = 0; bit <= bitSet.size() - 4; bit += 4)
 							{
 								std::stringstream actVal;
@@ -1425,7 +1423,7 @@ namespace IndustrialNetwork
 						% GetPlkDataTypeName(GetDataType().get());
 						if (validateOnly == false)
 						{
-							LOG_FATAL() << formatter.str();// << e.what();
+							LOG_FATAL() << formatter.str();
 						}
 						return Result(ErrorCode::ACTUAL_VALUE_INVALID, formatter.str());
 					}
@@ -1457,6 +1455,7 @@ namespace IndustrialNetwork
 								return 32;
 							case PlkDataType::VISIBLE_STRING:
 							case PlkDataType::OCTET_STRING:
+							///Since we do not have Unicode support calculate normal octet size for std::string
 							case PlkDataType::UNICODE_STRING:
 								{
 									if (this->GetTypedActualValue<std::string>().size() != 0)
@@ -1465,14 +1464,6 @@ namespace IndustrialNetwork
 										return 8 * (std::uint32_t) this->GetTypedDefaultValue<std::string>().size();
 									break;
 								}
-							/*case PlkDataType::UNICODE_STRING:
-								{
-									if (this->GetTypedActualValue<std::string>().size() != 0)
-										return 16 * (std::uint32_t) this->GetTypedActualValue<std::string>().size();
-									else if (this->GetTypedDefaultValue<std::string>().size() != 0)
-										return 16 * (std::uint32_t) this->GetTypedDefaultValue<std::string>().size();
-									break;
-						}*///Since we do not have Unicode support calculate normal octet size for std::string
 							case PlkDataType::Domain:
 								{
 									if (this->GetUniqueIdRef().is_initialized())

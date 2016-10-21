@@ -84,7 +84,6 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveObjectFromOd(std::uint32_t objectId);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveSubObjectsFromOd(std::uint32_t objectId, std::uint32_t subObjectId);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result UpdateControlledNodeOd();
-
 				};
 			}
 		}

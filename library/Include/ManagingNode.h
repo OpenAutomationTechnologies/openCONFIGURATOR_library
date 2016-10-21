@@ -109,8 +109,6 @@ namespace IndustrialNetwork
 						bool MultiplexedCycleAlreadyAssigned(std::uint8_t multiplexedCycle);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CheckProcessDataMapping(const std::shared_ptr<BaseNode>& node, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseProcessDataMapping>& mapping, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result UpdateProcessDataMapping(const std::map<uint8_t, std::shared_ptr<BaseNode>>& nodeCollection, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir);
-
-
 				};
 			}
 		}

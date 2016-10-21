@@ -71,7 +71,6 @@ namespace IndustrialNetwork
 					private:
 						std::string uniqueId;
 						std::uint16_t bitOffset;
-
 				};
 			}
 		}

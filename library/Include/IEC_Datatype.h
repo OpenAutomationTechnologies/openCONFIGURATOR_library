@@ -95,7 +95,7 @@ namespace IndustrialNetwork
 				};
 				*/
 
-				//To be downcompatible with the old openCONFIGURATOR
+				//To be downwardly compatiblel with the old openCONFIGURATOR
 				static const std::string IECDatatypeValues[] =
 				{
 					"BITSTRING",

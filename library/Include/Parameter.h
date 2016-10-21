@@ -71,7 +71,6 @@ namespace IndustrialNetwork
 					private:
 						std::string parameterTemplateUniqueId;
 						std::shared_ptr<ParameterTemplate> parameterTemplate;
-
 				};
 			}
 		}

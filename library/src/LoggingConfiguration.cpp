@@ -176,7 +176,6 @@ namespace IndustrialNetwork
 						    keywords::format =
 						        (
 						            expr::stream
-						            /* << "!ENTRY org.epsg.openconfigurator.core " */
 						            << (string_formatter % "[").str()
 						            << expr::format_date_time(timestamp, "%Y-%m-%d %H:%M:%S")
 						            << (string_formatter % "] ").str()
@@ -196,8 +195,6 @@ namespace IndustrialNetwork
 						            [
 						                expr::stream << (string_formatter % "[FATAL] ").str()
 						            ]
-						            /*<< " 0 "*/
-						            /*<< "!MESSAGE " */
 						            << expr::smessage
 						        ),
 						    keywords::auto_flush = "true",

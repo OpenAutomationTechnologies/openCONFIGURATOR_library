@@ -42,12 +42,7 @@ ControlledNode::ControlledNode(std::uint8_t nodeID, const std::string& nodeName)
 	nodeDataPresMnOffset(0),
 	nodeDataPresMnCurrentOffset(0),
 	receivesPResMN(false)
-{
-	//this->AddNodeAssignment(NodeAssignment::MNT_NODEASSIGN_VALID);
-	//this->AddNodeAssignment(NodeAssignment::NMT_NODEASSIGN_NODE_EXISTS);
-	//this->AddNodeAssignment(NodeAssignment::NMT_NODEASSIGN_NODE_IS_CN);
-	//this->AddNodeAssignment(NodeAssignment::NMT_NODEASSIGN_START_CN);
-}
+{}
 
 ControlledNode::~ControlledNode()
 {}
@@ -1691,7 +1686,6 @@ Result ControlledNode::ProcessParameterGroup(const std::string& paramName, const
 			{
 				std::shared_ptr<StructDataType> structDt = std::dynamic_pointer_cast<StructDataType>(paramRef->GetReferencedParameter()->GetComplexDataType());
 				std::shared_ptr<ArrayDataType> arrayDt = std::dynamic_pointer_cast<ArrayDataType>(paramRef->GetReferencedParameter()->GetComplexDataType());
-				//std::shared_ptr<EnumDataType> enumDt = std::dynamic_pointer_cast<EnumDataType>(paramRef->GetReferencedParameter()->GetComplexDataType());
 				if (structDt.get())
 				{
 					ProcessComplexDatatype(paramName, mappingObject, structDt, dataName, dir, piOffset, domainCount);
@@ -1700,10 +1694,6 @@ Result ControlledNode::ProcessParameterGroup(const std::string& paramName, const
 				{
 					ProcessComplexDatatype(paramName, mappingObject, arrayDt, dataName, dir, piOffset, domainCount);
 				}
-				/*else if (enumDt.get())
-				{
-					ProcessComplexDatatype(paramName, mappingObject, enumDt, dataName, dir, piOffset, domainCount);
-				}*/
 			}
 			else if (paramRef->GetReferencedParameter()->GetDataType().is_initialized())
 				ProcessComplexDatatype(paramName, mappingObject, paramRef->GetReferencedParameter(), dataName, dir, piOffset, bitOffset, domainCount);
@@ -1790,8 +1780,6 @@ void ControlledNode::ProcessComplexDatatype(const std::string& paramName, const 
 		nameBuilder << "_";
 		nameBuilder << dataName;
 		nameBuilder	<< "_";
-		//nameBuilder << structDt->GetName();
-		//nameBuilder << "_";
 		nameBuilder << varDecl->GetName();
 
 		std::string piName = nameBuilder.str();
@@ -1902,9 +1890,3 @@ void ControlledNode::ProcessComplexDatatype(const std::string& paramName, const 
 	}
 }
 
-/*
-void ControlledNode::ProcessComplexDatatype(const std::string& paramName, const std::shared_ptr<BaseProcessDataMapping>& mappingObject, const std::shared_ptr<EnumDataType>& enumDT, const std::string& dataName, const Direction& dir, std::uint32_t& piOffset, std::uint32_t domainCount)
-{
-
-}
-*/
