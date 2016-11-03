@@ -4055,7 +4055,8 @@ Result OpenConfiguratorCore::GetMappingObjectProcessImageOffset(const std::strin
 			        piObj->GetMappingObjectIndex() == objectId &&
 			        piObj->GetMappingObjectSubIndex() == subObjectId)
 			{
-				offset = piSize / 8;
+				//Return bitoffset
+				offset = piSize;
 				return Result();
 			}
 			piSize += piObj->GetSize();
@@ -4065,6 +4066,7 @@ Result OpenConfiguratorCore::GetMappingObjectProcessImageOffset(const std::strin
 		% objectId
 		% subObjectId
 		% (std::uint32_t) nodeId;
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::MAPPED_OBJECT_DOES_NOT_EXIST, "[" + networkId + "] " + formatter.str());
 	}
 	catch (const std::exception& ex)
@@ -4108,7 +4110,8 @@ Result OpenConfiguratorCore::GetMappingParameterProcessImageOffset(const std::st
 			if (piObj->GetSourceNodeId() == (std::uint16_t) nodeId &&
 			        piObj->GetMappingObjectParameter() == parameterName)
 			{
-				offset = piSize / 8;
+				//Return bitoffset
+				offset = piSize;
 				return Result();
 			}
 			piSize += piObj->GetSize();
@@ -4116,6 +4119,7 @@ Result OpenConfiguratorCore::GetMappingParameterProcessImageOffset(const std::st
 		boost::format formatter(kMsgParameterNotFound[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
 		% parameterName;
+		LOG_ERROR() << formatter.str();
 		return Result(ErrorCode::PARAMETER_NOT_FOUND, "[" + networkId + "] " + formatter.str());
 	}
 	catch (const std::exception& ex)

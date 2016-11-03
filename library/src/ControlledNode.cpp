@@ -933,7 +933,7 @@ Result ControlledNode::UpdateProcessImage(const Direction& dir)
 			}*/
 			else
 			{
-				ProcessComplexDatatype(dataObject->GetReferencedParameter()->GetUniqueID(), mapObj, dataObject->GetReferencedParameter(), dataName, dir, piOffset, bitOffset, domainCount);
+				ProcessComplexDatatype(mapObj, dataObject->GetReferencedParameter(), dataName, dir, piOffset, bitOffset, domainCount);
 			}
 			domainCount++;
 		}
@@ -1696,13 +1696,13 @@ Result ControlledNode::ProcessParameterGroup(const std::string& paramName, const
 				}
 			}
 			else if (paramRef->GetReferencedParameter()->GetDataType().is_initialized())
-				ProcessComplexDatatype(paramName, mappingObject, paramRef->GetReferencedParameter(), dataName, dir, piOffset, bitOffset, domainCount);
+				ProcessComplexDatatype(mappingObject, paramRef->GetReferencedParameter(), dataName, dir, piOffset, bitOffset, domainCount);
 		}
 	}
 	return Result();
 }
 
-void ControlledNode::ProcessComplexDatatype(const std::string& paramName,  const std::shared_ptr<BaseProcessDataMapping>& mappingObject, const std::shared_ptr<Parameter>& param, const std::string& dataName, const Direction& dir, std::uint32_t& piOffset, std::uint32_t& bitOffset, std::uint32_t domainCount)
+void ControlledNode::ProcessComplexDatatype(const std::shared_ptr<BaseProcessDataMapping>& mappingObject, const std::shared_ptr<Parameter>& param, const std::string& dataName, const Direction& dir, std::uint32_t& piOffset, std::uint32_t& bitOffset, std::uint32_t domainCount)
 {
 	std::stringstream nameBuilder;
 	nameBuilder << "CN" << (std::uint32_t) this->GetNodeId();
@@ -1736,7 +1736,7 @@ void ControlledNode::ProcessComplexDatatype(const std::string& paramName,  const
 		            GetIECDataTypeBitSize(param->GetDataType().get()));
 		piObj->SetMappingObjectIndex(mappingObject->GetObject());
 		piObj->SetMappingObjectSubIndex(mappingObject->GetSubObject());
-		piObj->SetMappingObjectParameter(paramName);
+		piObj->SetMappingObjectParameter(param->GetUniqueID());
 		piObj->SetSourceNodeId(this->GetNodeId());
 
 		if (dir == Direction::RX)
@@ -1758,6 +1758,10 @@ void ControlledNode::ProcessComplexDatatype(const std::string& paramName,  const
 		            param->GetDataType().get(),
 		            piOffset,
 		            GetIECDataTypeBitSize(param->GetDataType().get()));
+		piObj->SetMappingObjectIndex(mappingObject->GetObject());
+		piObj->SetMappingObjectSubIndex(mappingObject->GetSubObject());
+		piObj->SetMappingObjectParameter(param->GetUniqueID());
+		piObj->SetSourceNodeId(this->GetNodeId());
 
 		if (dir == Direction::RX)
 			this->GetReceiveProcessImage().push_back(piObj);
@@ -1812,6 +1816,11 @@ void ControlledNode::ProcessComplexDatatype(const std::string& paramName, const 
 			            varDecl->GetDataType(),
 			            piOffset,
 			            varDecl->GetBitSize());
+			piObj->SetMappingObjectIndex(mappingObject->GetObject());
+			piObj->SetMappingObjectSubIndex(mappingObject->GetSubObject());
+			piObj->SetMappingObjectParameter(paramName);
+			piObj->SetSourceNodeId(this->GetNodeId());
+
 			if (dir == Direction::RX)
 				this->GetReceiveProcessImage().push_back(piObj);
 			else if (dir == Direction::TX)
