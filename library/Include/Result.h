@@ -218,6 +218,7 @@ namespace IndustrialNetwork
 				const std::string kMsgModuleDoesNotMatch[] = {"Module \"%s\" does not match module \"%s\" on position \"%d\".", "Modul \"%s\" stimmt nicht mit dem Modul \"%s\" auf der Position \"%d\" ueberein."};
 				const std::string kMsgModulePositionOccupied[] = {"Module \"%s\" cannot be added to the position \"%d\" because it is already occupied.", "Modul \"%s\" kann nicht auf die Position \"%d\" gesetzt werden, weil diese bereits besetzt ist."};
 				const std::string kMsgModuleAddressOccupied[] = {"Address of Module \"%s\" cannot be changed to \"%d\" because it is already occupied.", "Die Adresse des Moduls \"%s\" kann nicht auf \"%d\" gesetzt werden, weil diese bereits besetzt ist."};
+				const std::string kMsgInterfaceDoesNotSupportManualAddressing[] = { "Module Interface \"%s\" of \"%s\" (on node \"%s\" (%d)) does not support manual addressing.", "Das Modulinterface \"%s\" von \"%s\" (auf dem Knoten \"%s\" (%d)) unterstuetzt die manuelle Adressierung nicht." };
 
 				const std::string kMsgInvalidProcessImage[] = {"Invalid process image ignored : ", "Ungueltiges Prozessabbild wurde ignoriert: "};
 				const std::string kMsgInvalidMappingOffset[] = {"Invalid mapping offset ignored : ", "Ungueltiger Mappingoffset wurde ignoriert: "};

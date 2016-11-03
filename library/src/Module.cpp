@@ -113,44 +113,6 @@ std::uint32_t Module::GetPosition() const
 
 void Module::SetPosition(std::uint32_t _position)
 {
-	if (this->moduleInterface->GetModuleAddressing() == ModuleAddressing::POSITION)
-	{
-		for (auto& obj : this->GetObjectDictionary())
-		{
-			for (auto subObj = obj.second->GetSubObjectDictionary().begin(); subObj != obj.second->GetSubObjectDictionary().end(); ++subObj)
-			{
-				if (subObj->first == this->position && this->position == subObj->second->GetModulePosition())
-				{
-					if (obj.second->GetSubObjectDictionary().find(_position) != obj.second->GetSubObjectDictionary().end())
-					{
-						auto oldSubobject = obj.second->GetSubObjectDictionary().find(this->position);
-						auto newSubobject = obj.second->GetSubObjectDictionary().find(_position);
-
-						std::pair<std::uint32_t, std::shared_ptr<SubObject>> switchedoldSubobject(_position, oldSubobject->second);
-						std::pair<std::uint32_t, std::shared_ptr<SubObject>> switchedNewSubObject(this->position, newSubobject->second);
-
-						oldSubobject->second->SetModulePosition(_position);
-						newSubobject->second->SetModulePosition(this->position);
-
-						obj.second->GetSubObjectDictionary().erase(oldSubobject);
-						obj.second->GetSubObjectDictionary().erase(newSubobject);
-
-						obj.second->GetSubObjectDictionary().insert(switchedoldSubobject);
-						obj.second->GetSubObjectDictionary().insert(switchedNewSubObject);
-						break;
-					}
-					else
-					{
-						subObj->second->SetModulePosition(_position);
-						obj.second->GetSubObjectDictionary().insert(std::pair<std::uint32_t, std::shared_ptr<SubObject>>(_position, subObj->second));
-						obj.second->GetSubObjectDictionary().erase(subObj);
-						break;
-					}
-				}
-			}
-		}
-		this->SetAddress(_position);
-	}
 	this->position = _position;
 }
 
@@ -204,4 +166,9 @@ Result Module::GetMappedParameterName(const std::string& parameterName, std::str
 std::map<std::pair<std::uint32_t, std::uint32_t>, std::shared_ptr<SubObject>>& Module::GetDisabledSubindices()
 {
 	return this->disabledSubindices;
+}
+
+std::shared_ptr<ModuleInterface>& Module::GetModuleInterface()
+{
+	return this->moduleInterface;
 }

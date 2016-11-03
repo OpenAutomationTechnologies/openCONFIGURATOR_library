@@ -83,6 +83,28 @@ Result ModularControlledNode::AddModule(const std::string& interfaceId, const st
 	{
 		if (interf->GetUniqueId() == interfaceId)
 		{
+			if (interf->GetModuleAddressing() == ModuleAddressing::POSITION && addressing == ModuleAddressing::MANUAL)
+			{
+				boost::format formatter(kMsgInterfaceDoesNotSupportManualAddressing[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
+				formatter
+				% interf->GetUniqueId()
+				% moduleName
+				% this->GetName()
+				% (std::uint32_t) this->GetNodeId();
+				LOG_ERROR() << formatter.str();
+				return Result(ErrorCode::MANUAL_ADDRESSING_NOT_SUPPORTED, formatter.str());
+			}
+			if (addressing == ModuleAddressing::POSITION && moduleAddress != modulePosition)
+			{
+				boost::format formatter(kMsgInterfaceDoesNotSupportManualAddressing[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
+				formatter
+				% interf->GetUniqueId()
+				% moduleName
+				% this->GetName()
+				% (std::uint32_t) this->GetNodeId();
+				LOG_WARN() << formatter.str();
+				moduleAddress = modulePosition;
+			}
 			return interf->AddModule(modulePosition, std::shared_ptr<Module>(new Module(this->GetNodeId(), moduleId, moduleType, addressing, moduleAddress, modulePosition, moduleName, minPosition, maxPosition, minAddress, maxAddress, maxCount)));
 		}
 	}
@@ -228,31 +250,29 @@ Result ModularControlledNode::AddObjectToModule(const std::string& interfaceId, 
 				existingObj->SetId(objectId);
 				return Result();
 			}
-			else
+
+			obj->SetRangeSelector(rangeSelector);
+
+			if (createNew)
 			{
-				obj->SetRangeSelector(rangeSelector);
-
-				if (createNew)
-				{
-					res = module->AddObject(obj);
-					if (!res.IsSuccessful())
-						return res;
-				}
-
-				//Change object Id before adding to nodes od
-				obj->SetId(objectId);
-
-				if (range->GetPdoMpapping() != PDOMapping::UNDEFINED)
-					obj->SetPDOMapping(range->GetPdoMpapping());
-
-				if (module->IsEnabled())
-				{
-					res = this->AddObject(obj);
-					if (!res.IsSuccessful())
-						return res;
-				}
-				return Result();
+				res = module->AddObject(obj);
+				if (!res.IsSuccessful())
+					return res;
 			}
+
+			//Change object Id before adding to nodes od
+			obj->SetId(objectId);
+
+			if (range->GetPdoMpapping() != PDOMapping::UNDEFINED)
+				obj->SetPDOMapping(range->GetPdoMpapping());
+
+			if (module->IsEnabled())
+			{
+				res = this->AddObject(obj);
+				if (!res.IsSuccessful())
+					return res;
+			}
+			return Result();
 		}
 	}
 	boost::format formatter(kMsgInterfaceDoesNotExists[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
@@ -376,6 +396,27 @@ Result ModularControlledNode::UpdateControlledNodeOd()
 
 		for (auto& module : inter->GetModuleCollection())
 		{
+			if (!module.second->IsEnabled())
+				continue;
+
+			for (auto& obj : module.second->GetObjectDictionary())
+			{
+				std::shared_ptr<Range> range;
+				Result res = inter->GetRange(obj.second->GetRangeSelector().get(), range);
+				if (!res.IsSuccessful())
+					return res;
+
+				if (range->GetSortMode() == SortMode::INDEX)
+				{
+					res = this->RemoveObjectFromOd(obj.second->GetObjectId());
+					if (!res.IsSuccessful())
+						return res;
+				}
+			}
+		}
+
+		for (auto& module : inter->GetModuleCollection())
+		{
 			for (auto& obj : module.second->GetObjectDictionary())
 			{
 				std::shared_ptr<Range> range;
@@ -401,7 +442,6 @@ Result ModularControlledNode::UpdateControlledNodeOd()
 							if (inter->GetModuleCollection().find(subObj->first) != inter->GetModuleCollection().end())
 							{
 								std::shared_ptr<Module> mod = inter->GetModuleCollection().at(subObj->first);
-								mod->GetDisabledSubindices().clear();
 
 								std::pair<std::uint32_t, std::uint32_t> position = std::pair<std::uint32_t, std::uint32_t>(obj.first, subObj->first);
 								mod->GetDisabledSubindices().insert(std::pair<std::pair<std::uint32_t, std::uint32_t>, std::shared_ptr<SubObject>>(position, subObj->second));
@@ -409,16 +449,11 @@ Result ModularControlledNode::UpdateControlledNodeOd()
 								subObj = obj.second->GetSubObjectDictionary().erase(subObj);
 							}
 						}
-
 						if (subObj == obj.second->GetSubObjectDictionary().end())
 							break;
 					}
 				}
 
-				if (range->GetSortMode() == SortMode::INDEX)
-				{
-					this->RemoveObjectFromOd(obj.second->GetObjectId());
-				}
 				//if module is not enable do not add the object to the head node od
 				if (module.second->IsEnabled() == false)
 					continue;
@@ -431,18 +466,21 @@ Result ModularControlledNode::UpdateControlledNodeOd()
 						return res;
 				}
 
-				for (auto& subObj : module.second->GetDisabledSubindices())
+				for (auto iter = module.second->GetDisabledSubindices().begin(); iter != module.second->GetDisabledSubindices().end(); ++iter)
 				{
-					if (subObj.first.first == obj.first)
+					if (iter->first.first == obj.first)
 					{
 						objectId = obj.first;
-						std::uint16_t subObjectId = (std::uint16_t) subObj.second->GetOriginalId();
-						res = this->AddSubObjectToModule(inter->GetUniqueId(), module.first, module.second->GetModuleId(), objectId, subObjectId, subObj.second, true);
+						std::uint16_t subObjectId = (std::uint16_t) iter->second->GetOriginalId();
+						res = this->AddSubObjectToModule(inter->GetUniqueId(), module.first, module.second->GetModuleId(), objectId, subObjectId, iter->second, true);
 						if (!res.IsSuccessful())
 							return res;
-					}
-				}
 
+						iter = module.second->GetDisabledSubindices().erase(iter);
+					}
+					if (iter == module.second->GetDisabledSubindices().end())
+						break;
+				}
 			}
 		}
 	}

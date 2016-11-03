@@ -88,6 +88,7 @@ namespace IndustrialNetwork
 						const std::map<std::string, std::string>& GetParameterNameMapping() const;
 
 						std::map<std::pair<std::uint32_t, std::uint32_t>, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::SubObject>>& GetDisabledSubindices();
+						std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ModularNode::ModuleInterface>& GetModuleInterface();
 
 					private:
 						std::uint32_t position;

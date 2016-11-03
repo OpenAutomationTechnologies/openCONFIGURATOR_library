@@ -43,6 +43,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Range.h"
 #include "ErrorCode.h"
 #include "IBaseInterface.h"
+#include "SubObject.h"
 
 namespace IndustrialNetwork
 {

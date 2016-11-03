@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace IndustrialNetwork::POWERLINK::Core::ModularNode;
 using namespace IndustrialNetwork::POWERLINK::Core::ErrorHandling;
+using namespace IndustrialNetwork::POWERLINK::Core::ObjectDictionary;
 using namespace IndustrialNetwork::POWERLINK::Core::CoreConfiguration;
 
 Interface::Interface(const std::string& uniqueId, const std::string& type, const ModuleAddressing& moduleAddressing, std::uint32_t maxModules, bool unusedSlots, bool multipleModules) :
@@ -193,11 +194,14 @@ Result Interface::ChangeModulePosition(const std::string& moduleId, std::uint32_
 {
 	if (this->moduleCollection.find(oldPos) != this->moduleCollection.end() && this->moduleCollection.find(newPos) == this->moduleCollection.end())
 	{
-		auto it = this->moduleCollection.find(oldPos);
-		it->second->SetPosition(newPos);
-		this->moduleCollection.insert(std::pair<std::uint32_t, std::shared_ptr<Module>>(newPos, it->second));
+		auto module = this->moduleCollection.find(oldPos);
+		std::pair<std::uint32_t, std::shared_ptr<Module>> movedModule(newPos, module->second);
+		movedModule.second->SetPosition(newPos);
 
-		for (auto& obj : it->second->GetObjectDictionary())
+		this->moduleCollection.insert(movedModule);
+		this->moduleCollection.erase(module);
+
+		for (auto& obj : movedModule.second->GetObjectDictionary())
 		{
 			std::shared_ptr<Range> range;
 			Result res = this->GetRange(obj.second->GetRangeSelector().get(), range);
@@ -210,8 +214,29 @@ Result Interface::ChangeModulePosition(const std::string& moduleId, std::uint32_
 					subObj.second->SetModulePosition(newPos);
 				}
 			}
+			else if (range->GetSortMode() == SortMode::SUBINDEX && movedModule.second->GetModuleInterface()->GetModuleAddressing() == ModuleAddressing::POSITION)
+			{
+				for (auto subObj = obj.second->GetSubObjectDictionary().begin(); subObj != obj.second->GetSubObjectDictionary().end(); ++subObj)
+				{
+					if (subObj->first == oldPos)
+					{
+						if (obj.second->GetSubObjectDictionary().find(newPos) == obj.second->GetSubObjectDictionary().end())
+						{
+							subObj->second->SetModulePosition(newPos);
+							obj.second->GetSubObjectDictionary().insert(std::pair<std::uint32_t, std::shared_ptr<SubObject>>(newPos, subObj->second));
+							obj.second->GetSubObjectDictionary().erase(subObj);
+							break;
+						}
+					}
+				}
+			}
+
+			if (movedModule.second->GetModuleInterface()->GetModuleAddressing() == ModuleAddressing::POSITION)
+			{
+				movedModule.second->SetAddress(newPos);
+			}
 		}
-		this->moduleCollection.erase(it);
+
 		return Result();
 	}
 	else if (this->moduleCollection.find(oldPos) != this->moduleCollection.end() && this->moduleCollection.find(newPos) != this->moduleCollection.end())
@@ -237,12 +262,52 @@ Result Interface::ChangeModulePosition(const std::string& moduleId, std::uint32_
 			Result res = this->GetRange(obj.second->GetRangeSelector().get(), range);
 			if (!res.IsSuccessful())
 				return res;
+
 			if (range->GetSortMode() == SortMode::INDEX)
 			{
 				for (auto& subObj : obj.second->GetSubObjectDictionary())
 				{
 					subObj.second->SetModulePosition(oldPos);
 				}
+			}
+			else if (range->GetSortMode() == SortMode::SUBINDEX && switchedOldModule.second->GetModuleInterface()->GetModuleAddressing() == ModuleAddressing::POSITION)
+			{
+				for (auto subObj = obj.second->GetSubObjectDictionary().begin(); subObj != obj.second->GetSubObjectDictionary().end(); ++subObj)
+				{
+					if (subObj->first == newPos && subObj->second->GetModulePosition() == newPos)
+					{
+						if (obj.second->GetSubObjectDictionary().find(oldPos) != obj.second->GetSubObjectDictionary().end())
+						{
+							auto oldSubobject = obj.second->GetSubObjectDictionary().find(newPos);
+							auto newSubobject = obj.second->GetSubObjectDictionary().find(oldPos);
+
+							std::pair<std::uint32_t, std::shared_ptr<SubObject>> switchedoldSubobject(oldPos, oldSubobject->second);
+							std::pair<std::uint32_t, std::shared_ptr<SubObject>> switchedNewSubObject(newPos, newSubobject->second);
+
+							oldSubobject->second->SetModulePosition(oldPos);
+							newSubobject->second->SetModulePosition(newPos);
+
+							obj.second->GetSubObjectDictionary().erase(oldSubobject);
+							obj.second->GetSubObjectDictionary().erase(newSubobject);
+
+							obj.second->GetSubObjectDictionary().insert(switchedoldSubobject);
+							obj.second->GetSubObjectDictionary().insert(switchedNewSubObject);
+							break;
+						}
+						else
+						{
+							subObj->second->SetModulePosition(oldPos);
+							obj.second->GetSubObjectDictionary().insert(std::pair<std::uint32_t, std::shared_ptr<SubObject>>(oldPos, subObj->second));
+							obj.second->GetSubObjectDictionary().erase(subObj);
+							break;
+						}
+					}
+				}
+			}
+
+			if (switchedOldModule.second->GetModuleInterface()->GetModuleAddressing() == ModuleAddressing::POSITION)
+			{
+				switchedOldModule.second->SetAddress(oldPos);
 			}
 		}
 
@@ -258,6 +323,45 @@ Result Interface::ChangeModulePosition(const std::string& moduleId, std::uint32_
 				{
 					subObj.second->SetModulePosition(newPos);
 				}
+			}
+			else if (range->GetSortMode() == SortMode::SUBINDEX && switchedNewModule.second->GetModuleInterface()->GetModuleAddressing() == ModuleAddressing::POSITION)
+			{
+				for (auto subObj = obj.second->GetSubObjectDictionary().begin(); subObj != obj.second->GetSubObjectDictionary().end(); ++subObj)
+				{
+					if (subObj->first == oldPos && subObj->second->GetModulePosition() == oldPos)
+					{
+						if (obj.second->GetSubObjectDictionary().find(newPos) != obj.second->GetSubObjectDictionary().end())
+						{
+							auto oldSubobject = obj.second->GetSubObjectDictionary().find(oldPos);
+							auto newSubobject = obj.second->GetSubObjectDictionary().find(newPos);
+
+							std::pair<std::uint32_t, std::shared_ptr<SubObject>> switchedoldSubobject(newPos, oldSubobject->second);
+							std::pair<std::uint32_t, std::shared_ptr<SubObject>> switchedNewSubObject(oldPos, newSubobject->second);
+
+							oldSubobject->second->SetModulePosition(newPos);
+							newSubobject->second->SetModulePosition(oldPos);
+
+							obj.second->GetSubObjectDictionary().erase(oldSubobject);
+							obj.second->GetSubObjectDictionary().erase(newSubobject);
+
+							obj.second->GetSubObjectDictionary().insert(switchedoldSubobject);
+							obj.second->GetSubObjectDictionary().insert(switchedNewSubObject);
+							break;
+						}
+						else
+						{
+							subObj->second->SetModulePosition(newPos);
+							obj.second->GetSubObjectDictionary().insert(std::pair<std::uint32_t, std::shared_ptr<SubObject>>(newPos, subObj->second));
+							obj.second->GetSubObjectDictionary().erase(subObj);
+							break;
+						}
+					}
+				}
+			}
+
+			if (switchedNewModule.second->GetModuleInterface()->GetModuleAddressing() == ModuleAddressing::POSITION)
+			{
+				switchedNewModule.second->SetAddress(newPos);
 			}
 		}
 		return Result();

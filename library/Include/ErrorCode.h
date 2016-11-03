@@ -179,7 +179,8 @@ namespace IndustrialNetwork
 					RANGE_INVALID, //!< Range is invalid
 					RANGE_INDEX_ALREADY_TAKEN, //!< The range index is already taken.
 					POSITION_OCCUPIED, //!< Position on the interface is already occupied
-					ADDRESS_OCCUPIED //!< Address on the interface is already occupied
+					ADDRESS_OCCUPIED, //!< Address on the interface is already occupied
+					MANUAL_ADDRESSING_NOT_SUPPORTED //!< The manual addressing is not supported either by the head node interface or by the module interface.
 				};
 				/** @} */
 			}
