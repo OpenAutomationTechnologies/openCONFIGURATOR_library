@@ -128,7 +128,7 @@ const boost::dynamic_bitset<>& ParameterGroup::GetActualValueBitSet(std::uint32_
 				auto paramGrpBitSet = paramGrp->GetActualValueBitSet(paramGrp->GetBitSize());
 				for (boost::dynamic_bitset<>::size_type i = 0; i < paramGrpBitSet.size(); i++)
 				{
-					bitSet[paramGrp->GetBitOffset() + i] = paramGrpBitSet[i];
+					bitSet[paramGrp->GetBitOffset() + i] |= paramGrpBitSet[i];
 				}
 			}
 		}
@@ -137,7 +137,7 @@ const boost::dynamic_bitset<>& ParameterGroup::GetActualValueBitSet(std::uint32_
 			auto paramRefBitSet = paramRef->GetActualValueBitSet();
 			for (size_t i = 0; i < paramRefBitSet.size(); i++)
 			{
-				bitSet[paramRef->GetBitOffset() + i] = paramRefBitSet[i];
+				bitSet[paramRef->GetBitOffset() + i] |= paramRefBitSet[i];
 			}
 		}
 	}
