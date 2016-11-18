@@ -99,6 +99,7 @@
     <Compile Include="SortNumber.cs" />
     <Compile Include="StringCollection.cs" />
     <Compile Include="SubObject.cs" />
+    <Compile Include="Language.cs" />
     <Compile Include="SWIGTYPE_p_boost__any.cs" />
     <Compile Include="SWIGTYPE_p_boost__optionalT_boost__any_t.cs" />
     <Compile Include="SWIGTYPE_p_boost__optionalT_IndustrialNetwork__POWERLINK__Core__ObjectDictionary__AccessType_t.cs" />
