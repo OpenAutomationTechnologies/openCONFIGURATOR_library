@@ -646,6 +646,8 @@ Result PlkConfiguration::DistributePReqPayloadLimit(const std::map<std::uint8_t,
 		std::stringstream preqActPayloadLimitValue;
 		if (preqActPayloadLimitObj->HasActualValue())
 			preqActPayloadLimitValue << preqActPayloadLimitObj->GetTypedActualValue<std::uint16_t>();
+		else if (preqActPayloadLimitObj->HasDefaultValue())
+			preqActPayloadLimitValue << preqActPayloadLimitObj->GetTypedDefaultValue<std::uint16_t>();
 		else
 			continue;
 
@@ -695,6 +697,8 @@ Result PlkConfiguration::DistributePResPayloadLimit(const std::map<std::uint8_t,
 		std::stringstream presActPayloadLimitValue;
 		if (presActPayloadLimitObj->HasActualValue())
 			presActPayloadLimitValue << presActPayloadLimitObj->GetTypedActualValue<std::uint16_t>();
+		else if (presActPayloadLimitObj->HasDefaultValue())
+			presActPayloadLimitValue << presActPayloadLimitObj->GetTypedDefaultValue<std::uint16_t>();
 		else
 			continue;
 

@@ -745,14 +745,15 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Calcul
 		}
 	}
 
-	if (preqPayloadLimit <= 36)
+	if (preqPayloadLimit <= 36 && preqPayloadLimit > 0)
 	{
-		return this->SetSubObjectActualValue(0x1F98, 0x4, "36"); //Set to default value
+		return this->SetSubObjectActualValue(0x1F98, 0x4, "36"); //Set to minimum value
 	}
-	else
+	else if (preqPayloadLimit > 36)
 	{
 		return this->SetSubObjectActualValue(0x1F98, 0x4, IntToHex(preqPayloadLimit, 4, "0x"));
 	}
+	return Result();
 }
 
 IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::CalculatePResPayloadLimit()
@@ -780,14 +781,15 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Calcul
 		}
 	}
 
-	if (presPayloadLimit <= 36)
+	if (presPayloadLimit > 0 && presPayloadLimit <= 36)
 	{
-		return this->SetSubObjectActualValue(0x1F98, 0x5, "36"); //Set to default value
+		return this->SetSubObjectActualValue(0x1F98, 0x5, "36"); //Set to minimum value
 	}
-	else
+	else if (presPayloadLimit > 36)
 	{
 		return this->SetSubObjectActualValue(0x1F98, 0x5, IntToHex(presPayloadLimit, 4, "0x"));
 	}
+	return Result();
 }
 
 Result ControlledNode::GetDataObjectFromMapping(const std::shared_ptr<BaseProcessDataMapping>& mapping, std::shared_ptr<BaseObject>& returnObject, std::string& retName)
