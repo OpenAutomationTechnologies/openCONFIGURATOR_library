@@ -153,12 +153,12 @@ namespace IndustrialNetwork
 				template Result CnFeature::GetActualValue(std::uint32_t& value);
 
 				template<class T>
-				Result CnFeature::SetActualValue(const T actualValue)
+				Result CnFeature::SetActualValue(const T _actualValue)
 				{
 					if (this->GetUntypedActualValue().type() == typeid(T))
 					{
 						//return original stored value
-						this->SetUntypedActualValue(boost::any(actualValue));
+						this->SetUntypedActualValue(boost::any(_actualValue));
 						return Result();
 					}
 
