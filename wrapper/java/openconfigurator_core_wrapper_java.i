@@ -197,6 +197,7 @@
 %ignore kMsgParameterNotFound;
 %ignore kMsgParameterAlreadyExist;
 %ignore kMsgParameterActualValueDoesNotExist;
+%ignore kMsgParameterDefaultValueDoesNotExist;
 %ignore kMsgParameterGroupAlreadyExist;
 %ignore kMsgParameterTemplateAlreadyExist;
 %ignore kMsgParameterGroupNonExisting;

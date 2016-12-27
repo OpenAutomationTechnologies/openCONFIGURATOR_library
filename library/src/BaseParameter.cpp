@@ -244,12 +244,18 @@ namespace IndustrialNetwork
 				template<typename T>
 				T BaseParameter::GetTypedParameterActualValue()
 				{
-					if (this->GetDataType().is_initialized() && !this->GetParameterActualValue().is_initialized())
+					if (this->GetDataType().is_initialized())
 					{
 						if (this->GetParameterActualValue().get().type() == typeid(T))
 						{
-							//return original stored value
-							return boost::any_cast<T>(this->GetParameterActualValue().get());
+							if (this->GetParameterActualValue().is_initialized())
+								return boost::any_cast<T>(this->GetParameterActualValue().get());
+							//No actual value present
+							boost::format formatter(kMsgParameterActualValueDoesNotExist[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
+							formatter
+							% this->uniqueID;
+							LOG_ERROR() << formatter.str();
+							throw Result(ErrorCode::PARAMETER_HAS_NO_ACTUAL_VALUE, formatter.str());
 						}
 						//Datatype does not match
 						boost::format formatter(kMsgBaseObjectDataTypeMismatch[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
@@ -257,18 +263,29 @@ namespace IndustrialNetwork
 						% this->GetUniqueID()
 						% typeid(T).name()
 						% this->GetParameterActualValue().get().type().name();
-						LOG_FATAL() << formatter.str();
+						LOG_ERROR() << formatter.str();
 						throw Result(ErrorCode::DATATYPE_MISMATCH, formatter.str());
 					}
-					//No actual value present
-					throw Result(ErrorCode::OBJECT_HAS_NO_ACTUAL_VALUE);
+					boost::format formatter(kMsgParameterDataTypeInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
+					formatter
+					% this->GetUniqueID();
+					LOG_ERROR() << formatter.str();
+					throw Result(ErrorCode::PARAMETER_HAS_NO_DATATYPE, formatter.str());
 				}
 
 				template<> std::string BaseParameter::GetTypedParameterActualValue<std::string>()
 				{
-					if (!this->GetDataType().is_initialized() && !this->GetParameterActualValue().is_initialized())
+					if (!this->GetDataType().is_initialized())
 					{
-						//No actual value present
+						boost::format formatter(kMsgParameterDataTypeInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
+						formatter
+						% this->GetUniqueID();
+						LOG_ERROR() << formatter.str();
+						throw Result(ErrorCode::PARAMETER_HAS_NO_DATATYPE, formatter.str());
+					}
+
+					if (!this->GetParameterActualValue().is_initialized())
+					{
 						boost::format formatter(kMsgParameterActualValueDoesNotExist[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 						formatter
 						% this->uniqueID;
@@ -365,11 +382,18 @@ namespace IndustrialNetwork
 				template<typename T>
 				T BaseParameter::GetTypedParameterDefaultValue()
 				{
-					if (this->GetDataType().is_initialized() && this->GetParameterDefaultValue().is_initialized())
+					if (this->GetDataType().is_initialized())
 					{
 						if (this->GetParameterDefaultValue().get().type() == typeid(T))
 						{
-							return boost::any_cast<T>(this->GetParameterDefaultValue().get());
+							if (this->GetParameterDefaultValue().is_initialized())
+								return boost::any_cast<T>(this->GetParameterDefaultValue().get());
+							//No default value present
+							boost::format formatter(kMsgParameterDefaultValueDoesNotExist[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
+							formatter
+							% this->uniqueID;
+							LOG_ERROR() << formatter.str();
+							throw Result(ErrorCode::PARAMETER_HAS_NO_DEFAULT_VALUE, formatter.str());
 						}
 						//Datatype does not match
 						boost::format formatter(kMsgBaseObjectDataTypeMismatch[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
@@ -377,18 +401,34 @@ namespace IndustrialNetwork
 						% this->GetUniqueID()
 						% typeid(T).name()
 						% this->GetParameterDefaultValue().get().type().name();
-						LOG_FATAL() << formatter.str();
+						LOG_ERROR() << formatter.str();
 						throw Result(ErrorCode::DATATYPE_MISMATCH, formatter.str());
 					}
-					//No actual value present
-					throw Result(ErrorCode::OBJECT_HAS_NO_DEFAULT_VALUE);
+					boost::format formatter(kMsgParameterDataTypeInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
+					formatter
+					% this->GetUniqueID();
+					LOG_ERROR() << formatter.str();
+					throw Result(ErrorCode::PARAMETER_HAS_NO_DATATYPE, formatter.str());
 				}
 
 				template<> std::string BaseParameter::GetTypedParameterDefaultValue<std::string>()
 				{
-					if (!this->GetDataType().is_initialized() && !this->GetParameterDefaultValue().is_initialized())
+					if (!this->GetDataType().is_initialized())
 					{
-						throw Result(ErrorCode::OBJECT_HAS_NO_DEFAULT_VALUE);
+						boost::format formatter(kMsgParameterDataTypeInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
+						formatter
+						% this->GetUniqueID();
+						LOG_ERROR() << formatter.str();
+						throw Result(ErrorCode::PARAMETER_HAS_NO_DATATYPE, formatter.str());
+					}
+
+					if (!this->GetParameterDefaultValue().is_initialized())
+					{
+						boost::format formatter(kMsgParameterDefaultValueDoesNotExist[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
+						formatter
+						% this->uniqueID;
+						LOG_ERROR() << formatter.str();
+						throw Result(ErrorCode::PARAMETER_HAS_NO_DEFAULT_VALUE, formatter.str());
 					}
 
 					std::stringstream convertString;
@@ -1018,12 +1058,20 @@ namespace IndustrialNetwork
 						this->SetParameterActualValue(tempActualValue);
 					}
 
-					if (!this->GetDataType().is_initialized() && !this->GetParameterActualValue().is_initialized())
+					if (!this->GetDataType().is_initialized())
 					{
-						//No actual value present
+						boost::format formatter(kMsgParameterDataTypeInvalid[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
+						formatter
+							% this->GetUniqueID();
+						LOG_ERROR() << formatter.str();
+						throw Result(ErrorCode::PARAMETER_HAS_NO_DATATYPE, formatter.str());
+					}
+
+					if (!this->GetParameterActualValue().is_initialized())
+					{
 						boost::format formatter(kMsgParameterActualValueDoesNotExist[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 						formatter
-						% this->uniqueID;
+							% this->uniqueID;
 						LOG_ERROR() << formatter.str();
 						throw Result(ErrorCode::PARAMETER_HAS_NO_ACTUAL_VALUE, formatter.str());
 					}

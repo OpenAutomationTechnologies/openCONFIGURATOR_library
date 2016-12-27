@@ -137,6 +137,7 @@ namespace IndustrialNetwork
 				const std::string kMsgParameterNotFound[] = {"Parameter with uniqueIDRef \"%s\" not found.", "Parameter mit der uniqueID \"%s\" wurde nicht gefunden."};
 				const std::string kMsgParameterAlreadyExist[] = {"Parameter with uniqueID \"%s\" already exists.", "Parameter mit der uniqueID \"%s\" existiert bereits."};
 				const std::string kMsgParameterActualValueDoesNotExist[] = {"Parameter with uniqueID \"%s\" does not have an actual value.", "Parameter mit der uniqueID \"%s\" hat keinen konfigurierten Wert."};
+				const std::string kMsgParameterDefaultValueDoesNotExist[] = { "Parameter with uniqueID \"%s\" does not have a default value.", "Parameter mit der uniqueID \"%s\" hat keinen default Wert." };
 				const std::string kMsgParameterGroupAlreadyExist[] = {"ParameterGroup with uniqueID \"%s\" already exists.", "ParameterGroup mit der uniqueID \"%s\" existiert bereits."};
 				const std::string kMsgParameterTemplateAlreadyExist[] = {"ParameterTemplate with uniqueID \"%s\" already exists.", "ParameterTemplate mit der uniqueID \"%s\" existiert bereits."};
 				const std::string kMsgParameterGroupNonExisting[] = {"ParameterGroup with uniqueID \"%s\" does not exist.", "ParameterTemplate mit der uniqueID \"%s\" existiert nicht."};
