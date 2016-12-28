@@ -1549,28 +1549,22 @@ namespace IndustrialNetwork
 
 				bool BaseObject::WriteToConfiguration() const
 				{
-					if ((this->forceToCDC == true //Object forced
-					        || this->actualValueNotDefaultValue == true) //Actual value != default value
-					        && (this->GetAccessType() != AccessType::COND //correct AccessType
-					            && this->GetAccessType() != AccessType::CONST
-					            && this->GetAccessType() != AccessType::RO))
-						return true;
-					else if (this->uniqueIdRef.is_initialized() && this->referencedParameter)
+					if (this->uniqueIdRef.is_initialized() && this->referencedParameter)
 					{
 						if (this->referencedParameter->WriteToConfiguration() || this->actualValueNotDefaultValue == true)
-						{
 							return true;
-						}
-						return false;
 					}
 					else if (this->uniqueIdRef.is_initialized() && this->referencedParameterGrp)
 					{
 						if (!(this->HasDefaultValue() == false && this->HasActualValue() == false) || this->actualValueNotDefaultValue == true)
-						{
 							return true;
-						}
-						return false;
 					}
+					else if ((this->forceToCDC == true //Object forced
+					          || this->actualValueNotDefaultValue == true) //Actual value != default value
+					         && (this->GetAccessType() != AccessType::COND //correct AccessType
+					             && this->GetAccessType() != AccessType::CONST
+					             && this->GetAccessType() != AccessType::RO))
+						return true;
 					return false;
 				}
 

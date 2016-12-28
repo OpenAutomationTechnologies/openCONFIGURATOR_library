@@ -72,49 +72,55 @@ void ConfigurationGenerator::WriteHeader(const std::shared_ptr<Network>& net, st
 
 Result ConfigurationGenerator::GenerateNetworkConfiguration(const std::shared_ptr<Network>& net, std::stringstream& configurationOutput, std::stringstream& hexOutput)
 {
-	//Write Header
-	WriteHeader(net, configurationOutput);
-
-	//Write the active managing node object count including Assignments and 1F22 objects
-	Result res = WriteManagingNodeObjectCount(net, configurationOutput, hexOutput);
-	if (!res.IsSuccessful())
-		return res;
-
-	//Write the node assignments
-	res = WriteNodeAssignment(net, configurationOutput, hexOutput, false, true);
-	if (!res.IsSuccessful())
-		return res;
-	configurationOutput << std::endl;
-
-	//Write the managing node configuration
-	res = WriteManagingNodeConfiguration(net, configurationOutput, hexOutput);
-	if (!res.IsSuccessful())
-		return res;
-
-	configurationOutput << std::endl;
-	std::map<std::uint8_t, std::shared_ptr<BaseNode>> nodes;
-	res = net->GetNodes(nodes);
-	if (!res.IsSuccessful())
-		return res;
-
-	//Write CN configuration including RMNs
-	for (auto& node : nodes)
+	try
 	{
-		if (node.first == 240) //skip MN already written
-			continue;
+		//Write Header
+		WriteHeader(net, configurationOutput);
 
-		if (node.second->IsEnabled() == false)
-			continue;
-
-		//Write controlled node or RMN configuration
-		res = WriteControlledNodeConfiguration(net, node.second, configurationOutput, hexOutput);
+		//Write the active managing node object count including Assignments and 1F22 objects
+		Result res = WriteManagingNodeObjectCount(net, configurationOutput, hexOutput);
 		if (!res.IsSuccessful())
 			return res;
-	}
 
-	//Write the node reassignment
-	res = WriteNodeAssignment(net, configurationOutput, hexOutput, true, true);
-	return res;
+		//Write the node assignments
+		res = WriteNodeAssignment(net, configurationOutput, hexOutput, false, true);
+		if (!res.IsSuccessful())
+			return res;
+		configurationOutput << std::endl;
+
+		//Write the managing node configuration
+		res = WriteManagingNodeConfiguration(net, configurationOutput, hexOutput);
+		if (!res.IsSuccessful())
+			return res;
+
+		configurationOutput << std::endl;
+		std::map<std::uint8_t, std::shared_ptr<BaseNode>> nodes;
+		res = net->GetNodes(nodes);
+		if (!res.IsSuccessful())
+			return res;
+
+		//Write CN configuration including RMNs
+		for (auto& node : nodes)
+		{
+			if (node.first == 240) //skip MN already written
+				continue;
+
+			if (node.second->IsEnabled() == false)
+				continue;
+
+			//Write controlled node or RMN configuration
+			res = WriteControlledNodeConfiguration(net, node.second, configurationOutput, hexOutput);
+			if (!res.IsSuccessful())
+				return res;
+		}
+
+		//Write the node reassignment
+		return WriteNodeAssignment(net, configurationOutput, hexOutput, true, true);
+	}
+	catch (const Result& resEx)
+	{
+		return resEx;
+	}
 }
 
 Result ConfigurationGenerator::WriteManagingNodeObjectCount(const std::shared_ptr<Network>& net, std::stringstream& configurationOutput, std::stringstream& hexOutput)

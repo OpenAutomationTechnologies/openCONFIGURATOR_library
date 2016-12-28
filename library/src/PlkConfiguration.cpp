@@ -53,92 +53,99 @@ PlkConfiguration::~PlkConfiguration()
 
 Result PlkConfiguration::GenerateConfiguration(const std::map<std::uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
 {
-	Result res;
-	//Generate autogeneration settings
-	for (auto& config_setting : this->GetBuildConfigurationSettings())
+	try
 	{
-		if (config_setting->IsEnabled()) //Generate only if enabled
+		Result res;
+		//Generate autogeneration settings
+		for (auto& config_setting : this->GetBuildConfigurationSettings())
 		{
-			//Call settings builder
-			res = config_setting->GenerateConfiguration(nodeCollection);
-			if (!res.IsSuccessful())
-				return res;
+			if (config_setting->IsEnabled()) //Generate only if enabled
+			{
+				//Call settings builder
+				res = config_setting->GenerateConfiguration(nodeCollection);
+				if (!res.IsSuccessful())
+					return res;
+			}
 		}
+
+		//Distribute the 0x1020/0x1 and 0x2 to all CNs and RMNs
+		//Distribute the 0x1f26/NodeID and 0x1F27/NodeID to MN and RMNs
+		res = DistributeDateTimeStamps(nodeCollection);
+		if (!res.IsSuccessful())
+			return res;
+
+		//Distribute the 0x1006 to all nodes
+		res = DistributeCycleTime(nodeCollection);
+		if (!res.IsSuccessful())
+			return res;
+
+		//Distribute the 0x1F98 / 0x7 to all nodes
+		res = DistributeMultiplCycleCount(nodeCollection);
+		if (!res.IsSuccessful())
+			return res;
+
+		//Distribute the 0x1F98 / 0x8 to all nodes
+		res = DistributeAsyncMtu(nodeCollection);
+		if (!res.IsSuccessful())
+			return res;
+
+		//Distribute the 0x1F98 / 0x9 to all nodes
+		res = DistributePrescaler(nodeCollection);
+		if (!res.IsSuccessful())
+			return res;
+
+		//Distribute 0x1E40 / 0x5 to supporting nodes
+		res = DistributeIpDefaultGateway(nodeCollection);
+		if (!res.IsSuccessful())
+			return res;
+
+		//Distribute the CN node assignments to MN and RMNs
+		res = DistributeNodeAssignment(nodeCollection);
+		if (!res.IsSuccessful())
+			return res;
+
+		//Distribute MultiplexCycleAssign 1F9B / NodeID to all nodes
+		res = DistributeMultiplCycleAssign(nodeCollection);
+		if (!res.IsSuccessful())
+			return res;
+
+		//Distribute SDOSeqLayerTimeout 1300 / 00 to all nodes
+		res = DistributeSDOSeqLayerTimeout(nodeCollection);
+		if (!res.IsSuccessful())
+			return res;
+
+		//Distribute SDOCmdLayerTimeout 1301 / 00 to all nodes
+		res = DistributeSDOCmdLayerTimeout(nodeCollection);
+		if (!res.IsSuccessful())
+			return res;
+
+		//Distribute CNPresTimeout 1F98 / 03 to MN 1F92 / nodeID and RMN 1F92 / nodeID
+		res = DistributePResTimeOut(nodeCollection);
+		if (!res.IsSuccessful())
+			return res;
+
+		//Distribute PReqPayloadLimit 1F98 / 04 to MN 1F8B / nodeID and RMN 1F8B / nodeID
+		res = DistributePReqPayloadLimit(nodeCollection);
+		if (!res.IsSuccessful())
+			return res;
+
+		//Distribute PResPayloadLimit 1F98 / 05 to all node 1F8D / nodeID
+		res = DistributePResPayloadLimit(nodeCollection);
+		if (!res.IsSuccessful())
+			return res;
+
+		//Write 0x1C0B / 0x1C0C / 0x1C0D / 0x3 for all nodes if no actual values does exist
+		res = DistributeCNLossObjects(nodeCollection);
+		if (!res.IsSuccessful())
+			return res;
+
+		//Sync all needed MN object actual values with the RMN objects
+		return SyncRedundantManagingNodes(nodeCollection);
 	}
-
-	//Distribute the 0x1020/0x1 and 0x2 to all CNs and RMNs
-	//Distribute the 0x1f26/NodeID and 0x1F27/NodeID to MN and RMNs
-	res = DistributeDateTimeStamps(nodeCollection);
-	if (!res.IsSuccessful())
-		return res;
-
-	//Distribute the 0x1006 to all nodes
-	res = DistributeCycleTime(nodeCollection);
-	if (!res.IsSuccessful())
-		return res;
-
-	//Distribute the 0x1F98 / 0x7 to all nodes
-	res = DistributeMultiplCycleCount(nodeCollection);
-	if (!res.IsSuccessful())
-		return res;
-
-	//Distribute the 0x1F98 / 0x8 to all nodes
-	res = DistributeAsyncMtu(nodeCollection);
-	if (!res.IsSuccessful())
-		return res;
-
-	//Distribute the 0x1F98 / 0x9 to all nodes
-	res = DistributePrescaler(nodeCollection);
-	if (!res.IsSuccessful())
-		return res;
-
-	//Distribute 0x1E40 / 0x5 to supporting nodes
-	res = DistributeIpDefaultGateway(nodeCollection);
-	if (!res.IsSuccessful())
-		return res;
-
-	//Distribute the CN node assignments to MN and RMNs
-	res = DistributeNodeAssignment(nodeCollection);
-	if (!res.IsSuccessful())
-		return res;
-
-	//Distribute MultiplexCycleAssign 1F9B / NodeID to all nodes
-	res = DistributeMultiplCycleAssign(nodeCollection);
-	if (!res.IsSuccessful())
-		return res;
-
-	//Distribute SDOSeqLayerTimeout 1300 / 00 to all nodes
-	res = DistributeSDOSeqLayerTimeout(nodeCollection);
-	if (!res.IsSuccessful())
-		return res;
-
-	//Distribute SDOCmdLayerTimeout 1301 / 00 to all nodes
-	res = DistributeSDOCmdLayerTimeout(nodeCollection);
-	if (!res.IsSuccessful())
-		return res;
-
-	//Distribute CNPresTimeout 1F98 / 03 to MN 1F92 / nodeID and RMN 1F92 / nodeID
-	res = DistributePResTimeOut(nodeCollection);
-	if (!res.IsSuccessful())
-		return res;
-
-	//Distribute PReqPayloadLimit 1F98 / 04 to MN 1F8B / nodeID and RMN 1F8B / nodeID
-	res = DistributePReqPayloadLimit(nodeCollection);
-	if (!res.IsSuccessful())
-		return res;
-
-	//Distribute PResPayloadLimit 1F98 / 05 to all node 1F8D / nodeID
-	res = DistributePResPayloadLimit(nodeCollection);
-	if (!res.IsSuccessful())
-		return res;
-
-	//Write 0x1C0B / 0x1C0C / 0x1C0D / 0x3 for all nodes if no actual values does exist
-	res = DistributeCNLossObjects(nodeCollection);
-	if (!res.IsSuccessful())
-		return res;
-
-	//Sync all needed MN object actual values with the RMN objects
-	return SyncRedundantManagingNodes(nodeCollection);
+	catch (const Result& resEx)
+	{
+		return resEx;
+	}
 }
 
 const std::string& PlkConfiguration::GetConfigurationName() const
