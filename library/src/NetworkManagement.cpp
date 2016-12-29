@@ -185,7 +185,10 @@ namespace IndustrialNetwork
 					{
 						if (feature->GetFeatureId() == featureid)
 						{
-							return feature->GetActualValue<I>(actualValue);
+							if (!feature->GetUntypedActualValue().empty())
+								return feature->GetActualValue<I>(actualValue);
+							else if (!feature->GetUntypedDefaultValue().empty())
+								return feature->GetDefaultValue<I>(actualValue);
 						}
 					}
 					boost::format formatter(kMsgFeatureActualValue[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
