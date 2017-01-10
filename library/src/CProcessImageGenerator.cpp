@@ -222,7 +222,6 @@ std::uint32_t CProcessImageGenerator::WriteCProcessImage(const Direction& dir, c
 			std::stringstream paddingVarName;
 			paddingVarName << "PADDING_VAR_" << paddingCount;
 			this->processImageStream << PrintChannel(paddingVarName.str(), IEC_Datatype::USINT, paddingSize, 0, boost::optional<std::uint32_t>());
-			paddingCount++;
 			piSize += paddingSize;
 		}
 
