@@ -2272,7 +2272,7 @@ Result OpenConfiguratorCore::GetSubObjectActualValue(const std::string& networkI
 	}
 }
 
-Result OpenConfiguratorCore::GetObjectsWithActualValue(const std::string& networkId, const std::uint8_t nodeId, std::map<std::pair<std::uint32_t, std::int32_t> , std::string>& objects)
+Result OpenConfiguratorCore::GetObjectsWithActualValue(const std::string& networkId, const std::uint8_t nodeId, std::map<std::pair<std::uint32_t, std::int32_t>, std::string>& objects)
 {
 	try
 	{
@@ -2291,7 +2291,7 @@ Result OpenConfiguratorCore::GetObjectsWithActualValue(const std::string& networ
 			if (obj.second->HasActualValue())
 			{
 				auto pair = std::pair<std::uint32_t, std::int32_t>(obj.first, -1);
-				objects.insert(std::pair<std::pair<std::uint32_t, std::int32_t> , std::string>(pair, "0x" + obj.second->GetTypedActualValue<std::string>()));
+				objects.insert(std::pair<std::pair<std::uint32_t, std::int32_t>, std::string>(pair, "0x" + obj.second->GetTypedActualValue<std::string>()));
 			}
 
 			auto& subod = obj.second->GetSubObjectDictionary();
@@ -2300,7 +2300,7 @@ Result OpenConfiguratorCore::GetObjectsWithActualValue(const std::string& networ
 				if (subobj.second->HasActualValue())
 				{
 					auto pair = std::pair<std::uint32_t, std::int32_t>(obj.first, subobj.first);
-					objects.insert(std::pair<std::pair<std::uint32_t, std::int32_t> , std::string>(pair, "0x" + subobj.second->GetTypedActualValue<std::string>()));
+					objects.insert(std::pair<std::pair<std::uint32_t, std::int32_t>, std::string>(pair, "0x" + subobj.second->GetTypedActualValue<std::string>()));
 				}
 			}
 		}
@@ -3183,7 +3183,7 @@ Result OpenConfiguratorCore::GetChannelSize(const std::string& networkId, const 
 	}
 }
 
-Result OpenConfiguratorCore::GetChannelActualValues(const std::string& networkId, const std::uint8_t nodeId, const Direction& dir, std::uint16_t channelNr, std::map<std::pair<std::uint32_t, std::int32_t> , std::string>& objects)
+Result OpenConfiguratorCore::GetChannelActualValues(const std::string& networkId, const std::uint8_t nodeId, const Direction& dir, std::uint16_t channelNr, std::map<std::pair<std::uint32_t, std::int32_t>, std::string>& objects)
 {
 	try
 	{
@@ -3217,7 +3217,12 @@ Result OpenConfiguratorCore::GetChannelActualValues(const std::string& networkId
 			if (subobj.second->HasActualValue())
 			{
 				auto pair = std::pair<std::uint32_t, std::int32_t>(channelObjectId, subobj.first);
-				objects.insert(std::pair<std::pair<std::uint32_t, std::int32_t> , std::string>(pair, "0x" + subobj.second->GetTypedActualValue<std::string>()));
+				objects.insert(std::pair<std::pair<std::uint32_t, std::int32_t>, std::string>(pair, "0x" + subobj.second->GetTypedActualValue<std::string>()));
+			}
+			else if (subobj.second->HasDefaultValue())
+			{
+				auto pair = std::pair<std::uint32_t, std::int32_t>(channelObjectId, subobj.first);
+				objects.insert(std::pair<std::pair<std::uint32_t, std::int32_t>, std::string>(pair, "0x" + subobj.second->GetTypedDefaultValue<std::string>()));
 			}
 		}
 		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
