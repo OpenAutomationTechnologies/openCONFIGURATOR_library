@@ -1458,10 +1458,16 @@ namespace IndustrialNetwork
 							///Since we do not have Unicode support calculate normal octet size for std::string
 							case PlkDataType::UNICODE_STRING:
 								{
-									if (this->GetTypedActualValue<std::string>().size() != 0)
-										return 8 * (std::uint32_t) this->GetTypedActualValue<std::string>().size();
-									else if (this->GetTypedDefaultValue<std::string>().size() != 0)
-										return 8 * (std::uint32_t) this->GetTypedDefaultValue<std::string>().size();
+									if (this->HasActualValue())
+									{
+										if (this->GetTypedActualValue<std::string>().size() != 0)
+											return 8 * (std::uint32_t) this->GetTypedActualValue<std::string>().size();
+									}
+									else if (this->HasDefaultValue())
+									{
+										if (this->GetTypedDefaultValue<std::string>().size() != 0)
+											return 8 * (std::uint32_t) this->GetTypedDefaultValue<std::string>().size();
+									}
 									break;
 								}
 							case PlkDataType::Domain:

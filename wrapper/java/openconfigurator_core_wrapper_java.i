@@ -274,6 +274,7 @@
 %ignore kMsgInvalidMappingOffset;
 %ignore kMsgInvalidMappingRecalculated;
 %ignore kMsgInvalidMappingReference;
+%ignore kMsgMappingSizeZero;
 
 %{
 

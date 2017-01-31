@@ -246,6 +246,7 @@
 %ignore kMsgInvalidMappingOffset;
 %ignore kMsgInvalidMappingRecalculated;
 %ignore kMsgInvalidMappingReference;
+%ignore kMsgMappingSizeZero;
 
 %apply unsigned int& OUTPUT { unsigned int& size };
 %apply unsigned int& OUTPUT { unsigned int& size };

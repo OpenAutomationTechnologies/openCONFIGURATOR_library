@@ -285,6 +285,18 @@ Result ControlledNode::MapBaseObject(const std::shared_ptr<BaseObject>& objToMap
 		return Result(ErrorCode::MAPPING_TYPE_FOR_PDO_INVALID, formatter.str());
 	}
 
+	//Check Size of Object to be mapped
+	if (objToMap->GetBitSize() == 0)
+	{
+		boost::format formatter(kMsgMappingSizeZero[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
+		formatter
+		% index
+		% subindex
+		% (std::uint32_t) this->GetNodeId();
+		LOG_ERROR() << formatter.str();
+		return Result(ErrorCode::MAPPING_INVALID, formatter.str());
+	}
+
 	//Calculate mapping parameter
 	std::uint32_t mappingObjectIndex = 0;
 	std::uint32_t mappingParameterIndex = 0;
