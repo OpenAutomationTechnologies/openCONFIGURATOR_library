@@ -73,6 +73,7 @@ namespace IndustrialNetwork
 						bool CheckParameterGroupCondition() const;
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetParameterGroupAccess(ParameterAccess& access);
 						const std::vector<std::shared_ptr<IParameterGroupEntry>>& GetParameterGroupEntries();
+						bool HasActualValue() const;
 
 					private:
 						std::string conditionalUniqueIdRef;

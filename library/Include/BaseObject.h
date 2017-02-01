@@ -83,7 +83,7 @@ namespace IndustrialNetwork
 						bool GetForceToCDC() const;
 						void SetForceToCDC(bool force);
 
-						bool WriteToConfiguration() const;
+						bool WriteToConfiguration();
 
 						template<typename T>
 						T GetTypedHighLimit();

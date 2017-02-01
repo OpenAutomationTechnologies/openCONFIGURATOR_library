@@ -206,3 +206,28 @@ bool ParameterGroup::CheckParameterGroupCondition() const
 	return false;
 }
 
+bool ParameterGroup::HasActualValue() const
+{
+	bool hasActualValue = false;
+	for (auto& paramGrpEntry : this->parameterGroupEntries)
+	{
+		if (hasActualValue)
+			return hasActualValue;
+
+		auto paramGrp = std::dynamic_pointer_cast<ParameterGroup>(paramGrpEntry);
+		auto paramRef = std::dynamic_pointer_cast<ParameterReference>(paramGrpEntry);
+		if (paramGrp)
+		{
+			if (paramGrp->CheckParameterGroupCondition())
+			{
+				hasActualValue = paramGrp->HasActualValue();
+			}
+		}
+		else if (paramRef)
+		{
+			if (!paramRef->GetActualValue().empty() || paramRef->GetReferencedParameter()->HasActualValue() || paramRef->GetReferencedParameter()->HasDefaultValue())
+				hasActualValue = true;
+		}
+	}
+	return hasActualValue;
+}

@@ -1553,7 +1553,7 @@ namespace IndustrialNetwork
 					return true;
 				}
 
-				bool BaseObject::WriteToConfiguration() const
+				bool BaseObject::WriteToConfiguration()
 				{
 					if (this->uniqueIdRef.is_initialized() && this->referencedParameter)
 					{
@@ -1562,8 +1562,12 @@ namespace IndustrialNetwork
 					}
 					else if (this->uniqueIdRef.is_initialized() && this->referencedParameterGrp)
 					{
-						if (!(this->HasDefaultValue() == false && this->HasActualValue() == false) || this->actualValueNotDefaultValue == true)
-							return true;
+						if (this->referencedParameterGrp->HasActualValue())
+						{
+							this->GetTypedActualValue<std::string>();
+							if(this->actualValueNotDefaultValue == true)
+								return true;
+						}
 					}
 					else if ((this->forceToCDC == true //Object forced
 					          || this->actualValueNotDefaultValue == true) //Actual value != default value

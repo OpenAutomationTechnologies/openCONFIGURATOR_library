@@ -63,4 +63,7 @@ void Parameter::SetParameterTemplate(const std::shared_ptr<ParameterTemplate>& p
 
 	if (!paramTemplate->GetDataTypeUniqueIDRef().empty())
 		this->SetComplexDataType(paramTemplate->GetComplexDataType());
+
+	if(paramTemplate->HasDefaultValue())
+		this->AddParameterDefaultValue(paramTemplate->GetTypedParameterDefaultValue<std::string>());
 }

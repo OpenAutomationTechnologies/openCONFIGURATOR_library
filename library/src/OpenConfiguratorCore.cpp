@@ -1612,14 +1612,27 @@ Result OpenConfiguratorCore::SetParameterAllowedValues(const std::string& networ
 
 		std::shared_ptr<Parameter> param;
 		res = node->GetApplicationProcess()->GetParameter(parameterUniqueId, param);
-		if (!res.IsSuccessful())
-			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
-
-		for (auto& allowedValue : allowedValues)
+		if (res.IsSuccessful())
 		{
-			res = param->AddParameterAllowedValue(allowedValue);
-			if (!res.IsSuccessful())
-				return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+			for (auto& allowedValue : allowedValues)
+			{
+				res = param->AddParameterAllowedValue(allowedValue);
+				if (!res.IsSuccessful())
+					return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+			}
+			return Result();
+		}
+
+		std::shared_ptr<ParameterTemplate> templ;
+		res = node->GetApplicationProcess()->GetParameterTemplate(parameterUniqueId, templ);
+		if (res.IsSuccessful())
+		{
+			for (auto& allowedValue : allowedValues)
+			{
+				res = templ->AddParameterAllowedValue(allowedValue);
+				if (!res.IsSuccessful())
+					return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+			}
 		}
 		return Result();
 	}
@@ -1645,10 +1658,14 @@ Result OpenConfiguratorCore::SetParameterDefaultValue(const std::string& network
 
 		std::shared_ptr<Parameter> param;
 		res = node->GetApplicationProcess()->GetParameter(parameterUniqueId, param);
-		if (!res.IsSuccessful())
-			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+		if (res.IsSuccessful())
+			return param->AddParameterDefaultValue(paramDefaultValue);
 
-		res = param->AddParameterDefaultValue(paramDefaultValue);
+		std::shared_ptr<ParameterTemplate> templ;
+		res = node->GetApplicationProcess()->GetParameterTemplate(parameterUniqueId, templ);
+		if (res.IsSuccessful())
+			return templ->AddParameterDefaultValue(paramDefaultValue);
+
 		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 	}
 	catch (const std::exception& ex)
@@ -1696,10 +1713,14 @@ Result OpenConfiguratorCore::SetParameterAllowedRange(const std::string& network
 
 		std::shared_ptr<Parameter> param;
 		res = node->GetApplicationProcess()->GetParameter(parameterUniqueId, param);
-		if (!res.IsSuccessful())
-			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+		if (res.IsSuccessful())
+			return param->AddParameterAllowedRange(minValue, maxValue);
 
-		res = param->AddParameterAllowedRange(minValue, maxValue);
+		std::shared_ptr<ParameterTemplate> templ;
+		res = node->GetApplicationProcess()->GetParameterTemplate(parameterUniqueId, templ);
+		if (res.IsSuccessful())
+			return templ->AddParameterAllowedRange(minValue, maxValue);
+
 		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 	}
 	catch (const std::exception& ex)
