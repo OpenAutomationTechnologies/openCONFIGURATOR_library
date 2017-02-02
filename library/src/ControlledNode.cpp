@@ -744,7 +744,6 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Calcul
 				numberOfIndicesToWrite = nrOfEntriesObj->GetTypedActualValue<std::uint16_t>();
 
 			std::uint16_t count = 0;
-
 			for (auto& subobject : object.second->GetSubObjectDictionary())
 			{
 				if (subobject.second->WriteToConfiguration() && subobject.first != 0 && count < numberOfIndicesToWrite)
@@ -765,7 +764,17 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Calcul
 	{
 		return this->SetSubObjectActualValue(0x1F98, 0x4, IntToHex(preqPayloadLimit, 4, "0x"));
 	}
-	return Result();
+	else
+	{
+		std::shared_ptr<SubObject> subObj;
+		Result res = this->GetSubObject(0x1F98, 0x4, subObj, false);
+		if (!res.IsSuccessful())
+			return res;
+		if (subObj->HasDefaultValue())
+			return this->SetSubObjectActualValue(0x1F98, 0x4, ""); //Clear if existing
+		else
+			return this->SetSubObjectActualValue(0x1F98, 0x4, "36"); //Set to minimum value
+	}
 }
 
 IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::CalculatePResPayloadLimit()
@@ -801,7 +810,17 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Calcul
 	{
 		return this->SetSubObjectActualValue(0x1F98, 0x5, IntToHex(presPayloadLimit, 4, "0x"));
 	}
-	return Result();
+	else
+	{
+		std::shared_ptr<SubObject> subObj;
+		Result res = this->GetSubObject(0x1F98, 0x5, subObj, false);
+		if (!res.IsSuccessful())
+			return res;
+		if(subObj->HasDefaultValue())
+			return this->SetSubObjectActualValue(0x1F98, 0x5, ""); //Clear if existing
+		else
+			return this->SetSubObjectActualValue(0x1F98, 0x5, "36"); //Set to minimum value
+	}
 }
 
 Result ControlledNode::GetDataObjectFromMapping(const std::shared_ptr<BaseProcessDataMapping>& mapping, std::shared_ptr<BaseObject>& returnObject, std::string& retName)
@@ -1302,10 +1321,10 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 	//Check that mapped object exist
 	if (dataSubindex == 0)
 	{
-		Result res = this->GetSubObject(dataIndex, dataSubindex, dataSubObject, !this->IgnoreNonExistingMappingObjects());
+		Result res = this->GetSubObject(dataIndex, dataSubindex, dataSubObject, false);
 		if (!res.IsSuccessful())
 		{
-			res = this->GetObject(dataIndex, dataObject);
+			res = this->GetObject(dataIndex, dataObject, !this->IgnoreNonExistingMappingObjects());
 			if (!res.IsSuccessful())
 			{
 				boost::format formatter(kMsgNonExistingMappedObject[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);

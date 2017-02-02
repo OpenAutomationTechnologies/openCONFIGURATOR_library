@@ -106,6 +106,7 @@ namespace IndustrialNetwork
 				const std::string GetNetDatatypeFromIEC(const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype& iecDataType);
 				IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType GetAccessTypeFromParameterAccessType(const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterAccess& paramAccess);
 				bool IsIPAddress(const std::string& ipaddr);
+				std::uint32_t GetIPAddressValue(const std::string& ipaddr);
 				std::string ClearModuleParameterUuid(const std::string& parameterName);
 				bool IsValidUuid(const std::string& maybe_uuid);
 			}

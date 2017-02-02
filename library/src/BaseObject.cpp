@@ -414,6 +414,7 @@ namespace IndustrialNetwork
 								return convertString.str();
 							}
 						case PlkDataType::UNSIGNED32:
+						case PlkDataType::IP_ADDRESS:
 							{
 								convertString << std::uppercase << std::setfill('0') << std::setw(8) << std::hex << boost::any_cast<std::uint32_t>(value);
 								return convertString.str();
@@ -476,28 +477,12 @@ namespace IndustrialNetwork
 						case PlkDataType::UNICODE_STRING:
 							{
 								std::string actVal = boost::any_cast<std::string>(value);
+								if (actVal.substr(0, 2) == "0x")
+									return actVal.substr(2, actVal.length());
+
 								for (std::uint32_t i = 0; i < actVal.length(); ++i)
 								{
 									convertString << std::uppercase << std::hex << unsigned(actVal.at(i));
-								}
-								return convertString.str();
-							}
-						case PlkDataType::IP_ADDRESS:
-							{
-								std::string actVal = boost::any_cast<std::string>(value);
-								if (actVal.substr(0, 2) == "0x")
-								{
-									convertString << std::uppercase << std::setw(8) << std::setfill('0') << std::hex << HexToInt<std::uint32_t>(actVal);
-								}
-								else
-								{
-									std::vector<std::string> ipAddressParts;
-									boost::split(ipAddressParts, actVal, boost::is_any_of("."));
-
-									for (auto& part : ipAddressParts)
-									{
-										convertString << std::uppercase << std::setw(2) << std::setfill('0') << std::hex << HexToInt<std::uint32_t>(part);
-									}
 								}
 								return convertString.str();
 							}
@@ -720,6 +705,13 @@ namespace IndustrialNetwork
 
 								}
 							case PlkDataType::IP_ADDRESS:
+								{
+									if (!IsIPAddress(valueStr))
+										throw std::range_error("");
+									std::uint32_t value = GetIPAddressValue(valueStr);
+									valueToSet = value;
+									break;
+								}
 							case PlkDataType::NETTIME:
 							case PlkDataType::VISIBLE_STRING:
 							case PlkDataType::OCTET_STRING:
@@ -1388,8 +1380,57 @@ namespace IndustrialNetwork
 								}
 							case PlkDataType::IP_ADDRESS:
 								{
-									if (!IsIPAddress(_actualValue))
+									if (IsIPAddress(_actualValue) == false)
 										throw std::range_error("");
+
+									std::uint32_t value = GetIPAddressValue(_actualValue);
+									if (this->highLimit.is_initialized())
+									{
+										if (value > this->GetTypedHighLimit<std::uint32_t>())
+										{
+											boost::format formatter(kMsgBaseObjectHighLimitError[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
+											formatter
+											% this->GetName()
+											% this->GetObjectId()
+											% (std::uint32_t) this->GetContainingNode()
+											% _actualValue
+											% this->GetTypedHighLimit<std::uint32_t>();
+											if (validateOnly == false)
+											{
+												LOG_ERROR() << formatter.str();
+											}
+											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_EXCEEDS_HIGHLIMIT, formatter.str());
+										}
+									}
+									if (this->lowLimit.is_initialized())
+									{
+										if (value < this->GetTypedLowLimit<std::uint32_t>())
+										{
+											boost::format formatter(kMsgBaseObjectLowLimitError[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
+											formatter
+											% this->GetName()
+											% this->GetObjectId()
+											% (std::uint32_t) this->GetContainingNode()
+											% _actualValue
+											% this->GetTypedLowLimit<std::uint32_t>();
+											if (validateOnly == false)
+											{
+												LOG_ERROR() << formatter.str();
+											}
+											return Result(ErrorCode::OBJECT_ACTUAL_VALUE_DECEEDS_LOWLIMIT, formatter.str());
+										}
+									}
+									if (validateOnly == false)
+									{
+										this->SetActualValue(boost::any(value));
+										if (this->GetDefaultValue().empty())
+											this->actualValueNotDefaultValue = true;
+										else if (this->GetTypedDefaultValue<std::uint32_t>() != value)
+											this->actualValueNotDefaultValue = true;
+										else
+											this->actualValueNotDefaultValue = false;
+									}
+									break;
 								}
 							case PlkDataType::NETTIME:
 							case PlkDataType::VISIBLE_STRING:
@@ -1565,7 +1606,7 @@ namespace IndustrialNetwork
 						if (this->referencedParameterGrp->HasActualValue())
 						{
 							this->GetTypedActualValue<std::string>();
-							if(this->actualValueNotDefaultValue == true)
+							if (this->actualValueNotDefaultValue == true)
 								return true;
 						}
 					}

@@ -448,6 +448,26 @@ namespace IndustrialNetwork
 					}
 				}
 
+				std::uint32_t GetIPAddressValue(const std::string& ipaddr)
+				{
+					if (ipaddr.substr(0, 2) == "0x")
+						return HexToInt<std::uint32_t>(ipaddr);
+					else
+					{
+						std::vector<std::string> ipAddressParts;
+						boost::split(ipAddressParts, ipaddr, boost::is_any_of("."));
+
+						std::stringstream convertString;
+						convertString << "0x";
+						for (auto& part : ipAddressParts)
+						{
+							convertString << std::uppercase << std::setw(2) << std::setfill('0') << std::hex << HexToInt<std::uint32_t>(part);
+						}
+
+						return HexToInt<std::uint32_t>(convertString.str());
+					}
+				}
+
 				bool IsIPAddress(const std::string& ipaddr)
 				{
 					if (ipaddr.substr(0, 2) == "0x")
