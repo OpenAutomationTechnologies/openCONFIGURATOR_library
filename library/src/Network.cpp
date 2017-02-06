@@ -1085,6 +1085,9 @@ Result Network::CheckCycleTime(const std::uint32_t _cycleTime)
 
 	for (auto& node : this->nodeCollection)
 	{
+		if (node.second->IsEnabled() == false)
+			continue;
+
 		//Optional feature defaults to '1'
 		Result res = node.second->GetNetworkManagement()->GetFeatureActualValue<std::uint32_t>(GeneralFeatureEnum::NMTCycleTimeGranularity, currentCycleTimeGranularity);
 		if (res.IsSuccessful())
