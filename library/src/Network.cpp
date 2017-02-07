@@ -923,10 +923,9 @@ Result Network::SetOperationMode(const std::uint8_t nodeID, const PlkOperationMo
 					}
 					//Clear MN node assignment on CN
 					std::shared_ptr<SubObject> mnNodeAssignment;
-					res = cn->GetSubObject(0x1F81, 240, mnNodeAssignment);
-					if (!res.IsSuccessful())
-						return res;
-					mnNodeAssignment->ClearActualValue();
+					res = cn->GetSubObject(0x1F81, 240, mnNodeAssignment, false);
+					if (res.IsSuccessful())
+						mnNodeAssignment->ClearActualValue();
 
 					break;
 				}
@@ -940,10 +939,9 @@ Result Network::SetOperationMode(const std::uint8_t nodeID, const PlkOperationMo
 
 						//Clear MN node assignment on CN
 						std::shared_ptr<SubObject> mnNodeAssignment;
-						res = cn->GetSubObject(0x1F81, 240, mnNodeAssignment);
-						if (!res.IsSuccessful())
-							return res;
-						mnNodeAssignment->ClearActualValue();
+						res = cn->GetSubObject(0x1F81, 240, mnNodeAssignment, false);
+						if (res.IsSuccessful())
+							mnNodeAssignment->ClearActualValue();
 					}
 					break;
 				}
@@ -972,7 +970,7 @@ Result Network::SetOperationMode(const std::uint8_t nodeID, const PlkOperationMo
 		LOG_ERROR() << "[" + networkId + "] " + formatter.str();
 		return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE, formatter.str());
 	}
-	return res;
+	return Result();
 }
 
 Result Network::EnableNode(const std::uint8_t nodeID, bool enable)
