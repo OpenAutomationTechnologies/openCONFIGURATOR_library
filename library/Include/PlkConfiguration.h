@@ -47,6 +47,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ControlledNode.h"
 #include "LoggingConfiguration.h"
 #include "Utilities.h"
+#include "RedundantManagingNode.h"
 
 namespace IndustrialNetwork
 {

@@ -162,19 +162,48 @@ Result Network::AddNode(std::shared_ptr<ManagingNode>& node)
 
 	this->nodeCollection.insert(std::pair<std::uint8_t, std::shared_ptr<BaseNode>>(node->GetNodeId(), node));
 
-	//if not active MN
-	if (node->GetNodeId() != 240)
+	this->UpdateBuildConfigurationSettingsOnNodes();
+	return Result();
+}
+
+Result Network::AddNode(std::shared_ptr<RedundantManagingNode>& node)
+{
+	for (auto& var : this->nodeCollection)
 	{
-		for (auto& rmn : this->nodeCollection)
+		if (var.first == node->GetNodeId())
 		{
-			std::shared_ptr<ManagingNode> rmnPtr = std::dynamic_pointer_cast<ManagingNode>(rmn.second);
-			if (rmnPtr.get())
-			{
-				//Add RMN id
-				rmnPtr->AddRmnId(node->GetNodeId());
-			}
+			//Node already exists
+			boost::format formatter(kMsgExistingNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
+			formatter
+			% (std::uint32_t) node->GetNodeId();
+			LOG_ERROR() << "[" + networkId + "] " + formatter.str();
+			return Result(ErrorCode::NODE_EXISTS, formatter.str());
 		}
 	}
+	//Log info node created
+	boost::format formatter(kMsgNodeCreated[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
+	formatter
+	% (std::uint32_t) node->GetNodeId();
+	LOG_INFO() << "[" + networkId + "] " + formatter.str();
+
+	this->nodeCollection.insert(std::pair<std::uint8_t, std::shared_ptr<BaseNode>>(node->GetNodeId(), node));
+
+	for (auto& nodePtr : this->nodeCollection)
+	{
+		std::shared_ptr<ManagingNode> mn = std::dynamic_pointer_cast<ManagingNode>(nodePtr.second);
+		std::shared_ptr<RedundantManagingNode> rmn = std::dynamic_pointer_cast<RedundantManagingNode>(nodePtr.second);
+		if (mn.get())
+		{
+			//Add RMN id
+			mn->AddRmnId(node->GetNodeId());
+		}
+		else if (rmn.get())
+		{
+			//Add RMN id
+			rmn->AddRmnId(node->GetNodeId());
+		}
+	}
+
 	this->UpdateBuildConfigurationSettingsOnNodes();
 	return Result();
 }
@@ -244,7 +273,7 @@ Result Network::RemoveNode(const std::uint8_t nodeID)
 		return Result(ErrorCode::NODE_DOES_NOT_EXIST, formatter.str());
 	}
 
-	if (std::dynamic_pointer_cast<ManagingNode>(it->second))//if RMN is removed
+	if (std::dynamic_pointer_cast<RedundantManagingNode>(it->second))//if RMN is removed
 	{
 		std::shared_ptr<ManagingNode> mn;
 		Result res = this->GetManagingNode(mn);
@@ -264,7 +293,7 @@ Result Network::RemoveNode(const std::uint8_t nodeID)
 	//Remove CN related MN and RMN objects
 	for (auto& node : this->nodeCollection)
 	{
-		if (std::dynamic_pointer_cast<ManagingNode>(node.second))
+		if (std::dynamic_pointer_cast<RedundantManagingNode>(node.second))
 		{
 			//Reset 0x1F26 / nodeID
 			node.second->ForceSubObject(0x1F26, nodeID, false);
@@ -331,7 +360,7 @@ Result Network::SetNodeId(const std::uint8_t nodeId, const std::uint8_t newNodeI
 		return Result(ErrorCode::NODE_EXISTS, formatter.str());
 	}
 
-	if (std::dynamic_pointer_cast<ManagingNode>(it->second))//if RMN nodeId is changed
+	if (std::dynamic_pointer_cast<RedundantManagingNode>(it->second))//if RMN nodeId is changed
 	{
 		std::shared_ptr<ManagingNode> mn;
 		Result res = this->GetManagingNode(mn);
@@ -351,7 +380,7 @@ Result Network::SetNodeId(const std::uint8_t nodeId, const std::uint8_t newNodeI
 		if ((std::uint32_t)node.first == newNodeId)
 			continue;
 
-		if (std::dynamic_pointer_cast<ManagingNode>(node.second))
+		if (std::dynamic_pointer_cast<ManagingNode>(node.second) || std::dynamic_pointer_cast<RedundantManagingNode>(node.second))
 		{
 			if ((std::uint32_t)node.first == 240)
 			{
@@ -833,14 +862,8 @@ Result Network::GenerateConfiguration()
 
 	for (auto& node : this->nodeCollection)
 	{
-		std::shared_ptr<ManagingNode> managingNode = std::dynamic_pointer_cast<ManagingNode>(node.second);
 		std::shared_ptr<ControlledNode> cn = std::dynamic_pointer_cast<ControlledNode>(node.second);
-		if (managingNode.get() && node.first == 240) //only managing node
-		{
-			managingNode->UpdateProcessImage(this->nodeCollection, Direction::RX);
-			managingNode->UpdateProcessImage(this->nodeCollection, Direction::TX);
-		}
-		else if (cn.get())
+		if (cn.get())
 		{
 			res = cn->UpdateProcessImage(Direction::RX);
 			if (!res.IsSuccessful())
@@ -850,6 +873,9 @@ Result Network::GenerateConfiguration()
 				return res;
 		}
 	}
+
+	mn->UpdateProcessImage(this->nodeCollection, Direction::RX);
+	mn->UpdateProcessImage(this->nodeCollection, Direction::TX);
 
 	for (auto& config : this->buildConfigurations)
 	{
@@ -1003,7 +1029,7 @@ Result Network::EnableNode(const std::uint8_t nodeID, bool enable)
 	if (enable)
 	{
 		it->second->SetEnabled(true);
-		if (std::dynamic_pointer_cast<ManagingNode>(it->second))//if RMN is enabled
+		if (std::dynamic_pointer_cast<RedundantManagingNode>(it->second))//if RMN is enabled
 		{
 			std::shared_ptr<ManagingNode> mn;
 			Result res = this->GetManagingNode(mn);
@@ -1015,7 +1041,7 @@ Result Network::EnableNode(const std::uint8_t nodeID, bool enable)
 	else
 	{
 		it->second->SetEnabled(false);
-		if (std::dynamic_pointer_cast<ManagingNode>(it->second))//if RMN is disabled
+		if (std::dynamic_pointer_cast<RedundantManagingNode>(it->second))//if RMN is disabled
 		{
 			std::shared_ptr<ManagingNode> mn;
 			Result res = this->GetManagingNode(mn);
@@ -1027,7 +1053,7 @@ Result Network::EnableNode(const std::uint8_t nodeID, bool enable)
 		//Remove CN related MN and RMN objects
 		for (auto& node : this->nodeCollection)
 		{
-			if (std::dynamic_pointer_cast<ManagingNode>(node.second))
+			if (std::dynamic_pointer_cast<ManagingNode>(node.second) || std::dynamic_pointer_cast<RedundantManagingNode>(node.second))
 			{
 				//Reset 0x1F26 / nodeID
 				node.second->ForceSubObject(0x1F26, nodeID, false, false, "");
@@ -1153,15 +1179,11 @@ void Network::UpdateBuildConfigurationSettingsOnNodes()
 				{
 					node.second->SetIgnoreNonExistingMappingObjects(true);
 				}
-				else
-					node.second->SetIgnoreNonExistingMappingObjects(false);
 
 				if (config->EvaluateSettingForNode("IGNORE_INVALID_MAPPING_OBJECT_OFFSETS", node.first))
 				{
 					node.second->SetIgnoreInvalidMappingOffsets(true);
 				}
-				else
-					node.second->SetIgnoreInvalidMappingOffsets(false);
 			}
 		}
 	}

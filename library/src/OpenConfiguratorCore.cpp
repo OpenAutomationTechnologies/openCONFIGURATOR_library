@@ -365,7 +365,7 @@ Result OpenConfiguratorCore::CreateNode(const std::string& networkId, const std:
 			//Add redundant managing node to network
 			else if ((nodeID >= 241 && nodeID <= 250) || isRmn) //allow the RMN to have normal nodeIDs
 			{
-				std::shared_ptr<ManagingNode> node = std::make_shared<ManagingNode>(nodeID, nodeName);
+				std::shared_ptr<RedundantManagingNode> node = std::make_shared<RedundantManagingNode>(nodeID, nodeName);
 				res = network->AddNode(node);
 			}
 			//Add normal controlled node to network
@@ -2519,7 +2519,7 @@ Result OpenConfiguratorCore::SetRedundantManagingNodeWaitNotActive(const std::st
 		if (!res.IsSuccessful())
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
-		auto ptr = std::dynamic_pointer_cast<ManagingNode>(node);
+		auto ptr = std::dynamic_pointer_cast<RedundantManagingNode>(node);
 		if (ptr && nodeId != 240)
 		{
 			std::shared_ptr<SubObject> subObj;
@@ -2559,7 +2559,7 @@ Result OpenConfiguratorCore::SetRedundantManagingNodePriority(const std::string&
 		if (!res.IsSuccessful())
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
-		auto ptr = std::dynamic_pointer_cast<ManagingNode>(node);
+		auto ptr = std::dynamic_pointer_cast<RedundantManagingNode>(node);
 		if (ptr && nodeId != 240)
 		{
 			std::shared_ptr<SubObject> subObj;
@@ -3102,9 +3102,15 @@ Result OpenConfiguratorCore::MapObjectToChannel(const std::string& networkId, co
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
 		auto cn = std::dynamic_pointer_cast<ControlledNode>(nodePtr);
+		auto rmn = std::dynamic_pointer_cast<RedundantManagingNode>(nodePtr);
 		if (cn)
 		{
 			res = cn->MapObject(objectIdToBeMapped, dir, channelNr, position, fromNode, updateNrEntries);
+			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+		}
+		else if (rmn)
+		{
+			res = rmn->MapObject(objectIdToBeMapped, dir, channelNr, position, fromNode, updateNrEntries);
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 		}
 		else

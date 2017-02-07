@@ -151,11 +151,11 @@ Result ConfigurationGenerator::WriteNodeAssignment(const std::shared_ptr<Network
 			continue;
 
 		//Determine if Node is RMN
-		if (std::dynamic_pointer_cast<ManagingNode>(node.second))
+		if (std::dynamic_pointer_cast<RedundantManagingNode>(node.second) || std::dynamic_pointer_cast<ManagingNode>(node.second))
 		{
 			//Skip if node is RMN and write Reassignment or node is AMN
 			if ((writeNodeValid && node.second->GetNodeId() != 240)
-			        || node.second->GetNodeId() == 240) //Do not write Node Reassignment for RMNscontinue;
+			        || node.second->GetNodeId() == 240) //Do not write Node Reassignment for RMNs continue;
 				continue;
 		}
 
@@ -231,7 +231,7 @@ Result ConfigurationGenerator::WriteManagingNodeConfiguration(const std::shared_
 
 Result ConfigurationGenerator::WriteRedundantManagingNodeConfiguration(const std::shared_ptr<Network>& net, const std::shared_ptr<BaseNode>& node, std::stringstream& configurationOutput, std::stringstream& hexOutput)
 {
-	auto rmn = std::dynamic_pointer_cast<ManagingNode>(node);
+	auto rmn = std::dynamic_pointer_cast<RedundantManagingNode>(node);
 	if (!rmn)
 	{
 		boost::format formatter(kMsgNonManagingNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
@@ -242,7 +242,7 @@ Result ConfigurationGenerator::WriteRedundantManagingNodeConfiguration(const std
 	}
 
 	// BitSize / 8 + 7 Byte per Object (2 Byte Index / 1 Byte SubIndex / 4 Byte Size) + 4 Byte NrOfObjects
-	std::uint32_t rmnDomainSize = (rmn->GetConfigurationObjectSize() / 8) + (rmn->GetConfigurationObjectCount() * 7) + 4;
+	std::uint32_t rmnDomainSize = (rmn->GetRMNConfigurationObjectSize() / 8) + (rmn->GetRMNConfigurationObjectCount() * 7) + 4;
 
 	//Write the 1F22 object for RMN
 	configurationOutput << "////Configuration Data for RMN: " << node->GetName() << "(" << std::dec << (std::uint32_t) node->GetNodeId() << ")" << std::endl;
@@ -251,12 +251,12 @@ Result ConfigurationGenerator::WriteRedundantManagingNodeConfiguration(const std
 	configurationOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << (std::uint32_t) node->GetNodeId();
 	configurationOutput << "\t";
 	configurationOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << rmnDomainSize << std::endl;
-	configurationOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << rmn->GetConfigurationObjectCount() << std::endl;
+	configurationOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << rmn->GetRMNConfigurationObjectCount() << std::endl;
 
 	hexOutput << ReverseHex(0x1F22, 4);
 	hexOutput << ReverseHex((std::uint32_t) node->GetNodeId(), 2);
 	hexOutput << ReverseHex(rmnDomainSize, 8);
-	hexOutput << ReverseHex(rmn->GetConfigurationObjectCount(), 8);
+	hexOutput << ReverseHex(rmn->GetRMNConfigurationObjectCount(), 8);
 
 	Result res = WriteNodeAssignment(net, configurationOutput, hexOutput, false, false);
 	if (!res.IsSuccessful())
@@ -294,50 +294,60 @@ Result ConfigurationGenerator::WriteRedundantManagingNodeConfiguration(const std
 
 Result ConfigurationGenerator::WriteControlledNodeConfiguration(const std::shared_ptr<Network>& net, const std::shared_ptr<BaseNode>& node, std::stringstream& configurationOutput, std::stringstream& hexOutput)
 {
-	auto cn = std::dynamic_pointer_cast<ControlledNode>(node);
-	if (!cn) //If cast fails this is an RMN
+	auto rmn = std::dynamic_pointer_cast<RedundantManagingNode>(node);
+	if (rmn) //If cast fails this is an RMN
 		return WriteRedundantManagingNodeConfiguration(net, node, configurationOutput, hexOutput);
 
-	// BitSize / 8 + 7 Byte per Object (2 Byte Index / 1 Byte SubIndex / 4 Byte Size) + 4 Byte NrOfObjects
-	std::uint32_t cnDomainSize = (cn->GetConfigurationObjectSize() / 8) + (cn->GetConfigurationObjectCount() * 7) + 4;
+	auto cn = std::dynamic_pointer_cast<ControlledNode>(node);
+	if (cn)
+	{
 
-	configurationOutput << "////Configuration Data for CN: " << node->GetName() << "(" << std::dec << (std::uint32_t) node->GetNodeId() << ")" << std::endl;
-	configurationOutput << std::hex << std::uppercase << "1F22";
-	configurationOutput << "\t";
-	configurationOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << (std::uint32_t) node->GetNodeId();
-	configurationOutput << "\t";
-	configurationOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << cnDomainSize << std::endl;
-	configurationOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << cn->GetConfigurationObjectCount() << std::endl;
+		// BitSize / 8 + 7 Byte per Object (2 Byte Index / 1 Byte SubIndex / 4 Byte Size) + 4 Byte NrOfObjects
+		std::uint32_t cnDomainSize = (cn->GetConfigurationObjectSize() / 8) + (cn->GetConfigurationObjectCount() * 7) + 4;
 
-	hexOutput << ReverseHex(0x1F22, 4);
-	hexOutput << ReverseHex((std::uint32_t) node->GetNodeId(), 2);
-	hexOutput << ReverseHex(cnDomainSize, 8);
-	hexOutput << ReverseHex(cn->GetConfigurationObjectCount(), 8);
+		configurationOutput << "////Configuration Data for CN: " << node->GetName() << "(" << std::dec << (std::uint32_t) node->GetNodeId() << ")" << std::endl;
+		configurationOutput << std::hex << std::uppercase << "1F22";
+		configurationOutput << "\t";
+		configurationOutput << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << (std::uint32_t) node->GetNodeId();
+		configurationOutput << "\t";
+		configurationOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << cnDomainSize << std::endl;
+		configurationOutput << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << cn->GetConfigurationObjectCount() << std::endl;
 
-	Result res = WriteMappingNrOfEntriesZero(node, configurationOutput, hexOutput);
-	if (!res.IsSuccessful())
+		hexOutput << ReverseHex(0x1F22, 4);
+		hexOutput << ReverseHex((std::uint32_t) node->GetNodeId(), 2);
+		hexOutput << ReverseHex(cnDomainSize, 8);
+		hexOutput << ReverseHex(cn->GetConfigurationObjectCount(), 8);
+
+		Result res = WriteMappingNrOfEntriesZero(node, configurationOutput, hexOutput);
+		if (!res.IsSuccessful())
+			return res;
+
+		res = WriteCommunicationProfileArea(node, configurationOutput, hexOutput);
+		if (!res.IsSuccessful())
+			return res;
+
+		res = WriteManufacturerSpecificProfileArea(node, configurationOutput, hexOutput);
+		if (!res.IsSuccessful())
+			return res;
+
+		res = WriteMappingObjects(node, configurationOutput, hexOutput);
+		if (!res.IsSuccessful())
+			return res;
+
+		res = WriteMappingNrOfEntries(node, configurationOutput, hexOutput);
+		configurationOutput << std::endl;
+
+		boost::format formatter(kMsgWriteControlledNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
+		formatter
+		% (std::uint32_t) cn->GetNodeId();
+		LOG_INFO() << formatter.str();
 		return res;
-
-	res = WriteCommunicationProfileArea(node, configurationOutput, hexOutput);
-	if (!res.IsSuccessful())
-		return res;
-
-	res = WriteManufacturerSpecificProfileArea(node, configurationOutput, hexOutput);
-	if (!res.IsSuccessful())
-		return res;
-
-	res = WriteMappingObjects(node, configurationOutput, hexOutput);
-	if (!res.IsSuccessful())
-		return res;
-
-	res = WriteMappingNrOfEntries(node, configurationOutput, hexOutput);
-	configurationOutput << std::endl;
-
-	boost::format formatter(kMsgWriteControlledNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
+	}
+	boost::format formatter(kMsgNonControlledNode[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 	formatter
-	% (std::uint32_t) cn->GetNodeId();
-	LOG_INFO() << formatter.str();
-	return res;
+	% (std::uint32_t) node->GetNodeId();
+	LOG_ERROR() << formatter.str();
+	return Result(ErrorCode::NODE_IS_NOT_CONTROLLED_NODE, formatter.str());
 }
 
 Result ConfigurationGenerator::WriteMappingNrOfEntriesZero(const std::shared_ptr<BaseNode>& node, std::stringstream& configurationOutput, std::stringstream& hexOutput)

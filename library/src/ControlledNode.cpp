@@ -49,7 +49,7 @@ ControlledNode::~ControlledNode()
 
 Result ControlledNode::AddNodeAssignment(const NodeAssignment& assign)
 {
-	if (assign == NodeAssignment::NMT_NODEASSIGN_MN_PRES)
+	if (assign == NodeAssignment::NMT_NODEASSIGN_MN_PRES && this->GetNodeId() < 240)
 	{
 		boost::format formatter(kMsgNodeAssignmentNotSupported[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
 		formatter
@@ -784,23 +784,50 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Calcul
 IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::CalculatePResPayloadLimit()
 {
 	std::uint32_t presPayloadLimit = 0;
-	for (auto& object : this->GetObjectDictionary())
-	{
-		if (object.first >= 0x1A00 && object.first < 0x1B00)
-		{
-			std::uint16_t numberOfIndicesToWrite = 0;
-			auto& nrOfEntriesObj = object.second->GetSubObjectDictionary().at((std::uint16_t) 0);
-			if (nrOfEntriesObj->WriteToConfiguration())
-				numberOfIndicesToWrite = nrOfEntriesObj->GetTypedActualValue<std::uint16_t>(); //GetNrOfEntries and only count the valid ones
+	std::uint32_t mappingObjectIndex = 0x1A00;
+	std::uint32_t mappingParameterIndex = 0x1800;
 
-			std::uint16_t count = 0;
-			for (auto& subobject : object.second->GetSubObjectDictionary())
+	for (auto& obj : this->GetObjectDictionary())
+	{
+		if (obj.first >= mappingParameterIndex && obj.first < (mappingParameterIndex + 0x100))
+		{
+			//Get mapping parameter object
+			std::shared_ptr<SubObject> nodeID;
+			Result res = obj.second->GetSubObject(0x1, nodeID);
+			if (!res.IsSuccessful())
+				continue;
+
+			if (nodeID->HasActualValue())
 			{
-				if (subobject.second->WriteToConfiguration() && subobject.first != 0 && count < numberOfIndicesToWrite)
+				if (nodeID->GetTypedActualValue<std::uint16_t>() != 0)
+					continue;
+			}
+
+			//Get according mapping object
+			std::shared_ptr<Object> mappingObject;
+			res = this->GetObject(((obj.first - mappingParameterIndex) + mappingObjectIndex), mappingObject);
+			if (!res.IsSuccessful())
+				return res;
+
+			//Get mapping nrOfEntries
+			std::shared_ptr<SubObject> nrOfEntriesObj;
+			res = mappingObject->GetSubObject(0x0, nrOfEntriesObj);
+			if (!res.IsSuccessful())
+				return res;
+
+			std::uint16_t numberOfIndicesToWrite = 0;
+			if (nrOfEntriesObj->WriteToConfiguration())
+				numberOfIndicesToWrite = nrOfEntriesObj->GetTypedActualValue<std::uint16_t>();
+			else if (nrOfEntriesObj->HasDefaultValue())
+				numberOfIndicesToWrite = nrOfEntriesObj->GetTypedDefaultValue<std::uint16_t>();
+
+			for (auto& subobject : mappingObject->GetSubObjectDictionary())
+			{
+				if (subobject.second->WriteToConfiguration() && subobject.first != 0 && numberOfIndicesToWrite != 0)
 				{
 					BaseProcessDataMapping mapping = BaseProcessDataMapping(subobject.second->GetTypedActualValue<std::string>(), this->GetNodeId());
-					presPayloadLimit += mapping.GetMappingLength() / 8; //Byte Size
-					count++;
+					presPayloadLimit += mapping.GetMappingLength() / 8;
+					numberOfIndicesToWrite--;
 				}
 			}
 		}
@@ -842,7 +869,10 @@ Result ControlledNode::GetDataObjectFromMapping(const std::shared_ptr<BaseProces
 		% (std::uint32_t) this->GetNodeId();
 		if (this->IgnoreNonExistingMappingObjects())
 		{
-			LOG_WARN() << "Invalid process image ignored : " << formatter.str();
+			if (this->GetNodeId() < 240)
+			{
+				LOG_WARN() << "Invalid process image ignored : " << formatter.str();
+			}
 		}
 		else
 		{
@@ -876,7 +906,10 @@ Result ControlledNode::GetDataObjectFromMapping(const std::shared_ptr<BaseProces
 			% (std::uint32_t) this->GetNodeId();
 			if (this->IgnoreNonExistingMappingObjects())
 			{
-				LOG_WARN() << kMsgInvalidProcessImage[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())] << formatter.str();
+				if (this->GetNodeId() < 240)
+				{
+					LOG_WARN() << kMsgInvalidProcessImage[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())] << formatter.str();
+				}
 			}
 			else
 			{
@@ -1339,7 +1372,10 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 				% (std::uint32_t) this->GetNodeId();
 				if (this->IgnoreNonExistingMappingObjects())
 				{
-					LOG_WARN() << kMsgInvalidMappingReference[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())] << formatter.str();
+					if (this->GetNodeId() < 240)
+					{
+						LOG_WARN() << kMsgInvalidMappingReference[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())] << formatter.str();
+					}
 					return Result();
 				}
 				else
@@ -1366,7 +1402,10 @@ Result ControlledNode::CheckProcessDataMapping(const std::shared_ptr<BaseProcess
 			% (std::uint32_t) this->GetNodeId();
 			if (this->IgnoreNonExistingMappingObjects())
 			{
-				LOG_WARN() << kMsgInvalidMappingReference[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())] << formatter.str();
+				if (this->GetNodeId() < 240)
+				{
+					LOG_WARN() << kMsgInvalidMappingReference[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())] << formatter.str();
+				}
 				return Result();
 			}
 			else

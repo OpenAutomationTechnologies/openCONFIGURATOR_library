@@ -51,7 +51,7 @@ BaseNode::BaseNode(std::uint8_t nodeId, const std::string& name) :
 	receiveMapping(std::vector<std::shared_ptr<BaseProcessDataMapping>>()),
 	transmitProcessImage(std::vector<std::shared_ptr<BaseProcessImageObject>>()),
 	receiveProcessImage(std::vector<std::shared_ptr<BaseProcessImageObject>>()),
-	ignoreNonExistingMappingObjects(false),
+	ignoreNonExistingMappingObjects((nodeId > 240) ? true : false),
 	ignoreInvalidMappingOffsets(false)
 {}
 

@@ -342,6 +342,7 @@
 %include "Object.h"
 %include "SubObject.h"
 %include "ControlledNode.h"
+%include "RedundantManagingNode.h"
 %include "ManagingNode.h"
 %include "PlkFeatureEnum.h"
 %include "PlkOperationMode.h"

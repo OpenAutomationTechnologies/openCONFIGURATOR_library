@@ -64,6 +64,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Direction.h"
 #include "SortEnums.h"
 #include "ModularControlledNode.h"
+#include "RedundantManagingNode.h"
 
 /**
 \brief Industrial network root namespace
@@ -675,7 +676,7 @@ namespace IndustrialNetwork
 						\param objects Data structure with all objects and their respektive actual values.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetObjectsWithActualValue(const std::string& networkId, const std::uint8_t nodeId, std::map<std::pair<std::uint32_t, std::int32_t> , std::string>& objects);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetObjectsWithActualValue(const std::string& networkId, const std::uint8_t nodeId, std::map<std::pair<std::uint32_t, std::int32_t>, std::string>& objects);
 						//! Member to retrieve an objects actual value.
 						/*!
 						\param networkId Specifies the identifier for the network.
@@ -846,7 +847,7 @@ namespace IndustrialNetwork
 						\param objects Return map for the actual values.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetChannelActualValues(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir, std::uint16_t channelNr, std::map<std::pair<std::uint32_t, std::int32_t> , std::string>& objects);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetChannelActualValues(const std::string& networkId, const std::uint8_t nodeId, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir, std::uint16_t channelNr, std::map<std::pair<std::uint32_t, std::int32_t>, std::string>& objects);
 						//! Member to retrieve to move a mapping up or down in the channel.
 						/*!
 						\param networkId Specifies the identifier for the network.

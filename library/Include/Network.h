@@ -54,6 +54,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Direction.h"
 #include "GeneralFeature.h"
 #include "ModularControlledNode.h"
+#include "RedundantManagingNode.h"
 
 namespace IndustrialNetwork
 {
@@ -89,6 +90,7 @@ namespace IndustrialNetwork
 						/return Result
 						*/
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNode(std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::ManagingNode>& node);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNode(std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::RedundantManagingNode>& node);
 
 						/**
 						/brief Removes a node to the network.

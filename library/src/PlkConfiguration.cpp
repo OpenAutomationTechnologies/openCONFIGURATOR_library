@@ -203,7 +203,7 @@ Result PlkConfiguration::DistributeDateTimeStamps(const std::map<std::uint8_t, s
 			continue;
 
 		//Distribute to MN and RMNs
-		if (std::dynamic_pointer_cast<ManagingNode>(node.second)) //Set MN date and time objects 1F26 / 1F27
+		if (std::dynamic_pointer_cast<ManagingNode>(node.second) || std::dynamic_pointer_cast<RedundantManagingNode>(node.second)) //Set MN date and time objects 1F26 / 1F27
 		{
 			//Clear to delete pending artifacts
 			ClearActualValues(nodeCollection, node.second, 0x1F26);
@@ -264,7 +264,7 @@ Result PlkConfiguration::DistributeNodeAssignment(const std::map<std::uint8_t, s
 		for (auto& mNode : nodeCollection)
 		{
 			//Distribute to MN and RMNs
-			if (std::dynamic_pointer_cast<ManagingNode>(mNode.second)) //Set MN or RMN node assignment objects
+			if (std::dynamic_pointer_cast<ManagingNode>(mNode.second) || std::dynamic_pointer_cast<RedundantManagingNode>(mNode.second)) //Set MN or RMN node assignment objects
 			{
 				Result res = mNode.second->SetSubObjectActualValue(0x1F81, node.first, nodeAssignmentStr.str()); //Set actual value with assignment
 				if (!res.IsSuccessful())
@@ -616,7 +616,7 @@ Result PlkConfiguration::DistributePResTimeOut(const std::map<std::uint8_t, std:
 			if (rmn.first == 240)
 				continue;
 
-			if (std::dynamic_pointer_cast<ManagingNode>(rmn.second))
+			if (std::dynamic_pointer_cast<RedundantManagingNode>(rmn.second))
 			{
 				res = rmn.second->SetSubObjectActualValue(0x1F92, node.first, IntToHex(presTimoutActualValue, 8, "0x"));
 				if (!res.IsSuccessful())
@@ -670,7 +670,7 @@ Result PlkConfiguration::DistributePReqPayloadLimit(const std::map<std::uint8_t,
 			if (rmn.second->IsEnabled() == false)
 				continue;
 
-			if (std::dynamic_pointer_cast<ManagingNode>(rmn.second))
+			if (std::dynamic_pointer_cast<RedundantManagingNode>(rmn.second))
 			{
 				res = rmn.second->SetSubObjectActualValue(0x1F8B, node.first, preqActPayloadLimitValue.str());
 				if (!res.IsSuccessful())
@@ -722,7 +722,7 @@ Result PlkConfiguration::DistributePResPayloadLimit(const std::map<std::uint8_t,
 				continue;
 
 			//Always distribute for RMNs
-			if (std::dynamic_pointer_cast<ManagingNode>(cn.second))
+			if (std::dynamic_pointer_cast<RedundantManagingNode>(cn.second))
 			{
 				res = cn.second->SetSubObjectActualValue(0x1F8D, node.first, presActPayloadLimitValue.str());
 				if (!res.IsSuccessful())
@@ -774,7 +774,7 @@ Result PlkConfiguration::DistributeCNLossObjects(const std::map<std::uint8_t, st
 	{
 		if (std::dynamic_pointer_cast<ControlledNode>(node.second))
 		{
-			if (node.first == 240)
+			if (node.first >= 240)
 				continue;
 
 			if (node.second->IsEnabled() == false)
@@ -829,11 +829,8 @@ Result PlkConfiguration::SyncRedundantManagingNodes(const std::map<std::uint8_t,
 
 	for (auto& node : nodeCollection)
 	{
-		if (node.first == 240)
-			continue;
-
 		//Distribute RMNs
-		std::shared_ptr<ManagingNode> rmn = std::dynamic_pointer_cast<ManagingNode>(node.second);
+		std::shared_ptr<RedundantManagingNode> rmn = std::dynamic_pointer_cast<RedundantManagingNode>(node.second);
 		if (rmn)
 		{
 			//Set RMN support on MN and distribute to all RMNs
@@ -841,41 +838,15 @@ Result PlkConfiguration::SyncRedundantManagingNodes(const std::map<std::uint8_t,
 			ClearActualValues(nodeCollection, rmn, 0x1F92);
 			ClearActualValues(nodeCollection, rmn, 0x1F8B);
 			ClearActualValues(nodeCollection, rmn, 0x1F8D);
-			rmn->ClearMappingObjects();
+			ClearActualValues(nodeCollection, rmn, 0x1F81);
 
-			for (auto& obj : mn->GetObjectDictionary())
-			{
-				if (obj.first == 0x1F81) //Skip node assignments
-					continue;
+			Result res = rmn->ClearMappingObjects();
+			if (!res.IsSuccessful())
+				return res;
 
-				if (obj.second->HasActualValue())
-				{
-					Result res = node.second->SetObjectActualValue(obj.first, "0x" + obj.second->GetTypedActualValue<std::string>());
-					if (!res.IsSuccessful())
-						return res;
-				}
-				for (auto& subObj : obj.second->GetSubObjectDictionary())
-				{
-					if (subObj.second->HasActualValue())
-					{
-						Result res = node.second->SetSubObjectActualValue(obj.first, subObj.first, "0x" + subObj.second->GetTypedActualValue<std::string>());
-						if (!res.IsSuccessful())
-							return res;
-					}
-				}
-			}
-
-			//Sync MN PI
-			rmn->GetTransmitProcessImage().clear();
-			rmn->GetReceiveProcessImage().clear();
-			for (auto& rxPi : mn->GetReceiveProcessImage())
-			{
-				rmn->GetReceiveProcessImage().push_back(rxPi);
-			}
-			for (auto& txPi : mn->GetTransmitProcessImage())
-			{
-				rmn->GetTransmitProcessImage().push_back(txPi);
-			}
+			res = rmn->SyncMNObjects(mn);
+			if (!res.IsSuccessful())
+				return res;
 
 			//MN transmits PRes RMN should too
 			if (std::find(mn->GetNodeAssignment().begin(), mn->GetNodeAssignment().end(), NodeAssignment::NMT_NODEASSIGN_MN_PRES) != mn->GetNodeAssignment().end())

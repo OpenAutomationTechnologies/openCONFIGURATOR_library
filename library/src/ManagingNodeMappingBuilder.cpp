@@ -159,9 +159,7 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 		//Cast pointer to CN
 		std::shared_ptr<ControlledNode> cn = std::dynamic_pointer_cast<ControlledNode>(node); //Check if not RMN needs to be handled properly
 		if (!cn)
-			continue; //If RMN continue
-
-		//TODO: Add RMN Handling
+			continue;
 
 		std::uint32_t availableSubindices = 252; //from PI_SUB_INDEX_COUNT
 		std::vector<std::shared_ptr<BaseProcessDataMapping>> mappingCollection;
@@ -195,6 +193,12 @@ Result ManagingNodeMappingBuilder::GenerateMnMapping(const std::string& value, D
 				         && mapping->GetDestinationNode() != 240) //Cross traffic mapping not from MN (neither from node '0' or '240')
 					continue;
 			}
+			// Skip copied RMN Mapping
+			if (dir == Direction::RX
+			        && mapping->GetDestinationNode() != 0
+			        && mapping->GetDestinationNode() != 240
+			        && cn->GetNodeId() > 240)
+				continue;
 
 			//Retrieve mapped object
 			std::shared_ptr<BaseObject> foundObject;
