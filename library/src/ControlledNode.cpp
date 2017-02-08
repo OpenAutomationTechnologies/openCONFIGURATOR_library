@@ -580,8 +580,10 @@ std::uint32_t ControlledNode::GetConfigurationObjectCount()
 				{
 					if (subobject.second->WriteToConfiguration())
 					{
-						count += 2; //Add count for mapping set and reset
 						mappingObjNrOfEntries = subobject.second->GetTypedActualValue<std::uint16_t>(); //Set actual nr of mapping objects
+						if (mappingObjNrOfEntries == 0)
+							break;
+						count += 2; //Add count for mapping set and reset
 					}
 				}
 				else if (mappingObjCount < mappingObjNrOfEntries)
@@ -629,8 +631,10 @@ std::uint32_t ControlledNode::GetConfigurationObjectSize()
 				{
 					if (subobject.second->WriteToConfiguration())
 					{
-						size += 2 * subobject.second->GetBitSize(); //Add size of NrOfEntries set and reset
 						mappingObjNrOfEntries = subobject.second->GetTypedActualValue<uint16_t>(); //Set actual nr of mapping objects
+						if (mappingObjNrOfEntries == 0)
+							break;
+						size += 2 * subobject.second->GetBitSize(); //Add size of NrOfEntries set and reset
 					}
 				}
 				else if (mappingObjCount < mappingObjNrOfEntries)
@@ -816,7 +820,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Calcul
 		Result res = this->GetSubObject(0x1F98, 0x5, subObj, false);
 		if (!res.IsSuccessful())
 			return res;
-		if(subObj->HasDefaultValue())
+		if (subObj->HasDefaultValue())
 			return this->SetSubObjectActualValue(0x1F98, 0x5, ""); //Clear if existing
 		else
 			return this->SetSubObjectActualValue(0x1F98, 0x5, "36"); //Set to minimum value
@@ -1166,6 +1170,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 			if (!res.IsSuccessful())
 				return res;
 
+			bool defaultMapping = false;
 			if (nrOfEntriesObj->HasActualValue())
 			{
 				nrOfEntries = nrOfEntriesObj->GetTypedActualValue<std::uint16_t>();
@@ -1173,6 +1178,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 			else if (nrOfEntriesObj->HasDefaultValue())
 			{
 				nrOfEntries = nrOfEntriesObj->GetTypedDefaultValue<std::uint16_t>();
+				defaultMapping = true;
 			}
 
 			//If NrOfEntries is zero continue with next channel
@@ -1291,7 +1297,7 @@ IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ControlledNode::Update
 				this->nodeDataPresMnCurrentOffset = expectedOffset;
 
 			//correct NrOfEntries if there are too much mappings validated
-			if (nrOfEntries > countNrOfEntries)
+			if (nrOfEntries > countNrOfEntries || (defaultMapping && nrOfEntries != countNrOfEntries))
 			{
 				nrOfEntriesObj->SetTypedObjectActualValue(IntToHex<std::uint16_t>(countNrOfEntries, 2, "0x"));
 
