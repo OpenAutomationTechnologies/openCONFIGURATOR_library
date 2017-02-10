@@ -109,7 +109,13 @@ SET(CMAKE_SWIG_OUTDIR "${CMAKE_CURRENT_BINARY_DIR}/Java/src")
 # Add "-c++" option to SWIG command
 SET_SOURCE_FILES_PROPERTIES(${SWIG_INTERFACE_FILE} PROPERTIES CPLUSPLUS ON)
 SET_PROPERTY(SOURCE ${SWIG_INTERFACE_FILE} PROPERTY SWIG_FLAGS "-package" "org.epsg.openconfigurator.lib.wrapper")
-SWIG_ADD_MODULE(openconfigurator_core_wrapper_java java ${SWIG_INTERFACE_FILE})
+
+IF("${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION}" VERSION_GREATER "3.7.0")
+	SWIG_ADD_LIBRARY(openconfigurator_core_wrapper_java LANGUAGE java TYPE MODULE SOURCES ${SWIG_INTERFACE_FILE})
+ELSE()
+	SWIG_ADD_MODULE(openconfigurator_core_wrapper_java java ${SWIG_INTERFACE_FILE})
+ENDIF()
+
 #SET_TARGET_PROPERTIES(openconfigurator_core_wrapper_java PROPERTIES PREFIX "")
 # Create openPOWERLINK wrapper library
 SWIG_LINK_LIBRARIES(openconfigurator_core_wrapper_java openconfigurator_core_lib ${JAVA_LIBRARIES} ${Boost_LIBRARIES})

@@ -83,8 +83,11 @@ SET(CMAKE_SWIG_OUTDIR "${CMAKE_CURRENT_BINARY_DIR}/csharp/src")
 # Swig wrapper build options
 ###############################################################################
 SET_SOURCE_FILES_PROPERTIES(openconfigurator_core_wrapper_net.i PROPERTIES CPLUSPLUS ON)
-SWIG_ADD_MODULE(openconfigurator_core_wrapper_net csharp openconfigurator_core_wrapper_net.i)
-
+IF("${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION}" VERSION_GREATER "3.7.0")
+	SWIG_ADD_LIBRARY(openconfigurator_core_wrapper_net LANGUAGE csharp TYPE MODULE SOURCES openconfigurator_core_wrapper_net.i)
+ELSE()
+	SWIG_ADD_MODULE(openconfigurator_core_wrapper_net csharp openconfigurator_core_wrapper_net.i)
+ENDIF()
 ###############################################################################
 # Remove lib prefix under Linux
 ###############################################################################
