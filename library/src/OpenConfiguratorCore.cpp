@@ -802,9 +802,18 @@ Result OpenConfiguratorCore::CreateParameterObject(const std::string& networkId,
 
 		if (dataType != PlkDataType::UNDEFINED)
 			ptr->SetDataType(dataType);
-
-		if (dataType == PlkDataType::UNDEFINED && !uniqueIdRef.empty())
+		else if (dataType == PlkDataType::UNDEFINED && !uniqueIdRef.empty())
 			ptr->SetDataType(PlkDataType::Domain);
+		else
+		{
+			boost::format formatter(kMsgBaseObjectDataTypeError[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
+			formatter
+			% name
+			% objectId
+			% (std::uint32_t) nodeId;
+			LOG_FATAL() << formatter.str();
+			return Result(ErrorCode::OBJECT_HAS_NO_DATATYPE, formatter.str());
+		}
 
 		if (pdoMapping != PDOMapping::UNDEFINED)
 			ptr->SetPDOMapping(pdoMapping);
@@ -968,9 +977,18 @@ Result OpenConfiguratorCore::CreateParameterSubObject(const std::string& network
 
 		if (dataType != PlkDataType::UNDEFINED)
 			ptr->SetDataType(dataType);
-
-		if (dataType == PlkDataType::UNDEFINED && !uniqueIdRef.empty())
+		else if (dataType == PlkDataType::UNDEFINED && !uniqueIdRef.empty())
 			ptr->SetDataType(PlkDataType::Domain);
+		else
+		{
+			boost::format formatter(kMsgBaseObjectDataTypeError[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
+			formatter
+			% name
+			% objectId
+			% (std::uint32_t) nodeId;
+			LOG_FATAL() << formatter.str();
+			return Result(ErrorCode::OBJECT_HAS_NO_DATATYPE, formatter.str());
+		}
 
 		if (pdoMapping != PDOMapping::UNDEFINED)
 			ptr->SetPDOMapping(pdoMapping);
@@ -3516,6 +3534,18 @@ Result OpenConfiguratorCore::CreateModuleParameterObject(const std::string& netw
 
 		if (dataType != PlkDataType::UNDEFINED)
 			ptr->SetDataType(dataType);
+		else if (dataType == PlkDataType::UNDEFINED && !uniqueIdRef.empty())
+			ptr->SetDataType(PlkDataType::Domain);
+		else
+		{
+			boost::format formatter(kMsgBaseObjectDataTypeError[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
+			formatter
+			% name
+			% objectId
+			% (std::uint32_t) nodeId;
+			LOG_FATAL() << formatter.str();
+			return Result(ErrorCode::OBJECT_HAS_NO_DATATYPE, formatter.str());
+		}
 
 		if (pdoMapping != PDOMapping::UNDEFINED)
 			ptr->SetPDOMapping(pdoMapping);
@@ -3664,6 +3694,18 @@ Result OpenConfiguratorCore::CreateModuleParameterSubObject(const std::string& n
 
 		if (dataType != PlkDataType::UNDEFINED)
 			ptr->SetDataType(dataType);
+		else if (dataType == PlkDataType::UNDEFINED && !uniqueIdRef.empty())
+			ptr->SetDataType(PlkDataType::Domain);
+		else
+		{
+			boost::format formatter(kMsgBaseObjectDataTypeError[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
+			formatter
+			% name
+			% objectId
+			% (std::uint32_t) nodeId;
+			LOG_FATAL() << formatter.str();
+			return Result(ErrorCode::OBJECT_HAS_NO_DATATYPE, formatter.str());
+		}
 
 		if (pdoMapping != PDOMapping::UNDEFINED)
 			ptr->SetPDOMapping(pdoMapping);
