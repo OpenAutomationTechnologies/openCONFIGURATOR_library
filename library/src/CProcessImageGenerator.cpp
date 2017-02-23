@@ -204,11 +204,33 @@ std::uint32_t CProcessImageGenerator::WriteCProcessImage(const Direction& dir, c
 				if (piSize % piEntry->GetSize() != 0)
 				{
 					std::uint32_t paddingSize = piEntry->GetSize() - (piSize % piEntry->GetSize());
-					std::stringstream paddingVarName;
-					paddingVarName << "PADDING_VAR_" << paddingCount;
-					this->processImageStream << PrintChannel(paddingVarName.str(), IEC_Datatype::USINT, paddingSize, 0, boost::optional<std::uint32_t>());
-					paddingCount++;
 					piSize += paddingSize;
+					while (paddingSize != 0)
+					{
+						std::stringstream paddingVarName;
+						paddingVarName << "PADDING_VAR_" << paddingCount;
+						if (paddingSize >= 32)
+						{
+							this->processImageStream << PrintChannel(paddingVarName.str(), IEC_Datatype::USINT, 32, 0, boost::optional<std::uint32_t>());
+							paddingSize -= 32;
+						}
+						else if (paddingSize >= 16)
+						{
+							this->processImageStream << PrintChannel(paddingVarName.str(), IEC_Datatype::USINT, 16, 0, boost::optional<std::uint32_t>());
+							paddingSize -= 16;
+						}
+						else if (paddingSize >= 8)
+						{
+							this->processImageStream << PrintChannel(paddingVarName.str(), IEC_Datatype::USINT, 8, 0, boost::optional<std::uint32_t>());
+							paddingSize -= 8;
+						}
+						else
+						{
+							this->processImageStream << PrintChannel(paddingVarName.str(), IEC_Datatype::USINT, paddingSize, 0, boost::optional<std::uint32_t>());
+							paddingSize = 0;
+						}
+						paddingCount++;
+					}
 				}
 			}
 			this->processImageStream << PrintChannel(piEntry->GetName(), piEntry->GetDataType(), piEntry->GetSize(), piEntry->GetPiOffset(), piEntry->GetBitOffset());
@@ -219,10 +241,34 @@ std::uint32_t CProcessImageGenerator::WriteCProcessImage(const Direction& dir, c
 		if (piSize % 32 != 0)
 		{
 			std::uint32_t paddingSize = 32 - (piSize % 32);
-			std::stringstream paddingVarName;
-			paddingVarName << "PADDING_VAR_" << paddingCount;
-			this->processImageStream << PrintChannel(paddingVarName.str(), IEC_Datatype::USINT, paddingSize, 0, boost::optional<std::uint32_t>());
+
 			piSize += paddingSize;
+			while (paddingSize != 0)
+			{
+				std::stringstream paddingVarName;
+				paddingVarName << "PADDING_VAR_" << paddingCount;
+				if (paddingSize >= 32)
+				{
+					this->processImageStream << PrintChannel(paddingVarName.str(), IEC_Datatype::USINT, 32, 0, boost::optional<std::uint32_t>());
+					paddingSize -= 32;
+				}
+				else if (paddingSize >= 16)
+				{
+					this->processImageStream << PrintChannel(paddingVarName.str(), IEC_Datatype::USINT, 16, 0, boost::optional<std::uint32_t>());
+					paddingSize -= 16;
+				}
+				else if (paddingSize >= 8)
+				{
+					this->processImageStream << PrintChannel(paddingVarName.str(), IEC_Datatype::USINT, 8, 0, boost::optional<std::uint32_t>());
+					paddingSize -= 8;
+				}
+				else
+				{
+					this->processImageStream << PrintChannel(paddingVarName.str(), IEC_Datatype::USINT, paddingSize, 0, boost::optional<std::uint32_t>());
+					paddingSize = 0;
+				}
+				paddingCount++;
+			}
 		}
 
 		if (dir == Direction::RX)
