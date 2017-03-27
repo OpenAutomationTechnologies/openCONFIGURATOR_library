@@ -76,7 +76,7 @@ const std::string XmlProcessImageGenerator::Generate(std::uint8_t nodeid, std::s
 	fullProcessImage << std::dec << (std::uint32_t) node->GetNodeId();
 	fullProcessImage << ") -->" << std::endl;
 
-	fullProcessImage << "<ApplicationProcess>" << std::endl;
+	fullProcessImage << "<ApplicationProcess xmlns=\"http://ethernet-powerlink.org/POWERLINK/PI\">" << std::endl;
 
 	size = this->WriteXMLProcessImage(Direction::RX, node);
 	if (size != 0)
