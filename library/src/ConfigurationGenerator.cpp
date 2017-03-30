@@ -301,6 +301,16 @@ Result ConfigurationGenerator::WriteControlledNodeConfiguration(const std::share
 	auto cn = std::dynamic_pointer_cast<ControlledNode>(node);
 	if (cn)
 	{
+		// Skip configuration if SDOServer is not enabled
+		bool sdoServer = true;
+		Result res = cn->GetNetworkManagement()->GetFeatureActualValue<bool>(GeneralFeatureEnum::SDOServer, sdoServer);
+		if (res.IsSuccessful())
+		{
+			if (sdoServer == false)
+				return Result();
+		}
+		else
+			return res;
 
 		// BitSize / 8 + 7 Byte per Object (2 Byte Index / 1 Byte SubIndex / 4 Byte Size) + 4 Byte NrOfObjects
 		std::uint32_t cnDomainSize = (cn->GetConfigurationObjectSize() / 8) + (cn->GetConfigurationObjectCount() * 7) + 4;
@@ -318,7 +328,7 @@ Result ConfigurationGenerator::WriteControlledNodeConfiguration(const std::share
 		hexOutput << ReverseHex(cnDomainSize, 8);
 		hexOutput << ReverseHex(cn->GetConfigurationObjectCount(), 8);
 
-		Result res = WriteMappingNrOfEntriesZero(node, configurationOutput, hexOutput);
+		res = WriteMappingNrOfEntriesZero(node, configurationOutput, hexOutput);
 		if (!res.IsSuccessful())
 			return res;
 
