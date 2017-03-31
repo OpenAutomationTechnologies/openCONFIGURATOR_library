@@ -888,6 +888,13 @@ Result OpenConfiguratorCore::CreateSubObject(const std::string& networkId, const
 			if (!res.IsSuccessful())
 				return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 		}
+		// Write CNLossObjects once and only if no actual value is set
+		else if (nodeId < 240 && (objectId == 0x1C0B || objectId == 0x1C0C || objectId == 0x1C0D) && subObjectId == 0x3)
+		{
+			res = node->ForceSubObject(objectId, subObjectId, false, false, "0x50");
+			if (!res.IsSuccessful())
+				return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
+		}
 		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 	}
 	catch (const std::exception& ex)

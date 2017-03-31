@@ -134,11 +134,6 @@ Result PlkConfiguration::GenerateConfiguration(const std::map<std::uint8_t, std:
 		if (!res.IsSuccessful())
 			return res;
 
-		//Write 0x1C0B / 0x1C0C / 0x1C0D / 0x3 for all nodes if no actual values does exist
-		res = DistributeCNLossObjects(nodeCollection);
-		if (!res.IsSuccessful())
-			return res;
-
 		//Sync all needed MN object actual values with the RMN objects
 		return SyncRedundantManagingNodes(nodeCollection);
 	}
@@ -762,55 +757,6 @@ Result PlkConfiguration::DistributePResPayloadLimit(const std::map<std::uint8_t,
 				subObj->ClearActualValue();
 				if (!std::dynamic_pointer_cast<ManagingNode>(cn.second))
 					cn.second->ForceSubObject(0x1F81, node.first, false, false, "", false);
-			}
-		}
-	}
-	return Result();
-}
-
-Result PlkConfiguration::DistributeCNLossObjects(const std::map<std::uint8_t, std::shared_ptr<BaseNode>>& nodeCollection)
-{
-	for (auto& node : nodeCollection)
-	{
-		if (std::dynamic_pointer_cast<ControlledNode>(node.second))
-		{
-			if (node.first >= 240)
-				continue;
-
-			if (node.second->IsEnabled() == false)
-				continue;
-
-			std::shared_ptr<SubObject> lossOfObject;
-			Result res = node.second->GetSubObject(0x1C0B, 0x3, lossOfObject);
-			if (!res.IsSuccessful())
-				return res; //Mandatory Object
-
-			if (!lossOfObject->WriteToConfiguration()) //Write default value only if no actualValue exists
-			{
-				//Set every node 0x1C0B / 0x3 actual value
-				res = lossOfObject->SetTypedObjectActualValue(IntToHex((std::uint16_t) 80, 2, "0x"));
-				if (!res.IsSuccessful())
-					return res; //Mandatory Object
-			}
-
-			res = node.second->GetSubObject(0x1C0C, 0x3, lossOfObject, false);
-			if (res.IsSuccessful()) //Not mandatory ignore error
-			{
-				if (!lossOfObject->WriteToConfiguration()) //Write default value only if no actualValue exists
-				{
-					//Set every node 0x1C0C/ 0x3 actual value
-					lossOfObject->SetTypedObjectActualValue(IntToHex((std::uint16_t) 80, 2, "0x"));
-				}
-			}
-
-			res = node.second->GetSubObject(0x1C0d, 0x3, lossOfObject, false);
-			if (res.IsSuccessful()) //Not mandatoy ignore error
-			{
-				if (!lossOfObject->WriteToConfiguration()) //Write default value only if no actualValue exist
-				{
-					//Set every node 0x1C0D / 0x3 actual value
-					res = lossOfObject->SetTypedObjectActualValue(IntToHex((std::uint16_t) 80, 2, "0x"));
-				}
 			}
 		}
 	}
