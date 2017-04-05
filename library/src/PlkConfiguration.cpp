@@ -780,7 +780,6 @@ Result PlkConfiguration::SyncRedundantManagingNodes(const std::map<std::uint8_t,
 		if (rmn)
 		{
 			//Set RMN support on MN and distribute to all RMNs
-			mn->SetObjectActualValue(0x1F80, "0x4800");
 			ClearActualValues(nodeCollection, rmn, 0x1F92);
 			ClearActualValues(nodeCollection, rmn, 0x1F8B);
 			ClearActualValues(nodeCollection, rmn, 0x1F8D);
