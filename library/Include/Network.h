@@ -133,11 +133,11 @@ namespace IndustrialNetwork
 						/**
 						\brief Enables/Disables a configuration setting handled by the class.
 						\param[in] configID std::string identifier.
-						\param[in] settingID Setting identifier.
+						\param[in] settingName Setting identifier.
 						\param[in] enabled Enable flag.
 						/return Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetConfigurationSettingEnabled(const std::string& configID, const std::string& settingID, bool enabled);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetConfigurationSettingEnabled(const std::string& configID, const std::string& settingName, bool enabled);
 
 						/**
 						\brief Adds a configuration setting to the handler class.
@@ -153,7 +153,7 @@ namespace IndustrialNetwork
 						\param[in] name Name of the configuration.
 						/return Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveConfigurationSetting(const std::string& configID, const std::string& name);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveConfigurationSetting(const std::string& configID, const std::string& settingName);
 
 						/**
 						\brief Add a configuration to the handler.
@@ -176,7 +176,7 @@ namespace IndustrialNetwork
 						\param[in] newConfigId new name.
 						/return Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ReplaceConfigurationName(const std::string& oldConfigId, const std::string& newConfigId);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ReplaceConfigurationName(const std::string& oldConfigID, const std::string& newConfigID);
 
 						/**
 						\brief Get the settings from a configuration.
@@ -225,11 +225,11 @@ namespace IndustrialNetwork
 						std::uint16_t GetPrescaler() const;
 						std::uint32_t GetLossOfSoCTolerance() const;
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetCycleTime(const std::uint32_t cycleTime);
-						void SetAsyncMTU(const std::uint16_t asyncMTU);
-						void SetMultiplexedCycleCount(const std::uint16_t multiCycleLength);
-						void SetPrescaler(const std::uint16_t prescaler);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetLossOfSoCTolerance(std::uint32_t lossOfSoCTolerance);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetCycleTime(const std::uint32_t _cycleTime);
+						void SetAsyncMTU(const std::uint16_t _asyncMTU);
+						void SetMultiplexedCycleCount(const std::uint16_t multiCycleCount);
+						void SetPrescaler(const std::uint16_t _prescaler);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetLossOfSoCTolerance(std::uint32_t _lossOfSoCTolerance);
 
 					private:
 						std::string networkId;
@@ -241,7 +241,7 @@ namespace IndustrialNetwork
 						std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>> nodeCollection;
 						std::vector<std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Configuration::PlkConfiguration>> buildConfigurations;
 						std::string activeConfiguration;
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CheckCycleTime(const std::uint32_t cycleTime);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CheckCycleTime(const std::uint32_t _cycleTime);
 						void UpdateBuildConfigurationSettingsOnNodes();
 				};
 			}

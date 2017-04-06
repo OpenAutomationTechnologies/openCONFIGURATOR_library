@@ -152,7 +152,7 @@ Result ManagingNode::GetDynamicChannel(PlkDataType dataType, Direction dir, std:
 	return Result(ErrorCode::DYNAMIC_CHANNEL_NOT_FOUND, formatter.str());
 }
 
-const std::vector<std::shared_ptr<DynamicChannel>>& ManagingNode::GetDynamicChannels()
+const std::vector<std::shared_ptr<DynamicChannel>>& ManagingNode::GetDynamicChannels() const
 {
 	return this->dynamicChannelList;
 }
@@ -314,9 +314,9 @@ std::uint16_t ManagingNode::GetRmnCount() const
 	return (std::uint16_t) this->rmnList.size();
 }
 
-void ManagingNode::AddRmnId(std::uint16_t id)
+void ManagingNode::AddRmnId(std::uint16_t _nodeId)
 {
-	this->rmnList.push_back(id);
+	this->rmnList.push_back(_nodeId);
 	//Sort and remove duplicates
 	std::sort(rmnList.begin(), rmnList.end());
 	rmnList.erase(std::unique(rmnList.begin(), rmnList.end()), rmnList.end());
@@ -332,7 +332,7 @@ void ManagingNode::RemoveRmnId(std::uint16_t _nodeId)
 	this->rmnList.erase(std::remove(this->rmnList.begin(), this->rmnList.end(), _nodeId), this->rmnList.end());
 }
 
-const std::vector<std::uint16_t>& ManagingNode::GetRmnList()
+const std::vector<std::uint16_t>& ManagingNode::GetRmnList() const
 {
 	return this->rmnList;
 }

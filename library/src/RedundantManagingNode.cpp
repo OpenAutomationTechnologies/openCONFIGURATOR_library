@@ -49,9 +49,9 @@ std::uint16_t RedundantManagingNode::GetRmnCount() const
 	return (std::uint16_t) this->rmnList.size();
 }
 
-void RedundantManagingNode::AddRmnId(std::uint16_t id)
+void RedundantManagingNode::AddRmnId(std::uint16_t _nodeId)
 {
-	this->rmnList.push_back(id);
+	this->rmnList.push_back(_nodeId);
 	//Sort and remove duplicates
 	std::sort(rmnList.begin(), rmnList.end());
 	rmnList.erase(std::unique(rmnList.begin(), rmnList.end()), rmnList.end());
@@ -67,7 +67,7 @@ void RedundantManagingNode::RemoveRmnId(std::uint16_t _nodeId)
 	this->rmnList.erase(std::remove(this->rmnList.begin(), this->rmnList.end(), _nodeId), this->rmnList.end());
 }
 
-const std::vector<std::uint16_t>& RedundantManagingNode::GetRmnList()
+const std::vector<std::uint16_t>& RedundantManagingNode::GetRmnList() const
 {
 	return this->rmnList;
 }

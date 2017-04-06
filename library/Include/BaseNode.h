@@ -77,9 +77,9 @@ namespace IndustrialNetwork
 						virtual ~BaseNode();
 
 						const std::string& GetName() const;
-						void SetName(const std::string& name);
+						void SetName(const std::string& _name);
 						std::uint8_t GetNodeId() const;
-						void SetNodeId(std::uint8_t nodeId);
+						void SetNodeId(std::uint8_t _nodeId);
 						std::map<std::uint32_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>>& GetObjectDictionary();
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddObject(std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Object>& objRef);
@@ -106,7 +106,7 @@ namespace IndustrialNetwork
 						virtual std::uint32_t GetConfigurationObjectSize() = 0;
 
 						bool IsEnabled() const;
-						void SetEnabled(bool enabled);
+						void SetEnabled(bool _enabled);
 
 						virtual IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CalculatePReqPayloadLimit() = 0;
 						virtual IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result CalculatePResPayloadLimit() = 0;
@@ -120,8 +120,8 @@ namespace IndustrialNetwork
 						std::uint32_t GetTransmitProcessImageSize() const;
 						std::uint32_t GetReceiveProcessImageSize() const;
 
-						void ChangeMappingChannelNodeId(const std::uint8_t nodeId, const std::uint8_t newNodeId);
-						void ClearMappingChannelforNode(const std::uint8_t nodeId);
+						void ChangeMappingChannelNodeId(const std::uint8_t _nodeId, const std::uint8_t newNodeId);
+						void ClearMappingChannelforNode(const std::uint8_t _nodeId);
 
 						bool IgnoreNonExistingMappingObjects() const;
 						void SetIgnoreNonExistingMappingObjects(bool _ignoreNonExistingMappingObjects);

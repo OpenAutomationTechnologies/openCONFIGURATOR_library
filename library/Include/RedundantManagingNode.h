@@ -57,10 +57,10 @@ namespace IndustrialNetwork
 						virtual ~RedundantManagingNode();
 
 						std::uint16_t GetRmnCount() const;
-						void AddRmnId(std::uint16_t nodeId);
-						void RemoveRmnId(std::uint16_t nodeId);
+						void AddRmnId(std::uint16_t _nodeId);
+						void RemoveRmnId(std::uint16_t _nodeId);
 						void ClearRmnList();
-						const std::vector<std::uint16_t>& GetRmnList();
+						const std::vector<std::uint16_t>& GetRmnList() const;
 
 						std::uint32_t GetRMNConfigurationObjectCount();
 						std::uint32_t GetRMNConfigurationObjectSize();

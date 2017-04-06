@@ -64,35 +64,35 @@ namespace IndustrialNetwork
 						virtual ~NetworkManagement();
 
 						template<typename I >
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetFeatureDefaultValue(CNFeatureEnum feature, I& defaultValue);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetFeatureDefaultValue(CNFeatureEnum featureID, I& defaultValue);
 
 						template<typename I >
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetFeatureDefaultValue(MNFeatureEnum feature, I& defaultValue);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetFeatureDefaultValue(MNFeatureEnum featureID, I& defaultValue);
 
 						template<typename I >
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetFeatureDefaultValue(GeneralFeatureEnum feature, I& defaultValue);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetFeatureDefaultValue(GeneralFeatureEnum featureID, I& defaultValue);
 
 						template<typename I >
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetFeatureActualValue(CNFeatureEnum feature, I& actualValue);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetFeatureActualValue(CNFeatureEnum featureID, I& actualValue);
 
 						template<typename I >
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetFeatureActualValue(MNFeatureEnum feature, I& actualValue);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetFeatureActualValue(MNFeatureEnum featureID, I& actualValue);
 
 						template<typename I >
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetFeatureActualValue(GeneralFeatureEnum feature, I& actualValue);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetFeatureActualValue(GeneralFeatureEnum featureID, I& actualValue);
 
 						template<typename I >
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureActualValue(CNFeatureEnum feature, const I actualValue);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureActualValue(CNFeatureEnum featureID, const I actualValue);
 
 						template<typename I >
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureActualValue(MNFeatureEnum feature, const I actualValue);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureActualValue(MNFeatureEnum featureID, const I actualValue);
 
 						template<typename I >
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureActualValue(GeneralFeatureEnum feature, const I actualValue);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureActualValue(GeneralFeatureEnum featureID, const I actualValue);
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureUntypedActualValue(CNFeatureEnum feature, const std::string& actualValue);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureUntypedActualValue(MNFeatureEnum feature, const std::string& actualValue);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureUntypedActualValue(GeneralFeatureEnum feature, const std::string& actualValue);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureUntypedActualValue(CNFeatureEnum featureID, const std::string& actualValue);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureUntypedActualValue(MNFeatureEnum featureID, const std::string& actualValue);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetFeatureUntypedActualValue(GeneralFeatureEnum featureID, const std::string& actualValue);
 
 					private:
 						std::vector<std::shared_ptr<MnFeature>> mnFeatureList;

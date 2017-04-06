@@ -77,7 +77,7 @@ namespace IndustrialNetwork
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetParameterActualValue(const std::string& uniqueId, const std::string& actualValue);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetParameterActualValue(const std::string& uniqueId, std::string& actualValue) const;
-						std::uint32_t GetBitSize(const std::string& uniqueIdRef) const;
+						std::uint32_t GetBitSize(const std::string& uniqueId) const;
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveParameter(const std::string& uniqueId);
 

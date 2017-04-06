@@ -71,7 +71,7 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GenerateConfiguration(const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
 
 						const std::string& GetConfigurationName() const;
-						void SetConfigurationName(const std::string& config);
+						void SetConfigurationName(const std::string& configName);
 
 						bool EvaluateSettingForNode(const std::string& settingName, std::uint16_t nodeId);
 					private:

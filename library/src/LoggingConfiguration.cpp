@@ -212,7 +212,7 @@ namespace IndustrialNetwork
 					}
 				}
 
-				const Language& LoggingConfiguration::GetCurrentLanguage()
+				const Language& LoggingConfiguration::GetCurrentLanguage() const
 				{
 					return this->currentLanguage;
 				}

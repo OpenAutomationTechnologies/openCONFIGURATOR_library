@@ -68,10 +68,10 @@ namespace IndustrialNetwork
 						const std::string& GetModuleType() const;
 
 						std::uint32_t GetAddress() const;
-						void SetAddress(std::uint32_t address);
+						void SetAddress(std::uint32_t _address);
 
 						std::uint32_t GetPosition() const;
-						void SetPosition(std::uint32_t position);
+						void SetPosition(std::uint32_t _position);
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddNodeAssignment(const IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment& assign);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveNodeAssignment(const IndustrialNetwork::POWERLINK::Core::Node::NodeAssignment& assign);

@@ -60,7 +60,7 @@ namespace IndustrialNetwork
 						virtual ~EnumDataType();
 
 						const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype& GetDataType() const;
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddEnumValue(const std::string& name, const std::string& value);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddEnumValue(const std::string& _name, const std::string& value);
 
 						virtual std::uint32_t GetBitSize() const;
 

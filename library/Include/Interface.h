@@ -68,7 +68,7 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddModule(std::uint32_t position, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ModularNode::Module>& module);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result RemoveModule(const std::string& moduleId, std::uint32_t modulePosition);
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetModule(const std::string& moduleId, std::uint32_t modulePosition, std::shared_ptr<Module>& module);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetModule(const std::string& moduleId, std::uint32_t modulePosition, std::shared_ptr<Module>& moduleRet);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ChangeModulePosition(const std::string& moduleId, std::uint32_t oldPos, std::uint32_t newPos);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result EnableModule(const std::string& moduleId, std::uint32_t modulePosition, bool enable);
 						std::uint32_t GetModuleCount() const;

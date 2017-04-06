@@ -185,10 +185,10 @@ namespace IndustrialNetwork
 						/*!
 						This set the managing node object 0x1F98 / 0x7.
 						\param networkId Specifies the identifier for the network.
-						\param multiplexedCycleLength Multiplexed cycle length.
+						\param multiCycleCount Multiplexed cycle length.
 						\return IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result
 						*/
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetMultiplexedCycleCount(const std::string& networkId, std::uint16_t multiplexedCycleLength);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetMultiplexedCycleCount(const std::string& networkId, std::uint16_t multiCycleCount);
 						//! Member to set the prescaler for the specified network.
 						/*!
 						This set the managing node object 0x1F98 / 0x9.

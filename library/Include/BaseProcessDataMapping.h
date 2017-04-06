@@ -67,22 +67,22 @@ namespace IndustrialNetwork
 						void InitMappingObject(const std::string& actualValue);
 
 						std::uint32_t GetOffsetGap() const;
-						void SetOffsetGap(std::uint32_t offsetGap);
+						void SetOffsetGap(std::uint32_t _offsetGap);
 
 						std::uint16_t GetDestinationNode() const;
 						void SetDestinationNode(std::uint16_t nodeId);
 
 						std::uint32_t GetMappingIndex() const;
-						void SetMappingIndex(std::uint32_t index);
+						void SetMappingIndex(std::uint32_t _index);
 
 						std::uint16_t GetMappingSubIndex() const;
-						void SetMappinSubgIndex(std::uint16_t subindex);
+						void SetMappinSubgIndex(std::uint16_t _subindex);
 
 						std::uint32_t GetMappingOffset() const;
-						void SetMappingOffset(std::uint32_t offset);
+						void SetMappingOffset(std::uint32_t _offset);
 
 						std::uint32_t GetMappingLength() const;
-						void SetMappingLength(std::uint32_t length);
+						void SetMappingLength(std::uint32_t _length);
 
 						const std::string ToString(bool addPrefix);
 

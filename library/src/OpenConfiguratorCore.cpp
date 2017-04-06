@@ -188,7 +188,7 @@ Result OpenConfiguratorCore::SetAsyncMtu(const std::string& networkId, std::uint
 	}
 }
 
-Result OpenConfiguratorCore::SetMultiplexedCycleCount(const std::string& networkId, std::uint16_t multiplexedCycleCount)
+Result OpenConfiguratorCore::SetMultiplexedCycleCount(const std::string& networkId, std::uint16_t multiCycleCount)
 {
 	try
 	{
@@ -197,7 +197,7 @@ Result OpenConfiguratorCore::SetMultiplexedCycleCount(const std::string& network
 		if (!res.IsSuccessful())
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
-		networkPtr->SetMultiplexedCycleCount(multiplexedCycleCount);
+		networkPtr->SetMultiplexedCycleCount(multiCycleCount);
 
 		std::shared_ptr<ManagingNode> nodePtr;
 		res = networkPtr->GetManagingNode(nodePtr);
@@ -209,7 +209,7 @@ Result OpenConfiguratorCore::SetMultiplexedCycleCount(const std::string& network
 		if (!res.IsSuccessful())
 			return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 
-		res = nodePtr->ForceSubObject(0x1f98, 0x7, subObj->GetForceToCDC(), false, IntToHex(multiplexedCycleCount, 2, "0x"));
+		res = nodePtr->ForceSubObject(0x1f98, 0x7, subObj->GetForceToCDC(), false, IntToHex(multiCycleCount, 2, "0x"));
 		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 	}
 	catch (const std::exception& ex)
@@ -276,7 +276,7 @@ Result OpenConfiguratorCore::BuildConfiguration(const std::string& networkId, st
 	}
 }
 
-Result OpenConfiguratorCore::BuildXMLProcessImage(const std::string& networkId, const std::uint8_t nodeid, std::string& processImageOutput)
+Result OpenConfiguratorCore::BuildXMLProcessImage(const std::string& networkId, const std::uint8_t nodeid, std::string& processImageXMLOutput)
 {
 	try
 	{
@@ -290,7 +290,7 @@ Result OpenConfiguratorCore::BuildXMLProcessImage(const std::string& networkId, 
 
 		res = networkPtr->GenerateConfiguration();
 		if (res.IsSuccessful())
-			processImageOutput = XmlProcessImageGenerator::GetInstance().Generate(nodeid, networkPtr);
+			processImageXMLOutput = XmlProcessImageGenerator::GetInstance().Generate(nodeid, networkPtr);
 
 		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 	}
@@ -300,7 +300,7 @@ Result OpenConfiguratorCore::BuildXMLProcessImage(const std::string& networkId, 
 	}
 }
 
-Result OpenConfiguratorCore::BuildNETProcessImage(const std::string& networkId, const std::uint8_t nodeid, std::string& processImageOutput)
+Result OpenConfiguratorCore::BuildNETProcessImage(const std::string& networkId, const std::uint8_t nodeid, std::string& processImageNETOutput)
 {
 	try
 	{
@@ -314,7 +314,7 @@ Result OpenConfiguratorCore::BuildNETProcessImage(const std::string& networkId, 
 
 		res = networkPtr->GenerateConfiguration();
 		if (res.IsSuccessful())
-			processImageOutput = NetProcessImageGenerator::GetInstance().Generate(nodeid, networkPtr);
+			processImageNETOutput = NetProcessImageGenerator::GetInstance().Generate(nodeid, networkPtr);
 
 		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 	}
@@ -324,7 +324,7 @@ Result OpenConfiguratorCore::BuildNETProcessImage(const std::string& networkId, 
 	}
 }
 
-Result OpenConfiguratorCore::BuildCProcessImage(const std::string& networkId, const std::uint8_t nodeid, std::string& processImageOutput)
+Result OpenConfiguratorCore::BuildCProcessImage(const std::string& networkId, const std::uint8_t nodeid, std::string& processImageCOutput)
 {
 	try
 	{
@@ -338,7 +338,7 @@ Result OpenConfiguratorCore::BuildCProcessImage(const std::string& networkId, co
 
 		res = networkPtr->GenerateConfiguration();
 		if (res.IsSuccessful())
-			processImageOutput = CProcessImageGenerator::GetInstance().Generate(nodeid, networkPtr);
+			processImageCOutput = CProcessImageGenerator::GetInstance().Generate(nodeid, networkPtr);
 
 		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 	}
@@ -392,14 +392,14 @@ Result OpenConfiguratorCore::CreateNode(const std::string& networkId, const std:
 	}
 }
 
-Result OpenConfiguratorCore::RemoveNode(const std::string& networkId, const std::uint8_t nodeID)
+Result OpenConfiguratorCore::RemoveNode(const std::string& networkId, const std::uint8_t nodeId)
 {
 	try
 	{
 		std::shared_ptr<Network> network;
 		Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 		if (res.IsSuccessful())
-			res = network->RemoveNode(nodeID);
+			res = network->RemoveNode(nodeId);
 
 		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 	}
@@ -2220,14 +2220,14 @@ Result OpenConfiguratorCore::RemoveNodeAssignment(const std::string& networkId, 
 	}
 }
 
-Result OpenConfiguratorCore::EnableNode(const std::string& networkId, const std::uint8_t nodeID, const bool enable)
+Result OpenConfiguratorCore::EnableNode(const std::string& networkId, const std::uint8_t nodeId, const bool enable)
 {
 	try
 	{
 		std::shared_ptr<Network> network;
 		Result res = ProjectManager::GetInstance().GetNetwork(networkId, network);
 		if (res.IsSuccessful())
-			res = network->EnableNode(nodeID, enable);
+			res = network->EnableNode(nodeId, enable);
 
 		return Result(res.GetErrorType(), "[" + networkId + "] " + res.GetErrorMessage());
 	}

@@ -65,7 +65,7 @@ namespace IndustrialNetwork
 						std::uint16_t GetMinAddress() const;
 						std::uint16_t GetMaxAddress() const;
 						std::uint16_t GetMaxCount() const;
-						bool ValidateModuleType(const std::string& type) const;
+						bool ValidateModuleType(const std::string& _type) const;
 
 					private:
 						std::uint16_t minPosition;

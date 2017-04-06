@@ -57,7 +57,7 @@ namespace IndustrialNetwork
 				{
 
 					public:
-						StructDataType(const std::string& name, const std::string& uniqueID);
+						StructDataType(const std::string& uniqueID, const std::string& name);
 						virtual ~StructDataType();
 
 						virtual std::uint32_t GetBitSize() const;

@@ -99,7 +99,7 @@ namespace IndustrialNetwork
 
 						static IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result InitEclipseConfiguration(const std::string& loggingPath);
 
-						const IndustrialNetwork::POWERLINK::Core::CoreConfiguration::Language& GetCurrentLanguage();
+						const IndustrialNetwork::POWERLINK::Core::CoreConfiguration::Language& GetCurrentLanguage() const;
 						void SetCurrentLanguage(const IndustrialNetwork::POWERLINK::Core::CoreConfiguration::Language& lang);
 
 					private:

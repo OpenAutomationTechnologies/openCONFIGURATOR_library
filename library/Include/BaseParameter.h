@@ -74,7 +74,7 @@ namespace IndustrialNetwork
 						const std::string& GetUniqueID() const;
 
 						const std::string& GetDataTypeUniqueIDRef() const;
-						void SetDataTypeUniqueIDRef(const std::string& dataTypeUniqueIDRef);
+						void SetDataTypeUniqueIDRef(const std::string& _dataTypeUniqueIDRef);
 
 						const std::shared_ptr<ComplexDataType>& GetComplexDataType() const;
 						void SetComplexDataType(const std::shared_ptr<ComplexDataType>& complexType);
@@ -86,8 +86,8 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddParameterAllowedRange(const std::string& minValue, const std::string& maxValue);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddParameterAllowedValue(const std::string& allowedValue);
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddParameterDefaultValue(const std::string& defaultValue);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetParameterActualValue(const std::string& actualValue);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddParameterDefaultValue(const std::string& defaultValueToSet);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetParameterActualValue(const std::string& actualValueToSet);
 
 						const boost::dynamic_bitset<>& GetParameterActualValueBitSet(const std::string& tempActualValue = "");
 
@@ -98,7 +98,7 @@ namespace IndustrialNetwork
 						T GetTypedParameterDefaultValue();
 
 						template<typename T>
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ValidateParameterValue(T valueToValidate);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ValidateParameterValue(T actualValueToValidate);
 
 						const boost::optional<boost::any>& GetParameterDefaultValue() const;
 						const boost::optional<boost::any>& GetParameterActualValue() const;
@@ -137,7 +137,7 @@ namespace IndustrialNetwork
 						boost::dynamic_bitset<> actualValueBitset;
 						bool actualValueNotDefaultValue;
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddParameterValue(const std::string& value, ValueType type);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddParameterValue(const std::string& valueToSet, ValueType type);
 				};
 			}
 		}

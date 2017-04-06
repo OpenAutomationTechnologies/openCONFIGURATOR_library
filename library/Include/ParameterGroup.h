@@ -65,7 +65,7 @@ namespace IndustrialNetwork
 						ParameterGroup(const std::string& uniqueId, const std::string& conditionalUniqueIdRef, const std::string& conditionalValue, const std::shared_ptr<Parameter>& param, std::uint16_t bitOffset = 0);
 						virtual ~ParameterGroup();
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddParameterGroupEntry(const std::shared_ptr<IParameterGroupEntry>& paramGrp);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result AddParameterGroupEntry(const std::shared_ptr<IParameterGroupEntry>& paramEntry);
 						const boost::dynamic_bitset<>& GetActualValueBitSet(std::uint32_t bitSetSize);
 
 						std::uint32_t GetBitSize();

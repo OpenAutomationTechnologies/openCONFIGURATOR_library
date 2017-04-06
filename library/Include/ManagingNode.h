@@ -75,17 +75,17 @@ namespace IndustrialNetwork
 						std::uint32_t GetNodeAssignmentValue();
 
 						void AddDynamicChannel(std::shared_ptr<DynamicChannel>& channelRef);
-						const std::vector<std::shared_ptr<DynamicChannel>>& GetDynamicChannels();
+						const std::vector<std::shared_ptr<DynamicChannel>>& GetDynamicChannels() const;
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GetDynamicChannel(IndustrialNetwork::POWERLINK::Core::ObjectDictionary::PlkDataType dataType, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::shared_ptr<DynamicChannel>& returnChannel);
 
 						std::uint32_t GetConfigurationObjectCount();
 						std::uint32_t GetConfigurationObjectSize();
 
 						std::uint16_t GetRmnCount() const;
-						void AddRmnId(std::uint16_t nodeId);
-						void RemoveRmnId(std::uint16_t nodeId);
+						void AddRmnId(std::uint16_t _nodeId);
+						void RemoveRmnId(std::uint16_t _nodeId);
 						void ClearRmnList();
-						const std::vector<std::uint16_t>& GetRmnList();
+						const std::vector<std::uint16_t>& GetRmnList() const;
 
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapObject(std::uint32_t index, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr = 0, std::uint32_t position = 0, std::uint16_t fromNode = 0, bool updateNrOfEntries = false);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result MapSubObject(std::uint32_t index, std::uint16_t subindex, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, std::uint16_t channelNr = 0, std::uint32_t position = 0, std::uint16_t fromNode = 0, bool updateNrOfEntries = false);

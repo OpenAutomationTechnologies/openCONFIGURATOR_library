@@ -70,7 +70,7 @@ namespace IndustrialNetwork
 
 					private:
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result GenerateMnMapping(const std::string& value, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, const std::map<std::uint8_t, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>>& nodeCollection);
-						const std::string GetMappingString(std::uint32_t size, std::uint32_t offset, std::uint32_t subindex, std::uint32_t index);
+						const std::string GetMappingString(std::uint32_t bitSize, std::uint32_t bitOffset, std::uint32_t subindex, std::uint32_t index);
 						bool GenerateForNode(const std::string& value, std::uint16_t nodeId);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result FindMappedObject(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node, std::uint32_t dataIndex, std::uint16_t dataSubindex, std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject>& foundObject);
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result WriteMappingToForNode(std::uint16_t nodeId, IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction dir, const std::string& actualMappingValue, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::ManagingNode>& mn);

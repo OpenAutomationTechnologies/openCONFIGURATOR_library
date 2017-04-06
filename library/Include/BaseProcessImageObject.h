@@ -62,11 +62,11 @@ namespace IndustrialNetwork
 						virtual ~BaseProcessImageObject();
 
 						const std::string& GetName() const;
-						void SetName(const std::string& name);
+						void SetName(const std::string& _name);
 						const IEC_Datatype& GetDataType() const;
 						std::uint32_t GetSize() const;
 						std::uint32_t GetPiOffset() const;
-						void SetPIOffset(std::uint32_t piOffset);
+						void SetPIOffset(std::uint32_t _piOffset);
 						const boost::optional<std::uint32_t>& GetBitOffset() const;
 
 						void SetSourceNodeId(std::uint16_t nodeId);

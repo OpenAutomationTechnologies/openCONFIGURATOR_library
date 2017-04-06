@@ -71,8 +71,8 @@ namespace IndustrialNetwork
 						std::stringstream processImageStream;
 						const std::string PrintChannel(const std::string& name, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::IEC_Datatype& datatype, const std::uint32_t size, const std::uint32_t piOffset, const boost::optional<std::uint32_t>& bitOffset);
 						const std::string WriteCHeader(const std::string& projName, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node);
-						const std::string WriteCOutputSizeHeader(std::uint32_t totalSize);
-						const std::string WriteCInputSizeHeader(std::uint32_t totalSize);
+						const std::string WriteCOutputSizeHeader(std::uint32_t size);
+						const std::string WriteCInputSizeHeader(std::uint32_t size);
 						std::uint32_t WriteCProcessImage(const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::Node::BaseNode>& node);
 				};
 			}

@@ -498,7 +498,7 @@ void Network::SetPrescaler(const std::uint16_t _prescaler)
 	this->prescaler = _prescaler;
 }
 
-Result Network::SetLossOfSoCTolerance(std::uint32_t lossOfSocTolerance)
+Result Network::SetLossOfSoCTolerance(std::uint32_t _lossOfSoCTolerance)
 {
 	for (auto& node : this->nodeCollection)
 	{
@@ -510,11 +510,11 @@ Result Network::SetLossOfSoCTolerance(std::uint32_t lossOfSocTolerance)
 		if (obj->GetForceToCDC())
 			continue;
 
-		res = node.second->ForceObject(0x1C14, false, false, IntToHex(lossOfSocTolerance, 8, "0x"));
+		res = node.second->ForceObject(0x1C14, false, false, IntToHex(_lossOfSoCTolerance, 8, "0x"));
 		if (!res.IsSuccessful())
 			return res;
 	}
-	this->lossOfSoCTolerance = lossOfSocTolerance;
+	this->lossOfSoCTolerance = _lossOfSoCTolerance;
 	return Result();
 }
 
@@ -1114,7 +1114,7 @@ Result Network::CheckCycleTime(const std::uint32_t _cycleTime)
 
 		//Optional feature defaults to '1'
 		Result res = node.second->GetNetworkManagement()->GetFeatureActualValue<std::uint32_t>(GeneralFeatureEnum::NMTCycleTimeGranularity, currentCycleTimeGranularity);
-		if (res.IsSuccessful())
+		if (res.IsSuccessful() && currentCycleTimeGranularity != 0)
 		{
 			if (_cycleTime % currentCycleTimeGranularity != 0)
 			{

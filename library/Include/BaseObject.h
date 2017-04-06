@@ -77,7 +77,7 @@ namespace IndustrialNetwork
 						BaseObject(std::uint32_t id, const ObjectType& objectType, const std::string& name, std::uint8_t containingNode, const PlkDataType& dataType, const AccessType& accessType, const PDOMapping& pdoMapping);
 						BaseObject(std::uint32_t id, const ObjectType& objectType, const std::string& name, std::uint8_t containingNode, const std::string& uniqueIdRef);
 
-						bool operator== (const BaseObject& BaseObject) const;
+						bool operator== (const BaseObject& baseObject) const;
 						virtual ~BaseObject();
 
 						bool GetForceToCDC() const;
@@ -89,16 +89,16 @@ namespace IndustrialNetwork
 						T GetTypedHighLimit();
 
 						const boost::optional<boost::any>& GetHighLimit() const;
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetHighLimit(const std::string& highLimit);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetHighLimit(const std::string& _highLimit);
 
 						template<typename T>
 						T GetTypedLowLimit();
 
 						const boost::optional<boost::any>& GetLowLimit() const;
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetLowLimit(const std::string& lowLimit);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetLowLimit(const std::string& _lowLimit);
 
 						const boost::optional<std::string>& GetUniqueIdRef() const;
-						void SetUniqueIdRef(const std::string& uniqueIdRef);
+						void SetUniqueIdRef(const std::string& _uniqueIdRef);
 
 						const boost::optional<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType>& GetAccessType() const;
 						void SetAccessType(const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::AccessType& accessType);
@@ -116,8 +116,8 @@ namespace IndustrialNetwork
 						T GetTypedDefaultValue();
 
 						std::uint8_t GetContainingNode() const;
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetTypedObjectActualValue(const std::string& actualValueToSet, bool validateOnly = false);
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetTypedObjectDefaultValue(const std::string& defaultValueToSet);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetTypedObjectActualValue(const std::string& _actualValue, bool validateOnly = false);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetTypedObjectDefaultValue(const std::string& _defaultValue);
 
 						void SetComplexDataType(std::shared_ptr<Parameter>& parameter);
 						void SetComplexDataType(std::shared_ptr<ParameterGroup>& parameterGrp);
@@ -133,7 +133,7 @@ namespace IndustrialNetwork
 						void ClearActualValue();
 
 						const boost::optional<std::string>& GetRangeSelector() const;
-						void SetRangeSelector(const std::string& name);
+						void SetRangeSelector(const std::string& _rangeSelector);
 
 					private:
 						enum class ValueType : std::uint8_t
@@ -147,7 +147,7 @@ namespace IndustrialNetwork
 						template<typename T>
 						T GetTypedValue(ValueType type);
 
-						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetValue(const std::string& value, ValueType type);
+						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result SetValue(const std::string& valueStr, ValueType type);
 
 						bool forceToCDC;
 						boost::optional<boost::any> highLimit;
