@@ -489,18 +489,31 @@ Result ControlledNode::MapAllRxObjects(std::uint16_t channelNr, bool updateNrOfE
 {
 	//start on position 1
 	std::uint32_t position = 1;
+	bool mappable = false;
 
 	for (auto& obj : this->GetObjectDictionary())
 	{
+		if (obj.second->GetObjectId() < 0x2000)
+			continue;
+
 		if (obj.second->GetPDOMapping().is_initialized())
 		{
 			if ((obj.second->GetPDOMapping() == PDOMapping::RPDO || obj.second->GetPDOMapping() == PDOMapping::DEFAULT || obj.second->GetPDOMapping() == PDOMapping::OPTIONAL)
 			        && (obj.second->GetAccessType() == AccessType::RW || obj.second->GetAccessType() == AccessType::WO))
 			{
+				mappable = true;
+			}
+			else if (obj.second->GetUniqueIdRef().is_initialized())
+			{
+				mappable = evaluateParamAccessForDirection(obj.second, Direction::RX);
+			}
+			if (mappable)
+			{
 				Result res = this->MapBaseObject(obj.second, obj.first, 0, Direction::RX, updateNrOfEntries, channelNr, position, 0);
 				if (!res.IsSuccessful())
 					return res;
 				position++;
+				mappable = false;
 			}
 		}
 
@@ -512,10 +525,19 @@ Result ControlledNode::MapAllRxObjects(std::uint16_t channelNr, bool updateNrOfE
 			if ((subobj.second->GetPDOMapping() == PDOMapping::RPDO || subobj.second->GetPDOMapping() == PDOMapping::DEFAULT || subobj.second->GetPDOMapping() == PDOMapping::OPTIONAL)
 			        && (subobj.second->GetAccessType() == AccessType::RW || subobj.second->GetAccessType() == AccessType::WO))
 			{
+				mappable = true;
+			}
+			else if (subobj.second->GetUniqueIdRef().is_initialized())
+			{
+				mappable = evaluateParamAccessForDirection(subobj.second, Direction::RX);
+			}
+			if (mappable)
+			{
 				Result res = this->MapBaseObject(subobj.second, obj.first, (std::uint16_t) subobj.first, Direction::RX, updateNrOfEntries, channelNr, position, 0);
 				if (!res.IsSuccessful())
 					return res;
 				position++;
+				mappable = false;
 			}
 		}
 	}
@@ -526,18 +548,31 @@ Result ControlledNode::MapAllTxObjects(std::uint16_t channelNr, bool updateNrOfE
 {
 	//start on position 1
 	std::uint32_t position = 1;
+	bool mappable = false;
 
 	for (auto& obj : this->GetObjectDictionary())
 	{
+		if (obj.second->GetObjectId() < 0x2000)
+			continue;
+
 		if (obj.second->GetPDOMapping().is_initialized())
 		{
 			if ((obj.second->GetPDOMapping() == PDOMapping::TPDO || obj.second->GetPDOMapping() == PDOMapping::DEFAULT || obj.second->GetPDOMapping() == PDOMapping::OPTIONAL)
 			        && (obj.second->GetAccessType() == AccessType::RW || obj.second->GetAccessType() == AccessType::RO))
 			{
+				mappable = true;
+			}
+			else if (obj.second->GetUniqueIdRef().is_initialized())
+			{
+				mappable = evaluateParamAccessForDirection(obj.second, Direction::TX);
+			}
+			if (mappable)
+			{
 				Result res = this->MapBaseObject(obj.second, obj.first, 0, Direction::TX, updateNrOfEntries, channelNr, position, 0);
 				if (!res.IsSuccessful())
 					return res;
 				position++;
+				mappable = false;
 			}
 		}
 
@@ -549,10 +584,19 @@ Result ControlledNode::MapAllTxObjects(std::uint16_t channelNr, bool updateNrOfE
 			if ((subobj.second->GetPDOMapping() == PDOMapping::TPDO || subobj.second->GetPDOMapping() == PDOMapping::DEFAULT || subobj.second->GetPDOMapping() == PDOMapping::OPTIONAL)
 			        && (subobj.second->GetAccessType() == AccessType::RW || subobj.second->GetAccessType() == AccessType::RO))
 			{
+				mappable = true;
+			}
+			else if (subobj.second->GetUniqueIdRef().is_initialized())
+			{
+				mappable = evaluateParamAccessForDirection(subobj.second, Direction::TX);
+			}
+			if (mappable)
+			{
 				Result res = this->MapBaseObject(subobj.second, obj.first, (std::uint16_t) subobj.first, Direction::TX, updateNrOfEntries, channelNr, position, 0);
 				if (!res.IsSuccessful())
 					return res;
-				position ++;
+				position++;
+				mappable = false;
 			}
 		}
 	}
@@ -1975,5 +2019,40 @@ void ControlledNode::ProcessComplexDatatype(const std::string& paramName, const 
 			piOffset += arrayDt->GetBitSize() / 8 ;
 		}
 	}
+}
+
+bool IndustrialNetwork::POWERLINK::Core::Node::ControlledNode::evaluateParamAccessForDirection(const std::shared_ptr<BaseObject>& object, const Direction& dir)
+{
+	ParameterAccess access = ParameterAccess::noAccess;
+	std::string uniqueID = "";
+	if (object->GetReferencedParameter().get())
+	{
+		access = object->GetReferencedParameter()->GetParameterAccess();
+		uniqueID = object->GetReferencedParameter()->GetUniqueID();
+	}
+	else if (object->GetReferencedParameterGroup().get())
+	{
+		uniqueID = object->GetReferencedParameterGroup()->GetUniqueId();
+		Result res = object->GetReferencedParameterGroup()->GetParameterGroupAccess(access);
+		if (!res.IsSuccessful())
+			return false;
+	}
+	if (dir == Direction::RX)
+	{
+		if (access == ParameterAccess::readWriteOutput || access == ParameterAccess::readWrite
+		        || access == ParameterAccess::write)
+		{
+			return true;
+		}
+	}
+	else if (dir == Direction::TX)
+	{
+		if (access == ParameterAccess::readWriteInput || access == ParameterAccess::readWrite
+		        || access == ParameterAccess::read)
+		{
+			return true;
+		}
+	}
+	return false;
 }
 

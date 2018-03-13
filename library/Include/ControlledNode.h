@@ -32,28 +32,25 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined CONTROLLED_NODE_H
 #define CONTROLLED_NODE_H
 
-#include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/format.hpp>
 #include <boost/range/algorithm_ext.hpp>
 
+#include "ArrayDataType.h"
 #include "BaseNode.h"
 #include "BaseObject.h"
-#include "PlkOperationMode.h"
 #include "BaseProcessDataMapping.h"
-#include "Result.h"
-#include "BaseObject.h"
 #include "Constants.h"
 #include "Direction.h"
-#include "Module.h"
-#include "Range.h"
-#include "Constants.h"
-#include "LoggingConfiguration.h"
-#include "Utilities.h"
-#include "Parameter.h"
-#include "ArrayDataType.h"
-#include "StructDataType.h"
 #include "EnumDataType.h"
-#include "Direction.h"
+#include "LoggingConfiguration.h"
+#include "Module.h"
+#include "Parameter.h"
+#include "PlkOperationMode.h"
+#include "Range.h"
+#include "Result.h"
+#include "StructDataType.h"
+#include "Utilities.h"
 
 namespace IndustrialNetwork
 {
@@ -112,6 +109,7 @@ namespace IndustrialNetwork
 						IndustrialNetwork::POWERLINK::Core::ErrorHandling::Result ProcessParameterGroup(const std::string& paramName, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseProcessDataMapping>& mappingObject, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ParameterGroup>& grp, const std::string& dataName, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir, std::uint32_t& piOffset, std::uint32_t domainCount);
 						void ProcessComplexDatatype(const std::string& paramName, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseProcessDataMapping>& mappingObject, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::StructDataType>& obj, const std::string& dataName, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir, std::uint32_t& piOffset, std::uint32_t domainCount);
 						void ProcessComplexDatatype(const std::string& paramName, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseProcessDataMapping>& mappingObject, const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::ArrayDataType>& obj, const std::string& dataName, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir, std::uint32_t& piOffset, std::uint32_t domainCount);
+						bool evaluateParamAccessForDirection(const std::shared_ptr<IndustrialNetwork::POWERLINK::Core::ObjectDictionary::BaseObject>& object, const IndustrialNetwork::POWERLINK::Core::ObjectDictionary::Direction& dir);
 
 						std::uint32_t nodeDataPresMnOffset;
 						std::uint32_t nodeDataPresMnCurrentOffset;
