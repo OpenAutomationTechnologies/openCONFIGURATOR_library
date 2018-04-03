@@ -180,7 +180,8 @@ namespace IndustrialNetwork
 					RANGE_INDEX_ALREADY_TAKEN, //!< The range index is already taken.
 					POSITION_OCCUPIED, //!< Position on the interface is already occupied
 					ADDRESS_OCCUPIED, //!< Address on the interface is already occupied
-					MANUAL_ADDRESSING_NOT_SUPPORTED //!< The manual addressing is not supported either by the head node interface or by the module interface.
+					MANUAL_ADDRESSING_NOT_SUPPORTED, //!< The manual addressing is not supported either by the head node interface or by the module interface.
+					INTERFACE_DOES_NOT_HAVE_ANY_RANGES //!< The interface does not have any referenced index ranges.
 				};
 				/** @} */
 			}

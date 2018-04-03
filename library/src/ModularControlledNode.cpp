@@ -83,6 +83,16 @@ Result ModularControlledNode::AddModule(const std::string& interfaceId, const st
 	{
 		if (interf->GetUniqueId() == interfaceId)
 		{
+			if (interf->GetRangeList().empty())
+			{
+				boost::format formatter(kMsgInterfaceDoesNotHaveAnyRange[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
+				formatter
+				% interf->GetUniqueId()
+				% this->GetName()
+				% (std::uint32_t) this->GetNodeId();
+				LOG_ERROR() << formatter.str();
+				return Result(ErrorCode::INTERFACE_DOES_NOT_HAVE_ANY_RANGES, formatter.str());
+			}
 			if (interf->GetModuleAddressing() == ModuleAddressing::POSITION && addressing == ModuleAddressing::MANUAL)
 			{
 				boost::format formatter(kMsgInterfaceDoesNotSupportManualAddressing[static_cast<std::underlying_type<Language>::type>(LoggingConfiguration::GetInstance().GetCurrentLanguage())]);
